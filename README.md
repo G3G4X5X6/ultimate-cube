@@ -19,6 +19,7 @@ TODO: Fill out this long description.
 - [License](#license)
 
 ## Security
+See [the security file](SECURITY.md)!
 
 ## Background
 
