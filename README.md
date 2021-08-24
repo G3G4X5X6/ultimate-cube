@@ -1,4 +1,4 @@
-# ultimateshell
+# UltimateShell
 
 ![banner](doc/img/banner.png)
 
