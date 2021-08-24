@@ -27,7 +27,7 @@ See [the security file](SECURITY.md)!
 
 ## Features
 
-- [x] Support SSH, Sftp
+- [x] Support ssh, sftp
 - [x] Support multi-platform 
 - [x] Support sessions manager
 - [ ] Support local terminal
