@@ -4,9 +4,9 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/G3G4X5X6/G3G4X5X6.github.io.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/G3G4X5X6/G3G4X5X6.github.io/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/G3G4X5X6/G3G4X5X6.github.io.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/G3G4X5X6/G3G4X5X6.github.io/context:javascript)
 
-<br><br>
+<br>
 English [简体中文](README_zh-CH.md)!
-<br><br>
+<br>
 
 UltimateShell
 
