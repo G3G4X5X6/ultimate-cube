@@ -6,7 +6,7 @@
 
 <br>
 
-English [简体中文](README_zh-CH.md)!
+English [简体中文](README_zh-CH.md)
 
 <br>
 
