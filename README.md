@@ -1,7 +1,8 @@
-# UltimateShell
+# ultimateshell
+
+![banner](doc/img/banner.png)
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-TODO: Put more badges here.
 
 UltimateShell
 
@@ -45,4 +46,4 @@ Small note: If editing the README, please conform to the [standard-readme](https
 
 ## License
 
-MIT © 2021 G3G4X5X6
+MIT © 2021 勾三股四弦五小六
