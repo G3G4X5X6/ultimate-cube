@@ -7,7 +7,7 @@
 English [简体中文](doc/README_zh-CH.md)
 
 <br>
-UltimateShell is a free and open source server remote management tool.
+UltimateShell is a free and open source remote server management tool.
 
 TODO: Fill out this long description.
 
@@ -27,9 +27,15 @@ See [the security file](SECURITY.md)!
 
 ## Features
 
-- [x] SSH client
-- [x] SFTP client
-- [x] Sessions manager
+- [x] Support SSH, Sftp
+- [x] Support multi-platform 
+- [x] Support sessions manager
+- [ ] Support local terminal
+- [ ] Support serial terminal
+- [ ] Support Telnet
+- [ ] Support FTP
+- [ ] Support RDP
+- [ ] Support VNC
 
 ## Install
 
