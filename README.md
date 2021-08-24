@@ -3,6 +3,7 @@
 ![banner](doc/img/banner.png)
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/G3G4X5X6/G3G4X5X6.github.io.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/G3G4X5X6/G3G4X5X6.github.io/alerts/)
 
 UltimateShell
 
