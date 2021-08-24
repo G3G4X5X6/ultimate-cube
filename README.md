@@ -8,7 +8,7 @@ English [简体中文](doc/README_zh-CH.md)
 
 <br>
 
-UltimateShell
+UltimateShell is a free and open source server remote management tool.
 
 TODO: Fill out this long description.
 
