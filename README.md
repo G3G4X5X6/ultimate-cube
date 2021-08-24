@@ -1,6 +1,6 @@
 # UltimateShell
 
-![banner](doc/img/banner.png)
+![banner](https://g3g4x5x6.github.io/ultimateshell/6cbbdd58689e0cfe74bc434cf639be2.png)
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
