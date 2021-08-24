@@ -15,9 +15,10 @@ TODO: Fill out this long description.
 ## Table of Contents
 
 - [Security](#security)
-- [Background](#background)
+- [Features](#Features)
 - [Install](#install)
 - [Usage](#usage)
+- [Links](#Links)
 - [Maintainers](#maintainers)
 - [Contributing](#contributing)
 - [License](#license)
@@ -25,7 +26,11 @@ TODO: Fill out this long description.
 ## Security
 See [the security file](SECURITY.md)!
 
-## Background
+## Features
+
+- [x] SSH client
+- [x] SFTP client
+- [x] Sessions manager
 
 ## Install
 
