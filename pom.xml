@@ -145,23 +145,43 @@
             <version>3.36.0.1</version>
         </dependency>
 
-
-        <!-- 本地仓库-->
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>terminal</artifactId>
             <version>2.49</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/terminal-2.49.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>jediterm-pty</artifactId>
             <version>2.49</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jediterm-pty-2.49.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>jediterm-ssh</artifactId>
             <version>2.49</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jediterm-ssh-2.49.jar</systemPath>
         </dependency>
+<!--        &lt;!&ndash; 本地仓库&ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.g3g4x5x6</groupId>-->
+<!--            <artifactId>terminal</artifactId>-->
+<!--            <version>2.49</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.g3g4x5x6</groupId>-->
+<!--            <artifactId>jediterm-pty</artifactId>-->
+<!--            <version>2.49</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.g3g4x5x6</groupId>-->
+<!--            <artifactId>jediterm-ssh</artifactId>-->
+<!--            <version>2.49</version>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>com.g3g4x5x6</groupId>-->
 <!--            <artifactId>pty4j</artifactId>-->
@@ -234,5 +254,6 @@
                 </executions>
             </plugin>
         </plugins>
+
     </build>
 </project>
