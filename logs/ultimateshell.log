@@ -2849,3 +2849,50 @@
 [Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \n
 [Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC]0;root@localhost:~/测试BEL
 [Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: [root@localhost<S>测试]#<S>
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "c" (0)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: c
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:206) - Matched successfully: char "c" 0
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "l" (0)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: l
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:206) - Matched successfully: char "l" 0
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "e" (0)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: e
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:206) - Matched successfully: char "e" 0
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "a" (0)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: a
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:206) - Matched successfully: char "a" 0
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "r" (0)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: r
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:206) - Matched successfully: char "r" 0
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "
+" (10)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \r
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:221) - Match failure: char "
+" 10
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \n
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.emulator.JediEmulator (JediEmulator.java:103) - Control Sequence (parsed: ESC[3;0J, raw: ESC[3;J)
+[Connector-192.168.83.137] ERROR com.jediterm.terminal.model.JediTerminal (JediTerminal.java:329) - Unsupported erase in display mode:3
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC[3;J
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.emulator.JediEmulator (JediEmulator.java:103) - Control Sequence (parsed: ESC[H, raw: ESC[H)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC[H
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.emulator.JediEmulator (JediEmulator.java:103) - Control Sequence (parsed: ESC[2J, raw: ESC[2J)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC[2J
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC]0;root@localhost:~/测试BEL
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: [root@localhost<S>测试]#<S>
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "l" (0)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: l
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:206) - Matched successfully: char "l" 0
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "s" (0)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: s
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:206) - Matched successfully: char "s" 0
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:132) - Created prediction for "
+" (10)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \r
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:221) - Match failure: char "
+" 10
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \n
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: test.txt
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \r
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \n
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC]0;root@localhost:~/测试BEL
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: [root@localhost<S>测试]#<S>
