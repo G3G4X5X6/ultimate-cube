@@ -1,10 +1,10 @@
 # UltimateShell
 
-[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/G3G4X5X6/G3G4X5X6.github.io.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/G3G4X5X6/G3G4X5X6.github.io/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/G3G4X5X6/G3G4X5X6.github.io.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/G3G4X5X6/G3G4X5X6.github.io/context:javascript)
 [![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
+
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 <br>
 English [简体中文](doc/README_zh-CH.md)
 
