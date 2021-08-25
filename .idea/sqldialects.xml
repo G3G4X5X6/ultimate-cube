@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/main/resources/relation.sql" dialect="SQLite" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/session.sql" dialect="SQLite" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/session_test.sql" dialect="SQLite" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/session_test1.sql" dialect="SQLite" />
+  </component>
+</project>
