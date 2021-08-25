@@ -2896,3 +2896,26 @@
 [Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \n
 [Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC]0;root@localhost:~/测试BEL
 [Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: [root@localhost<S>测试]#<S>
+[AWT-EventQueue-0] DEBUG com.g3g4x5x6.ui.MainFrame (MainFrame.java:163) - 工作目录: C:\Users\Security/.ultimateshell 已存在
+[AWT-EventQueue-0] DEBUG com.g3g4x5x6.ui.panels.dashboard.quickstarter.BasicSettingStarterPane (SessionsManager.java:209) - Row: 192.168.83.137, 192.168.83.137, 22, root, SSH, password
+[AWT-EventQueue-0] INFO com.g3g4x5x6.ui.panels.dashboard.quickstarter.QuickStarterPane (QuickStarterPane.java:37) - 初始化<快速启动>面板完成
+[AWT-EventQueue-0] INFO com.g3g4x5x6.App (App.java:42) - 主线程启动完成
+[AWT-EventQueue-0] DEBUG com.g3g4x5x6.ui.panels.dashboard.quickstarter.BasicSettingStarterPane (BasicSettingStarterPane.java:104) - 快速连接
+[AWT-EventQueue-0] DEBUG com.g3g4x5x6.ui.panels.dashboard.quickstarter.BasicSettingStarterPane (BasicSettingStarterPane.java:180) - 192.168.83.137
+[AWT-EventQueue-0] DEBUG com.g3g4x5x6.ui.panels.dashboard.quickstarter.BasicSettingStarterPane (BasicSettingStarterPane.java:181) - 22
+[AWT-EventQueue-0] DEBUG com.g3g4x5x6.ui.panels.dashboard.quickstarter.BasicSettingStarterPane (BasicSettingStarterPane.java:112) - 12345678
+[AWT-EventQueue-0] DEBUG com.jediterm.terminal.ui.TerminalPanel (TerminalPanel.java:676) - charHeight=20->16, descent=3->2
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: Last<S>login:<S>Wed<S>Aug<S>25<S>09:01:00<S>2021<S>from<S>192.168.83.1
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \r
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \r
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \n
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC]0;root@localhost:~BEL
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.emulator.JediEmulator (JediEmulator.java:103) - Control Sequence (parsed: ESC[?1034h, raw: ESC[?1034h)
+[Connector-192.168.83.137] INFO com.jediterm.terminal.emulator.JediEmulator (JediEmulator.java:996) - Setting mode EightBitInput enabled = true
+[Connector-192.168.83.137] ERROR com.jediterm.terminal.TerminalMode (TerminalMode.java:108) - Mode EightBitInput is not implemented, setting to true
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC[?1034h
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: [root@localhost<S>~]#<S>
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: \r
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.emulator.JediEmulator (JediEmulator.java:103) - Control Sequence (parsed: ESC[K, raw: ESC[K)
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: ESC[K
+[Connector-192.168.83.137] DEBUG com.jediterm.terminal.model.TerminalTypeAheadManager (TerminalTypeAheadManager.java:54) - onTerminalData: [root@localhost<S>~]#<S>
