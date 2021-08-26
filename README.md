@@ -42,6 +42,7 @@ See [the security file](SECURITY.md)!
 ## Install
 
 ```
+# put src/main/resource/ultilmateshell.sqlite into user.home
 ```
 
 ## Usage
