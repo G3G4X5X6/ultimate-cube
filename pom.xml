@@ -143,11 +143,6 @@
             <artifactId>jediterm-ssh</artifactId>
             <version>2.49</version>
         </dependency>
-        <dependency>
-            <groupId>com.g3g4x5x6</groupId>
-            <artifactId>pty4j</artifactId>
-            <version>0.11.3</version>
-        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -166,6 +161,12 @@
             <artifactId>junit</artifactId>
             <version>RELEASE</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.pty4j</groupId>
+            <artifactId>pty4j</artifactId>
+            <version>0.11.4</version>
         </dependency>
 
     </dependencies>
