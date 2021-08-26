@@ -6,7 +6,7 @@
 
     <groupId>com.g3g4x5x6</groupId>
     <artifactId>UltimateShell</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

@@ -16,7 +16,8 @@ public class DbUtil {
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:src/main/resources/ultilmateshell.sqlite");
+        String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
+        return DriverManager.getConnection("jdbc:sqlite:" + dbPath);
     }
 
     public static void close(Connection connection, Statement statement, ResultSet resultSet){
