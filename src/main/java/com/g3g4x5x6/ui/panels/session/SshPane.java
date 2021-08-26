@@ -11,7 +11,7 @@ import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.Utils;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.session.ClientSession;
@@ -22,8 +22,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+
+@Slf4j
 public class SshPane extends BaseSessionPane {
-    static final Logger logger = Logger.getLogger(SshPane.class);
 
     private JTabbedPane mainTabbedPane;
 
@@ -101,7 +102,7 @@ public class SshPane extends BaseSessionPane {
         openButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                logger.debug("快速连接");
+                log.debug("快速连接");
 
                 // TODO 测试连接
                 if (testConnection() == 1) {
@@ -109,7 +110,7 @@ public class SshPane extends BaseSessionPane {
                     port = Integer.parseInt(portField.getText());
                     username = userField.getText();
                     password = String.valueOf(passField.getPassword());
-                    logger.debug(password);
+                    log.debug(password);
 
                     String defaultTitle = hostField.getText().equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-2) + ") " + hostField.getText();
                     mainTabbedPane.insertTab(defaultTitle, null,
@@ -134,7 +135,7 @@ public class SshPane extends BaseSessionPane {
         testButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                logger.debug("测试连接");
+                log.debug("测试连接");
                 switch (testConnection()) {
                     case 0:
                         Utils.warn("连接失败");
@@ -152,8 +153,8 @@ public class SshPane extends BaseSessionPane {
     private int testConnection() {
         host = hostField.getText();
         port = Integer.parseInt(portField.getText());
-        logger.debug(host);
-        logger.debug(port);
+        log.debug(host);
+        log.debug(String.valueOf(port));
 
         HostConfigEntry hostConfigEntry = new HostConfigEntry();
         hostConfigEntry.setHostName(host);
@@ -167,7 +168,7 @@ public class SshPane extends BaseSessionPane {
             try {
                 client.close();
             } catch (IOException e) {
-                logger.debug(e.getMessage());
+                log.debug(e.getMessage());
             }
 
             return 2;
@@ -185,10 +186,10 @@ public class SshPane extends BaseSessionPane {
             try {
                 client.close();
             } catch (IOException e) {
-                logger.debug(e.getMessage());
+                log.debug(e.getMessage());
             }
 
-            logger.debug(ioException.getMessage());
+            log.debug(ioException.getMessage());
         }
         return 0;
     }

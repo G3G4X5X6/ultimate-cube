@@ -1,7 +1,7 @@
 package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +10,8 @@ import java.awt.*;
 /**
  * 仪表板的快速启动面板
  */
+@Slf4j
 public class QuickStarterPane extends JPanel {
-    static final Logger logger = Logger.getLogger(QuickStarterPane.class);
 
     private BorderLayout borderLayout = new BorderLayout();
 
@@ -34,7 +34,7 @@ public class QuickStarterPane extends JPanel {
         this.setLayout(borderLayout);
 
         initQuickPane();
-        logger.info("初始化<快速启动>面板完成");
+        log.info("初始化<快速启动>面板完成");
     }
 
     protected void initQuickPane() {

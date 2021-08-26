@@ -3,19 +3,17 @@ package com.g3g4x5x6.ui.dialog;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+@Slf4j
 public class SessionDialog extends JDialog {
-    final static Logger logger = Logger.getLogger(SessionDialog.class);
 
     private JPanel mainPane;
     private JTabbedPane tabbedPane;
@@ -46,7 +44,7 @@ public class SessionDialog extends JDialog {
         cancelBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logger.debug("取消关闭窗口");
+                log.debug("取消关闭窗口");
                 // 关闭对话框
                 dispose();
             }
@@ -57,7 +55,7 @@ public class SessionDialog extends JDialog {
         okBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logger.debug("确认保存会话");
+                log.debug("确认保存会话");
             }
         });
 
@@ -66,7 +64,7 @@ public class SessionDialog extends JDialog {
         testBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logger.debug("测试连接");
+                log.debug("测试连接");
 
             }
         });
@@ -177,7 +175,7 @@ public class SessionDialog extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     // 获取事件源（即复选框本身）
                     JCheckBox checkBox = (JCheckBox) e.getSource();
-                    logger.debug(checkBox.getText() + " 是否选中: " + checkBox.isSelected());
+                    log.debug(checkBox.getText() + " 是否选中: " + checkBox.isSelected());
 
                     if (checkBox.isSelected()) {
                         keyBtn.setEnabled(true);

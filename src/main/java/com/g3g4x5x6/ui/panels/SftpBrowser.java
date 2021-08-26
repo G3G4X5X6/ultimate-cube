@@ -2,7 +2,7 @@ package com.g3g4x5x6.ui.panels;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 
@@ -18,8 +18,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+
+@Slf4j
 public class SftpBrowser extends JPanel {
-    static final Logger logger = Logger.getLogger(SftpBrowser.class);
 
     private BorderLayout borderLayout;
     private JSplitPane splitPane;
@@ -162,7 +163,7 @@ public class SftpBrowser extends JPanel {
                     try {
                         // TODO 默认上传至用户目录 getDefaultDir()
                         path = fs.getDefaultDir().toRealPath().toString();
-                        logger.debug("默认用户目录：" + path);
+                        log.debug("默认用户目录：" + path);
                         System.out.println(path);
                     } catch (IOException exception) {
                         exception.printStackTrace();
@@ -207,7 +208,7 @@ public class SftpBrowser extends JPanel {
                     // TODO 获取下载文件路径
                     TreePath dstPath = myTree.getSelectionPath();
                     String path = convertTreePathToString(dstPath) + "/" + downloadFileName;
-                    logger.info("下载的文件：" + path);
+                    log.info("下载的文件：" + path);
 
                     Path downloadPath = fs.getPath(path);
 
@@ -224,12 +225,12 @@ public class SftpBrowser extends JPanel {
 
                             // 保存文件路径
                             String destPath = outputFile.getPath() + "/" + downloadFileName;
-                            logger.info("保存的文件：" + destPath);
+                            log.info("保存的文件：" + destPath);
 
                             // TODO 下载, 进度, 下载5M分段
                             new Thread(() -> {
                                 try {
-                                    logger.info("开始下载：" + path);
+                                    log.info("开始下载：" + path);
                                     BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destPath));
 
                                     InputStream inputStream = Files.newInputStream(downloadPath);
@@ -243,7 +244,7 @@ public class SftpBrowser extends JPanel {
                                     outputStream.flush();
                                     outputStream.close();
                                     inputStream.close();
-                                    logger.info("下载完成：" + destPath);
+                                    log.info("下载完成：" + destPath);
                                 } catch (FileNotFoundException fileNotFoundException) {
                                     fileNotFoundException.printStackTrace();
                                 } catch (IOException exception) {

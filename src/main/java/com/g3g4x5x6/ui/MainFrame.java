@@ -2,13 +2,12 @@ package com.g3g4x5x6.ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
 import com.g3g4x5x6.ui.panels.session.AddPane;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.session.NewTabbedPane;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +18,8 @@ import java.io.File;
 /**
  * 主界面
  */
+@Slf4j
 public class MainFrame extends JFrame {
-    static final Logger logger = Logger.getLogger(MainFrame.class);
 
     private int width = Toolkit.getDefaultToolkit().getScreenSize().width;
     private int height = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -50,7 +49,6 @@ public class MainFrame extends JFrame {
 
     private AbstractAction mysessionAction = new AbstractAction("会话管理") {
         public void actionPerformed(final ActionEvent e) {
-            logger.debug("打开《会话管理》");
             String title = "会话管理 " + count;
             count++;
             mainTabbedPane.insertTab(title, null, new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount() - 1);
@@ -157,10 +155,10 @@ public class MainFrame extends JFrame {
     private void createDir(String path) {
         File file = new File(path);
         if (!file.exists() && !file.isDirectory()) {
-            logger.debug("工作目录:" + " 不存在，创建目录：" + path);
+            log.debug("工作目录:" + " 不存在，创建目录：" + path);
             file.mkdir();
         } else {
-            logger.debug("工作目录: " + path + " 已存在");
+            log.debug("工作目录: " + path + " 已存在");
         }
     }
 

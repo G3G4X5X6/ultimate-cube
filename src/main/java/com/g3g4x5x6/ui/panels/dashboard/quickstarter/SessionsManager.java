@@ -5,7 +5,7 @@ import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.ui.dialog.SessionDialog;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.Utils;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -21,9 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 
-
+@Slf4j
 public class SessionsManager extends JPanel {
-    static final Logger logger = Logger.getLogger(BasicSettingStarterPane.class);
 
     private BorderLayout borderLayout;
     private JTabbedPane mainTabbedPane;
@@ -116,7 +115,7 @@ public class SessionsManager extends JPanel {
                     resultSet = statement.executeQuery(sql);
 
                     while (resultSet.next()) {
-                        logger.debug("Row: " + resultSet.getString("session_name") + ", " +
+                        log.debug("Row: " + resultSet.getString("session_name") + ", " +
                                 resultSet.getString("address") + ", " +
                                 resultSet.getString("port") + ", " +
                                 resultSet.getString("username") + ", " +
@@ -136,7 +135,7 @@ public class SessionsManager extends JPanel {
                     resultSet = statement.executeQuery(sql);
                     HashSet<String> tags = new HashSet<>();
                     while (resultSet.next()) {
-                        logger.debug("Tags: " + resultSet.getString("tag"));
+                        log.debug("Tags: " + resultSet.getString("tag"));
                         String tagColumn = resultSet.getString("tag");
                         String currentTag = tagColumn.split("/")[convertPathToTag(path).split("/").length];
                         tags.add(currentTag);
@@ -206,7 +205,7 @@ public class SessionsManager extends JPanel {
             sql = "SELECT * FROM session WHERE id in (SELECT session FROM relation WHERE tag in (SELECT id FROM tag WHERE tag = '会话标签'))";
             resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
-                logger.debug("Row: " + resultSet.getString("session_name") + ", " +
+                log.debug("Row: " + resultSet.getString("session_name") + ", " +
                         resultSet.getString("address") + ", " +
                         resultSet.getString("port") + ", " +
                         resultSet.getString("username") + ", " +
@@ -262,7 +261,7 @@ public class SessionsManager extends JPanel {
         AbstractAction delDirectory = new AbstractAction("删除目录") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logger.debug("目录不为空不能删除，该目录会话数：" + sessionTable.getRowCount());
+                log.debug("目录不为空不能删除，该目录会话数：" + sessionTable.getRowCount());
 
                 // TODO 不为空、包含子目录，无法删除
                 DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
@@ -272,7 +271,7 @@ public class SessionsManager extends JPanel {
                     // TODO 删除目录
                     int bool = JOptionPane.showConfirmDialog(null, "是否确认删除目录", "删除目录", JOptionPane.YES_NO_OPTION);
                     if (bool == 0) {
-                        logger.debug("确认删除目录");
+                        log.debug("确认删除目录");
                         treeModel.removeNodeFromParent(currentTreeNode);
                         // 删除数据库中的标签
                         try {
@@ -296,7 +295,7 @@ public class SessionsManager extends JPanel {
         AbstractAction addSession = new AbstractAction("新增会话") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logger.debug("新增会话");
+                log.debug("新增会话");
                 // TODO 1. 弹窗录取信息、添加会话列表（Table）
                 // TODO 2. 新增会话（数据库）
                 SessionDialog sessionDialog = new SessionDialog(SessionsManager.this);
@@ -320,7 +319,7 @@ public class SessionsManager extends JPanel {
                         String port = (String) tableModel.getValueAt(index, 3);
                         String user = (String) tableModel.getValueAt(index, 4);
                         String auth = (String) tableModel.getValueAt(index, 5);
-                        logger.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
+                        log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
                                 ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
 
                         // 移除出列表

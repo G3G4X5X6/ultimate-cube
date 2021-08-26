@@ -4,10 +4,8 @@ package com.g3g4x5x6.ui.panels.ssh.sftp;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.SftpBrowser;
-import com.g3g4x5x6.utils.Utils;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
-import org.apache.sshd.common.session.SessionHeartbeatController;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 
@@ -21,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+@Slf4j
 public class SftpPane extends JPanel {
-    static final Logger logger = Logger.getLogger(SftpPane.class);
 
     private BorderLayout borderLayout = new BorderLayout();
     private SftpBrowser sftpBrowser;
@@ -59,7 +57,7 @@ public class SftpPane extends JPanel {
             sftpBrowser = new SftpBrowser(fs);
             this.add(sftpBrowser, BorderLayout.CENTER);
         } catch (Exception e) {
-            logger.debug("Constructor: " + e.getMessage());
+            log.debug("Constructor: " + e.getMessage());
             createBasicComponent();
             e.printStackTrace();
         }
@@ -143,7 +141,7 @@ public class SftpPane extends JPanel {
         openButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                logger.debug("快速连接");
+                log.debug("快速连接");
 
                 host = hostField.getText();
                 port = Integer.parseInt(portField.getText());
@@ -157,7 +155,7 @@ public class SftpPane extends JPanel {
                     board.setVisible(false);
                     add(sftpBrowser, BorderLayout.CENTER);
                 } catch (Exception exception) {
-                    logger.debug("Button: " + exception.getMessage());
+                    log.debug("Button: " + exception.getMessage());
                     exception.printStackTrace();
                 }
             }
