@@ -1,6 +1,2 @@
-language: java      
-script:
-  - pwd
-  - cp .travis.settings.xml ~/.m2/settings.xml
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+language: java
 
