@@ -39,10 +39,16 @@ See [the security file](SECURITY.md)!
 - [ ] Support RDP
 - [ ] Support VNC
 
-## Install
+## Build
 
 ```
-# put src/main/resource/ultilmateshell.sqlite into user.home
+# Install dependencies: jediterm-pty-2.49.jar, jediterm-ssh-2.49.jar, terminal-2.49.jar
+mvn install:install-file -Dfile=${absolute_path}j/jediterm-pty-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.49 -Dpackaging=jar
+mvn install:install-file -Dfile=${absolute_path}j/jediterm-ssh-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-ssh -Dversion=2.49 -Dpackaging=jar
+mvn install:install-file -Dfile=${absolute_path}j/terminal-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.49 -Dpackaging=jar
+
+# TODO Init database
+
 ```
 
 ## Usage
