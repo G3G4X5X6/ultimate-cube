@@ -2,10 +2,19 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
+import com.g3g4x5x6.ui.CloseButton;
+import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.dialog.SessionDialog;
+import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
+import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
+import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.SshUtil;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -20,6 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
+
 
 @Slf4j
 public class SessionsManager extends JPanel {
@@ -315,17 +325,17 @@ public class SessionsManager extends JPanel {
                 int bool = JOptionPane.showConfirmDialog(null, "是否确认删除会话", "删除会话", JOptionPane.YES_NO_OPTION);
                 if (bool == 0) {
                     for (int index : indexs) {
-                        String session = (String) tableModel.getValueAt(index, 0);
-                        String protocol = (String) tableModel.getValueAt(index, 1);
-                        String address = (String) tableModel.getValueAt(index, 2);
-                        String port = (String) tableModel.getValueAt(index, 3);
-                        String user = (String) tableModel.getValueAt(index, 4);
-                        String auth = (String) tableModel.getValueAt(index, 5);
-                        log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
+                        String session = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 0);
+                        String protocol = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 1);
+                        String address = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 2);
+                        String port = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 3);
+                        String user = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 4);
+                        String auth = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 5);
+                        log.debug("删除：" + sessionTable.getSelectedRow() + " => session：" + session + ", protocol：" + protocol +
                                 ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
 
                         // 移除出列表
-                        tableModel.removeRow(index);
+                        tableModel.removeRow(sessionTable.getSelectedRow());
 
                         // 删除数据库中的会话
                         try {
@@ -362,6 +372,82 @@ public class SessionsManager extends JPanel {
             }
         };
 
+        AbstractAction openSession = new AbstractAction("打开会话") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
+                int[] indexs = sessionTable.getSelectedRows();
+                for (int index : indexs) {
+                    String session = (String) tableModel.getValueAt(index, 0);
+                    String protocol = (String) tableModel.getValueAt(index, 1);
+                    String address = (String) tableModel.getValueAt(index, 2);
+                    String port = (String) tableModel.getValueAt(index, 3);
+                    String user = (String) tableModel.getValueAt(index, 4);
+                    String auth = (String) tableModel.getValueAt(index, 5);
+                    String pass = "";
+                    log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
+                            ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
+
+                    // 数据库获取账户密码
+                    try {
+                        connection = DbUtil.getConnection();
+                        statement = connection.createStatement();
+
+                        String session_sql = "SELECT password FROM session WHERE " +
+                                "session_name = '" + session + "' AND " +
+                                "protocol = '" + protocol + "' AND " +
+                                "address = '" + address + "' AND " +
+                                "port = '" + port + "' AND " +
+                                "username = '" + user + "' AND " +
+                                "auth_type = '" + auth + "'";
+
+                        ResultSet resultSet = statement.executeQuery(session_sql);
+                        while (resultSet.next()) {
+                            pass = resultSet.getString("password");
+                        }
+
+                        DbUtil.close(connection, statement);
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
+
+                    // 打开会话
+                    if (SshUtil.testConnection(address, port) == 1) {
+
+                        String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-1) + ") " + address;
+                        mainTabbedPane.insertTab(defaultTitle, null,
+                                new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
+                                        address, port, user, pass), // For Sftp
+                                "快速连接", mainTabbedPane.getTabCount()-1);
+
+                        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
+                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
+                    } else {
+                        DialogUtil.warn("连接失败");
+                    }
+                }
+            }
+        };
+
+        AbstractAction testSession = new AbstractAction("测试会话") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String host = "";
+                String port = "";
+                int[] indices = sessionTable.getSelectedRows();
+                for(int index : indices){
+                    host = (String) tableModel.getValueAt(index, 2);
+                    port = (String) tableModel.getValueAt(index, 3);
+
+                    if (SshUtil.testConnection(host, port) == 1) {
+                        DialogUtil.info("连接成功: ssh://" + host + ":" + port);
+                    } else {
+                        DialogUtil.warn("连接失败: ssh://" + host + ":" + port);
+                    }
+                }
+            }
+        };
+
         // 会话树右键菜单
         JPopupMenu treePopupMenu = new JPopupMenu();
         treePopupMenu.add(addDirectory);
@@ -371,11 +457,12 @@ public class SessionsManager extends JPanel {
 
         // 会话列表右键菜单
         JPopupMenu tablePopupMenu = new JPopupMenu();
+        tablePopupMenu.add(openSession);
+        tablePopupMenu.add(testSession);
         tablePopupMenu.add(addSession);
         tablePopupMenu.add(delSession);
         sessionTable.setComponentPopupMenu(tablePopupMenu);
     }
-
 
     private String convertPathToTag(TreePath treePath) {
         StringBuilder tempPath = new StringBuilder("");
