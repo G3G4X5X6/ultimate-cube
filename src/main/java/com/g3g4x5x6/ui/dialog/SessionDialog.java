@@ -4,7 +4,7 @@ import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.utils.DbUtil;
-import com.g3g4x5x6.utils.DialogUtils;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -121,9 +121,9 @@ public class SessionDialog extends JDialog {
                     statement.executeUpdate(sql_relation);
 
                     DbUtil.close(connection, statement);
-                    DialogUtils.info("会话创建成功");
+                    DialogUtil.info("会话创建成功");
                 } catch (SQLException throwables) {
-                    DialogUtils.warn("会话创建失败");
+                    DialogUtil.warn("会话创建失败");
                     throwables.printStackTrace();
                 }
             }

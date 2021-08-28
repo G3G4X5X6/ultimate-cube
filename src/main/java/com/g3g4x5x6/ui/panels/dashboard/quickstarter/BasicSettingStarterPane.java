@@ -8,7 +8,8 @@ import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
 import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
-import com.g3g4x5x6.utils.DialogUtils;
+import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.SshUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
@@ -105,7 +106,7 @@ public class BasicSettingStarterPane extends JPanel {
                 log.debug("快速连接");
 
                 // TODO 测试连接
-                if (testConnection() == 1) {
+                if (SshUtil.testConnection(hostField.getText(), portField.getText()) == 1) {
                     host = hostField.getText();
                     port = Integer.parseInt(portField.getText());
                     username = userField.getText();
@@ -125,7 +126,7 @@ public class BasicSettingStarterPane extends JPanel {
                     mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
                 } else {
-                    DialogUtils.warn("连接失败");
+                    DialogUtil.warn("连接失败");
                 }
             }
         });
@@ -134,15 +135,15 @@ public class BasicSettingStarterPane extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 log.debug("测试连接");
-                switch (testConnection()) {
+                switch (SshUtil.testConnection(hostField.getText(), portField.getText())) {
                     case 0:
-                        DialogUtils.warn("连接失败");
+                        DialogUtil.warn("连接失败");
                         break;
                     case 1:
-                        DialogUtils.info("连接成功");
+                        DialogUtil.info("连接成功");
                         break;
                     case 2:
-                        DialogUtils.info("请输入主机地址！！！");
+                        DialogUtil.info("请输入主机地址！！！");
                 }
             }
         });
@@ -174,43 +175,4 @@ public class BasicSettingStarterPane extends JPanel {
 
     // TODO 获取 sFTP channel
 
-
-    private int testConnection() {
-        host = hostField.getText();
-        port = Integer.parseInt(portField.getText());
-        log.debug(host);
-        log.debug(String.valueOf(port));
-
-        HostConfigEntry hostConfigEntry = new HostConfigEntry();
-        hostConfigEntry.setHostName(host);
-        hostConfigEntry.setHost(host);
-        hostConfigEntry.setPort(port);
-
-        SshClient client = SshClient.setUpDefaultClient();
-        client.start();
-
-        if (host.equals("")) {
-            try {
-                client.close();
-            } catch (IOException e) {
-                log.debug(e.getMessage());
-            }
-            return 2;
-        }
-
-        try {
-            ClientSession session = client.connect(hostConfigEntry).verify(5000).getClientSession();
-            session.close();
-            client.close();
-            return 1;
-        } catch (IOException ioException) {
-            try {
-                client.close();
-            } catch (IOException e) {
-                log.debug(e.getMessage());
-            }
-            log.debug(ioException.getMessage());
-        }
-        return 0;
-    }
 }

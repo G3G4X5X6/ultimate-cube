@@ -4,7 +4,7 @@ import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.ui.dialog.SessionDialog;
 import com.g3g4x5x6.utils.DbUtil;
-import com.g3g4x5x6.utils.DialogUtils;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -266,7 +266,7 @@ public class SessionsManager extends JPanel {
                 // TODO 不为空、包含子目录，无法删除
                 DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
                 if (!currentTreeNode.isLeaf() || sessionTable.getRowCount() != 0) {
-                    DialogUtils.warn("不为空、包含子目录，无法删除");
+                    DialogUtil.warn("不为空、包含子目录，无法删除");
                 } else {
                     // TODO 删除目录
                     int bool = JOptionPane.showConfirmDialog(null, "是否确认删除目录", "删除目录", JOptionPane.YES_NO_OPTION);
