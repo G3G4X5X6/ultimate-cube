@@ -13,9 +13,11 @@
 English [简体中文](doc/README_zh-CH.md)
 
 <br>
-UltimateShell is a free and open source remote server management tool.
+UltimateShell is a fully open-source, ultimate toolbox for remote management server.
 
-TODO: Fill out this long description.
+UltimateShell is your ultimate toolbox for remote management server.
+Its goal is to provide a large number of customized features for penetration test engineers, programmers, webmasters, IT administrators, and almost all users who need to handle remote work in a simpler way.
+And, it also supports multiple operating system platforms and theme skin switching based on FlatLaf (not implemented)
 
 ## Table of Contents
 
@@ -60,10 +62,14 @@ mvn install:install-file -Dfile=${absolute_path}j/terminal-2.49.jar -DgroupId=co
 # JDK 11+
 java -jar UltimateShell-${version}-SNAPSHOT-jar-with-dependencies.jar
 ```
+See [Project wiki](https://github.com/G3G4X5X6/ultimateshell/wiki)
 
 ## Links
 - JediTerm: [https://github.com/JetBrains/jediterm](https://github.com/JetBrains/jediterm)
 - FlatLaf: [https://github.com/JFormDesigner/FlatLaf](https://github.com/JFormDesigner/FlatLaf)
+- Apache MINA SSHD: [https://github.com/apache/mina-sshd](https://github.com/apache/mina-sshd)
+- RSyntaxTextArea: [https://github.com/bobbylight/RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea)
+- More...
 
 
 ## Maintainers
