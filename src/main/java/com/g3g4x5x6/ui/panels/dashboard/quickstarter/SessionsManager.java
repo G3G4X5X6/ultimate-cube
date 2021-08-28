@@ -4,7 +4,7 @@ import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.ui.dialog.SessionDialog;
 import com.g3g4x5x6.utils.DbUtil;
-import com.g3g4x5x6.utils.Utils;
+import com.g3g4x5x6.utils.DialogUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -266,7 +266,7 @@ public class SessionsManager extends JPanel {
                 // TODO 不为空、包含子目录，无法删除
                 DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
                 if (!currentTreeNode.isLeaf() || sessionTable.getRowCount() != 0) {
-                    Utils.warn("不为空、包含子目录，无法删除");
+                    DialogUtils.warn("不为空、包含子目录，无法删除");
                 } else {
                     // TODO 删除目录
                     int bool = JOptionPane.showConfirmDialog(null, "是否确认删除目录", "删除目录", JOptionPane.YES_NO_OPTION);
@@ -296,9 +296,11 @@ public class SessionsManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("新增会话");
-                // TODO 1. 弹窗录取信息、添加会话列表（Table）
-                // TODO 2. 新增会话（数据库）
-                SessionDialog sessionDialog = new SessionDialog(SessionsManager.this);
+                // TODO 1. 获取当前标签
+                String currentTag = convertPathToTag(sessionTree.getSelectionPath());
+
+                // TODO 2. 弹窗录取信息、添加会话列表（Table）、新增会话（数据库）
+                SessionDialog sessionDialog = new SessionDialog(SessionsManager.this, currentTag);
 
                 // TODO 3. 刷新列表
 

@@ -8,8 +8,7 @@ import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
 import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
-import com.g3g4x5x6.utils.Utils;
-import com.jcraft.jsch.Logger;
+import com.g3g4x5x6.utils.DialogUtils;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
@@ -126,7 +125,7 @@ public class BasicSettingStarterPane extends JPanel {
                     mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
                 } else {
-                    Utils.warn("连接失败");
+                    DialogUtils.warn("连接失败");
                 }
             }
         });
@@ -137,13 +136,13 @@ public class BasicSettingStarterPane extends JPanel {
                 log.debug("测试连接");
                 switch (testConnection()) {
                     case 0:
-                        Utils.warn("连接失败");
+                        DialogUtils.warn("连接失败");
                         break;
                     case 1:
-                        Utils.info("连接成功");
+                        DialogUtils.info("连接成功");
                         break;
                     case 2:
-                        Utils.info("请输入主机地址！！！");
+                        DialogUtils.info("请输入主机地址！！！");
                 }
             }
         });

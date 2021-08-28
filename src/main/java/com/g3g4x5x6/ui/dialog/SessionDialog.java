@@ -3,6 +3,8 @@ package com.g3g4x5x6.ui.dialog;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
+import com.g3g4x5x6.utils.DbUtil;
+import com.g3g4x5x6.utils.DialogUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -11,6 +13,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 public class SessionDialog extends JDialog {
@@ -24,11 +31,18 @@ public class SessionDialog extends JDialog {
     private JFormattedTextField userField;
     private JPasswordField passField;
 
-    public SessionDialog(Component parentComponent) {
+    private JCheckBox jCheckBox;
+    private JLabel keyLabel;
+
+    private String currentTag;
+
+
+    public SessionDialog(Component parentComponent, String currentTag) {
         this.setSize(750, 550);
         this.setResizable(false);
         this.setLocationRelativeTo(parentComponent);
         this.setModal(true);
+        this.currentTag = currentTag;
 
         // 创建对话框的内容面板
         mainPane = new JPanel();
@@ -56,6 +70,62 @@ public class SessionDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("确认保存会话");
+                log.debug("当前系统时间戳：" + new Date().getTime());
+
+                Long currentTime = new Date().getTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String formatTime = simpleDateFormat.format(new Date(currentTime));
+
+                String host = hostField.getText();
+                String port = portField.getText();
+                String user = userField.getText();
+                String pass = String.valueOf(passField.getPassword());
+                String privateKey = "";
+                String auth = "password";
+                if (jCheckBox.isSelected()) {
+                    auth = "key";
+                    privateKey = keyLabel.getText();
+                }
+                String protocol = "SSH";
+                String session = host;
+
+                // TODO 数据库插入数据
+                try {
+                    Connection connection = DbUtil.getConnection();
+                    Statement statement = connection.createStatement();
+                    // 更新 session 表
+                    String sql_session = "INSERT INTO session VALUES (null , " +    // id, 自增
+                            "'" + session + "', " +     // session name
+                            "'" + protocol + "', " +    // protocol
+                            "'" + host + "', " +        // host
+                            "'" + port + "', " +        // port
+                            "'" + auth + "', " +        // auth
+                            "'" + user + "', " +        // user
+                            "'" + pass + "', " +        // pass
+                            "'" + privateKey + "', " +  // private key
+                            "'" + currentTime + "', " + // create time
+                            "'" + currentTime + "', " + // access time
+                            "'" + currentTime + "', " + // modified time
+                            "'该会话创建于：" + formatTime + "');";  // comment
+                    log.debug("sql_session: " + sql_session);
+                    statement.executeUpdate(sql_session);
+
+                    // 更新 relation 表
+                    String sql_relation = "INSERT INTO relation VALUES (null, " +
+                                "(SELECT id FROM session WHERE create_time = '" + currentTime + "') , " +
+                                "(SELECT id FROM tag WHERE tag = '" +
+                                currentTag +
+                                "')" +
+                            ");";
+                    log.debug("sql_relation: " + sql_relation);
+                    statement.executeUpdate(sql_relation);
+
+                    DbUtil.close(connection, statement);
+                    DialogUtils.info("会话创建成功");
+                } catch (SQLException throwables) {
+                    DialogUtils.warn("会话创建失败");
+                    throwables.printStackTrace();
+                }
             }
         });
 
@@ -143,7 +213,7 @@ public class SessionDialog extends JDialog {
             keyBtn.setIcon(new FlatTreeClosedIcon());
             keyBtn.setEnabled(false);
 
-            JLabel keyLabel = new JLabel("点击按钮选择私钥");
+            keyLabel = new JLabel("点击按钮选择私钥");
             keyBtn.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -169,7 +239,7 @@ public class SessionDialog extends JDialog {
                 }
             });
 
-            JCheckBox jCheckBox = new JCheckBox("启用私钥");
+            jCheckBox = new JCheckBox("启用私钥");
             jCheckBox.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
