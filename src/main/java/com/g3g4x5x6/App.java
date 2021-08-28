@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.jdbc.ScriptRunner;
 
 import javax.swing.*;
 import java.nio.file.Files;
@@ -62,7 +61,6 @@ public class App {
             // TODO 创建数据库
             try {
                 Connection connection = DbUtil.getConnection();
-                ScriptRunner runner = new ScriptRunner(connection);
 
                 Statement statement = connection.createStatement();
                 int effectSession = statement.executeUpdate("CREATE TABLE \"session\" (\n" +
