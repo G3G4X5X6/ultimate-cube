@@ -1,6 +1,7 @@
 package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,11 @@ public class App {
         // TODO 配置主题皮肤
         try {
             UIManager.setLookAndFeel( new FlatLightLaf() );
-        } catch( Exception ex ) {
+//            UIManager.setLookAndFeel(new FlatDarkPurpleIJTheme());
+//            UIManager.setLookAndFeel(new com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightIJTheme());
+//            Class themeClass = App.class.getClassLoader().loadClass("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme");
+//            UIManager.setLookAndFeel((LookAndFeel) themeClass.getConstructor().newInstance());
+        } catch (Exception ex) {
             log.error("Failed to initialize LaF");
         }
 
@@ -47,16 +52,16 @@ public class App {
         log.info("主线程启动完成");
     }
 
-    public static void checkEnv(){
+    public static void checkEnv() {
         // TODO 检查程序工作目录
 
         // TODO 检查用户配置
     }
 
-    public static void createDatabase(){
+    public static void createDatabase() {
         // TODO 后续切换为 H2 数据库
         String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
-        if (!Files.exists(Path.of(dbPath))){
+        if (!Files.exists(Path.of(dbPath))) {
             log.debug("数据库不存在，开始创建数据库");
             // TODO 创建数据库
             try {
@@ -102,7 +107,7 @@ public class App {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             log.debug("找到数据库：" + dbPath);
         }
     }

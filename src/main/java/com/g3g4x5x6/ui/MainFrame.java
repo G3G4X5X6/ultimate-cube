@@ -2,11 +2,14 @@ package com.g3g4x5x6.ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
+import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
+import com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
 import com.g3g4x5x6.ui.panels.session.AddPane;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.session.NewTabbedPane;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -64,6 +67,14 @@ public class MainFrame extends JFrame {
         }
     };
 
+    private AbstractAction themeAction = new AbstractAction("切换主题") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // TODO 主题切换
+            FlatDarkPurpleIJTheme.setup();
+        }
+    };
+
     private AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
         public void actionPerformed(final ActionEvent e) {
             about.setVisible(true);
@@ -106,6 +117,8 @@ public class MainFrame extends JFrame {
         // TODO 添加菜单动作
         terminalMenu.add(myOpenAction);
         terminalMenu.add(mysessionAction);
+
+        optionMenu.add(themeAction);
 
         helpMenu.add(myAboutAction);
 

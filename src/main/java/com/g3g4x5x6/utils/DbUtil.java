@@ -1,7 +1,11 @@
 package com.g3g4x5x6.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.*;
 
+
+@Slf4j
 public class DbUtil {
     private DbUtil() {
 
@@ -20,8 +24,28 @@ public class DbUtil {
         return DriverManager.getConnection("jdbc:sqlite:" + dbPath);
     }
 
-    public static void close(Connection connection, Statement statement, ResultSet resultSet){
-        if (resultSet != null){
+    public static Boolean updateAccessTime(long time, String where) {
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+
+            String sql = "UPDATE session SET access_time='" + time + "' WHERE " + where;
+
+            int result = statement.executeUpdate(sql);
+            log.debug("更新访问时间返回码：" + result);
+            if (result >= 1) {
+                return true;
+            }
+            DbUtil.close(connection, statement);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public static void close(Connection connection, Statement statement, ResultSet resultSet) {
+        if (resultSet != null) {
             try {
                 resultSet.close();
             } catch (SQLException throwables) {
@@ -29,7 +53,7 @@ public class DbUtil {
             }
         }
 
-        if (statement != null){
+        if (statement != null) {
             try {
                 statement.close();
             } catch (SQLException throwables) {
@@ -37,7 +61,7 @@ public class DbUtil {
             }
         }
 
-        if (connection != null){
+        if (connection != null) {
             try {
                 connection.close();
             } catch (SQLException throwables) {
@@ -48,7 +72,7 @@ public class DbUtil {
     }
 
     public static void close(Connection connection, Statement statement) {
-        if (statement != null){
+        if (statement != null) {
             try {
                 statement.close();
             } catch (SQLException throwables) {
@@ -56,7 +80,7 @@ public class DbUtil {
             }
         }
 
-        if (connection != null){
+        if (connection != null) {
             try {
                 connection.close();
             } catch (SQLException throwables) {

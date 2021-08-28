@@ -3,8 +3,10 @@ package com.g3g4x5x6.ui.panels;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.sshd.client.SshClient;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
+import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -15,8 +17,11 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -32,7 +37,6 @@ public class SftpBrowser extends JPanel {
     private DefaultTableModel tableModel;
     private String[] columns;
 
-    private SftpFileSystem fs;
     private JDialog dialog;
     private JLabel msg;
 
@@ -43,6 +47,13 @@ public class SftpBrowser extends JPanel {
     private AbstractAction deleteAction;
     private AbstractAction openAction;
 
+    private SshClient client;
+    private SftpFileSystem fs;
+    private String host;
+    private int port;
+    private String user;
+    private String pass;
+
     public SftpBrowser(SftpFileSystem sftpFileSystem) {
         borderLayout = new BorderLayout();
         this.setLayout(borderLayout);
@@ -51,6 +62,41 @@ public class SftpBrowser extends JPanel {
 
         initPane();
         initPopupMenu();
+    }
+
+    public SftpBrowser(String host, int port, String user, String pass) {
+        borderLayout = new BorderLayout();
+        this.setLayout(borderLayout);
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.pass = pass;
+
+        createSftpFileSystem();
+
+        initPane();
+        initPopupMenu();
+    }
+
+    private void createSftpFileSystem() {
+        client = SshClient.setUpDefaultClient();
+        // TODO 配置 SshClient
+        // override any default configuration...
+//        client.setSomeConfiguration(...);
+//        client.setOtherConfiguration(...);
+        client.start();
+
+        SftpFileSystemProvider provider = new SftpFileSystemProvider(client);
+        URI uri = SftpFileSystemProvider.createFileSystemURI(host, port, user, pass);
+        try {
+            // TODO 配置 SftpFileSystem
+            Map<String, Object> params = new HashMap<>();
+//            params.put("param1", value1);
+//            params.put("param2", value2);
+            this.fs = provider.newFileSystem(uri, params);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     private void initPane() {
@@ -151,7 +197,7 @@ public class SftpBrowser extends JPanel {
         uploadAction = new AbstractAction("上传") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("上传文件...");
+                log.debug("上传文件...");
 
                 // TODO 获取上传目标路径
                 TreePath dstPath = myTree.getSelectionPath();
@@ -164,7 +210,7 @@ public class SftpBrowser extends JPanel {
                         // TODO 默认上传至用户目录 getDefaultDir()
                         path = fs.getDefaultDir().toRealPath().toString();
                         log.debug("默认用户目录：" + path);
-                        System.out.println(path);
+                        log.debug(path);
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
@@ -177,7 +223,7 @@ public class SftpBrowser extends JPanel {
                 int value = chooser.showOpenDialog(SftpBrowser.this);
                 if (value == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
-                    System.out.println(file.getAbsolutePath());
+                    log.debug(file.getAbsolutePath());
 
                     // TODO 上传, 进度, 上传5M分段
                     try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
@@ -196,7 +242,7 @@ public class SftpBrowser extends JPanel {
         downloadAction = new AbstractAction("下载") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("下载文件...");
+                log.debug("下载文件...");
 
                 if (myTree.isSelectionEmpty() || myTable.getSelectedRow() < 1) {
                     msg.setText("尚未选择文件或目录");
@@ -221,7 +267,7 @@ public class SftpBrowser extends JPanel {
                         int value = chooser.showOpenDialog(SftpBrowser.this);
                         if (value == JFileChooser.APPROVE_OPTION) {
                             File outputFile = chooser.getSelectedFile();
-                            System.out.println(outputFile.getAbsolutePath());
+                            log.debug(outputFile.getAbsolutePath());
 
                             // 保存文件路径
                             String destPath = outputFile.getPath() + "/" + downloadFileName;
@@ -263,14 +309,14 @@ public class SftpBrowser extends JPanel {
         deleteAction = new AbstractAction("删除") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("删除文件...");
+                log.debug("删除文件...");
             }
         };
 
         openAction = new AbstractAction("打开") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("打开文件...");
+                log.debug("打开文件...");
             }
         };
         popMenu = new JPopupMenu();
@@ -298,22 +344,19 @@ public class SftpBrowser extends JPanel {
 
     private String convertTreePathToString(TreePath treePath) {
         StringBuilder tempPath = new StringBuilder("");
-
         if (treePath == null) {
             return "";
         }
+        
         String path = treePath.toString();
         String[] paths = path.substring(1, path.length() - 1).split(",");
-
         for (String temp : paths) {
             temp = temp.strip();
             tempPath.append(temp);
             tempPath.append("/");
         }
-
         tempPath.deleteCharAt(tempPath.length() - 1);
-
-        System.out.println(tempPath);
+        
         return tempPath.toString();
     }
 
@@ -322,20 +365,20 @@ public class SftpBrowser extends JPanel {
         String[] temp = new String[6];
         temp[0] = entry.getFilename();
         temp[1] = entry.getLongFilename().split("\\s+")[0];
-        System.out.println(entry.getLongFilename().split("\\s+"));
+        log.debug(String.valueOf(entry.getLongFilename().split("\\s+")));
 
         // 大小单位转换
         String humanSize = "";
         long size = entry.getAttributes().getSize();
-        if (size >= 1024 && size < 1024*1024){ // KB
+        if (size >= 1024 && size < 1024 * 1024) { // KB
             double d = size / 1024;
-            humanSize = String .format("%.2f", d) + "KB";
-        }else if (size >= 1024*1024 && size < 1024*1024*1024){   // MB
+            humanSize = String.format("%.2f", d) + "KB";
+        } else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) {   // MB
             double d = size / 1024 / 1024;
-            humanSize = String .format("%.2f", d) + "MB";
-        }else if (size >= 1024*1024*1024){  // GB
+            humanSize = String.format("%.2f", d) + "MB";
+        } else if (size >= 1024 * 1024 * 1024) {  // GB
             double d = size / 1024 / 1024 / 1024;
-            humanSize = String .format("%.2f", d) + "GB";
+            humanSize = String.format("%.2f", d) + "GB";
         }
         temp[2] = humanSize;
         temp[3] = String.valueOf(entry.getAttributes().getType());
@@ -364,12 +407,12 @@ public class SftpBrowser extends JPanel {
             this.addTreeExpansionListener(new TreeExpansionListener() {
                 @Override
                 public void treeExpanded(TreeExpansionEvent event) {
-                    System.out.println("展开的节点: " + event.getPath());
+                    log.debug("展开的节点: " + event.getPath());
                 }
 
                 @Override
                 public void treeCollapsed(TreeExpansionEvent event) {
-                    System.out.println("折叠的节点: " + event.getPath());
+                    log.debug("折叠的节点: " + event.getPath());
                 }
             });
 
@@ -379,12 +422,12 @@ public class SftpBrowser extends JPanel {
             this.addTreeWillExpandListener(new TreeWillExpandListener() {
                 @Override
                 public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-                    System.out.println("展开的节点: " + event.getPath());
+                    log.debug("展开的节点: " + event.getPath());
                 }
 
                 @Override
                 public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-                    System.out.println("折叠的节点: " + event.getPath());
+                    log.debug("折叠的节点: " + event.getPath());
                 }
             });
 
@@ -394,6 +437,13 @@ public class SftpBrowser extends JPanel {
             this.addTreeSelectionListener(new TreeSelectionListener() {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
+                    // TODO Sftp 存活检测
+                    if (fs.getClientSession().isClosed()) {
+                        log.debug("================== fs.getClientSession().isClosed(), reopen now =====================");
+                        createSftpFileSystem();
+                    } else {
+                        log.debug("================== client is open =====================");
+                    }
 
                     // TODO 清空表中旧数据
                     tableModel.setRowCount(0);
@@ -402,11 +452,11 @@ public class SftpBrowser extends JPanel {
                     TreePath path = e.getPath();
 
                     DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
-                    System.out.println(path.toString());
+                    log.debug(path.toString());
 
                     DefaultMutableTreeNode temp = null;
                     for (SftpClient.DirEntry entry : getDirEntry(convertTreePathToString(path))) {
-                        System.out.println(entry.getLongFilename());
+//                        log.debug(entry.getLongFilename());
                         if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
                             continue;
 
@@ -428,22 +478,22 @@ public class SftpBrowser extends JPanel {
             this.getModel().addTreeModelListener(new TreeModelListener() {
                 @Override
                 public void treeNodesChanged(TreeModelEvent e) {
-                    System.out.println("节点改变: " + e.getTreePath());
+                    log.debug("节点改变: " + e.getTreePath());
                 }
 
                 @Override
                 public void treeNodesInserted(TreeModelEvent e) {
-                    System.out.println("节点插入: " + e.getTreePath());
+                    log.debug("节点插入: " + e.getTreePath());
                 }
 
                 @Override
                 public void treeNodesRemoved(TreeModelEvent e) {
-                    System.out.println("节点移除: " + e.getTreePath());
+                    log.debug("节点移除: " + e.getTreePath());
                 }
 
                 @Override
                 public void treeStructureChanged(TreeModelEvent e) {
-                    System.out.println("结构改变: " + e.getTreePath());
+                    log.debug("结构改变: " + e.getTreePath());
                 }
             });
         }

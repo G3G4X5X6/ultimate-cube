@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.HashSet;
 
 
@@ -410,6 +411,16 @@ public class SessionsManager extends JPanel {
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
+
+                    // 更新最近会话访问时间
+                    DbUtil.updateAccessTime(new Date().getTime(), "" +
+                            "session_name = '" + session + "' AND " +
+                            "protocol = '" + protocol + "' AND " +
+                            "address = '" + address + "' AND " +
+                            "port = '" + port + "' AND " +
+                            "username = '" + user + "' AND " +
+                            "auth_type = '" + auth + "'"
+                    );
 
                     // 打开会话
                     if (SshUtil.testConnection(address, port) == 1) {

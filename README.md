@@ -39,6 +39,7 @@ See [the security file](SECURITY.md)!
 - [x] Support multi-platform 
 - [x] Support sessions manager
 - [x] Support local terminal
+- [x] Support theme skins
 - [ ] Support serial terminal
 - [ ] Support Telnet
 - [ ] Support FTP

@@ -6,6 +6,7 @@ import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.SftpBrowser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.session.SessionFactory;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 
@@ -53,8 +54,9 @@ public class SftpPane extends JPanel {
         this.password = passField;
 
         try {
-            this.fs = createFileSystem();
-            sftpBrowser = new SftpBrowser(fs);
+//            this.fs = createFileSystem();
+//            sftpBrowser = new SftpBrowser(fs);
+            sftpBrowser = new SftpBrowser(this.host, this.port, this.username, this.password);
             this.add(sftpBrowser, BorderLayout.CENTER);
         } catch (Exception e) {
             log.debug("Constructor: " + e.getMessage());
@@ -71,6 +73,7 @@ public class SftpPane extends JPanel {
 //        client.setSomeConfiguration(...);
 //        client.setOtherConfiguration(...);
         client.start();
+
         provider = new SftpFileSystemProvider(client);
         uri = SftpFileSystemProvider.createFileSystemURI(this.host, this.port, this.username, this.password);
         try {
