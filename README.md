@@ -14,7 +14,7 @@ English [简体中文](doc/README_zh-CH.md)
 
 <br>
 UltimateShell is a fully open-source, ultimate toolbox for remote management server.
-
+<br><br>
 UltimateShell is your ultimate toolbox for remote management server.
 Its goal is to provide a large number of customized features for penetration test engineers, programmers, webmasters, IT administrators, and almost all users who need to handle remote work in a simpler way.
 And, it also supports multiple operating system platforms and theme skin switching based on FlatLaf (not implemented)
