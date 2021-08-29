@@ -29,7 +29,7 @@ public class App {
     }
 
     public static void createGUI() {
-        // TODO 配置主题皮肤
+        // 配置主题皮肤
         try {
             if (ConfigUtil.isEnableTheme()){
                 Class themeClass = App.class.getClassLoader().loadClass(ConfigUtil.getThemeClass());
@@ -41,7 +41,7 @@ public class App {
             log.error("Failed to initialize LaF");
         }
 
-        // TODO 启动主界面
+        // 启动主界面
         MainFrame mainFrame = new MainFrame();
         mainFrame.pack();
         mainFrame.setVisible(true);

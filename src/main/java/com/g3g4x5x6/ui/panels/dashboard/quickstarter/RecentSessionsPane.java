@@ -109,7 +109,7 @@ public class RecentSessionsPane extends JPanel {
                 });
             }
 
-            DbUtil.close(connection, statement);
+            DbUtil.close(statement);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -153,7 +153,7 @@ public class RecentSessionsPane extends JPanel {
                             pass = resultSet.getString("password");
                         }
 
-                        DbUtil.close(connection, statement, resultSet);
+                        DbUtil.close(statement, resultSet);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }

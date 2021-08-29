@@ -24,7 +24,7 @@ public class ConfigUtil {
                     return false;
                 }
             }
-            DbUtil.close(connection, statement, resultSet);
+            DbUtil.close(statement, resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -40,7 +40,7 @@ public class ConfigUtil {
             while (resultSet.next()) {
                 themeClass = resultSet.getString("class");
             }
-            DbUtil.close(connection, statement, resultSet);
+            DbUtil.close(statement, resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -52,7 +52,7 @@ public class ConfigUtil {
             Connection connection = DbUtil.getConnection();
             Statement statement = connection.createStatement();
             statement.executeUpdate("UPDATE settings SET value='" + enable + "' WHERE key = 'theme_enable'");
-            DbUtil.close(connection, statement);
+            DbUtil.close(statement);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return false;
@@ -66,16 +66,12 @@ public class ConfigUtil {
             Connection connection = DbUtil.getConnection();
             Statement statement = connection.createStatement();
             statement.executeUpdate("UPDATE settings SET value='" + theme + "' WHERE key = 'theme'");
-            DbUtil.close(connection, statement);
+            DbUtil.close(statement);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return false;
         }
         log.debug("updateThemeEnableOption： " + theme);
         return true;
-    }
-
-    public static void main(String[] args) {
-        ConfigUtil.updateThemeEnableOption("1");
     }
 }

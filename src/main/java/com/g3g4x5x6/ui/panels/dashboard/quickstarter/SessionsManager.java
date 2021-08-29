@@ -150,7 +150,7 @@ public class SessionsManager extends JPanel {
                         temp = new DefaultMutableTreeNode(tag);
                         currentTreeNode.add(temp);
                     }
-                    DbUtil.close(connection, statement, resultSet);
+                    DbUtil.close(statement, resultSet);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -226,7 +226,7 @@ public class SessionsManager extends JPanel {
                         resultSet.getString("auth_type"),
                 });
             }
-            DbUtil.close(connection, statement, resultSet);
+            DbUtil.close(statement, resultSet);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -257,7 +257,7 @@ public class SessionsManager extends JPanel {
                     sql = "INSERT INTO tag VALUES(NULL, '" + tag + "')";
                     statement.executeUpdate(sql);
 
-                    DbUtil.close(connection, statement);
+                    DbUtil.close(statement);
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -289,7 +289,7 @@ public class SessionsManager extends JPanel {
                             sql = "DELETE FROM tag WHERE tag = '" + currentTag + "'";
                             statement.executeUpdate(sql);
 
-                            DbUtil.close(connection, statement);
+                            DbUtil.close(statement);
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
@@ -359,7 +359,7 @@ public class SessionsManager extends JPanel {
                             statement.executeUpdate(tag_sql);
                             statement.executeUpdate(session_sql);
 
-                            DbUtil.close(connection, statement);
+                            DbUtil.close(statement);
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
@@ -402,7 +402,7 @@ public class SessionsManager extends JPanel {
                             pass = resultSet.getString("password");
                         }
 
-                        DbUtil.close(connection, statement);
+                        DbUtil.close(statement);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }

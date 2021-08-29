@@ -120,7 +120,7 @@ public class SessionDialog extends JDialog {
                     log.debug("sql_relation: " + sql_relation);
                     statement.executeUpdate(sql_relation);
 
-                    DbUtil.close(connection, statement);
+                    DbUtil.close(statement);
                     DialogUtil.info("会话创建成功");
                 } catch (SQLException throwables) {
                     DialogUtil.warn("会话创建失败");

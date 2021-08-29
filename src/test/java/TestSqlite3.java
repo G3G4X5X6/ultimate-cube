@@ -8,7 +8,6 @@ import java.sql.Statement;
 public class TestSqlite3 {
     private static String Drivde="org.sqlite.JDBC";
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
         try {
             Connection connection = DbUtil.getConnection();
             Statement statement=connection.createStatement();   //创建连接对象，是Java的一个操作数据库的重要接口
@@ -24,7 +23,6 @@ public class TestSqlite3 {
             rSet.close();//关闭数据集
             connection.close();//关闭数据库连接
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

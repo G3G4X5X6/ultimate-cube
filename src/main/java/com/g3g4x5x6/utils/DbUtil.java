@@ -37,7 +37,7 @@ public class DbUtil {
         String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
         if (!Files.exists(Path.of(dbPath))) {
             log.debug("数据库不存在，开始创建数据库");
-            // TODO 创建数据库
+            // 创建数据库
             try {
                 Connection connection = DbUtil.getConnection();
 
@@ -181,7 +181,7 @@ public class DbUtil {
             if (result >= 1) {
                 return true;
             }
-            DbUtil.close(connection, statement);
+            DbUtil.close(statement);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return false;
@@ -189,7 +189,7 @@ public class DbUtil {
         return true;
     }
 
-    public static void close(Connection connection, Statement statement, ResultSet resultSet) {
+    public static void close(Statement statement, ResultSet resultSet) {
         if (resultSet != null) {
             try {
                 resultSet.close();
@@ -205,10 +205,9 @@ public class DbUtil {
                 throwables.printStackTrace();
             }
         }
-
     }
 
-    public static void close(Connection connection, Statement statement) {
+    public static void close(Statement statement) {
         if (statement != null) {
             try {
                 statement.close();

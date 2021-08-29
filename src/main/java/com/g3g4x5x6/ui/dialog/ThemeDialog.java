@@ -101,7 +101,7 @@ public class ThemeDialog extends JDialog {
                 });
                 row = tableModel.getRowCount() - 1;
             }
-            DbUtil.close(connection, statement, resultSet);
+            DbUtil.close(statement, resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -155,7 +155,7 @@ public class ThemeDialog extends JDialog {
             while (resultSet.next()) {
                 themeName = resultSet.getString("name");
             }
-            DbUtil.close(connection, statement, resultSet);
+            DbUtil.close(statement, resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
