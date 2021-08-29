@@ -9,6 +9,7 @@ import java.sql.*;
 
 @Slf4j
 public class DbUtil {
+    private static Connection connection = null;
     private DbUtil() {
 
     }
@@ -23,7 +24,12 @@ public class DbUtil {
 
     public static Connection getConnection() throws SQLException {
         String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
-        return DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+        if (connection != null){
+            return connection;
+        }else {
+            connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+        }
+        return connection;
     }
 
     public static void createDatabase() {
@@ -200,28 +206,12 @@ public class DbUtil {
             }
         }
 
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-
     }
 
     public static void close(Connection connection, Statement statement) {
         if (statement != null) {
             try {
                 statement.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-
-        if (connection != null) {
-            try {
-                connection.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

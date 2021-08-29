@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.dialog;
 
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -68,7 +69,24 @@ public class ThemeDialog extends JDialog {
         };
         tableModel.setColumnIdentifiers(columnNames);
 
+        initTable();
+
+        themeTable.getColumnModel().getColumn(0).setMaxWidth(50);
+        themeTable.getColumnModel().getColumn(0).setMinWidth(50);
+
+        JScrollPane tableScroll = new JScrollPane(themeTable);
+        tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+        themeTable.getColumn("ID").setCellRenderer(centerRenderer);
+        this.add(tableScroll, BorderLayout.CENTER);
+    }
+
+    private void initTable(){
         // 获取主题数据
+        tableModel.setRowCount(0);
         int row = 0;
         try {
             Connection connection = DbUtil.getConnection();
@@ -89,17 +107,6 @@ public class ThemeDialog extends JDialog {
             throwables.printStackTrace();
         }
         themeTable.setModel(tableModel);
-        themeTable.getColumnModel().getColumn(0).setMaxWidth(50);
-        themeTable.getColumnModel().getColumn(0).setMinWidth(50);
-
-        JScrollPane tableScroll = new JScrollPane(themeTable);
-        tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JTextField.CENTER);
-        themeTable.getColumn("ID").setCellRenderer(centerRenderer);
-        this.add(tableScroll, BorderLayout.CENTER);
     }
 
     private void initControlButton() {
@@ -113,26 +120,13 @@ public class ThemeDialog extends JDialog {
         controlPane.add(closeButton);
         this.add(controlPane, BorderLayout.SOUTH);
 
-        Connection connection = null;
-        Statement statement = null;
-        try {
-            connection = DbUtil.getConnection();
-            statement = connection.createStatement();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        Statement finalStatement = statement;
         saveButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    if (enableCheckBox.isSelected()){
-                        int result = finalStatement.executeUpdate("UPDATE settings SET value='1' WHERE key = 'theme_enable';");
-                    } else {
-                        int result = finalStatement.executeUpdate("UPDATE settings SET value='0' WHERE key = 'theme_enable';");
-                    }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+                if (enableCheckBox.isSelected()){
+                    ConfigUtil.updateThemeEnableOption("1");
+                } else {
+                    ConfigUtil.updateThemeEnableOption("0");
                 }
 
                 int row = themeTable.getSelectedRow();
@@ -141,6 +135,7 @@ public class ThemeDialog extends JDialog {
                     log.debug("Selected theme: " + themeId);
                     ConfigUtil.updateThemeOption(themeId);
                 }
+                initTable();
             }
         });
 

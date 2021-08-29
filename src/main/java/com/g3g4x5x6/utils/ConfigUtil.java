@@ -66,7 +66,6 @@ public class ConfigUtil {
             Connection connection = DbUtil.getConnection();
             Statement statement = connection.createStatement();
             statement.executeUpdate("UPDATE settings SET value='" + theme + "' WHERE key = 'theme'");
-            connection.commit();
             DbUtil.close(connection, statement);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
