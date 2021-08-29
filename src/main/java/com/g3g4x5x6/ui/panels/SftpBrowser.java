@@ -456,12 +456,12 @@ public class SftpBrowser extends JPanel {
 
                     DefaultMutableTreeNode temp = null;
                     for (SftpClient.DirEntry entry : getDirEntry(convertTreePathToString(path))) {
-//                        log.debug(entry.getLongFilename());
+                        log.debug(entry.getLongFilename());
                         if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
                             continue;
 
-                        // TODO 添加文件至表格
                         if (entry.getAttributes().isDirectory()) {
+                            // TODO 当 fs 断开重连时， 判断选中节点下是否已存在相同子节点，应避免重复添加子节点
                             temp = new DefaultMutableTreeNode(entry.getFilename());
                             currentTreeNode.add(temp);
                         } else {

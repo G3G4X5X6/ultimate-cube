@@ -112,7 +112,7 @@ public class SessionsManager extends JPanel {
                 TreePath path = e.getPath();
 
                 DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
-                System.out.println("Path: " + path.toString());
+                log.debug("Path: " + path.toString());
 
                 DefaultMutableTreeNode temp = null;
 
@@ -198,7 +198,7 @@ public class SessionsManager extends JPanel {
 
             HashSet<String> tempSet = new HashSet<>();
             while (resultSet.next()) {
-                System.out.println(resultSet.getString("tag"));
+                log.debug(resultSet.getString("tag"));
                 String tempTag = resultSet.getString("tag");
                 String[] tempTags = tempTag.split("/");
 
@@ -250,7 +250,7 @@ public class SessionsManager extends JPanel {
                 String currentTag = convertPathToTag(treePath);
                 String newTag = JOptionPane.showInputDialog(null, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
                 String tag = currentTag + "/" + newTag;
-                System.out.println("newTag: " + tag);
+                log.debug("newTag: " + tag);
 
                 DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(newTag);
                 currentTreeNode.add(newTreeNode);
@@ -425,14 +425,14 @@ public class SessionsManager extends JPanel {
                     // 打开会话
                     if (SshUtil.testConnection(address, port) == 1) {
 
-                        String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-1) + ") " + address;
+                        String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount() - 1) + ") " + address;
                         mainTabbedPane.insertTab(defaultTitle, null,
                                 new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
                                         address, port, user, pass), // For Sftp
-                                "快速连接", mainTabbedPane.getTabCount()-1);
+                                "快速连接", mainTabbedPane.getTabCount() - 1);
 
-                        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
-                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
+                        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
+                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
                     } else {
                         DialogUtil.warn("连接失败");
                     }
@@ -446,7 +446,7 @@ public class SessionsManager extends JPanel {
                 String host = "";
                 String port = "";
                 int[] indices = sessionTable.getSelectedRows();
-                for(int index : indices){
+                for (int index : indices) {
                     host = (String) tableModel.getValueAt(index, 2);
                     port = (String) tableModel.getValueAt(index, 3);
 
@@ -477,22 +477,20 @@ public class SessionsManager extends JPanel {
 
     private String convertPathToTag(TreePath treePath) {
         StringBuilder tempPath = new StringBuilder("");
-
         if (treePath == null) {
             return "";
         }
+
         String path = treePath.toString();
         String[] paths = path.substring(1, path.length() - 1).split(",");
-
         for (String temp : paths) {
             temp = temp.strip();
             tempPath.append(temp);
             tempPath.append("/");
         }
-
         tempPath.deleteCharAt(tempPath.length() - 1);
 
-        System.out.println(tempPath);
+        log.debug(String.valueOf(tempPath));
         return tempPath.toString();
     }
 }
