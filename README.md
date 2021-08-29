@@ -17,7 +17,7 @@ UltimateShell is a fully open-source, ultimate toolbox for remote management ser
 <br><br>
 UltimateShell is your ultimate toolbox for remote management server.
 Its goal is to provide a large number of customized features for penetration test engineers, programmers, webmasters, IT administrators, and almost all users who need to handle remote work in a simpler way.
-And, it also supports multiple operating system platforms and theme skin switching based on FlatLaf (not implemented)
+And, it also supports multiple operating system platforms and theme skin switching based on FlatLaf.
 
 ## Table of Contents
 
@@ -36,10 +36,10 @@ See [the security file](SECURITY.md)!
 ## Features
 
 - [x] Support ssh, sftp
-- [x] Support multi-platform 
+- [x] Support multi-platform (Not tested)
 - [x] Support sessions manager
 - [x] Support local terminal
-- [x] Support theme skins
+- [x] Support 63 theme skins
 - [ ] Support serial terminal
 - [ ] Support Telnet
 - [ ] Support FTP
