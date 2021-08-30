@@ -4,6 +4,8 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import java.io.IOException;
+
 public class MyJSchShellTtyConnector extends MyJSchTtyConnector<ChannelShell> {
     public MyJSchShellTtyConnector() {
     }
@@ -36,5 +38,10 @@ public class MyJSchShellTtyConnector extends MyJSchTtyConnector<ChannelShell> {
 
     protected void setPtySize(ChannelShell channel, int col, int row, int wp, int hp) {
         channel.setPtySize(col, row, wp, hp);
+    }
+
+    @Override
+    public boolean ready() throws IOException {
+        return false;
     }
 }

@@ -4,6 +4,7 @@ import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.Charset;
 
@@ -44,6 +45,11 @@ public class CmdConnector implements TtyConnector {
     }
 
     @Override
+    public void resize(@NotNull Dimension termWinSize) {
+        TtyConnector.super.resize(termWinSize);
+    }
+
+    @Override
     public String getName() {
         return "本地终端";
     }
@@ -73,5 +79,10 @@ public class CmdConnector implements TtyConnector {
     @Override
     public int waitFor() throws InterruptedException {
         return this.myProcess.waitFor();
+    }
+
+    @Override
+    public boolean ready() throws IOException {
+        return false;
     }
 }

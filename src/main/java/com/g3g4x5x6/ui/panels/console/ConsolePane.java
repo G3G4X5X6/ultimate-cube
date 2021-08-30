@@ -6,6 +6,7 @@ import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.UIUtil;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,7 @@ public class ConsolePane extends JPanel {
     public ConsolePane() {
         this.setLayout(borderLayout);
 
-        JediTermWidget terminalPanel = new JediTermWidget(new CmdSettingsProvider());
+        JediTermWidget terminalPanel = new JediTermWidget(new DefaultSettingsProvider());
         terminalPanel.setTtyConnector(createTtyConnector());
         terminalPanel.start();
 

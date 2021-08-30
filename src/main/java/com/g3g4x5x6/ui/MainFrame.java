@@ -155,7 +155,7 @@ public class MainFrame extends JFrame {
      */
     public MainFrame() throws HeadlessException {
         super();
-
+        
         // TODO UtimateShell 工作目录
         createDir(getWorkDir());
 
