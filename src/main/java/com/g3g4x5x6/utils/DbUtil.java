@@ -84,79 +84,81 @@ public class DbUtil {
                         "  PRIMARY KEY ( id ) " +
                         ");");
 
-                int insertSettings = statement.executeUpdate("INSERT INTO settings VALUES (null, 'theme', 48, null );\n" +
-                        "INSERT INTO settings VALUES (null, 'theme_enable', 0, null);");
+                int insertSettings = statement.executeUpdate("INSERT INTO settings VALUES (null, 'theme', '3', null );\n" +
+                        "INSERT INTO settings VALUES (null, 'theme_enable', '0', null);");
 
                 int effectTheme = statement.executeUpdate("CREATE TABLE theme (\n" +
                         "  id INTEGER NOT NULL,\n" +
                         "  name TEXT NOT NULL,\n" +
                         "  class TEXT NOT NULL,\n" +
+                        "  foreground TEXT,\n" +
+                        "  background TEXT,\n" +
                         "  PRIMARY KEY (id)\n" +
                         ");");
 
-                int insertTheme = statement.executeUpdate("INSERT INTO \"theme\" VALUES (1, 'Arc', 'com.formdev.flatlaf.intellijthemes.FlatArcIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (2, 'Arc - Orange', 'com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (3, 'Arc Dark', 'com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (4, 'Arc Dark - Orange', 'com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (5, 'Carbon', 'com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (6, 'Cobalt 2', 'com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (7, 'Cyan light', 'com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (8, 'Dark Flat', 'com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (9, 'Dark purple', 'com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (10, 'Dracula', 'com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (11, 'Gradianto Dark Fuchsia', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (12, 'Gradianto Deep Ocean', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (13, 'Gradianto Midnight Blue', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (14, 'Gradianto Nature Green', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (15, 'Gray', 'com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (16, 'Gruvbox Dark Hard', 'com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (17, 'Gruvbox Dark Medium', 'com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (18, 'Gruvbox Dark Soft', 'com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (19, 'Hiberbee Dark', 'com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (20, 'High contrast', 'com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (21, 'Light Flat', 'com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (22, 'Material Design Dark', 'com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (23, 'Monocai', 'com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (24, 'Nord', 'com.formdev.flatlaf.intellijthemes.FlatNordIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (25, 'One Dark', 'com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (26, 'Solarized Dark', 'com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (27, 'Solarized Light', 'com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (28, 'Spacegray', 'com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (29, 'Vuesion', 'com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (30, 'Arc Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (31, 'Arc Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (32, 'Atom One Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (33, 'Atom One Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (34, 'Atom One Light (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (35, 'Atom One Light Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (36, 'Dracula (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (37, 'Dracula Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (38, 'GitHub (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (39, 'GitHub Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (40, 'GitHub Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (41, 'GitHub Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (42, 'Light Owl (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatLightOwlIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (43, 'Light Owl Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatLightOwlContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (44, 'Material Darker (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (45, 'Material Darker Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (46, 'Material Deep Ocean (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (47, 'Material Deep Ocean Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (48, 'Material Lighter (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (49, 'Material Lighter Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (50, 'Material Oceanic (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (51, 'Material Oceanic Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (52, 'Material Palenight (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (53, 'Material Palenight Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (54, 'Monokai Pro (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (55, 'Monokai Pro Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (56, 'Moonlight (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (57, 'Moonlight Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (58, 'Night Owl (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (59, 'Night Owl Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (60, 'Solarized Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (61, 'Solarized Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkContrastIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (62, 'Solarized Light (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightIJTheme');\n" +
-                        "INSERT INTO \"theme\" VALUES (63, 'Solarized Light Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightContrastIJTheme');");
+                int insertTheme = statement.executeUpdate("INSERT INTO \"theme\" VALUES (1, 'Arc', 'com.formdev.flatlaf.intellijthemes.FlatArcIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (2, 'Arc - Orange', 'com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (3, 'Arc Dark', 'com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme', '222,222,222', '64,70,81');\n" +
+                        "INSERT INTO \"theme\" VALUES (4, 'Arc Dark - Orange', 'com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme', '222,222,222', '64,70,81');\n" +
+                        "INSERT INTO \"theme\" VALUES (5, 'Carbon', 'com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (6, 'Cobalt 2', 'com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (7, 'Cyan light', 'com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (8, 'Dark Flat', 'com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (9, 'Dark purple', 'com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (10, 'Dracula', 'com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (11, 'Gradianto Dark Fuchsia', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (12, 'Gradianto Deep Ocean', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (13, 'Gradianto Midnight Blue', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (14, 'Gradianto Nature Green', 'com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (15, 'Gray', 'com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (16, 'Gruvbox Dark Hard', 'com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (17, 'Gruvbox Dark Medium', 'com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (18, 'Gruvbox Dark Soft', 'com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (19, 'Hiberbee Dark', 'com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (20, 'High contrast', 'com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (21, 'Light Flat', 'com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (22, 'Material Design Dark', 'com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (23, 'Monocai', 'com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (24, 'Nord', 'com.formdev.flatlaf.intellijthemes.FlatNordIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (25, 'One Dark', 'com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (26, 'Solarized Dark', 'com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (27, 'Solarized Light', 'com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (28, 'Spacegray', 'com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (29, 'Vuesion', 'com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (30, 'Arc Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (31, 'Arc Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (32, 'Atom One Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (33, 'Atom One Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (34, 'Atom One Light (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (35, 'Atom One Light Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (36, 'Dracula (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (37, 'Dracula Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (38, 'GitHub (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (39, 'GitHub Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (40, 'GitHub Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (41, 'GitHub Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (42, 'Light Owl (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatLightOwlIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (43, 'Light Owl Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatLightOwlContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (44, 'Material Darker (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (45, 'Material Darker Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (46, 'Material Deep Ocean (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (47, 'Material Deep Ocean Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (48, 'Material Lighter (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (49, 'Material Lighter Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (50, 'Material Oceanic (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (51, 'Material Oceanic Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (52, 'Material Palenight (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (53, 'Material Palenight Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (54, 'Monokai Pro (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (55, 'Monokai Pro Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (56, 'Moonlight (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (57, 'Moonlight Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (58, 'Night Owl (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (59, 'Night Owl Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (60, 'Solarized Dark (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (61, 'Solarized Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkContrastIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (62, 'Solarized Light (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightIJTheme', '0,0,0', '255,255,255');\n" +
+                        "INSERT INTO \"theme\" VALUES (63, 'Solarized Light Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightContrastIJTheme', '0,0,0', '255,255,255');");
 
                 statement.close();
                 connection.close();

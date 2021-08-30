@@ -147,6 +147,11 @@
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
+            <artifactId>jediterm-typeahead</artifactId>
+            <version>2.54</version>
+        </dependency>
+        <dependency>
+            <groupId>com.g3g4x5x6</groupId>
             <artifactId>jediterm-ssh</artifactId>
             <version>2.49</version>
         </dependency>
@@ -154,11 +159,6 @@
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>jediterm-pty</artifactId>
             <version>2.49</version>
-        </dependency>
-        <dependency>
-            <groupId>com.g3g4x5x6</groupId>
-            <artifactId>jediterm-typeahead</artifactId>
-            <version>2.54</version>
         </dependency>
 
         <dependency>

@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.panels.console;
 
 
 import com.g3g4x5x6.ui.MainFrame;
+import com.g3g4x5x6.utils.ConfigUtil;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
@@ -24,7 +25,9 @@ public class ConsolePane extends JPanel {
     public ConsolePane() {
         this.setLayout(borderLayout);
 
-        JediTermWidget terminalPanel = new JediTermWidget(new DefaultSettingsProvider());
+        CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
+        cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
+        JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
         terminalPanel.setTtyConnector(createTtyConnector());
         terminalPanel.start();
 

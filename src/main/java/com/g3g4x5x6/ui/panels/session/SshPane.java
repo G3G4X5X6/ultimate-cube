@@ -8,6 +8,7 @@ import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
 import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
+import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
@@ -199,7 +200,9 @@ public class SshPane extends BaseSessionPane {
     }
 
     private @NotNull JediTermWidget createTerminalWidget() {
-        JediTermWidget widget = new JediTermWidget(new SshSettingsProvider());
+        SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
+//        sshSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
+        JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
         widget.setTtyConnector(createTtyConnector());
         widget.start();
         return widget;

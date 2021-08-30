@@ -1,5 +1,6 @@
 package com.g3g4x5x6.ui.panels.ssh;
 
+import com.g3g4x5x6.utils.ConfigUtil;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
@@ -16,9 +17,7 @@ import java.awt.*;
 import java.util.Collections;
 
 public class SshSettingsProvider implements SettingsProvider {
-    public SshSettingsProvider() {
-
-    }
+    private TextStyle textStyle;
 
     @NotNull
     public TerminalActionPresentation getNewSessionActionPresentation() {
@@ -100,12 +99,17 @@ public class SshSettingsProvider implements SettingsProvider {
     }
 
     public float getTerminalFontSize() {
-        return 14.0F;
+        return 16.0F;
     }
 
+    @Override
     public TextStyle getDefaultStyle() {
-        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
+        return ConfigUtil.getTextStyle();
     }
+
+//    public void setDefaultStyle(TextStyle textStyle){
+//        this.textStyle = textStyle;
+//    }
 
     public TextStyle getSelectionColor() {
         return new TextStyle(TerminalColor.WHITE, TerminalColor.rgb(82, 109, 165));
