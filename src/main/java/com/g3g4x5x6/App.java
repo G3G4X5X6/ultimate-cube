@@ -5,11 +5,9 @@ import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.LogManager;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+
 
 @Slf4j
 public class App {
@@ -34,11 +32,11 @@ public class App {
     public static void createGUI() {
         // 配置主题皮肤
         try {
-            if (ConfigUtil.isEnableTheme()){
+            if (ConfigUtil.isEnableTheme()) {
                 Class themeClass = App.class.getClassLoader().loadClass(ConfigUtil.getThemeClass());
                 UIManager.setLookAndFeel((LookAndFeel) themeClass.getConstructor().newInstance());
             } else {
-                UIManager.setLookAndFeel( new FlatLightLaf() );
+                UIManager.setLookAndFeel(new FlatLightLaf());
             }
         } catch (Exception ex) {
             log.error("Failed to initialize LaF");

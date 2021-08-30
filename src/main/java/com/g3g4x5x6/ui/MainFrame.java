@@ -8,6 +8,7 @@ import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
 import com.g3g4x5x6.ui.panels.session.AddPane;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.session.NewTabbedPane;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -76,7 +77,7 @@ public class MainFrame extends JFrame {
 
     private AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
         public void actionPerformed(final ActionEvent e) {
-            about.setVisible(true);
+            DialogUtil.info("UltimateShell By 勾三股四弦五小六");
         }
     };
 
