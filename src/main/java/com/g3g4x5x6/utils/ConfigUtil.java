@@ -2,6 +2,9 @@ package com.g3g4x5x6.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +15,14 @@ import java.sql.Statement;
 public class ConfigUtil {
     private ConfigUtil() {
 
+    }
+
+    public static String getWorkPath(){
+        String work = System.getProperties().getProperty("user.home") + "/.ultimateshell/";
+        File file=new File(work);
+        if (!file.exists())
+            file.mkdir();
+        return work;
     }
 
     public static Boolean isEnableTheme() {

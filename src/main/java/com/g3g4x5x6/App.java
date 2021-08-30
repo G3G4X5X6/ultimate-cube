@@ -5,6 +5,9 @@ import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.LogManager;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
@@ -50,6 +53,7 @@ public class App {
 
     public static void checkEnv() {
         // TODO 检查程序工作目录
+        String workspace = ConfigUtil.getWorkPath();
 
         // TODO 检查用户配置
     }
