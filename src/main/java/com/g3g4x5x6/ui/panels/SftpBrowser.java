@@ -291,18 +291,15 @@ public class SftpBrowser extends JPanel {
                                         InputStream inputStream = Files.newInputStream(downloadPath);
                                         log.debug("文件大小：" + inputStream.available());
 
-                                        ProgressMonitorInputStream pm = new ProgressMonitorInputStream(App.mainFrame, "文件下载中，请稍后...", inputStream);
-
                                         byte[] buf = new byte[1024*1024*5];
                                         int bytesRead;
-                                        while ((bytesRead = pm.read(buf)) != -1) {
+                                        while ((bytesRead = inputStream.read(buf)) != -1) {
                                             outputStream.write(buf, 0, bytesRead);
                                         }
 
                                         outputStream.flush();
                                         outputStream.close();
                                         inputStream.close();
-                                        pm.close();
                                         log.info("下载完成：" + destPath);
                                     } catch (FileNotFoundException fileNotFoundException) {
                                         fileNotFoundException.printStackTrace();

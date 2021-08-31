@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.ResourceBundle;
 
 
 /**
@@ -86,10 +87,12 @@ public class MainFrame extends JFrame {
         // TODO 提示确认退出
         this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 
-        this.setSize(new Dimension(1200, 800));
+        this.setSize(new Dimension(1000, 700));
         this.setMinimumSize(new Dimension(900, 600));
-        this.setPreferredSize(new Dimension(1200, 800));
+        this.setPreferredSize(new Dimension(1000, 700));
         this.setLocationRelativeTo(null);
+
+        this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
 
         // TODO 主面板
         this.add(mainTabbedPane);
@@ -155,8 +158,7 @@ public class MainFrame extends JFrame {
      * this.setResizable(false);                       //不能改变大小
      */
     public MainFrame() throws HeadlessException {
-        super();
-        
+
         // TODO UtimateShell 工作目录
         createDir(getWorkDir());
 
