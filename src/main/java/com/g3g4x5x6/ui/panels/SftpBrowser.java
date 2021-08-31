@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.panels;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
+import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
@@ -169,6 +170,7 @@ public class SftpBrowser extends JPanel {
         }
 
         myTree.setModel(treeModel);
+        myTree.setSelectionPath(new TreePath(root));
     }
 
     private void initTable() {
@@ -249,7 +251,8 @@ public class SftpBrowser extends JPanel {
                     DialogUtil.warn("请先选择文件目录");
                 } else {
                     // 将下载整个目录
-                    if (myTable.getSelectedRow() < 1) {
+//                    log.debug("=========== myTree.hasFocus() ===========>" + myTree.hasFocus());
+                    if (myTable.getSelectedRowCount() < 1) {
                         // TODO 批量下载（整目录下载）
                         int yesOrNo = DialogUtil.yesOrNo(SftpBrowser.this, "是否确认整目录下载？");
                         if (yesOrNo == 0) {
@@ -286,16 +289,20 @@ public class SftpBrowser extends JPanel {
                                         BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destPath));
 
                                         InputStream inputStream = Files.newInputStream(downloadPath);
+                                        log.debug("文件大小：" + inputStream.available());
 
-                                        byte[] buf = new byte[1024];
+                                        ProgressMonitorInputStream pm = new ProgressMonitorInputStream(App.mainFrame, "文件下载中，请稍后...", inputStream);
+
+                                        byte[] buf = new byte[1024*1024*5];
                                         int bytesRead;
-                                        while ((bytesRead = inputStream.read(buf)) != -1) {
+                                        while ((bytesRead = pm.read(buf)) != -1) {
                                             outputStream.write(buf, 0, bytesRead);
                                         }
 
                                         outputStream.flush();
                                         outputStream.close();
                                         inputStream.close();
+                                        pm.close();
                                         log.info("下载完成：" + destPath);
                                     } catch (FileNotFoundException fileNotFoundException) {
                                         fileNotFoundException.printStackTrace();

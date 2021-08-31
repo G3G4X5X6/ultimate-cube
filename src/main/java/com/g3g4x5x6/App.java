@@ -11,6 +11,7 @@ import javax.swing.*;
 
 @Slf4j
 public class App {
+    public static MainFrame mainFrame;
 
     public static void main(String[] args) {
         // 检查程序运行环境
@@ -18,13 +19,8 @@ public class App {
         // 初始化数据库
         DbUtil.createDatabase();
         // 启动主界面
-        SwingUtilities.invokeLater(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        // 此处处于 事件调度线程
-                        createGUI();
-                    }
+        SwingUtilities.invokeLater(() -> {
+                    createGUI();
                 }
         );
     }
@@ -43,7 +39,7 @@ public class App {
         }
 
         // 启动主界面
-        MainFrame mainFrame = new MainFrame();
+        mainFrame = new MainFrame();
         mainFrame.pack();
         mainFrame.setVisible(true);
         log.info("主线程启动完成");
