@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.panels;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.sftp.client.SftpClient;
@@ -243,25 +244,21 @@ public class SftpBrowser extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("下载文件...");
-
-                if (myTree.isSelectionEmpty() || myTable.getSelectedRow() < 1) {
-                    msg.setText("尚未选择文件或目录");
-                    dialog.setVisible(true);
+                // 至少选中目录，才能开始下载
+                if (myTree.isSelectionEmpty()) {
+                    DialogUtil.warn("请先选择文件目录");
                 } else {
-                    // 下载文件名
-                    String downloadFileName = myTable.getValueAt(myTable.getSelectedRow(), 0).toString();
-
-                    // TODO 获取下载文件路径
-                    TreePath dstPath = myTree.getSelectionPath();
-                    String path = convertTreePathToString(dstPath) + "/" + downloadFileName;
-                    log.info("下载的文件：" + path);
-
-                    Path downloadPath = fs.getPath(path);
-
-                    if (Files.isDirectory(downloadPath)) {
-                        msg.setText("暂不支持下载文件夹");
-                        dialog.setVisible(true);
+                    // 将下载整个目录
+                    if (myTable.getSelectedRow() < 1) {
+                        // TODO 批量下载（整目录下载）
+                        int yesOrNo = DialogUtil.yesOrNo(SftpBrowser.this, "是否确认整目录下载？");
+                        if (yesOrNo == 0) {
+                            log.debug("================= 确认整目录下载 ================");
+                        }
                     } else {
+                        // TODO 文件下载（单文件，多文件下载）
+                        log.debug("选中文件数：" + myTable.getSelectedRowCount());
+
                         JFileChooser chooser = new JFileChooser();
                         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         int value = chooser.showOpenDialog(SftpBrowser.this);
@@ -269,40 +266,47 @@ public class SftpBrowser extends JPanel {
                             File outputFile = chooser.getSelectedFile();
                             log.debug(outputFile.getAbsolutePath());
 
-                            // 保存文件路径
-                            String destPath = outputFile.getPath() + "/" + downloadFileName;
-                            log.info("保存的文件：" + destPath);
+                            for (int index : myTable.getSelectedRows()){
+                                String downloadFileName = myTable.getValueAt(index, 0).toString();
 
-                            // TODO 下载, 进度, 下载5M分段
-                            new Thread(() -> {
-                                try {
-                                    log.info("开始下载：" + path);
-                                    BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destPath));
+                                // TODO 获取下载文件路径
+                                TreePath dstPath = myTree.getSelectionPath();
+                                String path = convertTreePathToString(dstPath) + "/" + downloadFileName;
+                                log.info("下载的文件：" + path);
 
-                                    InputStream inputStream = Files.newInputStream(downloadPath);
+                                Path downloadPath = fs.getPath(path);
+                                // 保存文件路径
+                                String destPath = outputFile.getPath() + "/" + downloadFileName;
+                                log.info("保存的文件：" + destPath);
 
-                                    byte[] buf = new byte[1024];
-                                    int bytesRead;
-                                    while ((bytesRead = inputStream.read(buf)) != -1) {
-                                        outputStream.write(buf, 0, bytesRead);
+                                // TODO 下载, 进度, 下载5M分段
+                                new Thread(() -> {
+                                    try {
+                                        log.info("开始下载：" + path);
+                                        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(destPath));
+
+                                        InputStream inputStream = Files.newInputStream(downloadPath);
+
+                                        byte[] buf = new byte[1024];
+                                        int bytesRead;
+                                        while ((bytesRead = inputStream.read(buf)) != -1) {
+                                            outputStream.write(buf, 0, bytesRead);
+                                        }
+
+                                        outputStream.flush();
+                                        outputStream.close();
+                                        inputStream.close();
+                                        log.info("下载完成：" + destPath);
+                                    } catch (FileNotFoundException fileNotFoundException) {
+                                        fileNotFoundException.printStackTrace();
+                                    } catch (IOException exception) {
+                                        exception.printStackTrace();
                                     }
-
-                                    outputStream.flush();
-                                    outputStream.close();
-                                    inputStream.close();
-                                    log.info("下载完成：" + destPath);
-                                } catch (FileNotFoundException fileNotFoundException) {
-                                    fileNotFoundException.printStackTrace();
-                                } catch (IOException exception) {
-                                    exception.printStackTrace();
-                                }
-                            }).start();
+                                }).start();
+                            }
                         }
                     }
-
                 }
-
-
             }
         };
 
@@ -347,7 +351,7 @@ public class SftpBrowser extends JPanel {
         if (treePath == null) {
             return "";
         }
-        
+
         String path = treePath.toString();
         String[] paths = path.substring(1, path.length() - 1).split(",");
         for (String temp : paths) {
@@ -356,7 +360,7 @@ public class SftpBrowser extends JPanel {
             tempPath.append("/");
         }
         tempPath.deleteCharAt(tempPath.length() - 1);
-        
+
         return tempPath.toString();
     }
 
@@ -462,8 +466,23 @@ public class SftpBrowser extends JPanel {
 
                         if (entry.getAttributes().isDirectory()) {
                             // TODO 当 fs 断开重连时， 判断选中节点下是否已存在相同子节点，应避免重复添加子节点
-                            temp = new DefaultMutableTreeNode(entry.getFilename());
-                            currentTreeNode.add(temp);
+                            if (!currentTreeNode.isLeaf()) {
+                                log.debug("================== getChildAt() =>" + currentTreeNode.getChildAt(0).toString());
+                                log.debug("================== getChildCount() =>" + currentTreeNode.getChildCount());
+                                Boolean flag = true;
+                                for (int i = 0; i < currentTreeNode.getChildCount(); i++) {
+                                    if (currentTreeNode.getChildAt(i).toString().equals(entry.getFilename())) {
+                                        flag = false;
+                                    }
+                                }
+                                if (flag) {
+                                    temp = new DefaultMutableTreeNode(entry.getFilename());
+                                    currentTreeNode.add(temp);
+                                }
+                            } else {
+                                temp = new DefaultMutableTreeNode(entry.getFilename());
+                                currentTreeNode.add(temp);
+                            }
                         } else {
                             // TODO 显示目录下的文件
                             tableModel.addRow(convertFileLongNameToStringArray(entry));
