@@ -191,6 +191,7 @@ public class DbUtil {
         return true;
     }
 
+
     public static void close(Statement statement, ResultSet resultSet) {
         if (resultSet != null) {
             try {
@@ -208,6 +209,7 @@ public class DbUtil {
             }
         }
     }
+
 
     public static void close(Statement statement) {
         if (statement != null) {
