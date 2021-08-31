@@ -249,6 +249,7 @@
                                         <include>**/*.xml</include>
                                         <include>**/*.png</include>
                                         <include>**/*.svg</include>
+                                        <include>**/*.ico</include>
                                         <include>**/*.*</include>
                                     </includes>
                                 </resource>

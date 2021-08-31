@@ -10,13 +10,13 @@ import com.g3g4x5x6.utils.SshUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,6 +48,15 @@ public class RecentSessionsPane extends JPanel {
 
         // 初始化右键菜单
         initPopupMenu();
+
+        recentTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2){
+                    openSession(recentTable.getSelectedRow());
+                }
+            }
+        });
     }
 
     private void initTable(){
@@ -125,64 +134,7 @@ public class RecentSessionsPane extends JPanel {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = recentTable.getSelectedRows();
                 for (int index : indexs) {
-                    String session = (String) tableModel.getValueAt(index, 1);
-                    String protocol = (String) tableModel.getValueAt(index, 2);
-                    String address = (String) tableModel.getValueAt(index, 3);
-                    String port = (String) tableModel.getValueAt(index, 4);
-                    String user = (String) tableModel.getValueAt(index, 5);
-                    String auth = (String) tableModel.getValueAt(index, 6);
-                    String pass = "";
-                    log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
-                            ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
-
-                    // 数据库获取账户密码
-                    try {
-                        Connection connection = DbUtil.getConnection();
-                        Statement statement = connection.createStatement();
-
-                        String session_sql = "SELECT password FROM session WHERE " +
-                                "session_name = '" + session + "' AND " +
-                                "protocol = '" + protocol + "' AND " +
-                                "address = '" + address + "' AND " +
-                                "port = '" + port + "' AND " +
-                                "username = '" + user + "' AND " +
-                                "auth_type = '" + auth + "'";
-
-                        ResultSet resultSet = statement.executeQuery(session_sql);
-                        while (resultSet.next()) {
-                            pass = resultSet.getString("password");
-                        }
-
-                        DbUtil.close(statement, resultSet);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
-                    }
-
-                    // 更新最近会话访问时间
-                    DbUtil.updateAccessTime(new Date().getTime(), "" +
-                            "session_name = '" + session + "' AND " +
-                            "protocol = '" + protocol + "' AND " +
-                            "address = '" + address + "' AND " +
-                            "port = '" + port + "' AND " +
-                            "username = '" + user + "' AND " +
-                            "auth_type = '" + auth + "'"
-                    );
-
-                    // 打开会话
-                    if (SshUtil.testConnection(address, port) == 1) {
-
-                        String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-1) + ") " + address;
-                        mainTabbedPane.insertTab(defaultTitle, null,
-                                new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
-                                        address, port, user, pass), // For Sftp
-                                "快速连接", mainTabbedPane.getTabCount()-1);
-
-                        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
-                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
-
-                    } else {
-                        DialogUtil.warn("连接失败");
-                    }
+                    openSession(index);
                 }
             }
         };
@@ -192,4 +144,130 @@ public class RecentSessionsPane extends JPanel {
 
         recentTable.setComponentPopupMenu(recentPopupMenu);
     }
+
+    private void openSession(int index){
+        String session = (String) tableModel.getValueAt(index, 1);
+        String protocol = (String) tableModel.getValueAt(index, 2);
+        String address = (String) tableModel.getValueAt(index, 3);
+        String port = (String) tableModel.getValueAt(index, 4);
+        String user = (String) tableModel.getValueAt(index, 5);
+        String auth = (String) tableModel.getValueAt(index, 6);
+        String pass = "";
+        log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
+                ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
+
+        // 数据库获取账户密码
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+
+            String session_sql = "SELECT password FROM session WHERE " +
+                    "session_name = '" + session + "' AND " +
+                    "protocol = '" + protocol + "' AND " +
+                    "address = '" + address + "' AND " +
+                    "port = '" + port + "' AND " +
+                    "username = '" + user + "' AND " +
+                    "auth_type = '" + auth + "'";
+
+            ResultSet resultSet = statement.executeQuery(session_sql);
+            while (resultSet.next()) {
+                pass = resultSet.getString("password");
+            }
+
+            DbUtil.close(statement, resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        // 更新最近会话访问时间
+        DbUtil.updateAccessTime(new Date().getTime(), "" +
+                "session_name = '" + session + "' AND " +
+                "protocol = '" + protocol + "' AND " +
+                "address = '" + address + "' AND " +
+                "port = '" + port + "' AND " +
+                "username = '" + user + "' AND " +
+                "auth_type = '" + auth + "'"
+        );
+
+        // 打开会话
+        if (SshUtil.testConnection(address, port) == 1) {
+
+            String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-1) + ") " + address;
+            mainTabbedPane.insertTab(defaultTitle, null,
+                    new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
+                            address, port, user, pass), // For Sftp
+                    "快速连接", mainTabbedPane.getTabCount()-1);
+
+            mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
+            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
+
+        } else {
+            DialogUtil.warn("连接失败");
+        }
+    }
+
+//    private void openSessions(){
+//        // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
+//        int[] indexs = recentTable.getSelectedRows();
+//        for (int index : indexs) {
+//            String session = (String) tableModel.getValueAt(index, 1);
+//            String protocol = (String) tableModel.getValueAt(index, 2);
+//            String address = (String) tableModel.getValueAt(index, 3);
+//            String port = (String) tableModel.getValueAt(index, 4);
+//            String user = (String) tableModel.getValueAt(index, 5);
+//            String auth = (String) tableModel.getValueAt(index, 6);
+//            String pass = "";
+//            log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
+//                    ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
+//
+//            // 数据库获取账户密码
+//            try {
+//                Connection connection = DbUtil.getConnection();
+//                Statement statement = connection.createStatement();
+//
+//                String session_sql = "SELECT password FROM session WHERE " +
+//                        "session_name = '" + session + "' AND " +
+//                        "protocol = '" + protocol + "' AND " +
+//                        "address = '" + address + "' AND " +
+//                        "port = '" + port + "' AND " +
+//                        "username = '" + user + "' AND " +
+//                        "auth_type = '" + auth + "'";
+//
+//                ResultSet resultSet = statement.executeQuery(session_sql);
+//                while (resultSet.next()) {
+//                    pass = resultSet.getString("password");
+//                }
+//
+//                DbUtil.close(statement, resultSet);
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
+//
+//            // 更新最近会话访问时间
+//            DbUtil.updateAccessTime(new Date().getTime(), "" +
+//                    "session_name = '" + session + "' AND " +
+//                    "protocol = '" + protocol + "' AND " +
+//                    "address = '" + address + "' AND " +
+//                    "port = '" + port + "' AND " +
+//                    "username = '" + user + "' AND " +
+//                    "auth_type = '" + auth + "'"
+//            );
+//
+//            // 打开会话
+//            if (SshUtil.testConnection(address, port) == 1) {
+//
+//                String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-1) + ") " + address;
+//                mainTabbedPane.insertTab(defaultTitle, null,
+//                        new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
+//                                address, port, user, pass), // For Sftp
+//                        "快速连接", mainTabbedPane.getTabCount()-1);
+//
+//                mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
+//                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
+//
+//            } else {
+//                DialogUtil.warn("连接失败");
+//            }
+//        }
+//    }
 }

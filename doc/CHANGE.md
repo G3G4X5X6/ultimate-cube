@@ -11,6 +11,7 @@
 - 支持终端窗口配色随主题一起切换
 - 支持启动闪屏
 - 添加窗口图标
+- 最近会话支持双击打开会话
 
 #### Fixed
 - 修复 Sftp 浏览器节点重复问题
@@ -36,4 +37,5 @@
 ## 2021-08-26
 ### UltimateShell_v0.0.1-alpha
 - support ssh, sftp
+- support download , upload file
 - support download , upload file
