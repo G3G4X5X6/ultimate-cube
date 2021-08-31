@@ -2,10 +2,15 @@ package com.g3g4x5x6.utils;
 
 
 import javax.swing.*;
+import java.awt.*;
 
 public class DialogUtil {
     private DialogUtil(){
 
+    }
+
+    public static int yesOrNo(Component parent, String msg){
+        return JOptionPane.showConfirmDialog(parent, msg, "提示", JOptionPane.YES_NO_OPTION);
     }
 
     public static void info(String msg){

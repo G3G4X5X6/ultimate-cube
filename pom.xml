@@ -6,7 +6,7 @@
 
     <groupId>com.g3g4x5x6</groupId>
     <artifactId>UltimateShell</artifactId>
-    <version>0.2.3-SNAPSHOT</version>
+    <version>0.2.4-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -213,11 +213,11 @@
                             <mainClass>com.g3g4x5x6.App</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <SplashScreen-Image>SplashScreen.png</SplashScreen-Image>
+                            <SplashScreen-Image>splashscreen/dragon-red.png</SplashScreen-Image>
                         </manifestEntries>
                     </archive>
-
                 </configuration>
+
                 <executions>
                     <execution>
                         <id>make-assembly</id>
