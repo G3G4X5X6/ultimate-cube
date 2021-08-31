@@ -39,7 +39,7 @@ public class ConsolePane extends JPanel {
             Map<String, String> envs = System.getenv();
             String[] command;
             if (UIUtil.isWindows) {
-                command = new String[]{"cmd.exe"};
+                command = new String[]{"powershell.exe"};
             } else {
                 command = new String[]{"/bin/bash", "--login"};
                 envs = new HashMap<>(System.getenv());
