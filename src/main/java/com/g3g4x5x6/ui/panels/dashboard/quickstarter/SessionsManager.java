@@ -259,10 +259,8 @@ public class SessionsManager extends JPanel {
                         try {
                             connection = DbUtil.getConnection();
                             statement = connection.createStatement();
-
                             sql = "INSERT INTO tag VALUES(NULL, '" + tag + "')";
                             statement.executeUpdate(sql);
-
                             DbUtil.close(statement);
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
