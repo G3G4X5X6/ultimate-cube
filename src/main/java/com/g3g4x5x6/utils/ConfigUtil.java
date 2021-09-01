@@ -27,24 +27,58 @@ public class ConfigUtil {
         return work;
     }
 
+    public static Boolean isExistTerminalColor() {
+        Boolean flag = false;
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT foreground, background FROM terminal_color WHERE theme = (SELECT value FROM settings WHERE key = 'theme')");
+            while (resultSet.next()) {
+                flag = true;
+            }
+            DbUtil.close(statement, resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return flag;
+    }
+
     public static TextStyle getTextStyle() {
         if (!isEnableTheme()) {
             return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
         }
         String foreground = "";
         String background = "";
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT foreground, background FROM theme WHERE id = (SELECT value FROM settings WHERE key = 'theme')");
-            while (resultSet.next()) {
-                foreground = resultSet.getString("foreground");
-                background = resultSet.getString("background");
+        if (isExistTerminalColor() && boolSettingValue("terminal_color_enable")) {
+            log.debug("=========== 使用自定义配色 ===========");
+            try {
+                Connection connection = DbUtil.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT foreground, background FROM terminal_color WHERE theme = (SELECT value FROM settings WHERE key = 'theme')");
+                while (resultSet.next()) {
+                    foreground = resultSet.getString("foreground");
+                    background = resultSet.getString("background");
+                }
+                DbUtil.close(statement, resultSet);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } else {
+            log.debug("=========== 使用默认配色 ===========");
+            try {
+                Connection connection = DbUtil.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT foreground, background FROM theme WHERE id = (SELECT value FROM settings WHERE key = 'theme')");
+                while (resultSet.next()) {
+                    foreground = resultSet.getString("foreground");
+                    background = resultSet.getString("background");
+                }
+                DbUtil.close(statement, resultSet);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         }
+        log.debug("Color: " + foreground + ":" + background);
         int fr = Integer.parseInt(foreground.split(",")[0]);
         int fg = Integer.parseInt(foreground.split(",")[1]);
         int fb = Integer.parseInt(foreground.split(",")[2]);
@@ -85,6 +119,90 @@ public class ConfigUtil {
             throwables.printStackTrace();
         }
         return themeClass;
+    }
+
+    /**
+     * 插入新的设置项
+     * @param key
+     * @param value
+     * @return
+     */
+    public static Boolean insertSetting(String key, String value) {
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("INSERT INTO settings VALUES (null, '" + key +"', '" + value +"', null);");
+            DbUtil.close(statement);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        log.debug("添加设置项 => " + key + "： " + value);
+        return true;
+    }
+
+    /**
+     * 更新存在的设置项
+     * @param key
+     * @param value
+     * @return
+     */
+    public static Boolean updateSetting(String key, String value) {
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("UPDATE settings SET value='" + value + "' WHERE key = '" + key + "'");
+            DbUtil.close(statement);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+        log.debug("更新设置项 => " + key + "： " + value);
+        return true;
+    }
+
+
+    /**
+     * 获取设置项的值
+     * @param key
+     * @return
+     */
+    public static String getSettingValue(String key){
+        String value = "";
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT value FROM settings WHERE key = '" + key +"'");
+            while (resultSet.next()) {
+                value = resultSet.getString("value");
+            }
+            DbUtil.close(statement, resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return value;
+    }
+
+    /**
+     * 获取指定设置项的Boolean值
+     * @param key
+     * @return
+     */
+    public static Boolean boolSettingValue(String key){
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT value FROM settings WHERE key = '" + key + "'");
+            while (resultSet.next()) {
+                if (resultSet.getString("value").equals("0")) {
+                    return false;
+                }
+            }
+            DbUtil.close(statement, resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return true;
     }
 
     public static Boolean updateThemeEnableOption(String enable) {

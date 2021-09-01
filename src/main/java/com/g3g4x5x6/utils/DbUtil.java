@@ -84,10 +84,13 @@ public class DbUtil {
                         "  PRIMARY KEY ( id ) " +
                         ");");
 
-                int insertSettings = statement.executeUpdate("INSERT INTO settings VALUES (null, 'theme', '3', null );\n" +
-                        "INSERT INTO settings VALUES (null, 'theme_enable', '0', null);");
+                // 默认设置
+                int insertSettings = statement.executeUpdate("" +
+                        "INSERT INTO settings VALUES (null, 'theme', '3', null );" +
+                        "INSERT INTO settings VALUES (null, 'theme_enable', '0', null);" +
+                        "INSERT INTO settings VALUES (null, 'terminal_color_enable', '0', null);");
 
-                int effectTheme = statement.executeUpdate("CREATE TABLE theme (\n" +
+                int effectTheme = statement.executeUpdate("CREATE TABLE theme (" +
                         "  id INTEGER NOT NULL,\n" +
                         "  name TEXT NOT NULL,\n" +
                         "  class TEXT NOT NULL,\n" +
@@ -159,6 +162,15 @@ public class DbUtil {
                         "INSERT INTO \"theme\" VALUES (61, 'Solarized Dark Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkContrastIJTheme', '0,0,0', '255,255,255');\n" +
                         "INSERT INTO \"theme\" VALUES (62, 'Solarized Light (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightIJTheme', '0,0,0', '255,255,255');\n" +
                         "INSERT INTO \"theme\" VALUES (63, 'Solarized Light Contrast (Material)', 'com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightContrastIJTheme', '0,0,0', '255,255,255');");
+
+                int effectTerminalColor = statement.executeUpdate("CREATE TABLE \"terminal_color\" (\n" +
+                        "  \"id\" INTEGER NOT NULL,\n" +
+                        "  \"foreground\" TEXT NOT NULL,\n" +
+                        "  \"background\" TEXT NOT NULL,\n" +
+                        "  \"theme\" integer NOT NULL,\n" +
+                        "  PRIMARY KEY (\"id\"),\n" +
+                        "  CONSTRAINT \"theme\" FOREIGN KEY (\"theme\") REFERENCES \"theme\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+                        ");");
 
                 statement.close();
                 connection.close();
