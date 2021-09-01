@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
+import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.CloseButton;
 import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.dialog.SessionDialog;
@@ -243,23 +244,30 @@ public class SessionsManager extends JPanel {
                 DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
                 TreePath treePath = sessionTree.getSelectionPath();
                 String currentTag = convertPathToTag(treePath);
-                String newTag = JOptionPane.showInputDialog(null, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
-                String tag = currentTag + "/" + newTag;
-                log.debug("newTag: " + tag);
+                String newTag = JOptionPane.showInputDialog(App.mainFrame, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
 
-                DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(newTag);
-                currentTreeNode.add(newTreeNode);
+                if (newTag != null){
+                    if (newTag.strip().equals("")){
+                        log.debug("新建目录不能为空字符串");
+                        DialogUtil.warn("目录名称不能为空");
+                    }else{
+                        String tag = currentTag + "/" + newTag;
+                        log.debug("newTag: " + tag);
 
-                try {
-                    connection = DbUtil.getConnection();
-                    statement = connection.createStatement();
+                        DefaultMutableTreeNode newTreeNode = new DefaultMutableTreeNode(newTag);
+                        currentTreeNode.add(newTreeNode);
+                        try {
+                            connection = DbUtil.getConnection();
+                            statement = connection.createStatement();
 
-                    sql = "INSERT INTO tag VALUES(NULL, '" + tag + "')";
-                    statement.executeUpdate(sql);
+                            sql = "INSERT INTO tag VALUES(NULL, '" + tag + "')";
+                            statement.executeUpdate(sql);
 
-                    DbUtil.close(statement);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
+                            DbUtil.close(statement);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+                    }
                 }
             }
         };
@@ -281,15 +289,19 @@ public class SessionsManager extends JPanel {
                         treeModel.removeNodeFromParent(currentTreeNode);
                         // 删除数据库中的标签
                         try {
-                            connection = DbUtil.getConnection();
-                            statement = connection.createStatement();
-
                             TreePath treePath = sessionTree.getSelectionPath();
                             String currentTag = convertPathToTag(treePath);
-                            sql = "DELETE FROM tag WHERE tag = '" + currentTag + "'";
-                            statement.executeUpdate(sql);
+                            if (!currentTag.equals("会话标签")){
+                                connection = DbUtil.getConnection();
+                                statement = connection.createStatement();
 
-                            DbUtil.close(statement);
+                                sql = "DELETE FROM tag WHERE tag = '" + currentTag + "'";
+                                statement.executeUpdate(sql);
+
+                                DbUtil.close(statement);
+                            }else{
+                                DialogUtil.warn("不能删除根标签");
+                            }
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
