@@ -44,7 +44,6 @@ public class SessionsManager extends JPanel {
     private JTable sessionTable;
     private DefaultTableModel tableModel;
     private String[] columnNames = {"会话名称", "协议", "地址", "端口", "登录用户", "认证类型"}; // 添加<创建时间>
-    private String selectedTag = "";
 
     private Connection connection;
     private Statement statement;
@@ -105,7 +104,6 @@ public class SessionsManager extends JPanel {
                 TreePath path = e.getPath();
                 int row = sessionTree.getRowForPath(path);
                 log.debug("选中标签: " + path.toString());
-                selectedTag = convertPathToTag(path);
 
                 // 2. 刷新会话列表
                 flushTable(convertPathToTag(path));
@@ -113,7 +111,7 @@ public class SessionsManager extends JPanel {
                 // 3. 展开子标签
                 String currentTag = convertPathToTag(path);
                 HashSet<String> children = getChildrenTag(currentTag);
-                // TODO 以会话树刷新代替以下相关代码
+                // 避免 currentTreeNode 为 null 的问题
                 if (!sessionTree.isSelectionEmpty()) {
                     DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
                     currentTreeNode.removeAllChildren();
