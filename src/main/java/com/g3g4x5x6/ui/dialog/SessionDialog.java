@@ -37,10 +37,11 @@ public class SessionDialog extends JDialog {
     private String currentTag;
 
 
-    public SessionDialog(Component parentComponent, String currentTag) {
+    public SessionDialog(JFrame frame, String currentTag) {
+        super(frame);
         this.setSize(750, 550);
         this.setResizable(false);
-        this.setLocationRelativeTo(parentComponent);
+        this.setLocationRelativeTo(frame);
         this.setModal(true);
         this.currentTag = currentTag;
 
