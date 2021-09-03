@@ -1,7 +1,5 @@
 package com.g3g4x5x6.ui.panels.console;
 
-import com.g3g4x5x6.utils.ConfigUtil;
-import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.ui.UIUtil;
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
@@ -26,7 +24,7 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public float getTerminalFontSize() {
-        return 16;
+        return 14;
     }
 
     @Override
