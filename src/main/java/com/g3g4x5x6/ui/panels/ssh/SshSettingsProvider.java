@@ -99,7 +99,7 @@ public class SshSettingsProvider implements SettingsProvider {
     }
 
     public float getTerminalFontSize() {
-        return 16.0F;
+        return 14.0F;
     }
 
     @Override
