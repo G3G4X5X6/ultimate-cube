@@ -114,11 +114,11 @@
             <version>3.0.3</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.mybatis</groupId>-->
-<!--            <artifactId>mybatis</artifactId>-->
-<!--            <version>3.5.7</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.mybatis</groupId>-->
+        <!--            <artifactId>mybatis</artifactId>-->
+        <!--            <version>3.5.7</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.github.jarod</groupId>
@@ -241,7 +241,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/src/main/java</directory>
@@ -259,7 +259,14 @@
                 </executions>
             </plugin>
         </plugins>
-
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.svg</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 </project>

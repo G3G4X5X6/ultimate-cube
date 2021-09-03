@@ -1,7 +1,9 @@
 package com.g3g4x5x6.ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.FlatSVGUtils;
 import com.formdev.flatlaf.extras.components.FlatButton;
+import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
@@ -15,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 
@@ -117,14 +120,30 @@ public class MainFrame extends JFrame {
         usersButton.setFocusable(false);
         usersButton.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "Hello User! How are you?", "User", JOptionPane.INFORMATION_MESSAGE));
 
+        // TODO 置顶图标按钮
+        FlatToggleButton toggleButton = new FlatToggleButton();
+        toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
+        toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        toggleButton.setToolTipText("窗口置顶");
+        toggleButton.setFocusable(false);
+        toggleButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toggleButton.isSelected()){
+                    setAlwaysOnTop(true);
+                    toggleButton.setToolTipText("取消置顶");
+                }else{
+                    setAlwaysOnTop(false);
+                    toggleButton.setToolTipText("窗口置顶");
+                }
+            }
+        });
+
         // TODO 添加菜单动作
         terminalMenu.add(myOpenAction);
         terminalMenu.add(mysessionAction);
-
         optionMenu.add(themeAction);
-
         helpMenu.add(myAboutAction);
-
         toolMenu.add(myEditorAction);
 
         // TODO 菜单栏
@@ -135,6 +154,7 @@ public class MainFrame extends JFrame {
         menuBar.add(toolMenu);
         menuBar.add(helpMenu);
         menuBar.add(Box.createGlue());
+        menuBar.add(toggleButton);
         menuBar.add(usersButton);
 
         // TODO 工具栏
