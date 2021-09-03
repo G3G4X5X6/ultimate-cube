@@ -38,6 +38,8 @@ public class MainFrame extends JFrame {
     private JMenu toolMenu = new JMenu("工具");
     private JMenu helpMenu = new JMenu("帮助");
 
+    private JPanel statusBar;
+
     // TODO 菜单弹出面板
     private AboutDialog about = new AboutDialog();
 
@@ -160,6 +162,12 @@ public class MainFrame extends JFrame {
         // TODO 工具栏
 
         // TODO 状态栏
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        statusBar = new JPanel();
+        statusBar.setLayout(flowLayout);
+        statusBar.add(new JLabel("状态栏"));
+//        this.add(statusBar, BorderLayout.SOUTH);
     }
 
     private void addNewTabbedPane() {

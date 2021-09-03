@@ -15,3 +15,6 @@ Manifest-Version: 1.0
 Main-Class: MainClass
 SplashScreen-Image: SplashScreen.png
 ```
+
+# Icon
+[IntelliJ Platform UI Guidelines](https://jetbrains.github.io/ui/resources/icons_list/)
