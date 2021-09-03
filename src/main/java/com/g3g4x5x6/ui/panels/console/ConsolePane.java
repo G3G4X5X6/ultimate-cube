@@ -9,6 +9,7 @@ import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.UIUtil;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -17,6 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+
+@Slf4j
 public class ConsolePane extends JPanel {
 
     private BorderLayout borderLayout = new BorderLayout();
@@ -31,6 +34,7 @@ public class ConsolePane extends JPanel {
         terminalPanel.start();
 
         this.add(terminalPanel, BorderLayout.CENTER);
+        log.info("启动本地终端");
     }
 
 

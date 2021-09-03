@@ -86,7 +86,7 @@ public class BasicSettingStarterPane extends JPanel {
         JPanel savePane = new JPanel();
         JButton openButton = new JButton("快速连接");
         openButton.setToolTipText("默认自动保存会话");
-        JButton testButton = new JButton("测试连接");
+        JButton testButton = new JButton("测试通信");
         savePane.add(openButton);
         savePane.add(testButton);
 
@@ -144,7 +144,6 @@ public class BasicSettingStarterPane extends JPanel {
             }
         });
     }
-
 
 
     private @NotNull JediTermWidget createTerminalWidget() {

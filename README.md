@@ -25,7 +25,7 @@ And, it also supports multiple operating system platforms and theme skin switchi
 - [Features](#Features)
 - [Build](#build)
 - [Usage](#usage)
-- [Links](#links)
+- [Credits & Libraries](#Credits)
 - [Maintainers](#maintainers)
 - [Contributing](#contributing)
 - [License](#license)
@@ -66,7 +66,7 @@ java -jar UltimateShell-${version}-SNAPSHOT-jar-with-dependencies.jar
 ```
 See [Project wiki](https://github.com/G3G4X5X6/ultimateshell/wiki)
 
-## Links
+## Credits & Libraries
 - JediTerm: [https://github.com/JetBrains/jediterm](https://github.com/JetBrains/jediterm)
 - FlatLaf: [https://github.com/JFormDesigner/FlatLaf](https://github.com/JFormDesigner/FlatLaf)
 - Apache MINA SSHD: [https://github.com/apache/mina-sshd](https://github.com/apache/mina-sshd)
