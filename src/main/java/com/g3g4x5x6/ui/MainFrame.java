@@ -1,10 +1,10 @@
 package com.g3g4x5x6.ui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.extras.FlatSVGUtils;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
+import com.g3g4x5x6.ui.dialog.SettingsDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
 import com.g3g4x5x6.ui.panels.session.AddPane;
@@ -17,8 +17,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 
 /**
@@ -44,7 +42,6 @@ public class MainFrame extends JFrame {
     private AboutDialog about = new AboutDialog();
 
     private JTabbedPane mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-    private AddButton addButton = new AddButton();
 
     private Integer count = 1;
 
@@ -81,9 +78,21 @@ public class MainFrame extends JFrame {
         }
     };
 
+    private AbstractAction settingsAction = new AbstractAction("全局配置") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // TODO 全局设置
+            SettingsDialog settingsDialog = new SettingsDialog();
+            settingsDialog.setVisible(true);
+        }
+    };
+
     private AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
         public void actionPerformed(final ActionEvent e) {
-            DialogUtil.info("UltimateShell By 勾三股四弦五小六");
+            DialogUtil.msg("About",
+                    "<html>UltimateShell v0.8.7 <br>" +
+                            "Build on Sat 04 Sep 2021<br><br>" +
+                            "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a></html>");
         }
     };
 
@@ -103,12 +112,18 @@ public class MainFrame extends JFrame {
         this.add(mainTabbedPane);
 
         // 添加主仪表盘
-        mainTabbedPane.add("        仪表板        ", new DashboardPane(mainTabbedPane));
+        mainTabbedPane.addTab("仪表板",
+                new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"),
+                new DashboardPane(mainTabbedPane));
 
         // 添加新建选项卡按钮
-        mainTabbedPane.add("添加", new AddPane(mainTabbedPane));
-        mainTabbedPane.setTabComponentAt(1, addButton);
-        addButton.addActionListener(new AbstractAction() {
+        JButton addBtn = new JButton();
+        addBtn.setContentAreaFilled(false);
+        addBtn.setBorder(null);
+        addBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/add.svg"));
+        mainTabbedPane.addTab("添加", new AddPane(mainTabbedPane));
+        mainTabbedPane.setTabComponentAt(1, addBtn);
+        addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 addNewTabbedPane();
@@ -145,6 +160,7 @@ public class MainFrame extends JFrame {
         terminalMenu.add(myOpenAction);
         terminalMenu.add(mysessionAction);
         optionMenu.add(themeAction);
+        optionMenu.add(settingsAction);
         helpMenu.add(myAboutAction);
         toolMenu.add(myEditorAction);
 
@@ -156,8 +172,8 @@ public class MainFrame extends JFrame {
         menuBar.add(toolMenu);
         menuBar.add(helpMenu);
         menuBar.add(Box.createGlue());
-        menuBar.add(toggleButton);
         menuBar.add(usersButton);
+        menuBar.add(toggleButton);
 
         // TODO 工具栏
 

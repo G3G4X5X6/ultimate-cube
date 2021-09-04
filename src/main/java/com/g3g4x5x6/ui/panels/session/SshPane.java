@@ -55,7 +55,7 @@ public class SshPane extends BaseSessionPane {
         JLabel hostLabel = new JLabel("Remote Host*");
         hostField = new JFormattedTextField(new IpAddressFormatter());
         hostField.setColumns(10);
-        hostField.setText("192.168.83.137");    // For testing
+        hostField.setText("172.17.200.104");    // For testing
         hostPane.add(hostLabel);
         hostPane.add(hostField);
 
@@ -72,7 +72,7 @@ public class SshPane extends BaseSessionPane {
         JPanel userPane = new JPanel();
         JLabel userLabel = new JLabel("Username");
         JFormattedTextField userField = new JFormattedTextField();
-        userField.setText("root");
+        userField.setText("security");
         userField.setColumns(8);
         userPane.add(userLabel);
         userPane.add(userField);
@@ -81,7 +81,7 @@ public class SshPane extends BaseSessionPane {
         JPanel passPane = new JPanel();
         JLabel passLabel = new JLabel("Password");
         JPasswordField passField = new JPasswordField();
-        passField.setText("12345678");
+        passField.setText("123456");
         passField.setColumns(8);
         passPane.add(passLabel);
         passPane.add(passField);
@@ -90,7 +90,7 @@ public class SshPane extends BaseSessionPane {
         JPanel savePane = new JPanel();
         JButton openButton = new JButton("快速连接");
         openButton.setToolTipText("默认自动保存会话");
-        JButton testButton = new JButton("测试连接");
+        JButton testButton = new JButton("测试通信");
         savePane.add(openButton);
         savePane.add(testButton);
 
@@ -176,7 +176,7 @@ public class SshPane extends BaseSessionPane {
         }
 
         try {
-            ClientSession session = client.connect(hostConfigEntry).verify(5000).getClientSession();
+            ClientSession session = client.connect(hostConfigEntry).verify(3000).getClientSession();
 
             session.close();
             client.close();
@@ -201,7 +201,6 @@ public class SshPane extends BaseSessionPane {
 
     private @NotNull JediTermWidget createTerminalWidget() {
         SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
-//        sshSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
         JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
         widget.setTtyConnector(createTtyConnector());
         widget.start();

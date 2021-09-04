@@ -171,7 +171,7 @@ public class SessionDialog extends JDialog {
             JLabel hostLabel = new JLabel("Remote Host*");
             hostField = new JFormattedTextField(new IpAddressFormatter());
             hostField.setColumns(10);
-            hostField.setText("192.168.83.137");    // For testing
+            hostField.setText("172.17.200.104");    // For testing
             hostPane.add(hostLabel);
             hostPane.add(hostField);
 
@@ -188,7 +188,7 @@ public class SessionDialog extends JDialog {
             JPanel userPane = new JPanel();
             JLabel userLabel = new JLabel("Username");
             userField = new JFormattedTextField();
-            userField.setText("root");
+            userField.setText("security");
             userField.setColumns(8);
             userPane.add(userLabel);
             userPane.add(userField);
@@ -197,7 +197,7 @@ public class SessionDialog extends JDialog {
             JPanel passPane = new JPanel();
             JLabel passLabel = new JLabel("Password");
             passField = new JPasswordField();
-            passField.setText("12345678");
+            passField.setText("123456");
             passField.setColumns(8);
             passPane.add(passLabel);
             passPane.add(passField);
@@ -224,11 +224,11 @@ public class SessionDialog extends JDialog {
                     // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
                     fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                     // 设置是否允许多选
-                    fileChooser.setMultiSelectionEnabled(false);
-                    // 添加可用的文件过滤器（FileNameExtensionFilter 的第一个参数是描述, 后面是需要过滤的文件扩展名 可变参数）
-                    fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("zip(*.zip, *.rar)", "zip", "rar"));
-                    // 设置默认使用的文件过滤器
-                    fileChooser.setFileFilter(new FileNameExtensionFilter("image(*.jpg, *.png, *.gif)", "jpg", "png", "gif"));
+//                    fileChooser.setMultiSelectionEnabled(false);
+//                    // 添加可用的文件过滤器（FileNameExtensionFilter 的第一个参数是描述, 后面是需要过滤的文件扩展名 可变参数）
+//                    fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("zip(*.zip, *.rar)", "zip", "rar"));
+//                    // 设置默认使用的文件过滤器
+//                    fileChooser.setFileFilter(new FileNameExtensionFilter("image(*.jpg, *.png, *.gif)", "jpg", "png", "gif"));
                     // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
                     int result = fileChooser.showOpenDialog(SessionDialog.this);
 
