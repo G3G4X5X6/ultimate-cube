@@ -44,6 +44,7 @@ public class DbUtil {
             DbUtil.close(statement);
         } catch (SQLException throwables) {
             log.debug(err);
+            throwables.printStackTrace();
         }
         return ret;
     }

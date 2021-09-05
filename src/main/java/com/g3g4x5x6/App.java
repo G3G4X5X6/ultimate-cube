@@ -7,6 +7,9 @@ import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 @Slf4j
@@ -48,6 +51,10 @@ public class App {
     public static void checkEnv() {
         // TODO 检查程序工作目录
         String workspace = ConfigUtil.getWorkPath();
+        File file = new File(workspace + "/note");
+        if (!file.exists()){
+            file.mkdir();
+        }
 
         // TODO 检查用户配置
     }

@@ -7,6 +7,7 @@ import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -18,11 +19,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Base64;
 import java.util.Date;
 
 
@@ -67,7 +72,7 @@ public class NotePane extends JPanel {
         this.add(statusBar, BorderLayout.SOUTH);
     }
 
-    private void initToolBar(){
+    private void initToolBar() {
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.LEFT);
         toolBar.setLayout(flowLayout);
@@ -90,21 +95,22 @@ public class NotePane extends JPanel {
         addBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
         addBtn.setToolTipText("新建笔记");
         addBtn.addActionListener(new AbstractAction() {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("新建笔记");
                 // TODO 1. 判断是否为空，不为空则提示是否保存现有备忘内容，否则清空
-                if (!textArea.getText().strip().equals("")){
+                if (!textArea.getText().strip().equals("")) {
                     int ret = JOptionPane.showConfirmDialog(App.mainFrame, "是否保存现有备忘内容？", "提示", JOptionPane.YES_NO_CANCEL_OPTION);
                     log.debug(">>>>>>>>>>>>>>>>" + ret);
-                    if (ret == 0){
+                    if (ret == 0) {
                         log.debug("保存现有备忘内容");
                         insertOrUpdate();
                         // 先保存, 再清空
                         current_note_id = "";
                         titleField.setText("");
                         textArea.setText("");
-                    }else if (ret == 1){
+                    } else if (ret == 1) {
                         // 不保存, 清空
                         current_note_id = "";
                         textArea.setText("");
@@ -119,9 +125,11 @@ public class NotePane extends JPanel {
         saveBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/Save.svg"));
         saveBtn.setToolTipText("保存笔记");
         saveBtn.addActionListener(new AbstractAction() {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                insertOrUpdate();
+                if (!textArea.getText().strip().equals("") || !titleField.getText().strip().equals(""))
+                    insertOrUpdate();
             }
         });
 
@@ -129,11 +137,68 @@ public class NotePane extends JPanel {
         importBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         importBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/import.svg"));
         importBtn.setToolTipText("导入笔记");
+        importBtn.addActionListener(new AbstractAction() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("导入笔记");
+                if (current_note_id.equals("")) {
+                    if (textArea.getText().strip().equals("")) {
+                        // 直接打开
+                        log.debug("openNote DIR");
+                        importFile();
+                    } else {
+                        // 询问是否保存现有备忘笔记
+                        log.debug("Tips");
+                        if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
+                            insertOrUpdate();
+                            current_note_id = "";
+                            importFile();
+                        }
+
+                    }
+                } else {
+                    if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
+                        insertOrUpdate();
+                    }
+                    current_note_id = "";
+                    importFile();
+                }
+            }
+        });
 
         FlatButton exportBtn = new FlatButton();
         exportBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         exportBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/export.svg"));
         exportBtn.setToolTipText("导出笔记");
+        exportBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("导出笔记");
+                // 创建一个默认的文件选取器
+                JFileChooser fileChooser = new JFileChooser();
+                // 设置默认显示的文件夹为当前文件夹
+                fileChooser.setCurrentDirectory(new File(ConfigUtil.getWorkPath() + "/note"));
+                // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
+                int result = fileChooser.showOpenDialog(App.mainFrame);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // 如果点击了"确定", 则获取选择的文件路径
+                    File file = fileChooser.getSelectedFile();
+                    String fileName = String.valueOf(new Date().getTime());
+                    if (!titleField.getText().strip().equals("")) {
+                        fileName = titleField.getText();
+                    }
+                    try (BufferedWriter writer = Files.newBufferedWriter(Path.of(file.getAbsolutePath() + "/" + fileName + ".md"), StandardCharsets.UTF_8)) {
+                        writer.write(textArea.getText());
+                        writer.flush();
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            }
+        });
 
         titleField = new JFormattedTextField("");
         titleField.setColumns(15);
@@ -150,7 +215,7 @@ public class NotePane extends JPanel {
         toolBar.add(titleField);
     }
 
-    private void initEditorPane(){
+    private void initEditorPane() {
         editorPane.setLayout(new BorderLayout());
         textArea = createTextArea();
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_MARKDOWN);
@@ -159,7 +224,7 @@ public class NotePane extends JPanel {
         editorPane.add(sp);
     }
 
-    private void initStatusBar(){
+    private void initStatusBar() {
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.LEFT);
         statusBar.setLayout(flowLayout);
@@ -286,27 +351,27 @@ public class NotePane extends JPanel {
         return new RSyntaxTextAreaEditorKit.CopyAsStyledTextAction(themeName, theme);
     }
 
-    private void insertOrUpdate(){
+    private void insertOrUpdate() throws UnsupportedEncodingException {
         String title = titleField.getText();
-        String content = textArea.getText();
+        String content = Base64.getEncoder().encodeToString(textArea.getText().getBytes("utf-8"));
         String createTime = String.valueOf(new Date().getTime());
         String modifyTime = createTime;
         String comment = "暂无";
-        if (current_note_id.equals("")){
+        if (current_note_id.equals("")) {
             // TODO 1. 新建保存
-            String sql = "INSERT INTO note VALUES(null, '" + title +"', '" + content +"', '" + createTime +"', '" + modifyTime +"', '" + comment +"');";
+            String sql = "INSERT INTO note VALUES(null, '" + title + "', '" + content + "', '" + createTime + "', '" + modifyTime + "', '" + comment + "');";
             insertText(sql, createTime);
-        }else{
+        } else {
             // TODO 2. 更新保存
             modifyTime = String.valueOf(new Date().getTime());
-            String sql = "UPDATE note SET title='" + title +"', content='" + content +"', modify_time='" + modifyTime +"', comment='" + comment +"' WHERE id=" + current_note_id +";";
+            String sql = "UPDATE note SET title='" + title + "', content='" + content + "', modify_time='" + modifyTime + "', comment='" + comment + "' WHERE id=" + current_note_id + ";";
             updateText(sql);
         }
     }
 
-    private void insertText(String sql, String createTime){
+    private void insertText(String sql, String createTime) {
         log.debug("插入新备忘");
-        if (DbUtil.insert(sql, "备忘笔记插入失败") == 1){
+        if (DbUtil.insert(sql, "备忘笔记插入失败") == 1) {
             log.debug("备忘笔记插入成功");
             // 给 current_id 赋值
             String sqlForId = "SELECT * FROM note where create_time=" + createTime;
@@ -314,47 +379,77 @@ public class NotePane extends JPanel {
                 Connection connection = DbUtil.getConnection();
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(sqlForId);
-                while (resultSet.next()){
+                while (resultSet.next()) {
                     current_note_id = resultSet.getString("id");
                 }
                 DbUtil.close(statement);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-        }else {
-            log.debug("备忘笔记插入失败");
+        } else {
+//            log.debug("备忘笔记插入失败");
         }
     }
 
-    private void updateText(String sql){
+    private void updateText(String sql) {
         log.debug("更新当前备忘");
-        if (DbUtil.update(sql, "备忘笔记更新失败") == 1){
+        if (DbUtil.update(sql, "备忘笔记更新失败") == 1) {
             log.debug("备忘笔记更新成功");
-        }else{
+        } else {
             log.debug("备忘笔记更新失败");
         }
     }
 
-    private void openNote(String id){
+    private void openNote(String id) {
         current_note_id = id;
-
         String sqlForId = "SELECT * FROM note where id=" + id;
         try {
             Connection connection = DbUtil.getConnection();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlForId);
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 titleField.setText(resultSet.getString("title"));
-                textArea.setText(resultSet.getString("content"));
+                textArea.setText(new String(Base64.getDecoder().decode(resultSet.getString("content")), "utf-8"));
             }
             DbUtil.close(statement);
-        } catch (SQLException throwables) {
+        } catch (SQLException | UnsupportedEncodingException throwables) {
             throwables.printStackTrace();
         }
 
     }
 
-    private class NoteDialog extends JDialog{
+    private void importFile() {
+        // 创建一个默认的文件选取器
+        JFileChooser fileChooser = new JFileChooser();
+        // 设置默认显示的文件夹为当前文件夹
+        fileChooser.setCurrentDirectory(new File(ConfigUtil.getWorkPath() + "/note"));
+        // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
+        int result = fileChooser.showOpenDialog(App.mainFrame);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // 如果点击了"确定", 则获取选择的文件路径
+            File file = fileChooser.getSelectedFile();
+            String fileName = file.getName();
+            StringBuffer sbf = new StringBuffer();
+            try (BufferedReader reader = Files.newBufferedReader(Path.of(file.getAbsolutePath()), StandardCharsets.UTF_8)) {
+                String tempStr;
+                while ((tempStr = reader.readLine()) != null) {
+                    sbf.append(tempStr + "\n");
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            int i = fileName.lastIndexOf('.');
+            if (i > 0) {
+                fileName = fileName.substring(0, i);
+            }
+            titleField.setText(fileName);
+            textArea.setText(sbf.toString());
+        }
+    }
+
+    private class NoteDialog extends JDialog {
         private JTable noteTable;
         private DefaultTableModel tableModel;
         private String[] columnNames = {"ID", "标题"};
@@ -378,6 +473,7 @@ public class NotePane extends JPanel {
             initControlButton();
 
             noteTable.addMouseListener(new MouseAdapter() {
+                @SneakyThrows
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
@@ -385,32 +481,32 @@ public class NotePane extends JPanel {
                         // 双击动作: 打开选中笔记
                         int row = noteTable.getSelectedRow();
                         String noteId = "";
-                        if (row != -1){
+                        if (row != -1) {
                             noteId = (String) tableModel.getValueAt(row, 0);
                             log.debug("row: " + noteId);
                         }
-                        if (current_note_id.equals("")){
-                            if (textArea.getText().strip().equals("")){
+                        if (current_note_id.equals("")) {
+                            if (textArea.getText().strip().equals("")) {
                                 // 直接打开
                                 log.debug("openNote DIR");
                                 openNote(noteId);
                                 dispose();
-                            }else{
+                            } else {
                                 // 询问是否保存现有备忘笔记
                                 log.debug("Tips");
-                                if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0){
+                                if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
                                     insertOrUpdate();
                                     openNote(noteId);
                                     dispose();
                                 }
 
                             }
-                        }else{
-                            if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0){
+                        } else {
+                            if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
                                 insertOrUpdate();
                                 openNote(noteId);
                                 dispose();
-                            } else{
+                            } else {
                                 openNote(noteId);
                                 dispose();
                             }
@@ -472,7 +568,7 @@ public class NotePane extends JPanel {
                 while (resultSet.next()) {
                     tableModel.addRow(new String[]{
                             resultSet.getString("id"),
-                            resultSet.getString("title").equals(getCurrentNote()) ?
+                            resultSet.getString("id").equals(current_note_id) ?
                                     "<html><strong><font color='red'>" + getCurrentNote() + "</font></strong></html>" :
                                     resultSet.getString("title")
                     });
@@ -499,10 +595,10 @@ public class NotePane extends JPanel {
             delButton.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (DialogUtil.yesOrNo(App.mainFrame, "是否删除选中备忘记录？") == 0){
+                    if (DialogUtil.yesOrNo(App.mainFrame, "是否删除选中备忘记录？") == 0) {
                         int[] rows = noteTable.getSelectedRows();
                         int ret = 0;
-                        for (int row : rows){
+                        for (int row : rows) {
                             if (row != -1) {
                                 String noteId = (String) tableModel.getValueAt(row, 0);
                                 log.debug("Selected note: " + noteId);
@@ -517,7 +613,7 @@ public class NotePane extends JPanel {
                                 }
                             }
                         }
-                        if (ret == 1){
+                        if (ret == 1) {
                             DialogUtil.info("删除备忘记录成功");
                         }
                         initTable();
@@ -535,7 +631,7 @@ public class NotePane extends JPanel {
 
         private String getCurrentNote() {
             String themeName = "";
-            if (!current_note_id.equals("")){
+            if (!current_note_id.equals("")) {
                 try {
                     Connection connection = DbUtil.getConnection();
                     Statement statement = connection.createStatement();
