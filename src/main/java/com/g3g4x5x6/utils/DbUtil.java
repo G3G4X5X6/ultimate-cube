@@ -32,6 +32,76 @@ public class DbUtil {
         return connection;
     }
 
+    /**
+     * 增
+     */
+    public static int insert(String sql, String err){
+        int ret = 0;
+        try {
+            connection = getConnection();
+            Statement statement = connection.createStatement();
+            ret = statement.executeUpdate(sql);
+            DbUtil.close(statement);
+        } catch (SQLException throwables) {
+            log.debug(err);
+        }
+        return ret;
+    }
+
+
+    /**
+     * 删
+     */
+    public static int delete(String sql, String err){
+        int ret = 0;
+        try {
+            connection = getConnection();
+            Statement statement = connection.createStatement();
+            ret = statement.executeUpdate(sql);
+            DbUtil.close(statement);
+        } catch (SQLException throwables) {
+            log.debug(err);
+        }
+        return ret;
+    }
+
+
+    /**
+     * 改
+     */
+    public static int update(String sql, String err){
+        int ret = 0;
+        try {
+            connection = getConnection();
+            Statement statement = connection.createStatement();
+            ret = statement.executeUpdate(sql);
+            DbUtil.close(statement);
+        } catch (SQLException throwables) {
+            log.debug(err);
+        }
+        return ret;
+    }
+
+
+    /**
+     * 查(有问题)
+     */
+    @Deprecated
+    public static ResultSet select(String sql, String err){
+        log.debug(sql);
+        ResultSet ret = null;
+        try {
+            Connection connection = getConnection();
+            Statement statement = connection.createStatement();
+            ret = statement.executeQuery(sql);
+            DbUtil.close(statement);
+        } catch (SQLException throwables) {
+            log.debug(err);
+        }
+        return ret;
+    }
+
+
     public static void createDatabase() {
         // TODO 后续切换为 H2 数据库
         String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
@@ -170,6 +240,16 @@ public class DbUtil {
                         "  \"theme\" integer NOT NULL,\n" +
                         "  PRIMARY KEY (\"id\"),\n" +
                         "  CONSTRAINT \"theme\" FOREIGN KEY (\"theme\") REFERENCES \"theme\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+                        ");");
+
+                int effectNote = statement.executeUpdate("CREATE TABLE \"note\" (\n" +
+                        "  \"id\" INTEGER NOT NULL,\n" +
+                        "  \"title\" TEXT NOT NULL,\n" +
+                        "  \"content\" TEXT NOT NULL,\n" +
+                        "  \"create_time\" TEXT NOT NULL,\n" +
+                        "  \"modify_time\" TEXT NOT NULL,\n" +
+                        "  \"comment\" TEXT NOT NULL DEFAULT '没有备注哦',\n" +
+                        "  PRIMARY KEY (\"id\")\n" +
                         ");");
 
                 statement.close();

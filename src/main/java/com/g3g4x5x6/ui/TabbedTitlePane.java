@@ -12,10 +12,10 @@ public class TabbedTitlePane extends JPanel {
 
     public TabbedTitlePane(String title, JTabbedPane mainTabbedPane, CloseButton closeButton) {
         super();
-
         FlowLayout flowLayout = new FlowLayout();
         this.setLayout(flowLayout);
         this.setOpaque(false);
+        this.setBorder(null);
 
         titleLabel.setText(title);
 

@@ -164,7 +164,8 @@ public class ThemeDialog extends JDialog {
                     log.debug("Selected theme: " + themeId);
                     ConfigUtil.updateThemeOption(themeId);
                 } else {
-                    DialogUtil.info("配置已保存");
+//                    DialogUtil.info("配置已保存");
+                    dispose();
                 }
                 initTable();
             }

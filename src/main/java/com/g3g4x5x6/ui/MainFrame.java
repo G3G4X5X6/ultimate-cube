@@ -63,9 +63,10 @@ public class MainFrame extends JFrame {
         }
     };
 
-    private AbstractAction myEditorAction = new AbstractAction("编辑器") {
+    private AbstractAction myEditorAction = new AbstractAction("内置编辑器") {
         public void actionPerformed(final ActionEvent e) {
             // TODO 内置编辑器
+            DialogUtil.info("敬请期待");
         }
     };
 
@@ -112,7 +113,7 @@ public class MainFrame extends JFrame {
         this.add(mainTabbedPane);
 
         // 添加主仪表盘
-        mainTabbedPane.addTab("仪表板",
+        mainTabbedPane.addTab("仪表板   ",
                 new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"),
                 new DashboardPane(mainTabbedPane));
 
