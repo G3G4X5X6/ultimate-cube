@@ -222,6 +222,13 @@ public class NotePane extends JPanel {
         textArea.setCodeFoldingEnabled(true);
         sp = new RTextScrollPane(textArea);
         editorPane.add(sp);
+
+        try {
+            Theme theme = Theme.load(this.getClass().getClassLoader().getResourceAsStream("org/fife/ui/rsyntaxtextarea/themes/monokai.xml"));
+            theme.apply(textArea);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initStatusBar() {
@@ -231,6 +238,20 @@ public class NotePane extends JPanel {
 
         statusBar.add(new JLabel("<html><font color='green'><strong>MARKDOWN</strong></font></html>"));
         statusBar.add(Box.createGlue());
+        // 主题设置
+        String[] theme_list = new String[]{"dark", "default-alt", "default", "druid", "eclipse", "idea", "monokai", "vs"};
+        JComboBox<String> themeComboBxo = new JComboBox<>(theme_list);
+        // 添加条目选中状态改变的监听器
+        themeComboBxo.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // 只处理选中的状态
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    System.out.println("选中: " + themeComboBxo.getSelectedIndex() + " = " + themeComboBxo.getSelectedItem());
+                }
+            }
+        });
+        statusBar.add(themeComboBxo);
         statusBar.add(Box.createGlue());
         statusBar.add(Box.createGlue());
 
@@ -330,7 +351,7 @@ public class NotePane extends JPanel {
             am.put("copyAsStyledTextMonokai", createCopyAsStyledTextAction("monokai"));
 
             im.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, ctrlShift), "copyAsStyledTextEclipse");
-            am.put("copyAsStyledTextEclipse", createCopyAsStyledTextAction("eclipse"));
+            am.put("copyAsStyledTextEclipse", createCopyAsStyledTextAction("dark"));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

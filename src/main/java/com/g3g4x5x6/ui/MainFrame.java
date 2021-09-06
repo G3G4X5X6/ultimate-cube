@@ -104,7 +104,7 @@ public class MainFrame extends JFrame {
 
         this.setSize(new Dimension(1000, 700));
         this.setMinimumSize(new Dimension(900, 600));
-        this.setPreferredSize(new Dimension(1000, 700));
+        this.setPreferredSize(new Dimension(1000, 600));
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
 
