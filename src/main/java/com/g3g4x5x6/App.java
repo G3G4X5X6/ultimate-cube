@@ -51,9 +51,15 @@ public class App {
     public static void checkEnv() {
         // TODO 检查程序工作目录
         String workspace = ConfigUtil.getWorkPath();
-        File file = new File(workspace + "/note");
-        if (!file.exists()){
-            file.mkdir();
+        // TODO 检查备忘笔记目录
+        File note = new File(workspace + "/note");
+        if (!note.exists()){
+            note.mkdir();
+        }
+        // TODO 检查会话导出目录
+        File export = new File(workspace + "/export");
+        if (!export.exists()){
+            export.mkdir();
         }
 
         // TODO 检查用户配置

@@ -224,7 +224,7 @@ public class NotePane extends JPanel {
         editorPane.add(sp);
 
         try {
-            Theme theme = Theme.load(this.getClass().getClassLoader().getResourceAsStream("org/fife/ui/rsyntaxtextarea/themes/monokai.xml"));
+            Theme theme = Theme.load(this.getClass().getClassLoader().getResourceAsStream("org/fife/ui/rsyntaxtextarea/themes/default.xml"));
             theme.apply(textArea);
         } catch (IOException e) {
             e.printStackTrace();
