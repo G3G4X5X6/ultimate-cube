@@ -595,6 +595,7 @@ public class NotePane extends JPanel {
             delButton.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    // TODO 删除的笔记如果正在编辑，需重置 current_note_id = ""
                     if (DialogUtil.yesOrNo(App.mainFrame, "是否删除选中备忘记录？") == 0) {
                         int[] rows = noteTable.getSelectedRows();
                         int ret = 0;
@@ -610,6 +611,9 @@ public class NotePane extends JPanel {
                                     DbUtil.close(statement);
                                 } catch (SQLException throwables) {
                                     throwables.printStackTrace();
+                                }
+                                if (noteId.equals(current_note_id)){
+                                    current_note_id = "";
                                 }
                             }
                         }
