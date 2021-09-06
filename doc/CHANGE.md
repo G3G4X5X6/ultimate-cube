@@ -5,7 +5,7 @@
 1. 修订号：当你做了向下兼容的问题修正。
 
 ## 2021-09-06
-### ultimateshell_v0.8.8-alpha
+### ultimateshell_v0.9.8-alpha
 #### Added
 - 支持多文件下载
 - 支持终端窗口配色随主题一起切换
