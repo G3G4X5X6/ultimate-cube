@@ -25,7 +25,7 @@ And, it also supports multiple operating system platforms and theme skin switchi
 - [Features](#Features)
 - [Build](#build)
 - [Usage](#usage)
-- [Credits & Libraries](#Credits)
+- [Credits & Libraries](#Credits+&+Libraries)
 - [Maintainers](#maintainers)
 - [Contributing](#contributing)
 - [License](#license)

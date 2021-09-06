@@ -6,7 +6,7 @@
 
     <groupId>com.g3g4x5x6</groupId>
     <artifactId>UltimateShell</artifactId>
-    <version>0.8.7-SNAPSHOT</version>
+    <version>0.9.7-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -264,6 +264,7 @@
                 <directory>src/main/java</directory>
                 <includes>
                     <include>**/*.svg</include>
+                    <include>**/*.png</include>
                 </includes>
             </resource>
         </resources>

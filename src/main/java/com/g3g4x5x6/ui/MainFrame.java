@@ -106,7 +106,6 @@ public class MainFrame extends JFrame {
         this.setMinimumSize(new Dimension(900, 600));
         this.setPreferredSize(new Dimension(1000, 700));
         this.setLocationRelativeTo(null);
-
         this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
 
         // TODO 主面板

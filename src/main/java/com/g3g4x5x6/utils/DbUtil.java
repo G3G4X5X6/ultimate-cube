@@ -1,13 +1,10 @@
 package com.g3g4x5x6.utils;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 
 
-@Slf4j
 public class DbUtil {
     private static Connection connection = null;
     private DbUtil() {
@@ -43,7 +40,6 @@ public class DbUtil {
             ret = statement.executeUpdate(sql);
             DbUtil.close(statement);
         } catch (SQLException throwables) {
-            log.debug(err);
             throwables.printStackTrace();
         }
         return ret;
@@ -61,7 +57,7 @@ public class DbUtil {
             ret = statement.executeUpdate(sql);
             DbUtil.close(statement);
         } catch (SQLException throwables) {
-            log.debug(err);
+            throwables.printStackTrace();
         }
         return ret;
     }
@@ -78,7 +74,7 @@ public class DbUtil {
             ret = statement.executeUpdate(sql);
             DbUtil.close(statement);
         } catch (SQLException throwables) {
-            log.debug(err);
+            throwables.printStackTrace();
         }
         return ret;
     }
@@ -89,7 +85,6 @@ public class DbUtil {
      */
     @Deprecated
     public static ResultSet select(String sql, String err){
-        log.debug(sql);
         ResultSet ret = null;
         try {
             Connection connection = getConnection();
@@ -97,7 +92,7 @@ public class DbUtil {
             ret = statement.executeQuery(sql);
             DbUtil.close(statement);
         } catch (SQLException throwables) {
-            log.debug(err);
+            throwables.printStackTrace();
         }
         return ret;
     }
@@ -107,7 +102,6 @@ public class DbUtil {
         // TODO 后续切换为 H2 数据库
         String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
         if (!Files.exists(Path.of(dbPath))) {
-            log.debug("数据库不存在，开始创建数据库");
             // 创建数据库
             try {
                 Connection connection = DbUtil.getConnection();
@@ -259,7 +253,7 @@ public class DbUtil {
                 e.printStackTrace();
             }
         } else {
-            log.debug("找到数据库：" + dbPath);
+            System.out.println("找到数据库：" + dbPath);
         }
     }
 
@@ -272,7 +266,7 @@ public class DbUtil {
             String sql = "UPDATE session SET access_time='" + time + "' WHERE " + where;
 
             int result = statement.executeUpdate(sql);
-            log.debug("更新访问时间返回码：" + result);
+            System.out.println("更新访问时间返回码：" + result);
             if (result >= 1) {
                 return true;
             }
