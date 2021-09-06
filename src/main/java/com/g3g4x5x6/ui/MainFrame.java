@@ -91,7 +91,7 @@ public class MainFrame extends JFrame {
     private AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
         public void actionPerformed(final ActionEvent e) {
             DialogUtil.msg("About",
-                    "<html>UltimateShell v0.8.7 <br>" +
+                    "<html>UltimateShell v0.9.7 <br>" +
                             "Build on Sat 04 Sep 2021<br><br>" +
                             "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a></html>");
         }
