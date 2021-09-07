@@ -222,13 +222,6 @@ public class NotePane extends JPanel {
         textArea.setCodeFoldingEnabled(true);
         sp = new RTextScrollPane(textArea);
         editorPane.add(sp);
-
-        try {
-            Theme theme = Theme.load(this.getClass().getClassLoader().getResourceAsStream("org/fife/ui/rsyntaxtextarea/themes/default.xml"));
-            theme.apply(textArea);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void initStatusBar() {
@@ -239,7 +232,7 @@ public class NotePane extends JPanel {
         statusBar.add(new JLabel("<html><font color='green'><strong>MARKDOWN</strong></font></html>"));
         statusBar.add(Box.createGlue());
         // 主题设置
-        String[] theme_list = new String[]{"dark", "default-alt", "default", "druid", "eclipse", "idea", "monokai", "vs"};
+        String[] theme_list = new String[]{"default", "dark", "default-alt", "druid", "eclipse", "idea", "monokai", "vs"};
         JComboBox<String> themeComboBxo = new JComboBox<>(theme_list);
         // 添加条目选中状态改变的监听器
         themeComboBxo.addItemListener(new ItemListener() {
@@ -247,7 +240,13 @@ public class NotePane extends JPanel {
             public void itemStateChanged(ItemEvent e) {
                 // 只处理选中的状态
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    System.out.println("选中: " + themeComboBxo.getSelectedIndex() + " = " + themeComboBxo.getSelectedItem());
+                    log.debug("选中: " + themeComboBxo.getSelectedIndex() + " = " + themeComboBxo.getSelectedItem());
+                    try {
+                        Theme theme = Theme.load(this.getClass().getClassLoader().getResourceAsStream("org/fife/ui/rsyntaxtextarea/themes/" + themeComboBxo.getSelectedItem() + ".xml"));
+                        theme.apply(textArea);
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
                 }
             }
         });

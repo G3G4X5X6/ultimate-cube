@@ -61,6 +61,11 @@ public class App {
         if (!export.exists()){
             export.mkdir();
         }
+        // TODO 检查缓存目录
+        File temp = new File(workspace + "/temp");
+        if (!temp.exists()){
+            temp.mkdir();
+        }
 
         // TODO 检查用户配置
     }

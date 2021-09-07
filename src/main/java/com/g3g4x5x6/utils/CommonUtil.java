@@ -2,44 +2,41 @@ package com.g3g4x5x6.utils;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.*;
 import java.util.Properties;
 
 public class CommonUtil {
-    private CommonUtil(){}
+    private CommonUtil() {
+    }
 
     /**
      * example: 这将获取所有的版本
      * https://api.github.com/repos/januwA/flutter_anime_app/releases
-     *
+     * <p>
      * 最新版本:
      * https://api.github.com/repos/januwA/flutter_anime_app/releases/latest
-     *
+     * <p>
      * 下载最新的包
      * https://api.github.com/repos/januwA/flutter_anime_app/releases/latest  // 获取下载地址: r.assets[0].browser_download_url
-     *
      */
-    public static String getLastestVersion(){
+    public static String getLastestVersion() {
         StringBuffer result = new StringBuffer();
         try {
-            URL url = new URL( "https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest");
+            URL url = new URL("https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setDoOutput(true);
             con.setRequestMethod("GET");
             con.setRequestProperty("Content-Type", "application/json");
             con.connect();
 
-            System.out.println("HTTP状态码="+con.getResponseCode());
+            System.out.println("HTTP状态码=" + con.getResponseCode());
 
             BufferedReader inn = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
             String value = inn.readLine().trim();
-            while(value != null){
-                if(!"".equals(value)){
-                    result.append(value.trim()+"\n");
+            while (value != null) {
+                if (!"".equals(value)) {
+                    result.append(value.trim() + "\n");
                 }
                 value = inn.readLine();
             }
@@ -58,7 +55,7 @@ public class CommonUtil {
         return tagName;
     }
 
-    public static String getCurrentVersion(){
+    public static String getCurrentVersion() {
         Properties properties = new Properties();
         // 使用ClassLoader加载properties配置文件生成对应的输入流
         InputStream in = CommonUtil.class.getClassLoader().getResourceAsStream("info.properties");
@@ -73,8 +70,76 @@ public class CommonUtil {
         return currentVersion;
     }
 
+    public static void generateSystemInfo() {
+        File temp = new File(ConfigUtil.getWorkPath() + "/temp");
+        if (!temp.exists()) {
+            temp.mkdir();
+        }
+        String fileName = temp.getAbsolutePath() + "/systeminfo.txt";
+        String output = exec("systeminfo");
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+            writer.write(output);
+            writer.flush();
+            writer.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static String getSystemInfo() {
+        File temp = new File(ConfigUtil.getWorkPath() + "/temp");
+        if (!temp.exists()) {
+            temp.mkdir();
+        }
+        String fileName = temp.getAbsolutePath() + "/systeminfo.txt";
+        StringBuffer systemInfo = new StringBuffer();
+        String tempStr = null;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            while ((tempStr = reader.readLine()) != null) {
+                systemInfo.append(tempStr + "\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return systemInfo.toString();
+    }
+
+    public static String exec(String cmd) {
+        StringBuffer b = new StringBuffer();
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(runtime.exec(cmd).getInputStream()));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                b.append(line + "\n");
+            }
+            System.out.println(b.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b.toString();
+    }
+
+    public static Boolean isWin(){
+        return true;
+    }
+
+    public static Boolean isLinux(){
+        return true;
+    }
+
+    public static Boolean isMac(){
+        return true;
+    }
+
     public static void main(String[] args) {
-        System.out.println(getLastestVersion());
-        System.out.println(getCurrentVersion());
+//        System.out.println(getLastestVersion());
+//        System.out.println(getCurrentVersion());
+//        generateSystemInfo();
+        System.out.println(getSystemInfo());
     }
 }
