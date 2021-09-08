@@ -100,7 +100,7 @@ public class NotePane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("新建笔记");
                 // TODO 1. 判断是否为空，不为空则提示是否保存现有备忘内容，否则清空
-                if (!textArea.getText().strip().equals("")) {
+                if (!textArea.getText().strip().equals("") || !current_note_id.equals("")) {
                     int ret = JOptionPane.showConfirmDialog(App.mainFrame, "是否保存现有备忘内容？", "提示", JOptionPane.YES_NO_CANCEL_OPTION);
                     log.debug(">>>>>>>>>>>>>>>>" + ret);
                     if (ret == 0) {
@@ -113,9 +113,15 @@ public class NotePane extends JPanel {
                     } else if (ret == 1) {
                         // 不保存, 清空
                         current_note_id = "";
+                        titleField.setText("");
                         textArea.setText("");
                     }
                     // 取消
+                }else{
+                    // TODO fixed
+                    current_note_id = "";
+                    titleField.setText("");
+                    textArea.setText("");
                 }
             }
         });
