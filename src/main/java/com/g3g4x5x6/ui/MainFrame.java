@@ -51,7 +51,7 @@ public class MainFrame extends JFrame {
     // TODO 菜单弹出面板
     private AboutDialog about = new AboutDialog();
 
-    private JTabbedPane mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+    private JTabbedPane mainTabbedPane;
 
     private Integer count = 1;
 
@@ -67,7 +67,7 @@ public class MainFrame extends JFrame {
             String title = "会话管理 " + count;
             count++;
             mainTabbedPane.insertTab(title, null, new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount() - 1);
-            mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(title, mainTabbedPane, new CloseButton(title, mainTabbedPane)));
+            mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(title, mainTabbedPane));
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
 
         }
@@ -224,6 +224,9 @@ public class MainFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
 
+        UIManager.put( "TabbedPane.tabInsets", new Insets(0,10,0,10));
+        mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+
         // TODO 主面板
         this.add(mainTabbedPane);
 
@@ -340,7 +343,7 @@ public class MainFrame extends JFrame {
         String title = "新建选项卡 " + count;
         count++;
         mainTabbedPane.insertTab(title, null, new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount() - 1);
-        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(title, mainTabbedPane, new CloseButton(title, mainTabbedPane)));
+        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(title, mainTabbedPane));
         mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
     }
 
