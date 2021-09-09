@@ -26,6 +26,9 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.Date;
 
+import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_LEADING_COMPONENT;
+import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT;
+
 
 /**
  * 主界面
@@ -213,7 +216,6 @@ public class MainFrame extends JFrame {
         }
     };
 
-
     private void init() {
         // TODO 提示确认退出
         this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
@@ -226,6 +228,7 @@ public class MainFrame extends JFrame {
 
         UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
         mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        customComponents();
 
         // TODO 主面板
         this.add(mainTabbedPane);
@@ -234,20 +237,6 @@ public class MainFrame extends JFrame {
         mainTabbedPane.addTab("仪表板   ",
                 new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"),
                 new DashboardPane(mainTabbedPane));
-
-        // 添加新建选项卡按钮
-        JButton addBtn = new JButton();
-        addBtn.setContentAreaFilled(false);
-        addBtn.setBorder(null);
-        addBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/add.svg"));
-        mainTabbedPane.addTab("添加", new AddPane(mainTabbedPane));
-        mainTabbedPane.setTabComponentAt(1, addBtn);
-        addBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addNewTabbedPane();
-            }
-        });
 
         // TODO add "Users" button to menubar
         FlatButton usersButton = new FlatButton();
@@ -347,12 +336,39 @@ public class MainFrame extends JFrame {
 //        this.add(statusBar, BorderLayout.SOUTH);
     }
 
+    private void customComponents() {
+        JToolBar trailing = null;
+        trailing = new JToolBar();
+        trailing.setFloatable(false);
+        trailing.setBorder(null);
+
+        JButton addBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/add.svg"));
+        addBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String title = "新建选项卡 " + count;
+                count++;
+                mainTabbedPane.insertTab(title, null, new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+                mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 1, new TabbedTitlePane(title, mainTabbedPane));
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+            }
+        });
+
+        trailing.add(addBtn);
+        trailing.add(Box.createHorizontalGlue());
+        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
+        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
+        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg")));
+        mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    @Deprecated
     private void addNewTabbedPane() {
         String title = "新建选项卡 " + count;
         count++;
         mainTabbedPane.insertTab(title, null, new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount() - 1);
-        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(title, mainTabbedPane));
-        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
+        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 1, new TabbedTitlePane(title, mainTabbedPane));
+        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
     }
 
     /**
