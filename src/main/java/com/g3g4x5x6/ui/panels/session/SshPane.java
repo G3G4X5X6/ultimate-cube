@@ -122,7 +122,7 @@ public class SshPane extends BaseSessionPane {
                                     String.valueOf(passField.getPassword())),
                             "",
                             mainTabbedPane.getSelectedIndex());
-                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex() - 1, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
+                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex() - 1, new TabbedTitlePane(defaultTitle, mainTabbedPane));
                     if (mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()) != "添加") {
                         mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
                     }

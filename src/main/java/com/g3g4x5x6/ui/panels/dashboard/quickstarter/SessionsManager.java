@@ -487,7 +487,7 @@ public class SessionsManager extends JPanel {
                                         address, port, user, pass), // For Sftp
                                 "快速连接", mainTabbedPane.getTabCount() - 1);
 
-                        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(defaultTitle, mainTabbedPane, new CloseButton(defaultTitle, mainTabbedPane)));
+                        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(defaultTitle, mainTabbedPane));
                         mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
                     } else {
                         DialogUtil.warn("连接失败");

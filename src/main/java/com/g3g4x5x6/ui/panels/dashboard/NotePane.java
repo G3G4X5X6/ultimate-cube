@@ -32,7 +32,7 @@ import java.util.Date;
 
 
 /**
- *
+ * 备忘笔记
  */
 @Slf4j
 public class NotePane extends JPanel {
