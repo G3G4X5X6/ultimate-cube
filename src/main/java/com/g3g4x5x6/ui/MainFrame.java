@@ -224,7 +224,7 @@ public class MainFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
 
-        UIManager.put( "TabbedPane.tabInsets", new Insets(0,10,0,10));
+        UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
         mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // TODO 主面板
@@ -309,7 +309,7 @@ public class MainFrame extends JFrame {
             public void run() {
                 lastestVersion = CommonUtil.getLastestVersion();
                 String currentVersion = CommonUtil.getCurrentVersion();
-                if (!CommonUtil.getCurrentVersion().equals(lastestVersion)){
+                if (!CommonUtil.getCurrentVersion().equals(lastestVersion)) {
                     menuBar.add(updateBtn);
                     log.debug("添加更新按钮");
                     updateBtn.addActionListener(new AbstractAction() {
@@ -318,9 +318,17 @@ public class MainFrame extends JFrame {
                             // 检查更新
                             String msg = null;
                             msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
-                                    "最新版本： <font color='green'>" + lastestVersion + "</font></html>";
+                                    "最新版本： <font color='green'>" + lastestVersion + "</font><br><br>" +
+                                    "是否现在下载更新？</html>";
                             log.debug("Msg: " + msg);
-                            DialogUtil.warn(msg);
+                            int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
+                            if (code == 0) {
+                                // TODO 更新
+                                log.debug("马上更新");
+                            } else {
+                                // TODO 暂不更新
+                                log.debug("暂不更新");
+                            }
                         }
                     });
                 }
