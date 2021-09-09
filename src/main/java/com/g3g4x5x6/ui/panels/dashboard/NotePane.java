@@ -2,7 +2,6 @@ package com.g3g4x5x6.ui.panels.dashboard;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.formdev.flatlaf.icons.FlatHelpButtonIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
