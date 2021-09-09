@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 /**
  * 选项卡关闭按钮
  */
+@Deprecated
 @Slf4j
 public class CloseButton extends JButton {
     private JTabbedPane mainTabbedPane;

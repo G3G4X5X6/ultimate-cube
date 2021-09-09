@@ -15,6 +15,10 @@ public class BaseSessionPane extends JPanel {
     protected String advancedSettingPaneTitle = "";
     protected AdvancedSettingPane advancedSettingPane = new AdvancedSettingPane();
 
+    private JPanel btnPane = new JPanel();
+    private JButton saveBtn = new JButton("保存");
+    private JButton cancelBtn = new JButton("取消");
+
 
     public BaseSessionPane() {
         this.setLayout(borderLayout);
@@ -25,8 +29,15 @@ public class BaseSessionPane extends JPanel {
         basicSettingTabbedPane.addTab(getBasicSettingPaneTitle(), basicSettingPane);
         advancedSettingTabbedPane.addTab(getAdvancedSettingPaneTitle(), advancedSettingPane);
 
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.CENTER);
+        btnPane.setLayout(flowLayout);
+        btnPane.add(saveBtn);
+        btnPane.add(cancelBtn);
+
         this.add(basicSettingTabbedPane, BorderLayout.NORTH);
         this.add(advancedSettingTabbedPane, BorderLayout.CENTER);
+        this.add(btnPane, BorderLayout.SOUTH);
     }
 
     public BasicSettingPane getBasicSettingPane() {

@@ -23,11 +23,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.Date;
+import java.util.function.BiConsumer;
 
-import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_LEADING_COMPONENT;
-import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT;
+import static com.formdev.flatlaf.FlatClientProperties.*;
 
 
 /**
@@ -73,6 +74,13 @@ public class MainFrame extends JFrame {
             mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(title, mainTabbedPane));
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
 
+        }
+    };
+
+    private AbstractAction dashboardAction = new AbstractAction("仪表板") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mainTabbedPane.setSelectedIndex(0);
         }
     };
 
@@ -228,13 +236,14 @@ public class MainFrame extends JFrame {
 
         UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
         mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        initClosableTabs(mainTabbedPane);
         customComponents();
 
         // TODO 主面板
         this.add(mainTabbedPane);
 
         // 添加主仪表盘
-        mainTabbedPane.addTab("仪表板   ",
+        mainTabbedPane.addTab("仪表板",
                 new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"),
                 new DashboardPane(mainTabbedPane));
 
@@ -273,6 +282,7 @@ public class MainFrame extends JFrame {
         // TODO 添加菜单动作
         terminalMenu.add(myOpenAction);
         terminalMenu.add(mysessionAction);
+        viewMenu.add(dashboardAction);
         optionMenu.add(themeAction);
         optionMenu.add(settingsAction);
         optionMenu.addSeparator();
@@ -336,29 +346,51 @@ public class MainFrame extends JFrame {
 //        this.add(statusBar, BorderLayout.SOUTH);
     }
 
+    private void initClosableTabs(JTabbedPane tabbedPane) {
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
+                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
+                    if (tabIndex != 0){
+                        mainTabbedPane.removeTabAt(tabIndex);
+                    }
+                });
+
+    }
+
     private void customComponents() {
+        JToolBar leading = null;
         JToolBar trailing = null;
+        leading = new JToolBar();
+        leading.setFloatable(false);
+        leading.setBorder(null);
         trailing = new JToolBar();
         trailing.setFloatable(false);
         trailing.setBorder(null);
+
+        JButton dashboardBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"));
+        dashboardBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.setSelectedIndex(0);
+            }
+        });
 
         JButton addBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/add.svg"));
         addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String title = "新建选项卡 " + count;
-                count++;
-                mainTabbedPane.insertTab(title, null, new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
-                mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 1, new TabbedTitlePane(title, mainTabbedPane));
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+                addNewTabbedPane();
             }
         });
 
+        leading.add(dashboardBtn);
         trailing.add(addBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg")));
+//        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
@@ -366,7 +398,7 @@ public class MainFrame extends JFrame {
     private void addNewTabbedPane() {
         String title = "新建选项卡 " + count;
         count++;
-        mainTabbedPane.insertTab(title, null, new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount() - 1);
+        mainTabbedPane.insertTab(title, null, new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
         mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 1, new TabbedTitlePane(title, mainTabbedPane));
         mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
     }
