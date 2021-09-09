@@ -113,7 +113,7 @@ public class SshPane extends BaseSessionPane {
                     password = String.valueOf(passField.getPassword());
                     log.debug(password);
 
-                    String defaultTitle = hostField.getText().equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-2) + ") " + hostField.getText();
+                    String defaultTitle = hostField.getText().equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount() - 2) + ") " + hostField.getText();
                     mainTabbedPane.insertTab(defaultTitle, null,
                             new SshTabbedPane(mainTabbedPane, createTerminalWidget(),
                                     hostField.getText(),
@@ -126,8 +126,8 @@ public class SshPane extends BaseSessionPane {
                     if (mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()) != "添加") {
                         mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
                     }
-                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getSelectedIndex() - 1);
-                }else{
+                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getSelectedIndex());
+                } else {
                     DialogUtil.warn("连接失败");
                 }
             }
