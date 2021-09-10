@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.CloseButton;
 import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
@@ -109,8 +110,8 @@ public class BasicSettingStarterPane extends JPanel {
                     password = String.valueOf(passField.getPassword());
                     log.debug(password);
 
-                    String defaultTitle = hostField.getText().equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-1) + ") " + hostField.getText();
-                    mainTabbedPane.insertTab(defaultTitle, null,
+                    String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
+                    mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(mainTabbedPane,
                                     createTerminalWidget(),
                                     hostField.getText(),
@@ -118,9 +119,9 @@ public class BasicSettingStarterPane extends JPanel {
                                     userField.getText(),
                                     String.valueOf(passField.getPassword())),
                             "快速连接",
-                            mainTabbedPane.getTabCount()-1);
-                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane));
-                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
+                            mainTabbedPane.getTabCount());
+                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-1, new TabbedTitlePane(defaultTitle, mainTabbedPane));
+                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
                 } else {
                     DialogUtil.warn("连接失败");
                 }

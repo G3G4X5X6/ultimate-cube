@@ -113,7 +113,7 @@ public class SshPane extends BaseSessionPane {
                     password = String.valueOf(passField.getPassword());
                     log.debug(password);
 
-                    String defaultTitle = hostField.getText().equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount() - 2) + ") " + hostField.getText();
+                    String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
                     mainTabbedPane.insertTab(defaultTitle, null,
                             new SshTabbedPane(mainTabbedPane, createTerminalWidget(),
                                     hostField.getText(),

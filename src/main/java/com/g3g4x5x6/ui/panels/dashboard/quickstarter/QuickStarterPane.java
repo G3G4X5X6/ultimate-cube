@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -48,8 +49,8 @@ public class QuickStarterPane extends JPanel {
         recentSessionTabbedPane = new JTabbedPane();
         recentSessionPane = new RecentSessionsPane(mainTabbedPane);
         sessionsManager = new SessionsManager(mainTabbedPane);
-        recentSessionTabbedPane.addTab(recentSessionPaneTitle, recentSessionPane);
-        recentSessionTabbedPane.addTab(sessionsManagerTitle, sessionsManager);
+        recentSessionTabbedPane.addTab(recentSessionPaneTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/ShowRecentTabStripItems(Color).svg"), recentSessionPane);
+        recentSessionTabbedPane.addTab(sessionsManagerTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/addList.svg"), sessionsManager);
 
         this.add(basicSettingTabbedPane, BorderLayout.NORTH);
         this.add(recentSessionTabbedPane, BorderLayout.CENTER);

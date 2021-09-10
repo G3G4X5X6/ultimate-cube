@@ -69,12 +69,8 @@ public class MainFrame extends JFrame {
 
     private AbstractAction mysessionAction = new AbstractAction("会话管理") {
         public void actionPerformed(final ActionEvent e) {
-            String title = "会话管理 " + count;
-            count++;
-            mainTabbedPane.insertTab(title, null, new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount() - 1);
-            mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(title, mainTabbedPane));
-            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
-
+            mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addList.svg"), new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
+            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
 

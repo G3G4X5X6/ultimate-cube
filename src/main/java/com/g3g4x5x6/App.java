@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 
 @Slf4j
@@ -43,6 +41,7 @@ public class App {
 
         // 启动主界面
         mainFrame = new MainFrame();
+        mainFrame.setTitle("UltimateShell");
         mainFrame.pack();
         mainFrame.setVisible(true);
         log.info("主线程启动完成");

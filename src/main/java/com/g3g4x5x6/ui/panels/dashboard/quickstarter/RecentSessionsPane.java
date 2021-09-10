@@ -189,14 +189,14 @@ public class RecentSessionsPane extends JPanel {
         // 打开会话
         if (SshUtil.testConnection(address, port) == 1) {
 
-            String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount()-1) + ") " + address;
+            String defaultTitle = address.equals("") ? "未命名" : address;
             mainTabbedPane.insertTab(defaultTitle, null,
                     new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
                             address, port, user, pass), // For Sftp
-                    "快速连接", mainTabbedPane.getTabCount()-1);
+                    "快速连接", mainTabbedPane.getTabCount());
 
-            mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-2, new TabbedTitlePane(defaultTitle, mainTabbedPane));
-            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-2);
+            mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-1, new TabbedTitlePane(defaultTitle, mainTabbedPane));
+            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
 
         } else {
             DialogUtil.warn("连接失败");

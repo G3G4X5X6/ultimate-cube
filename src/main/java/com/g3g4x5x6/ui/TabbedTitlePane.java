@@ -1,5 +1,6 @@
 package com.g3g4x5x6.ui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -21,9 +22,10 @@ public class TabbedTitlePane extends JPanel {
         this.setOpaque(false);
         this.setAutoscrolls(true);
 
-        JLabel numLabel = new JLabel();
-        numLabel.setHorizontalAlignment( SwingConstants.CENTER );
-        numLabel.setText("11");
+        JLabel iconLabel = new JLabel();
+        iconLabel.setHorizontalAlignment( SwingConstants.CENTER );
+        iconLabel.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"));
+
 
         JTextField titleField = new JTextField();
         titleField.setBorder(null);
@@ -51,7 +53,7 @@ public class TabbedTitlePane extends JPanel {
             }
         });
 
-        this.add(numLabel);
+        this.add(iconLabel);
         this.add(titleField);
     }
 
