@@ -1,5 +1,6 @@
 package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
@@ -481,14 +482,12 @@ public class SessionsManager extends JPanel {
                     // 打开会话
                     if (SshUtil.testConnection(address, port) == 1) {
 
-                        String defaultTitle = address.equals("") ? "未命名" : "(" + (mainTabbedPane.getTabCount() - 1) + ") " + address;
-                        mainTabbedPane.insertTab(defaultTitle, null,
+                        String defaultTitle = address.equals("") ? "未命名" : address;
+                        mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                                 new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
-                                        address, port, user, pass), // For Sftp
-                                "快速连接", mainTabbedPane.getTabCount() - 1);
-
-                        mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount() - 2, new TabbedTitlePane(defaultTitle, mainTabbedPane));
-                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 2);
+                                        address, port, user, pass),             // For Sftp
+                                "快速连接", mainTabbedPane.getTabCount());
+                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
                     } else {
                         DialogUtil.warn("连接失败");
                     }

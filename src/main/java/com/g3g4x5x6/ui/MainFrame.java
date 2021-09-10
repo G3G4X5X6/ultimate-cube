@@ -237,6 +237,16 @@ public class MainFrame extends JFrame {
         initClosableTabs(mainTabbedPane);
         customComponents();
 
+        // TODO JTabbedPane's PopupMenu
+        JPopupMenu tabPopupMenu = new JPopupMenu();
+        AbstractAction renameAction = new AbstractAction("重命名") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("重命名Tab标题");
+            }
+        };
+        mainTabbedPane.setComponentPopupMenu(tabPopupMenu);
+
         // TODO 主面板
         this.add(mainTabbedPane);
 
