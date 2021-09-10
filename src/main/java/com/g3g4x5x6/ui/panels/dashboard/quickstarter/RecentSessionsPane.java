@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.CloseButton;
 import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
@@ -190,12 +191,10 @@ public class RecentSessionsPane extends JPanel {
         if (SshUtil.testConnection(address, port) == 1) {
 
             String defaultTitle = address.equals("") ? "未命名" : address;
-            mainTabbedPane.insertTab(defaultTitle, null,
+            mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                     new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
-                            address, port, user, pass), // For Sftp
-                    "快速连接", mainTabbedPane.getTabCount());
-
-            mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-1, new TabbedTitlePane(defaultTitle, mainTabbedPane));
+                            address, port, user, pass));
+            log.debug("打开最近会话");
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
 
         } else {

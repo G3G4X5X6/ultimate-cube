@@ -233,6 +233,7 @@ public class MainFrame extends JFrame {
 
         UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
         mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        mainTabbedPane.setEnabled(true);
         initClosableTabs(mainTabbedPane);
         customComponents();
 

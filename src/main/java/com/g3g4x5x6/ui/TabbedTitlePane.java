@@ -25,6 +25,7 @@ public class TabbedTitlePane extends JPanel {
         JLabel iconLabel = new JLabel();
         iconLabel.setHorizontalAlignment( SwingConstants.CENTER );
         iconLabel.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"));
+        iconLabel.setText(title);
 
 
         JTextField titleField = new JTextField();
@@ -37,8 +38,6 @@ public class TabbedTitlePane extends JPanel {
         titleField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // 选中标签页
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.indexOfTab(title));
                 if (e.getClickCount() == 2){
                     titleField.setEditable(true);
                     titleField.setOpaque(true);
@@ -54,7 +53,7 @@ public class TabbedTitlePane extends JPanel {
         });
 
         this.add(iconLabel);
-        this.add(titleField);
+//        this.add(titleField);
     }
 
 }

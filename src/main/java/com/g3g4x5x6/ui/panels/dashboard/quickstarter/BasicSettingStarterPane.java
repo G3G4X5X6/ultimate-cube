@@ -111,16 +111,13 @@ public class BasicSettingStarterPane extends JPanel {
                     log.debug(password);
 
                     String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
-                    mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                    mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(mainTabbedPane,
                                     createTerminalWidget(),
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
-                                    String.valueOf(passField.getPassword())),
-                            "快速连接",
-                            mainTabbedPane.getTabCount());
-                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getTabCount()-1, new TabbedTitlePane(defaultTitle, mainTabbedPane));
+                                    String.valueOf(passField.getPassword())));
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
                 } else {
                     DialogUtil.warn("连接失败");

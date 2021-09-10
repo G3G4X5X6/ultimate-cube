@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.panels.session;
 
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.CloseButton;
 import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
@@ -114,19 +115,14 @@ public class SshPane extends BaseSessionPane {
                     log.debug(password);
 
                     String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
-                    mainTabbedPane.insertTab(defaultTitle, null,
+
+                    mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(mainTabbedPane, createTerminalWidget(),
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
-                                    String.valueOf(passField.getPassword())),
-                            "",
-                            mainTabbedPane.getSelectedIndex());
-                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex() - 1, new TabbedTitlePane(defaultTitle, mainTabbedPane));
-                    if (mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()) != "添加") {
-                        mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
-                    }
-                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getSelectedIndex());
+                                    String.valueOf(passField.getPassword())), "奥里给", mainTabbedPane.getSelectedIndex());
+                    mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
                 } else {
                     DialogUtil.warn("连接失败");
                 }
