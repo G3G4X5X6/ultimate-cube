@@ -22,7 +22,7 @@ import java.util.Date;
 public class ConnectionPane extends JPanel {
     private BorderLayout borderLayout = new BorderLayout();
 
-    private JPanel toolPane;
+    private JToolBar toolBar;
 
     private JScrollPane scrollPane;
     private JTable table;
@@ -31,11 +31,9 @@ public class ConnectionPane extends JPanel {
 
     public ConnectionPane() {
         this.setLayout(borderLayout);
-
-        FlowLayout flowLayout = new FlowLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
-        toolPane = new JPanel();
-        toolPane.setLayout(flowLayout);
+        
+        toolBar = new JToolBar();
+        toolBar.setFloatable(false);
 
         FlatButton flushBtn = new FlatButton();
         flushBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
@@ -52,7 +50,7 @@ public class ConnectionPane extends JPanel {
             }
         });
 
-        toolPane.add(flushBtn);
+        toolBar.add(flushBtn);
 
         table = new JTable();
         tableModel = new DefaultTableModel() {
@@ -104,7 +102,7 @@ public class ConnectionPane extends JPanel {
 //        table.getColumn("Key").setCellRenderer(leftRenderer );
 //        table.getColumn("Value").setCellRenderer(leftRenderer );
 
-        this.add(toolPane, BorderLayout.NORTH);
+        this.add(toolBar, BorderLayout.NORTH);
         this.add(scrollPane, BorderLayout.CENTER);
     }
 

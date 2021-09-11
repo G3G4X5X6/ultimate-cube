@@ -19,7 +19,7 @@ import java.awt.event.ActionEvent;
 public class SysinfoPane extends JPanel {
     private BorderLayout borderLayout = new BorderLayout();
 
-    private JPanel toolPane;
+    private JToolBar toolBar;
 
     private JScrollPane scrollPane;
     private JTable table;
@@ -29,10 +29,8 @@ public class SysinfoPane extends JPanel {
     public SysinfoPane() {
         this.setLayout(borderLayout);
 
-        FlowLayout flowLayout = new FlowLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
-        toolPane = new JPanel();
-        toolPane.setLayout(flowLayout);
+        toolBar = new JToolBar();
+        toolBar.setFloatable(false);
 
         FlatButton flushBtn = new FlatButton();
         flushBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
@@ -49,7 +47,7 @@ public class SysinfoPane extends JPanel {
             }
         });
 
-        toolPane.add(flushBtn);
+        toolBar.add(flushBtn);
 
         table = new JTable();
         tableModel = new DefaultTableModel(){
@@ -96,7 +94,7 @@ public class SysinfoPane extends JPanel {
         leftRenderer.setHorizontalAlignment(JTextField.LEFT);
         table.getColumn("Value").setCellRenderer(leftRenderer );
 
-        this.add(toolPane, BorderLayout.NORTH);
+        this.add(toolBar, BorderLayout.NORTH);
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
