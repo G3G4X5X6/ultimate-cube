@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.panels.ssh;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.panels.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpPane;
 import com.jediterm.terminal.ui.JediTermWidget;
 
@@ -19,7 +20,7 @@ public class SshTabbedPane extends JTabbedPane {
         this.addTab("SSH", Ssh);
         this.addTab("SFTP", new SftpPane(hostField, portField, userField, passField));
         this.addTab("Monitor", new JPanel());
-        this.addTab("Editor", new JPanel());
+        this.addTab("Editor", new EditorPane());
 
         customComponents();
     }
@@ -43,7 +44,7 @@ public class SshTabbedPane extends JTabbedPane {
             trailing.add( new JButton( new FlatSVGIcon( "com/g3g4x5x6/ui/icons/diff.svg" ) ) );
             trailing.add( new JButton( new FlatSVGIcon( "com/g3g4x5x6/ui/icons/listFiles.svg" ) ) );
 //        }
-        this.putClientProperty( TABBED_PANE_LEADING_COMPONENT, leading );
+//        this.putClientProperty( TABBED_PANE_LEADING_COMPONENT, leading );
         this.putClientProperty( TABBED_PANE_TRAILING_COMPONENT, trailing );
     }
 

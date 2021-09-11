@@ -6,10 +6,12 @@
 
 
 ## 2021-09-
-### ultimateshell_v0.11.8-alpha
+### ultimateshell_v0.14.8-alpha
 #### Added
 - 增加会话导入、导出备份功能（导入前需删除旧数据库，否则会出现标签与会话不对应的情况）
 - 增加软件更新检查功能
+- 增加Windows网络连接面板，可查看外联IP归属地
+- 增加Windows系统信息面板
 
 #### Fixed
 

@@ -1,8 +1,9 @@
-package com.g3g4x5x6.ui.panels.dashboard;
+package com.g3g4x5x6.ui.panels;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.panels.dashboard.NotePane;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -30,11 +31,8 @@ import java.util.Base64;
 import java.util.Date;
 
 
-/**
- * 备忘笔记
- */
 @Slf4j
-public class NotePane extends JPanel {
+public class EditorPane extends JPanel {
     private BorderLayout borderLayout;
     private JToolBar toolBar;
     private JPanel editorPane;
@@ -55,7 +53,7 @@ public class NotePane extends JPanel {
     private JCheckBox regexCB;
     private JCheckBox matchCaseCB;
 
-    public NotePane() {
+    public EditorPane() {
         borderLayout = new BorderLayout();
         toolBar = new JToolBar();
         editorPane = new JPanel();
@@ -73,6 +71,7 @@ public class NotePane extends JPanel {
 
     private void initToolBar() {
         toolBar.setFloatable(false);
+
         FlatButton listBtn = new FlatButton();
         listBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         listBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg"));
@@ -81,8 +80,6 @@ public class NotePane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("打开备忘录列表");
-                NoteDialog noteDialog = new NoteDialog();
-                noteDialog.setVisible(true);
             }
         });
 
@@ -211,6 +208,7 @@ public class NotePane extends JPanel {
         toolBar.add(saveBtn);
         toolBar.add(importBtn);
         toolBar.add(exportBtn);
+        toolBar.add(Box.createHorizontalGlue());
         toolBar.add(titleField);
     }
 
