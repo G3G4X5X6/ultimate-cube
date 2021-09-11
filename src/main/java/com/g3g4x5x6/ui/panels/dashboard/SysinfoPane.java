@@ -34,7 +34,7 @@ public class SysinfoPane extends JPanel {
 
         FlatButton flushBtn = new FlatButton();
         flushBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
-        flushBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/buildLoadChanges.svg"));
+        flushBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
         flushBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

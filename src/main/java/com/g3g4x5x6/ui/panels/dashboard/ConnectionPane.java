@@ -37,7 +37,7 @@ public class ConnectionPane extends JPanel {
 
         FlatButton flushBtn = new FlatButton();
         flushBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
-        flushBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/buildLoadChanges.svg"));
+        flushBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
         flushBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -81,13 +81,6 @@ public class ConnectionPane extends JPanel {
 
         table.setModel(tableModel);
         tableModel.setColumnIdentifiers(columnNames);
-        // "Proto", "Local Address", "Foreign Address", "State", "PID"
-//        table.getColumn("Proto").setMaxWidth(100);
-//        table.getColumn("Local Address").setMinWidth(150);
-//        table.getColumn("Local Address").setWidth(150);
-//        table.getColumn("State").setMaxWidth(100);
-//        table.getColumn("State").setMinWidth(100);
-//        table.getColumn("PID").setMaxWidth(100);
 
         scrollPane = new JScrollPane(table);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -96,11 +89,6 @@ public class ConnectionPane extends JPanel {
         DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/connector.svg"));
         table.getColumn("Proto").setCellRenderer(rightRenderer);
-
-//        DefaultTableCellRenderer leftRenderer  =  new DefaultTableCellRenderer();
-//        leftRenderer.setHorizontalAlignment(JTextField.LEFT);
-//        table.getColumn("Key").setCellRenderer(leftRenderer );
-//        table.getColumn("Value").setCellRenderer(leftRenderer );
 
         this.add(toolBar, BorderLayout.NORTH);
         this.add(scrollPane, BorderLayout.CENTER);
