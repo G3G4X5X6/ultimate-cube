@@ -1,6 +1,8 @@
 package com.g3g4x5x6.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.jarod.qqwry.IPZone;
+import com.github.jarod.qqwry.QQWry;
 
 import java.io.*;
 import java.net.*;
@@ -122,6 +124,18 @@ public class CommonUtil {
             e.printStackTrace();
         }
         return b.toString();
+    }
+
+    public static String queryIp(String ip){
+        QQWry qqwry = null; // load qqwry.dat from classpath
+        try {
+            qqwry = new QQWry();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        IPZone ipzone = qqwry.findIP(ip);
+        System.out.printf("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
+        return String.format("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
     }
 
     public static Boolean isWin(){

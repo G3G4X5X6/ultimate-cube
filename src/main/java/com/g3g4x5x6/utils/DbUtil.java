@@ -153,6 +153,8 @@ public class DbUtil {
                 int insertSettings = statement.executeUpdate("" +
                         "INSERT INTO settings VALUES (null, 'theme', '3', null );" +
                         "INSERT INTO settings VALUES (null, 'theme_enable', '0', null);" +
+                        "INSERT INTO settings VALUES (null, 'qqwry', '/home', null);" +
+                        "INSERT INTO settings VALUES (null, 'qqwry_enable', '0', null);" +
                         "INSERT INTO settings VALUES (null, 'terminal_color_enable', '0', null);");
 
                 int effectTheme = statement.executeUpdate("CREATE TABLE theme (" +

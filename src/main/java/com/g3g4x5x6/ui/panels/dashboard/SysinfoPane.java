@@ -1,10 +1,15 @@
 package com.g3g4x5x6.ui.panels.dashboard;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -14,28 +19,100 @@ import java.awt.*;
 public class SysinfoPane extends JPanel {
     private BorderLayout borderLayout = new BorderLayout();
 
+    private JPanel toolPane;
+
+    private JScrollPane scrollPane;
+    private JTable table;
+    private DefaultTableModel tableModel;
+    private String[] columnNames = { "Key", "Value"};
+
     public SysinfoPane() {
         this.setLayout(borderLayout);
+
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        toolPane = new JPanel();
+        toolPane.setLayout(flowLayout);
+
+        FlatButton flushBtn = new FlatButton();
+        flushBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
+        flushBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/buildLoadChanges.svg"));
+        flushBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        flushWinTable();
+                    }
+                }).start();
+            }
+        });
+
+        toolPane.add(flushBtn);
+
+        table = new JTable();
+        tableModel = new DefaultTableModel(){
+            // 不可编辑
+            @Override
+            public boolean isCellEditable(int row,int column){
+                if (column == 0){
+                    return false;
+                }
+                return true;
+            }
+        };
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true){
                     try {
-                        CommonUtil.generateSystemInfo();
-                        JTextArea infoTextArea = new JTextArea();
-                        infoTextArea.setEditable(false);
-                        infoTextArea.setText(CommonUtil.getSystemInfo());
-                        JScrollPane scrollPane = new JScrollPane(infoTextArea);
-                        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                        add(scrollPane, BorderLayout.CENTER);
+                        flushWinTable();
                         Thread.sleep(1000*60*10);
+                        log.debug("刷新系统信息");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }).start();
+
+        table.setModel(tableModel);
+        tableModel.setColumnIdentifiers(columnNames);
+        table.getColumn("Key").setMinWidth(300);
+        table.getColumn("Key").setMaxWidth(300);
+        table.setDragEnabled(false);
+
+        scrollPane = new JScrollPane(table);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        DefaultTableCellRenderer rightRenderer  =  new DefaultTableCellRenderer();
+        rightRenderer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/intersystemCache.svg"));
+        table.getColumn("Key").setCellRenderer(rightRenderer );
+
+        DefaultTableCellRenderer leftRenderer  =  new DefaultTableCellRenderer();
+        leftRenderer.setHorizontalAlignment(JTextField.LEFT);
+        table.getColumn("Value").setCellRenderer(leftRenderer );
+
+        this.add(toolPane, BorderLayout.NORTH);
+        this.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void flushWinTable(){
+        tableModel.setRowCount(0);
+        CommonUtil.generateSystemInfo();
+        String info = CommonUtil.getSystemInfo();
+        for (String line : info.split("\n")){
+            if (!line.strip().equals("")){
+                String[] row = line.split(":");
+                if (row[0].strip().startsWith("[") || row.length != 2){
+                    continue;
+                }
+                String tmpKey = "<html><strong>" + row[0].strip() + "</strong</html>";
+                tableModel.addRow(new String[]{tmpKey, row[1].strip()});
+            }
+        }
     }
 }
