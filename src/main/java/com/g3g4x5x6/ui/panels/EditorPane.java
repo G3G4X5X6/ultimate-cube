@@ -15,11 +15,14 @@ import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,6 +32,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
 import java.util.Date;
+import java.util.concurrent.Flow;
 
 
 @Slf4j
@@ -36,10 +40,10 @@ public class EditorPane extends JPanel {
     private BorderLayout borderLayout;
     private JToolBar toolBar;
     private JPanel editorPane;
-    private JPanel statusBar;
+    private JToolBar statusBar;
 
     // 新建 note
-    private String current_note_id = "";
+    private String current_id = "";
 
     // TODO toolBar
     private JTextField titleField;
@@ -56,8 +60,10 @@ public class EditorPane extends JPanel {
     public EditorPane() {
         borderLayout = new BorderLayout();
         toolBar = new JToolBar();
+        toolBar.setFloatable(false);
         editorPane = new JPanel();
-        statusBar = new JPanel();
+        statusBar = new JToolBar();
+        statusBar.setFloatable(false);
 
         initToolBar();
         initEditorPane();
@@ -70,49 +76,47 @@ public class EditorPane extends JPanel {
     }
 
     private void initToolBar() {
-        toolBar.setFloatable(false);
-
         FlatButton listBtn = new FlatButton();
         listBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         listBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg"));
-        listBtn.setToolTipText("笔记列表");
+        listBtn.setToolTipText("最近打开");
         listBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("打开备忘录列表");
+                log.debug("最近打开列表");
             }
         });
 
         FlatButton addBtn = new FlatButton();
         addBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         addBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
-        addBtn.setToolTipText("新建笔记");
+        addBtn.setToolTipText("新建文件");
         addBtn.addActionListener(new AbstractAction() {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("新建笔记");
+                log.debug("新建文件");
                 // TODO 1. 判断是否为空，不为空则提示是否保存现有备忘内容，否则清空
-                if (!textArea.getText().strip().equals("") || !current_note_id.equals("")) {
-                    int ret = JOptionPane.showConfirmDialog(App.mainFrame, "是否保存现有备忘内容？", "提示", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (!textArea.getText().strip().equals("") || !current_id.equals("")) {
+                    int ret = JOptionPane.showConfirmDialog(App.mainFrame, "是否保存现有文件内容？", "提示", JOptionPane.YES_NO_CANCEL_OPTION);
                     log.debug(">>>>>>>>>>>>>>>>" + ret);
                     if (ret == 0) {
-                        log.debug("保存现有备忘内容");
+                        log.debug("保存现有文件内容");
                         insertOrUpdate();
                         // 先保存, 再清空
-                        current_note_id = "";
+                        current_id = "";
                         titleField.setText("");
                         textArea.setText("");
                     } else if (ret == 1) {
                         // 不保存, 清空
-                        current_note_id = "";
+                        current_id = "";
                         titleField.setText("");
                         textArea.setText("");
                     }
                     // 取消
-                }else{
+                } else {
                     // TODO fixed
-                    current_note_id = "";
+                    current_id = "";
                     titleField.setText("");
                     textArea.setText("");
                 }
@@ -122,7 +126,7 @@ public class EditorPane extends JPanel {
         FlatButton saveBtn = new FlatButton();
         saveBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         saveBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/Save.svg"));
-        saveBtn.setToolTipText("保存笔记");
+        saveBtn.setToolTipText("保存文件");
         saveBtn.addActionListener(new AbstractAction() {
             @SneakyThrows
             @Override
@@ -135,13 +139,13 @@ public class EditorPane extends JPanel {
         FlatButton importBtn = new FlatButton();
         importBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         importBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/import.svg"));
-        importBtn.setToolTipText("导入笔记");
+        importBtn.setToolTipText("导入文件");
         importBtn.addActionListener(new AbstractAction() {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("导入笔记");
-                if (current_note_id.equals("")) {
+                log.debug("导入文件");
+                if (current_id.equals("")) {
                     if (textArea.getText().strip().equals("")) {
                         // 直接打开
                         log.debug("openNote DIR");
@@ -149,18 +153,18 @@ public class EditorPane extends JPanel {
                     } else {
                         // 询问是否保存现有备忘笔记
                         log.debug("Tips");
-                        if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
+                        if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有文件？") == 0) {
                             insertOrUpdate();
-                            current_note_id = "";
+                            current_id = "";
                             importFile();
                         }
 
                     }
                 } else {
-                    if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
+                    if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有文件？") == 0) {
                         insertOrUpdate();
                     }
-                    current_note_id = "";
+                    current_id = "";
                     importFile();
                 }
             }
@@ -169,11 +173,11 @@ public class EditorPane extends JPanel {
         FlatButton exportBtn = new FlatButton();
         exportBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         exportBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/export.svg"));
-        exportBtn.setToolTipText("导出笔记");
+        exportBtn.setToolTipText("导出文件");
         exportBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("导出笔记");
+                log.debug("导出文件");
                 // 创建一个默认的文件选取器
                 JFileChooser fileChooser = new JFileChooser();
                 // 设置默认显示的文件夹为当前文件夹
@@ -201,7 +205,7 @@ public class EditorPane extends JPanel {
 
         titleField = new JFormattedTextField("");
         titleField.setColumns(15);
-        titleField.putClientProperty("JTextField.placeholderText", "备忘标题");
+        titleField.putClientProperty("JTextField.placeholderText", "全路径文件名，例如： /home/security/hello.sh");
 
         toolBar.add(listBtn);
         toolBar.add(addBtn);
@@ -215,7 +219,7 @@ public class EditorPane extends JPanel {
     private void initEditorPane() {
         editorPane.setLayout(new BorderLayout());
         textArea = createTextArea();
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_MARKDOWN);
+        textArea.setSyntaxEditingStyle("text/clojure");
         textArea.setCodeFoldingEnabled(true);
         sp = new RTextScrollPane(textArea);
         editorPane.add(sp);
@@ -225,9 +229,30 @@ public class EditorPane extends JPanel {
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.LEFT);
         statusBar.setLayout(flowLayout);
-
-        statusBar.add(new JLabel("<html><font color='green'><strong>MARKDOWN</strong></font></html>"));
-        statusBar.add(Box.createGlue());
+        statusBar.setBorder(null);
+        statusBar.add(new JLabel("<html><font color='green'><strong>Language</strong></font></html>"));
+        // 语言设置
+        JComboBox<String> langComboBxo = new JComboBox<>();
+        Class syntaxConstantsClass = SyntaxConstants.class;
+        Field[] fields = syntaxConstantsClass.getDeclaredFields();
+        for (Field field : fields) {
+            try {
+                langComboBxo.addItem((String) field.get(syntaxConstantsClass));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        langComboBxo.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    log.debug("选中: " + langComboBxo.getSelectedIndex() + " = " + langComboBxo.getSelectedItem());
+                    textArea.setSyntaxEditingStyle((String) langComboBxo.getSelectedItem());
+                }
+            }
+        });
+        statusBar.add(langComboBxo);
+        statusBar.add(Box.createHorizontalGlue());
         // 主题设置
         String[] theme_list = new String[]{"default", "dark", "default-alt", "druid", "eclipse", "idea", "monokai", "vs"};
         JComboBox<String> themeComboBxo = new JComboBox<>(theme_list);
@@ -247,13 +272,14 @@ public class EditorPane extends JPanel {
                 }
             }
         });
+        statusBar.add(new JLabel("<html><font color='green'><strong>Theme</strong></font></html>"));
         statusBar.add(themeComboBxo);
+        statusBar.add(Box.createGlue());
         statusBar.add(Box.createGlue());
         statusBar.add(Box.createGlue());
 
         // Create a toolbar with searching options.
         searchField = new JTextField(30);
-        statusBar.add(searchField);
         final FlatButton nextButton = new FlatButton();
         nextButton.setButtonType(FlatButton.ButtonType.toolBarButton);
         nextButton.setIcon(new FlatSVGIcon("icons/back.svg"));
@@ -283,7 +309,6 @@ public class EditorPane extends JPanel {
                 }
             }
         });
-        statusBar.add(nextButton);
         searchField.addActionListener(e -> nextButton.doClick(0));
         FlatButton prevButton = new FlatButton();
         prevButton.setButtonType(FlatButton.ButtonType.toolBarButton);
@@ -314,11 +339,42 @@ public class EditorPane extends JPanel {
                 }
             }
         });
-        statusBar.add(prevButton);
         regexCB = new JCheckBox("Regex");
-        statusBar.add(regexCB);
         matchCaseCB = new JCheckBox("Match Case");
+
+        JToggleButton searchBtn = new JToggleButton();
+        searchBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
+        searchBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (searchBtn.isSelected()) {
+                    log.debug("已选中搜索按钮");
+                    searchField.setVisible(true);
+                    nextButton.setVisible(true);
+                    prevButton.setVisible(true);
+                    regexCB.setVisible(true);
+                    matchCaseCB.setVisible(true);
+                } else {
+                    log.debug("已取消选中搜索按钮");
+                    searchField.setVisible(false);
+                    nextButton.setVisible(false);
+                    prevButton.setVisible(false);
+                    regexCB.setVisible(false);
+                    matchCaseCB.setVisible(false);
+                }
+            }
+        });
+        statusBar.add(searchField);
+        statusBar.add(nextButton);
+        statusBar.add(prevButton);
+        statusBar.add(regexCB);
         statusBar.add(matchCaseCB);
+        searchField.setVisible(false);
+        nextButton.setVisible(false);
+        prevButton.setVisible(false);
+        regexCB.setVisible(false);
+        matchCaseCB.setVisible(false);
+        statusBar.add(searchBtn);
     }
 
     private RSyntaxTextArea createTextArea() {
@@ -374,14 +430,14 @@ public class EditorPane extends JPanel {
         String createTime = String.valueOf(new Date().getTime());
         String modifyTime = createTime;
         String comment = "暂无";
-        if (current_note_id.equals("")) {
+        if (current_id.equals("")) {
             // TODO 1. 新建保存
             String sql = "INSERT INTO note VALUES(null, '" + title + "', '" + content + "', '" + createTime + "', '" + modifyTime + "', '" + comment + "');";
             insertText(sql, createTime);
         } else {
             // TODO 2. 更新保存
             modifyTime = String.valueOf(new Date().getTime());
-            String sql = "UPDATE note SET title='" + title + "', content='" + content + "', modify_time='" + modifyTime + "', comment='" + comment + "' WHERE id=" + current_note_id + ";";
+            String sql = "UPDATE note SET title='" + title + "', content='" + content + "', modify_time='" + modifyTime + "', comment='" + comment + "' WHERE id=" + current_id + ";";
             updateText(sql);
         }
     }
@@ -397,7 +453,7 @@ public class EditorPane extends JPanel {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(sqlForId);
                 while (resultSet.next()) {
-                    current_note_id = resultSet.getString("id");
+                    current_id = resultSet.getString("id");
                 }
                 DbUtil.close(statement);
             } catch (SQLException throwables) {
@@ -418,7 +474,7 @@ public class EditorPane extends JPanel {
     }
 
     private void openNote(String id) {
-        current_note_id = id;
+        current_id = id;
         String sqlForId = "SELECT * FROM note where id=" + id;
         try {
             Connection connection = DbUtil.getConnection();
@@ -502,7 +558,7 @@ public class EditorPane extends JPanel {
                             noteId = (String) tableModel.getValueAt(row, 0);
                             log.debug("row: " + noteId);
                         }
-                        if (current_note_id.equals("")) {
+                        if (current_id.equals("")) {
                             if (textArea.getText().strip().equals("")) {
                                 // 直接打开
                                 log.debug("openNote DIR");
@@ -585,7 +641,7 @@ public class EditorPane extends JPanel {
                 while (resultSet.next()) {
                     tableModel.addRow(new String[]{
                             resultSet.getString("id"),
-                            resultSet.getString("id").equals(current_note_id) ?
+                            resultSet.getString("id").equals(current_id) ?
                                     "<html><strong><font color='red'>" + getCurrentNote() + "</font></strong></html>" :
                                     resultSet.getString("title")
                     });
@@ -628,9 +684,9 @@ public class EditorPane extends JPanel {
                                 } catch (SQLException throwables) {
                                     throwables.printStackTrace();
                                 }
-                                // 删除的笔记如果正在编辑，需重置 current_note_id = ""
-                                if (noteId.equals(current_note_id)){
-                                    current_note_id = "";
+                                // 删除的笔记如果正在编辑，需重置 current_id = ""
+                                if (noteId.equals(current_id)) {
+                                    current_id = "";
                                 }
                             }
                         }
@@ -652,11 +708,11 @@ public class EditorPane extends JPanel {
 
         private String getCurrentNote() {
             String themeName = "";
-            if (!current_note_id.equals("")) {
+            if (!current_id.equals("")) {
                 try {
                     Connection connection = DbUtil.getConnection();
                     Statement statement = connection.createStatement();
-                    ResultSet resultSet = statement.executeQuery("SELECT * From note WHERE id =" + current_note_id);
+                    ResultSet resultSet = statement.executeQuery("SELECT * From note WHERE id =" + current_id);
                     while (resultSet.next()) {
                         themeName = resultSet.getString("title");
                     }
