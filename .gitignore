@@ -12,5 +12,4 @@ buildNumber.properties
 
 # 自定义
 logs
-src/test/*
 ultilmateshell.sqlite
