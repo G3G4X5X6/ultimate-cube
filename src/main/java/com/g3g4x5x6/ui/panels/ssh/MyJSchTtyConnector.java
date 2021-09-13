@@ -216,7 +216,6 @@ public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnec
             this.myOutputStream.write(bytes);
             this.myOutputStream.flush();
         }
-
     }
 
     public boolean isConnected() {
