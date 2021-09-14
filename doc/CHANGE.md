@@ -5,6 +5,16 @@
 1. 修订号：当你做了向下兼容的问题修正。
 
 
+## 2021-09-
+### ultimateshell_v0.16.13-alpha
+#### Added
+- 增加串口终端连接
+- 支持自动检测串口
+
+#### Fixed
+
+
+
 ## 2021-09-11
 ### ultimateshell_v0.14.13-alpha
 #### Added
