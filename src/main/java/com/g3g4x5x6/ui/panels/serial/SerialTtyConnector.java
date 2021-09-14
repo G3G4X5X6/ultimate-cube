@@ -1,5 +1,6 @@
+package com.g3g4x5x6.ui.panels.serial;
+
 import com.fazecast.jSerialComm.SerialPort;
-import com.jcraft.jsch.Session;
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import lombok.extern.slf4j.Slf4j;
@@ -8,24 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Slf4j
 public class SerialTtyConnector implements TtyConnector{
 
-    public static final int DEFAULT_PORT = 23;
     private InputStream myInputStream;
     private OutputStream myOutputStream;
-    private Session mySession;
-    private AtomicBoolean isInitiated;
-    private int myPort;
-    private String myUser;
-    private String myHost;
-    private String myPassword;
-    private Dimension myPendingTermSize;
     private InputStreamReader myInputStreamReader;
-    private OutputStreamWriter myOutputStreamWriter;
 
     private SerialPort comPort;
 
@@ -33,26 +24,25 @@ public class SerialTtyConnector implements TtyConnector{
     public SerialTtyConnector() {
         this.myInputStream = null;
         this.myOutputStream = null;
-        this.myPort = 23;
-        this.myUser = null;
-        this.myHost = null;
-        this.myPassword = null;
     }
+
+    public SerialTtyConnector(SerialPort comPort) {
+        this.comPort = comPort;
+        this.myInputStream = this.comPort.getInputStream();
+        this.myInputStreamReader = new InputStreamReader(this.myInputStream);
+        this.myOutputStream = this.comPort.getOutputStream();
+    }
+
 
     @Override
     public boolean init(Questioner questioner) {
-        comPort = SerialPort.getCommPorts()[0];
-        comPort.openPort();
-        comPort.setComPortTimeouts(SerialPort.TIMEOUT_READ_SEMI_BLOCKING, 0, 0);
-        this.myInputStream = comPort.getInputStream();
-        this.myInputStreamReader = new InputStreamReader(comPort.getInputStream());
-        this.myOutputStream = comPort.getOutputStream();
         return true;
     }
 
     @Override
     public void close() {
-
+        log.debug("Closed comPort");
+        comPort.closePort();
     }
 
     @Override
@@ -62,7 +52,7 @@ public class SerialTtyConnector implements TtyConnector{
 
     @Override
     public String getName() {
-        return null;
+        return comPort.getDescriptivePortName();
     }
 
     @Override

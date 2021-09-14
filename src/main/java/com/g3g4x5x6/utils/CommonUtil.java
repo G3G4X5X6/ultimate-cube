@@ -1,16 +1,31 @@
 package com.g3g4x5x6.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.fazecast.jSerialComm.SerialPort;
 import com.github.jarod.qqwry.IPZone;
 import com.github.jarod.qqwry.QQWry;
 
 import java.io.*;
 import java.net.*;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class CommonUtil {
+    private static HashSet<SerialPort> ports = new HashSet<>();
+
     private CommonUtil() {
     }
+
+    static {
+        for (SerialPort port : SerialPort.getCommPorts()){
+            ports.add(port);
+        }
+    }
+
+    public static HashSet<SerialPort> getCommPorts(){
+        return ports;
+    }
+
 
     /**
      * example: 这将获取所有的版本

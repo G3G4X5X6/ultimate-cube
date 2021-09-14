@@ -1,5 +1,7 @@
 package com.g3g4x5x6.ui.panels.session;
 
+import com.g3g4x5x6.ui.panels.serial.SerialPane;
+
 import javax.swing.*;
 
 public class CreateSessionTabbedPane extends JTabbedPane {
