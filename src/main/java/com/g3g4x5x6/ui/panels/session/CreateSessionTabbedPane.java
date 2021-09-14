@@ -6,7 +6,7 @@ public class CreateSessionTabbedPane extends JTabbedPane {
 
     public CreateSessionTabbedPane(JTabbedPane mainTabbedPane) {
         this.addTab("SSH", new SshPane(mainTabbedPane));
-        this.addTab("Serial", new SerialPane());
+        this.addTab("Serial", new SerialPane(mainTabbedPane));
         this.addTab("Telnet", new JPanel());
         this.addTab("RDP", new JPanel());
         this.addTab("SFTP", new JPanel());
