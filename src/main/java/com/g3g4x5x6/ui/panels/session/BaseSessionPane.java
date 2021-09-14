@@ -1,8 +1,12 @@
 package com.g3g4x5x6.ui.panels.session;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
+@Slf4j
 public class BaseSessionPane extends JPanel {
     private BorderLayout borderLayout = new BorderLayout();
 
@@ -30,14 +34,33 @@ public class BaseSessionPane extends JPanel {
         advancedSettingTabbedPane.addTab(getAdvancedSettingPaneTitle(), advancedSettingPane);
 
         FlowLayout flowLayout = new FlowLayout();
-        flowLayout.setAlignment(FlowLayout.CENTER);
+        flowLayout.setAlignment(FlowLayout.RIGHT);
         btnPane.setLayout(flowLayout);
+
+        saveBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("保存会话");
+            }
+        });
+        cancelBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("取消");
+            }
+        });
+//        saveBtn.setVisible(false);
+        cancelBtn.setVisible(false);
         btnPane.add(saveBtn);
         btnPane.add(cancelBtn);
 
         this.add(basicSettingTabbedPane, BorderLayout.NORTH);
         this.add(advancedSettingTabbedPane, BorderLayout.CENTER);
         this.add(btnPane, BorderLayout.SOUTH);
+    }
+
+    public void saveSession(){
+
     }
 
     public BasicSettingPane getBasicSettingPane() {
