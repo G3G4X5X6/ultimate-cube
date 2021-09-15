@@ -17,6 +17,8 @@ import java.awt.event.*;
 @Slf4j
 public class SerialPane extends JPanel {
     private static final int[] FLOW_CONTROL = new int[]{0, 1, 16, 256, 4096, 65536, 1048576};
+    private static final int[] STOP_BIT = new int[]{1, 2, 3};
+
     private JTabbedPane mainTabbedPane;
     private JTabbedPane basicSettingTabbedPane;
     private String basicSettingPaneTitle;
@@ -144,9 +146,12 @@ public class SerialPane extends JPanel {
         dataBitPane.add(dataBitComboBox);
 
         // 停止位
+//        public static final int ONE_STOP_BIT = 1;
+//        public static final int ONE_POINT_FIVE_STOP_BITS = 2;
+//        public static final int TWO_STOP_BITS = 3;
         JPanel stopBitPane = new JPanel();
         JLabel stopBitLabel = new JLabel("停止位*");
-        String[] defaultStopBit = new String[]{"1", "2"};
+        String[] defaultStopBit = new String[]{"1", "1.5", "2"};
         stopBitComboBox = new JComboBox<>(defaultStopBit);
         stopBitComboBox.setEditable(true);
         stopBitPane.add(stopBitLabel);
@@ -220,7 +225,7 @@ public class SerialPane extends JPanel {
                 }
                 comPort.setBaudRate(Integer.valueOf(rateComboBox.getSelectedItem().toString()));
                 comPort.setNumDataBits(Integer.valueOf(dataBitComboBox.getSelectedItem().toString()));
-                comPort.setNumStopBits(Integer.valueOf(stopBitComboBox.getSelectedItem().toString()));
+                comPort.setNumStopBits(STOP_BIT[stopBitComboBox.getSelectedIndex()]);
                 comPort.setParity(parityBitComboBox.getSelectedIndex());
                 comPort.setFlowControl(FLOW_CONTROL[fcComboBox.getSelectedIndex()]);
                 comPort.openPort();
