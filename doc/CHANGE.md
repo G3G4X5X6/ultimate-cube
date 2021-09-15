@@ -6,10 +6,11 @@
 
 
 ## 2021-09-
-### ultimateshell_v0.16.13-alpha
+### ultimateshell_v0.17.13-alpha
 #### Added
-- 增加串口终端连接
+- 增加串口终端连接支持
 - 支持自动检测串口
+- 增加`Telnet`终端支持（暂不支持自动登录）
 
 #### Fixed
 

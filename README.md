@@ -35,13 +35,13 @@ See [the security file](SECURITY.md)!
 
 ## Features
 
-- [x] Support ssh, sftp
-- [x] Support multi-platform (Not tested)
+- [x] Support multi-platform
+- [x] Support 63 theme skins
 - [x] Support sessions manager
 - [x] Support local terminal
-- [x] Support 63 theme skins
-- [ ] Support serial terminal
-- [ ] Support Telnet
+- [x] Support ssh, sftp
+- [x] Support serial terminal
+- [x] Support Telnet
 - [ ] Support FTP
 - [ ] Support RDP
 - [ ] Support VNC
@@ -61,8 +61,9 @@ mvn install:install-file -Dfile=C:\Users\Security\IdeaProjects\UltimateShell\src
 ## Usage
 
 ```
-# JDK 11+
+# JDK 11+ 
 java -jar UltimateShell-${version}-SNAPSHOT-jar-with-dependencies.jar
+# Or double click
 ```
 See [Project wiki](https://github.com/G3G4X5X6/ultimateshell/wiki)
 
