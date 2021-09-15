@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels;
+package com.g3g4x5x6.ui.panels.sftp;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;

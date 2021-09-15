@@ -12,6 +12,7 @@ import java.awt.event.*;
  * 选项卡标题面板
  */
 @Slf4j
+@Deprecated
 public class TabbedTitlePane extends JPanel {
 
     public TabbedTitlePane(String title, JTabbedPane mainTabbedPane) {

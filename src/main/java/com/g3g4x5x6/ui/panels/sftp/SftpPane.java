@@ -1,12 +1,10 @@
-package com.g3g4x5x6.ui.panels.ssh.sftp;
+package com.g3g4x5x6.ui.panels.sftp;
 
 
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
-import com.g3g4x5x6.ui.panels.SftpBrowser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
-import org.apache.sshd.client.session.SessionFactory;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 

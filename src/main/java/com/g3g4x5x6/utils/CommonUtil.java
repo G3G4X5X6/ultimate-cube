@@ -26,6 +26,15 @@ public class CommonUtil {
         return ports;
     }
 
+    /**
+     * 未测试
+     */
+    public static void updateCommPorts(){
+        for (SerialPort port : SerialPort.getCommPorts()){
+            ports.add(port);
+        }
+    }
+
 
     /**
      * example: 这将获取所有的版本

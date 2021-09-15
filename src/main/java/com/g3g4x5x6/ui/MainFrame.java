@@ -331,10 +331,10 @@ public class MainFrame extends JFrame {
                             int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
                             if (code == 0) {
                                 // TODO 更新
-                                log.debug("马上更新");
+                                log.debug("马上下载更新");
                             } else {
                                 // TODO 暂不更新
-                                log.debug("暂不更新");
+                                log.debug("暂不下载更新");
                             }
                         }
                     });

@@ -2,14 +2,11 @@ package com.g3g4x5x6.ui.panels.ssh;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.panels.EditorPane;
-import com.g3g4x5x6.ui.panels.ssh.sftp.SftpPane;
+import com.g3g4x5x6.ui.panels.sftp.SftpPane;
 import com.jediterm.terminal.ui.JediTermWidget;
 
 import javax.swing.*;
 
-import java.awt.*;
-
-import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_LEADING_COMPONENT;
 import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT;
 
 public class SshTabbedPane extends JTabbedPane {

@@ -3,6 +3,8 @@ package com.g3g4x5x6.ui;
 
 import javax.swing.*;
 
+
+@Deprecated
 public class AddButton extends JButton {
 
     public AddButton(){
