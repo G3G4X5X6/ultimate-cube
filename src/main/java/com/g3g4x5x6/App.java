@@ -48,8 +48,12 @@ public class App {
     }
 
     public static void checkEnv() {
+        // TODO 检查是否启用自定义工作目录
+
+
         // TODO 检查程序工作目录
         String workspace = ConfigUtil.getWorkPath();
+
         // TODO 检查备忘笔记目录
         File note = new File(workspace + "/note");
         if (!note.exists()){
@@ -66,6 +70,13 @@ public class App {
             temp.mkdir();
         }
 
+        // TODO 检查工具目录
+        File tools = new File(workspace + "/tools");
+        if (!tools.exists()){
+            tools.mkdir();
+        }
+
         // TODO 检查用户配置
+
     }
 }

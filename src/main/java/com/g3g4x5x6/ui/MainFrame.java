@@ -88,6 +88,20 @@ public class MainFrame extends JFrame {
         }
     };
 
+    private AbstractAction tightVNCAction = new AbstractAction("TightVNC Viewer") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DialogUtil.info("敬请期待");
+        }
+    };
+
+    private AbstractAction freeRDPAction = new AbstractAction("FreeRDP") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DialogUtil.info("敬请期待");
+        }
+    };
+
     private AbstractAction themeAction = new AbstractAction("切换主题") {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -298,6 +312,9 @@ public class MainFrame extends JFrame {
         optionMenu.add(exportSessionAction);
         helpMenu.add(myAboutAction);
         toolMenu.add(myEditorAction);
+        toolMenu.addSeparator();
+        toolMenu.add(tightVNCAction);
+        toolMenu.add(freeRDPAction);
 
         // TODO 菜单栏
         this.setJMenuBar(menuBar);

@@ -82,6 +82,7 @@ public class TelnetPane extends JPanel {
         userField = new JTextField();
         userField.setColumns(8);
         userField.setText("Administrator");
+        userField.setEnabled(false);
         userPane.add(userLabel);
         userPane.add(userField);
 
@@ -91,6 +92,7 @@ public class TelnetPane extends JPanel {
         passField = new JPasswordField();
         passField.setColumns(8);
         passField.setText("12345678");
+        passField.setEnabled(false);
         passPane.add(passLabel);
         passPane.add(passField);
 
@@ -148,7 +150,7 @@ public class TelnetPane extends JPanel {
     }
 
     private Boolean testOpen() {
-        Boolean flag = false;
+        boolean flag = false;
         TelnetClient telnetClient = new TelnetClient();
         try {
             telnetClient.setConnectTimeout(2000);
