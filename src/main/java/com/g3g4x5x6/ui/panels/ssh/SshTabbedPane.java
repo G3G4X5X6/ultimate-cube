@@ -1,7 +1,7 @@
 package com.g3g4x5x6.ui.panels.ssh;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.panels.EditorPane;
+import com.g3g4x5x6.ui.panels.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.sftp.SftpPane;
 import com.jediterm.terminal.ui.JediTermWidget;
 

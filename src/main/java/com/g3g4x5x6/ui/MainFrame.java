@@ -11,6 +11,7 @@ import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
 import com.g3g4x5x6.ui.panels.session.AddPane;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.session.NewTabbedPane;
+import com.g3g4x5x6.ui.panels.tools.EncodeConversion;
 import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -85,6 +86,14 @@ public class MainFrame extends JFrame {
         public void actionPerformed(final ActionEvent e) {
             // TODO 内置编辑器
             DialogUtil.info("敬请期待");
+        }
+    };
+
+    private AbstractAction encodeConversionAction = new AbstractAction("文件编码转换") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EncodeConversion encodeConversion = new EncodeConversion();
+            encodeConversion.setVisible(true);
         }
     };
 
@@ -312,6 +321,8 @@ public class MainFrame extends JFrame {
         optionMenu.add(exportSessionAction);
         helpMenu.add(myAboutAction);
         toolMenu.add(myEditorAction);
+        toolMenu.addSeparator();
+        toolMenu.add(encodeConversionAction);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         toolMenu.add(freeRDPAction);

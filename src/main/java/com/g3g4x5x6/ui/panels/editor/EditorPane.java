@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels;
+package com.g3g4x5x6.ui.panels.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
