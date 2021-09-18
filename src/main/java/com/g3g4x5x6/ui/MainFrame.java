@@ -93,7 +93,6 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             EncodeConversion encodeConversion = new EncodeConversion();
-            encodeConversion.setVisible(true);
         }
     };
 

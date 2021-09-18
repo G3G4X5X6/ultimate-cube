@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.fazecast.jSerialComm.SerialPort;
 import com.github.jarod.qqwry.IPZone;
 import com.github.jarod.qqwry.QQWry;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 
 import java.io.*;
 import java.net.*;
@@ -33,6 +35,30 @@ public class CommonUtil {
         for (SerialPort port : SerialPort.getCommPorts()){
             ports.add(port);
         }
+    }
+
+    public static CharsetMatch checkCharset(InputStream input) {
+        //		BufferedInputStream bis = new BufferedInputStream(input);
+        CharsetDetector cd = new CharsetDetector();
+        try {
+            cd.setText(input);
+        } catch (IOException e) {
+            try {
+                input.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+        CharsetMatch cm = cd.detect();
+
+        //		if (cm != null) {
+        //			//reader = cm.getReader();
+        //			return cm.getName();
+        //		} else {
+        //			throw new UnsupportedCharsetException(null);
+        //		}
+        return cm;
     }
 
 
