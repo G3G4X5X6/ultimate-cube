@@ -2,8 +2,6 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.CloseButton;
-import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;

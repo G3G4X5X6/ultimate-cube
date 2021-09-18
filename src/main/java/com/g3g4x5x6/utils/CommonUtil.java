@@ -51,13 +51,6 @@ public class CommonUtil {
             e.printStackTrace();
         }
         CharsetMatch cm = cd.detect();
-
-        //		if (cm != null) {
-        //			//reader = cm.getReader();
-        //			return cm.getName();
-        //		} else {
-        //			throw new UnsupportedCharsetException(null);
-        //		}
         return cm;
     }
 
