@@ -1,14 +1,13 @@
 package com.g3g4x5x6.ui.panels.tools;
 
+import cn.hutool.core.io.FileUtil;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.CommonUtil;
 import com.google.common.io.Files;
 import com.ibm.icu.text.CharsetMatch;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.input.BOMInputStream;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -18,6 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -40,7 +41,8 @@ public class EncodeConversion extends JDialog {
     private JButton importBtn;
     private JButton cleanBtn;
     private JButton exportBtn;
-    private JComboBox<String> comboBox;
+    private JComboBox<String> srcComboBox;
+    private JComboBox<String> dstComboBox;
 
     public EncodeConversion() {
         super(App.mainFrame);
@@ -68,10 +70,25 @@ public class EncodeConversion extends JDialog {
         cleanBtn = new JButton();
         cleanBtn.setToolTipText("清除待转换文件，重新选择");
         cleanBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/delete.svg"));
-        String[] encodes = new String[]{"UTF-8", "UTF-16BE", "UTF-16LE", "UTF-32BE", "UTF-32LE", "ISO-2022-JP", "ISO-2022-CN",
+        String[] dstEncode = new String[]{"UTF-8", "UTF-16BE", "UTF-16LE", "UTF-32BE", "UTF-32LE", "ISO-2022-JP", "ISO-2022-CN",
                 "GB18030", "Big5", "EUC-JP", "EUC-KR", "windows-1252", "ISO-8859-1", "windows-1250", "ISO-8859-2",
                 "windows-1251", "windows-1256", "KOI8-R", "windows-1254", "ISO-8859-9"};    // new CharsetRecog_sjis()
-        comboBox = new JComboBox<>(encodes);
+        String[] srcEncode = new String[]{
+                StandardCharsets.UTF_8.name(),
+                StandardCharsets.UTF_16.name(),
+                StandardCharsets.UTF_16BE.name(),
+                StandardCharsets.UTF_16LE.name(),
+                StandardCharsets.ISO_8859_1.name(),
+                StandardCharsets.US_ASCII.name(),
+        };
+        srcComboBox = new JComboBox<>(srcEncode);
+        srcComboBox.setEditable(true);
+        srcComboBox.setToolTipText("转换前文件编码");
+        JLabel label = new JLabel();
+        label.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
+        dstComboBox = new JComboBox<>(dstEncode);
+        dstComboBox.setEditable(true);
+        dstComboBox.setToolTipText("转换后文件编码");
 
         progressPane = new JPanel();
         progressPane.add(progressBar);
@@ -85,7 +102,9 @@ public class EncodeConversion extends JDialog {
         toolBar.addSeparator();
         toolBar.add(cleanBtn);
         toolBar.addSeparator();
-        toolBar.add(comboBox);
+        toolBar.add(srcComboBox);
+        toolBar.add(label);
+        toolBar.add(dstComboBox);
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(Box.createHorizontalGlue());
@@ -259,15 +278,18 @@ public class EncodeConversion extends JDialog {
                                 CharsetMatch cm = CommonUtil.checkCharset(new BufferedInputStream(new FileInputStream(file)));
                                 log.debug("CheckCharset:" + cm.getName());
 
-                                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), comboBox.getSelectedItem().toString()));
-                                BufferedWriter converionWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(outputDir.getAbsolutePath() + "/" + file.getName())), comboBox.getSelectedItem().toString()));
-                                String buffer = null;
-                                while ((buffer = bufferedReader.readLine()) != null) {
-                                    converionWriter.write(buffer + "\n");
-                                    log.debug(buffer);
-                                }
-                                bufferedReader.close();
-                                converionWriter.close();
+//                                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), dstComboBox.getSelectedItem().toString()));
+//                                BufferedWriter converionWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(outputDir.getAbsolutePath() + "/" + file.getName())), dstComboBox.getSelectedItem().toString()));
+//                                String buffer = null;
+//                                while ((buffer = bufferedReader.readLine()) != null) {
+//                                    converionWriter.write(buffer + "\n");
+//                                    log.debug(buffer);
+//                                }
+//                                bufferedReader.close();
+//                                converionWriter.close();
+
+                                Files.copy(file, new File(outputDir.getAbsolutePath() + "/" + file.getName()));
+                                FileUtil.convertCharset(new File(outputDir.getAbsolutePath() + "/" + file.getName()), Charset.forName(cm.getName()), Charset.forName(dstComboBox.getSelectedItem().toString()));
 
                                 CharsetMatch tmp = CommonUtil.checkCharset(new BufferedInputStream(new FileInputStream(outputDir.getAbsolutePath() + "/" + file.getName())));
                                 rightModel.addRow(new String[]{file.getName(), tmp.getName(), String.valueOf(tmp.getConfidence())});
