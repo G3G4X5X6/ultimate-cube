@@ -92,7 +92,8 @@ public class MainFrame extends JFrame {
     private AbstractAction encodeConversionAction = new AbstractAction("文件编码转换") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EncodeConversion encodeConversion = new EncodeConversion();
+//            EncodeConversion encodeConversion = new EncodeConversion();
+            DialogUtil.info("敬请期待");
         }
     };
 
@@ -238,7 +239,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(final ActionEvent e) {
             DialogUtil.msg("About",
                     "<html>UltimateShell " + CommonUtil.getCurrentVersion() + " <br>" +
-                            "Build on 06 Sep 2021<br><br>" +
+                            "Build on " + CommonUtil.getBuildOn() + "<br><br>" +
                             "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a></html>");
         }
     };

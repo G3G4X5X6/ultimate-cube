@@ -150,6 +150,7 @@ public class TelnetPane extends JPanel {
     }
 
     private Boolean testOpen() {
+        log.debug(hostField.getText() + " / " + portField.getText());
         boolean flag = false;
         TelnetClient telnetClient = new TelnetClient();
         try {

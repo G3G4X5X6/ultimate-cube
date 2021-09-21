@@ -2,7 +2,6 @@ package com.g3g4x5x6.ui.panels.ssh;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.panels.editor.EditorPane;
-import com.g3g4x5x6.ui.panels.sftp.SftpPane;
 import com.jediterm.terminal.ui.JediTermWidget;
 
 import javax.swing.*;
@@ -15,7 +14,7 @@ public class SshTabbedPane extends JTabbedPane {
     public SshTabbedPane(JTabbedPane mainTabbedPane, JediTermWidget Ssh, String hostField, String portField, String userField, String passField) {
         this.mainTabbedPane = mainTabbedPane;
         this.addTab("SSH", Ssh);
-        this.addTab("SFTP", new SftpPane(hostField, portField, userField, passField));
+        this.addTab("SFTP", new SftpPane_back(hostField, portField, userField, passField));
         this.addTab("Monitor", new JPanel());
         this.addTab("Editor", new EditorPane());
 

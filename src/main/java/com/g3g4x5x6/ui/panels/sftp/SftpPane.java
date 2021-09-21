@@ -1,17 +1,19 @@
 package com.g3g4x5x6.ui.panels.sftp;
 
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
@@ -22,49 +24,149 @@ import java.util.Map;
 public class SftpPane extends JPanel {
 
     private BorderLayout borderLayout = new BorderLayout();
-    private SftpBrowser sftpBrowser;
+    private JTabbedPane mainTabbedPane;
 
     private SshClient client;
     private SftpFileSystemProvider provider;
     private URI uri;
     private SftpFileSystem fs;
 
-    private JPanel board;
+    private JTabbedPane basicSettingTabbedPane;
+    private String basicSettingPaneTitle;
+    private JPanel basicSettingPane;
+
+    private JTabbedPane advancedSettingTabbedPane;
+    private String advancedSettingPaneTitle;
+    private JPanel advancedSettingPane;
+
     private JFormattedTextField hostField;
     private JFormattedTextField portField;
-    private String host;
-    private int port;
-    private String username;
-    private String password;
+    private JTextField userField;
+    private JPasswordField passField;
 
-    public SftpPane() {
+    public SftpPane(JTabbedPane tabbedPane) {
         this.setLayout(borderLayout);
+        this.mainTabbedPane = tabbedPane;
 
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+
+        basicSettingTabbedPane = new JTabbedPane();
+        basicSettingPane = new JPanel();
+        basicSettingPane.setLayout(flowLayout);
+        basicSettingPaneTitle = "Basic Sftp Settings";
+
+        advancedSettingTabbedPane = new JTabbedPane();
+        advancedSettingPane = new JPanel();
+        advancedSettingPane.setLayout(flowLayout);
+        advancedSettingPaneTitle = "Advanced Sftp Settings";
+
+        initBasicPane();
+        initAdvancePane();
+
+        this.add(basicSettingTabbedPane, BorderLayout.NORTH);
+        this.add(advancedSettingTabbedPane, BorderLayout.CENTER);
+
+        initBasicPane();
+        initAdvancePane();
     }
 
+    private void initBasicPane() {
+        basicSettingTabbedPane.addTab(basicSettingPaneTitle, basicSettingPane);
+        // Host
+        JPanel hostPane = new JPanel();
+        JLabel hostLabel = new JLabel("Remote Host*");
+        hostField = new JFormattedTextField(new IpAddressFormatter());
+        hostField.setColumns(10);
+        hostField.setText("172.17.200.104");
+        hostPane.add(hostLabel);
+        hostPane.add(hostField);
 
-    public SftpPane(String hostField, String portField, String userField, String passField) {
-        this.setLayout(borderLayout);
+        // Port
+        JPanel portPane = new JPanel();
+        JLabel portLabel = new JLabel("Port*");
+        portField = new JFormattedTextField(new PortFormatter());
+        portField.setColumns(4);
+        portField.setText("22");
+        portPane.add(portLabel);
+        portPane.add(portField);
 
-        this.host = hostField;
-        this.port = Integer.parseInt(portField);
-        this.username = userField;
-        this.password = passField;
+        // User
+        JPanel userPane = new JPanel();
+        JLabel userLabel = new JLabel("Username");
+        userField = new JTextField();
+        userField.setColumns(8);
+        userField.setText("security");
+        userPane.add(userLabel);
+        userPane.add(userField);
 
-        try {
-//            this.fs = createFileSystem();
-//            sftpBrowser = new SftpBrowser(fs);
-            sftpBrowser = new SftpBrowser(this.host, this.port, this.username, this.password);
-            this.add(sftpBrowser, BorderLayout.CENTER);
-        } catch (Exception e) {
-            log.debug("Constructor: " + e.getMessage());
-            createBasicComponent();
-            e.printStackTrace();
-        }
+        // Pass
+        JPanel passPane = new JPanel();
+        JLabel passLabel = new JLabel("Password");
+        passField = new JPasswordField();
+        passField.setColumns(8);
+        passField.setText("12345678");
+        passPane.add(passLabel);
+        passPane.add(passField);
+
+        // 按钮
+        JPanel btnPane = new JPanel();
+        JButton saveBtn = new JButton("快速连接");
+        saveBtn.setToolTipText("自动保存会话");
+        saveBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("Telnet 快速连接");
+                if (testConnection()) {
+                    // TODO 保存会话
+
+                    // 打开会话
+                    mainTabbedPane.insertTab("SFTP-" + hostField.getText(), new FlatSVGIcon("com/g3g4x5x6/ui/icons/folders.svg"),
+                            new SftpBrowser(hostField.getText(), Integer.parseInt(portField.getText()), userField.getText(), String.valueOf(passField.getPassword())),
+                            "SFTP-" + hostField.getText(),
+                            mainTabbedPane.getSelectedIndex());
+                    mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
+                } else {
+                    DialogUtil.warn("SFTP is not Open!");
+                }
+            }
+        });
+
+        JButton testBtn = new JButton("测试通信");
+        testBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("SFTP 测试通信");
+                log.debug(hostField.getText() + " / " + portField.getText() + " / " + userField.getText() + " / " + passField.getText());
+                log.debug(hostField.getText());
+//                if (testConnection()) {
+//                    DialogUtil.info("SFTP 连接测试成功!");
+//                } else {
+//                    DialogUtil.warn("SFTP 连接测试失败!");
+//                }
+            }
+        });
+        btnPane.add(saveBtn);
+        btnPane.add(testBtn);
+
+        basicSettingPane.add(hostPane);
+        basicSettingPane.add(Box.createHorizontalGlue());
+        basicSettingPane.add(portPane);
+        basicSettingPane.add(Box.createHorizontalGlue());
+        basicSettingPane.add(userPane);
+        basicSettingPane.add(Box.createHorizontalGlue());
+        basicSettingPane.add(passPane);
+        basicSettingPane.add(Box.createHorizontalGlue());
+        basicSettingPane.add(btnPane);
     }
 
+    private void initAdvancePane() {
+        advancedSettingTabbedPane.addTab(advancedSettingPaneTitle, advancedSettingPane);
+
+    }
 
     public SftpFileSystem createFileSystem() {
+        log.debug(hostField.getText() + " / " + Integer.parseInt(portField.getText()) + " / " + userField.getText() + " / " + String.valueOf(passField.getPassword()));
         client = SshClient.setUpDefaultClient();
         // TODO 配置 SshClient
         // override any default configuration...
@@ -73,7 +175,7 @@ public class SftpPane extends JPanel {
         client.start();
 
         provider = new SftpFileSystemProvider(client);
-        uri = SftpFileSystemProvider.createFileSystemURI(this.host, this.port, this.username, this.password);
+        uri = SftpFileSystemProvider.createFileSystemURI(hostField.getText(), Integer.parseInt(portField.getText()), userField.getText(), String.valueOf(passField.getPassword()));
         try {
             // TODO 配置 SftpFileSystem
             Map<String, Object> params = new HashMap<>();
@@ -86,81 +188,22 @@ public class SftpPane extends JPanel {
         return fs;
     }
 
-    private void createBasicComponent() {
-        // TODO host address
-        JPanel hostPane = new JPanel();
-        JLabel hostLabel = new JLabel("Remote Host*");
-        hostField = new JFormattedTextField(new IpAddressFormatter());
-        hostField.setColumns(10);
-        hostField.setText(host);    // For testing
-        hostPane.add(hostLabel);
-        hostPane.add(hostField);
+    private Boolean testConnection() {
+        boolean flag = false;
 
-        // TODO port
-        JPanel portPane = new JPanel();
-        JLabel portLabel = new JLabel("Port*");
-        portField = new JFormattedTextField(new PortFormatter());
-        portField.setColumns(4);
-        portField.setText(String.valueOf(port));
-        portPane.add(portLabel);
-        portPane.add(portField);
-
-        // TODO user name
-        JPanel userPane = new JPanel();
-        JLabel userLabel = new JLabel("Username");
-        JFormattedTextField userField = new JFormattedTextField();
-        userField.setText(username);
-        userField.setColumns(8);
-        userPane.add(userLabel);
-        userPane.add(userField);
-
-        // TODO password
-        JPanel passPane = new JPanel();
-        JLabel passLabel = new JLabel("Password");
-        JPasswordField passField = new JPasswordField();
-        passField.setText(password);
-        passField.setColumns(8);
-        passPane.add(passLabel);
-        passPane.add(passField);
-
-        // TODO Save and open session
-        JPanel savePane = new JPanel();
-        JButton openButton = new JButton("快速连接");
-        openButton.setToolTipText("默认自动保存会话");
-        savePane.add(openButton);
-
-        board = new JPanel();
-        FlowLayout flowLayout = new FlowLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
-        board.add(hostPane);
-        board.add(portPane);
-        board.add(userPane);
-        board.add(passPane);
-        board.add(savePane);
-        this.add(board, BorderLayout.CENTER);
-
-        openButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                log.debug("快速连接");
-
-                host = hostField.getText();
-                port = Integer.parseInt(portField.getText());
-                username = userField.getText();
-                password = String.valueOf(passField.getPassword());
-
-                // TODO 测试连接
-                try {
-                    fs = createFileSystem();
-                    sftpBrowser = new SftpBrowser(fs);
-                    board.setVisible(false);
-                    add(sftpBrowser, BorderLayout.CENTER);
-                } catch (Exception exception) {
-                    log.debug("Button: " + exception.getMessage());
-                    exception.printStackTrace();
-                }
-            }
-        });
+        SshClient client = SshClient.setUpDefaultClient();
+        client.start();
+        try {
+            ClientSession session = client.connect(userField.getText(), hostField.getText(), Integer.parseInt(portField.getText()))
+                    .verify(5000)
+                    .getSession();
+            session.addPasswordIdentity(String.valueOf(passField.getPassword())); // for password-based authentication
+            flag = true;
+            session.close();
+            client.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        return flag;
     }
-
 }

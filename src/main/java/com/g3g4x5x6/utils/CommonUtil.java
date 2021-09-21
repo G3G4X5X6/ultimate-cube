@@ -115,6 +115,21 @@ public class CommonUtil {
         return currentVersion;
     }
 
+    public static String getBuildOn() {
+        Properties properties = new Properties();
+        // 使用ClassLoader加载properties配置文件生成对应的输入流
+        InputStream in = CommonUtil.class.getClassLoader().getResourceAsStream("info.properties");
+        // 使用properties对象加载输入流
+        try {
+            properties.load(in);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+        //获取key对应的value值
+        String currentVersion = properties.getProperty("build");
+        return currentVersion.strip();
+    }
+
     public static void generateSystemInfo() {
         File temp = new File(ConfigUtil.getWorkPath() + "/temp");
         if (!temp.exists()) {
