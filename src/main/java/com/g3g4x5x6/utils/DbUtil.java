@@ -248,9 +248,7 @@ public class DbUtil {
                         "  \"comment\" TEXT NOT NULL DEFAULT '没有备注哦',\n" +
                         "  PRIMARY KEY (\"id\")\n" +
                         ");");
-
-                statement.close();
-                connection.close();
+                statement.close();  // 是否考虑删除？
             } catch (Exception e) {
                 e.printStackTrace();
             }

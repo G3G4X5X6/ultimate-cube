@@ -76,6 +76,12 @@ public class App {
             tools.mkdir();
         }
 
+        // TODO 检查编辑器缓存目录
+        File editor = new File(workspace + "/editor");
+        if (!editor.exists()){
+            editor.mkdir();
+        }
+
         // TODO 检查用户配置
 
     }
