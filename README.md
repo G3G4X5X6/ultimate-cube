@@ -42,8 +42,8 @@ See [the security file](SECURITY.md)!
 - [x] Support ssh, sftp
 - [x] Support serial terminal
 - [x] Support Telnet
+- [x] Support RDP
 - [ ] Support FTP
-- [ ] Support RDP
 - [ ] Support VNC
 
 ## Build

@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.dialog;
+package com.g3g4x5x6.ui.settings;
 
 import com.g3g4x5x6.App;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +80,7 @@ public class SettingsDialog extends JDialog {
         if( vertical ) {
             tabbedPane.addTab( "行为设置", null );
             tabbedPane.addTab( "终端设置", null );
+            tabbedPane.addTab( "运行环境", null );
         }
     }
 }

@@ -5,13 +5,12 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
-import com.g3g4x5x6.ui.dialog.SettingsDialog;
+import com.g3g4x5x6.ui.settings.SettingsDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
-import com.g3g4x5x6.ui.panels.session.AddPane;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.session.NewTabbedPane;
-import com.g3g4x5x6.ui.panels.tools.EncodeConversion;
+import com.g3g4x5x6.ui.panels.tools.FreeRdp;
 import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -25,7 +24,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
@@ -109,7 +107,8 @@ public class MainFrame extends JFrame {
     private AbstractAction freeRDPAction = new AbstractAction("FreeRDP") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            DialogUtil.info("敬请期待");
+            FreeRdp freeRdp = new FreeRdp();
+            freeRdp.setVisible(true);
         }
     };
 
@@ -331,18 +330,21 @@ public class MainFrame extends JFrame {
         // TODO 添加菜单动作
         terminalMenu.add(myOpenAction);
         terminalMenu.add(mysessionAction);
+        //
         viewMenu.add(dashboardAction);
+        //
         optionMenu.add(themeAction);
         optionMenu.add(settingsAction);
         optionMenu.addSeparator();
         optionMenu.add(importSessionAction);
         optionMenu.add(exportSessionAction);
+        //
         helpMenu.add(githubAction);
         helpMenu.add(gitpageAction);
         helpMenu.addSeparator();
         helpMenu.add(myAboutAction);
+        //
         toolMenu.add(myEditorAction);
-        toolMenu.addSeparator();
         toolMenu.add(encodeConversionAction);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
