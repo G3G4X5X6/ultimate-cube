@@ -16,7 +16,7 @@ public class SshTabbedPane extends JTabbedPane {
         this.mainTabbedPane = mainTabbedPane;
         this.addTab("SSH", Ssh);
         this.addTab("SFTP", new SftpPane_back(hostField, portField, userField, passField));
-        this.addTab("Monitor", new MonitorPane());
+        this.addTab("Monitor", new MonitorPane(hostField, Integer.parseInt(portField), userField, passField));
         this.addTab("Editor", new EditorPane(hostField, Integer.parseInt(portField), userField, passField));
 
         customComponents();

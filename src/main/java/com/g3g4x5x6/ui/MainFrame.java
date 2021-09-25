@@ -16,6 +16,7 @@ import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.ExcelUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,6 +27,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.net.URL;
 import java.util.Date;
 import java.util.function.BiConsumer;
 
@@ -235,6 +237,22 @@ public class MainFrame extends JFrame {
         }
     };
 
+    private AbstractAction githubAction = new AbstractAction("GitHub") {
+        @SneakyThrows
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Desktop.getDesktop().browse(new URL("https://github.com/G3G4X5X6/ultimateshell").toURI());
+        }
+    };
+
+    private AbstractAction gitpageAction = new AbstractAction("GitPage") {
+        @SneakyThrows
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Desktop.getDesktop().browse(new URL("https://g3g4x5x6.github.io/ultimateshell/").toURI());
+        }
+    };
+
     private AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
         public void actionPerformed(final ActionEvent e) {
             DialogUtil.msg("About",
@@ -319,6 +337,9 @@ public class MainFrame extends JFrame {
         optionMenu.addSeparator();
         optionMenu.add(importSessionAction);
         optionMenu.add(exportSessionAction);
+        helpMenu.add(githubAction);
+        helpMenu.add(gitpageAction);
+        helpMenu.addSeparator();
         helpMenu.add(myAboutAction);
         toolMenu.add(myEditorAction);
         toolMenu.addSeparator();

@@ -1,13 +1,15 @@
 package com.g3g4x5x6.ui.panels.ssh.monitor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.utils.SshUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.sshd.client.SshClient;
-import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 
 @Slf4j
@@ -15,9 +17,11 @@ public class MonitorPane extends JPanel {
 
     private JToolBar toolBar;
 
-    // 远程文件系统
-    private SshClient client;
-    private SftpFileSystem fs;
+    private JScrollPane scrollPane;
+    private JTable table;
+    private DefaultTableModel tableModel;
+    private String[] columnNames = { "USER", "PID", "%CPU", "%MEM", "VSZ", "RSS", "TTY", "STAT", "START", "TIME", "COMMAND"};
+
     private String host;
     private int port;
     private String user;
@@ -25,12 +29,61 @@ public class MonitorPane extends JPanel {
 
     public MonitorPane(){
         this.setLayout(new BorderLayout());
+
         toolBar = new JToolBar();
         toolBar.setFloatable(false);
 
         initToolBarAction();
 
-        this.add(new JLabel("敬请期待!"), BorderLayout.CENTER);
+        table = new JTable();
+        tableModel = new DefaultTableModel(){
+            // 不可编辑
+            @Override
+            public boolean isCellEditable(int row,int column){
+                if (column == 0){
+                    return false;
+                }
+                return true;
+            }
+        };
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    try {
+                        flushWinTable();
+                        Thread.sleep(1000*60*10);
+                        log.debug("刷新系统信息");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+        table.setModel(tableModel);
+        tableModel.setColumnIdentifiers(columnNames);
+//        table.getColumn("Key").setMinWidth(300);
+//        table.getColumn("Key").setMaxWidth(300);
+
+        scrollPane = new JScrollPane(table);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        DefaultTableCellRenderer iconRenderer  =  new DefaultTableCellRenderer();
+        iconRenderer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/intersystemCache.svg"));
+
+        DefaultTableCellRenderer leftRenderer  =  new DefaultTableCellRenderer();
+        leftRenderer.setHorizontalAlignment(JTextField.LEFT);
+
+        DefaultTableCellRenderer rightRenderer  =  new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
+
+        table.getColumn("USER").setCellRenderer(leftRenderer );
+        table.getColumn("PID").setCellRenderer(rightRenderer );
+
+        this.add(scrollPane, BorderLayout.CENTER);
         this.add(toolBar, BorderLayout.NORTH);
     }
 
@@ -50,9 +103,41 @@ public class MonitorPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("Refresh");
+                flushWinTable();
             }
         });
 
         toolBar.add(freshBtn);
+    }
+
+    private void flushWinTable() {
+        log.debug("flushWinTable: " + host + ", " + user + ", " + pass + ", " + port);
+        try {
+            // public static String exec(String host, String username, String password, int port, long defaultTimeout, String command)
+            System.out.println(SshUtil.exec(host, user, pass, port, 3000, "ps aux"));
+            boolean flag = true;
+            tableModel.setRowCount(0);
+            for (String line : SshUtil.exec(host, user, pass, port, 3000, "ps aux").split("\n")){
+                if (flag){
+                    flag = false;
+                    continue;
+                }
+                String[] row = new String[11];
+                int i = 0;
+                for (String column : line.split("\\s+")){
+                    if (i >= 10){
+                        if (i == 10)
+                            row[10] = "";
+                        row[10] += column + " ";
+                    }else{
+                        row[i] = column;
+                    }
+                    i++;
+                }
+                tableModel.addRow(row);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
