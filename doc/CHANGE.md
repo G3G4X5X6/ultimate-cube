@@ -5,6 +5,23 @@
 1. 修订号：当你做了向下兼容的问题修正。
 
 
+## 2021-09-
+### ultimateshell_v0.20.14-alpha
+#### Added
+- 新增`SSH` `monitor` 监视器面板
+  - 查看系统进程： `ps aux`
+  - 查看系统信息： `uname -a`
+- 新增`SSH` `Editor` 编辑器面板， 可保存至服务器缓存目录或自定义目录
+  - 支持多种编程语言高亮
+  - 支持多种主题
+- 新增 `help` 菜单按钮
+    - GitHub
+    - GitPage
+
+#### Fixed
+- 
+
+
 ## 2021-09-21
 ### ultimateshell_v0.17.14-alpha
 #### Added
