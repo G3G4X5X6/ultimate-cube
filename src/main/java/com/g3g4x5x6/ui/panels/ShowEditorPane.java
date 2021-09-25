@@ -18,6 +18,7 @@ public class ShowEditorPane extends JDialog {
         editorPane.setEditable(false);
 
         JScrollPane scrollPane = new JScrollPane(editorPane);
+        scrollPane.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         this.add(scrollPane, BorderLayout.CENTER);

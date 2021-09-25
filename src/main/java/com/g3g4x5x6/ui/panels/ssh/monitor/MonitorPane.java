@@ -41,21 +41,23 @@ public class MonitorPane extends JPanel {
             // 不可编辑
             @Override
             public boolean isCellEditable(int row, int column) {
-                if (column == 0) {
-                    return false;
-                }
+//                if (column == 0) {
+//                    return false;
+//                }
                 return true;
             }
         };
 
         new Thread(new Runnable() {
             @Override
+
+
             public void run() {
                 while (true) {
                     try {
                         flushWinTable();
                         Thread.sleep(1000 * 60 * 10);
-                        log.debug("刷新系统信息");
+                        log.debug("刷新系统进程信息");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -107,6 +109,7 @@ public class MonitorPane extends JPanel {
 
     private void initToolBarAction() {
         JButton freshBtn = new JButton();
+        freshBtn.setToolTipText("十分钟自动刷新");
         freshBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
         freshBtn.addActionListener(new AbstractAction() {
             @Override
@@ -121,10 +124,11 @@ public class MonitorPane extends JPanel {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
+                String text = SshUtil.exec(host, user, pass, port, 3000, "uname -a").strip();
                 ShowEditorPane showPane = new ShowEditorPane();
                 showPane.setTitle("uname -a");
                 showPane.setSize(new Dimension(600, 100));
-                showPane.setText(SshUtil.exec(host, user, pass, port, 3000, "uname -a").strip());
+                showPane.setText(text);
             }
         });
 
