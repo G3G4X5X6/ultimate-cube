@@ -1,5 +1,7 @@
 package com.g3g4x5x6.ui.panels.tools;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
@@ -10,6 +12,7 @@ import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import netscape.javascript.JSObject;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -19,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 
@@ -39,7 +43,9 @@ public class FreeRdp extends JDialog {
     private JPanel controlPane;
 
     private String freeRdpDirPath;
+    private String freeRdpSessionsDirPath;
 
+    private ArrayList<String> cmdList;
     // 参数区域: basicSettingPane
     private JFormattedTextField hostField;
     private JFormattedTextField portField;
@@ -52,6 +58,8 @@ public class FreeRdp extends JDialog {
     private JTextField title;
     private JTextField width;
     private JTextField height;
+
+    private boolean openFlag = false;
 
     public FreeRdp() {
         super(App.mainFrame);
@@ -67,6 +75,13 @@ public class FreeRdp extends JDialog {
             freeRdpDir.mkdir();
         }
         freeRdpDirPath = freeRdpDir.getAbsolutePath() + "/";
+
+        // 远程桌面会话保存文件夹
+        freeRdpSessionsDirPath = ConfigUtil.getWorkPath() + "/freerdp/sessions";
+        File freeRdpSessionsDir = new File(freeRdpSessionsDirPath);
+        if (!freeRdpSessionsDir.exists()){
+            freeRdpSessionsDir.mkdir();
+        }
 
         toolBar = new JToolBar();
 
@@ -291,92 +306,127 @@ public class FreeRdp extends JDialog {
 
     private void openFreeRDP(){
         // TODO 打开远程桌面
-        try{
-            //创建ProcessBuilder对象
-            ProcessBuilder processBuilder = new ProcessBuilder();
+        if (!hostField.getText().strip().equals("")){
+            try{
+                //创建ProcessBuilder对象
+                ProcessBuilder processBuilder = new ProcessBuilder();
 
-            //封装执行的第三方程序(命令)
-            ArrayList<String> cmdList = new ArrayList<>();
-            if (OsInfoUtil.isWindows()){
-                cmdList.add(freeRdpDirPath + "wfreerdp.exe");
-            }
-            if (OsInfoUtil.isLinux()){
-
-            }
-            if (OsInfoUtil.isMacOS()){
-
-            }
-            if (OsInfoUtil.isMacOSX()){
-
-            }
-            // 不同操作系统平台通用参数封装
-            // 服务器IP
-            cmdList.add("/v:" + hostField.getText());
-            // 远程桌面端口
-            if (!portField.getText().strip().equals(""))
-                cmdList.add("/port:" + portField.getText());
-            // 用户名
-            cmdList.add("/u:" + userField.getText());
-            // 用户密码
-            cmdList.add("/p:" + String.valueOf(passField.getPassword()));
-            // 全屏设置
-            if (fullscreen.isSelected()){
-                cmdList.add("/f");
-            } else {
-                // 分辨率设置：width
-                if (!width.getText().strip().equals("")){
-                    cmdList.add("/w:" + width.getText().strip());
+                //封装执行的第三方程序(命令)
+                if (!openFlag){
+                    packCmdList();
+                }else{
+                    openFlag = false;
                 }
-                // 分辨率设置：height
-                if (!height.getText().strip().equals("")){
-                    cmdList.add("/h:" + height.getText().strip());
+
+                // 设置执行命令及其参数列表
+                processBuilder.command(cmdList);
+                log.debug(cmdList.toString());
+
+                //将标准输入流和错误输入流合并
+                // 通过标准输入流读取信息就可以拿到第三方程序输出的错误信息、正常信息
+                processBuilder.redirectErrorStream(true);
+
+                //启动一个进程
+                Process process = processBuilder.start();
+                //读取输入流
+                InputStream inputStream = process.getInputStream();
+                //将字节流转成字符流
+                InputStreamReader reader = new InputStreamReader(inputStream, "gbk");
+                //字符缓冲区
+                char[] chars = new char[1024];
+                int len = -1;
+                while ((len = reader.read(chars)) != -1) {
+                    String string = new String(chars, 0, len);
+                    log.debug(string);
                 }
+                inputStream.close();
+                reader.close();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
-            // 标题设置
-            if (!title.getText().strip().equals("")){
-                cmdList.add("/t:" + title.getText().strip());
-            }
-            // 音频重定向： Sound
-            if (sound.isSelected()){
-                cmdList.add("/sound");
-            }
-            // 麦克风设置： Microphone
-            if (microphone.isSelected()){
-                cmdList.add("/mic");
-            }
-
-            // 设置执行命令及其参数列表
-            processBuilder.command(cmdList);
-            log.debug(cmdList.toString());
-
-            //将标准输入流和错误输入流合并
-            // 通过标准输入流读取信息就可以拿到第三方程序输出的错误信息、正常信息
-            processBuilder.redirectErrorStream(true);
-
-            //启动一个进程
-            Process process = processBuilder.start();
-            //读取输入流
-            InputStream inputStream = process.getInputStream();
-            //将字节流转成字符流
-            InputStreamReader reader = new InputStreamReader(inputStream, "gbk");
-            //字符缓冲区
-            char[] chars = new char[1024];
-            int len = -1;
-            while ((len = reader.read(chars)) != -1) {
-                String string = new String(chars, 0, len);
-                log.debug(string);
-            }
-            inputStream.close();
-            reader.close();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } else {
+            DialogUtil.warn("请输入服务器IP地址或者域名！");
         }
     }
 
     private void saveFreeRDP(){
         // TODO 保存远程桌面设置
+        packCmdList();
+        String sessionFile = "";
+        if (!hostField.getText().strip().equals("")){
+            sessionFile = freeRdpSessionsDirPath + "/" + hostField.getText() + "_" +
+                    (portField.getText().strip().equals("")?"3389":portField.getText().strip()) + "_" +
+                    (userField.getText().strip().equals("")?"-":userField.getText().strip()) + ".json";
+            log.debug("SessionFile: " + sessionFile);
+
+            try {
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File(sessionFile)));
+                out.write(JSON.toJSONString(cmdList).getBytes(StandardCharsets.UTF_8));
+                out.flush();
+                out.close();
+                DialogUtil.info("远程桌面会话保存成功！");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }else{
+            DialogUtil.warn("请输入服务器IP地址或者域名！");
+        }
+        log.debug(JSON.toJSONString(cmdList));
+    }
+
+    private void packCmdList(){
+        cmdList = new ArrayList<>();
+        if (OsInfoUtil.isWindows()){
+            cmdList.add(freeRdpDirPath + "wfreerdp.exe");
+        }
+        if (OsInfoUtil.isLinux()){
+
+        }
+        if (OsInfoUtil.isMacOS()){
+
+        }
+        if (OsInfoUtil.isMacOSX()){
+
+        }
+        // 不同操作系统平台通用参数封装
+        // 服务器IP
+        cmdList.add("/v:" + hostField.getText());
+        // 远程桌面端口
+        if (!portField.getText().strip().equals(""))
+            cmdList.add("/port:" + portField.getText());
+        // 用户名
+        cmdList.add("/u:" + userField.getText());
+        // 用户密码
+        cmdList.add("/p:" + String.valueOf(passField.getPassword()));
+        // 全屏设置
+        if (fullscreen.isSelected()){
+            cmdList.add("/f");
+        } else {
+            // 分辨率设置：width
+            if (!width.getText().strip().equals("")){
+                cmdList.add("/w:" + width.getText().strip());
+            }
+            // 分辨率设置：height
+            if (!height.getText().strip().equals("")){
+                cmdList.add("/h:" + height.getText().strip());
+            }
+        }
+        // 标题设置
+        if (!title.getText().strip().equals("")){
+            cmdList.add("/t:" + title.getText().strip());
+        }
+        // 音频重定向： Sound
+        if (sound.isSelected()){
+            cmdList.add("/sound");
+        }
+        // 麦克风设置： Microphone
+        if (microphone.isSelected()){
+            cmdList.add("/mic");
+        }
     }
 
     private class FreeRdpDialog extends JDialog {
@@ -398,7 +448,7 @@ public class FreeRdp extends JDialog {
 
             initEnableOption();
 
-            initNoteListTable();
+            initFreeRdpListTable();
 
             initControlButton();
 
@@ -408,6 +458,20 @@ public class FreeRdp extends JDialog {
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
                         log.debug("双击打开FreeRDP远程桌面");
+                        int index = noteTable.getSelectedRow();
+                        String address = (String) tableModel.getValueAt(index, 0);
+                        String port = (String) tableModel.getValueAt(index, 1);
+                        String user = (String) tableModel.getValueAt(index, 2);
+                        String filePath = freeRdpSessionsDirPath + "/" + address + "_" + port + "_" + user + ".json";
+                        File file = new File(filePath);
+                        if (file.exists()){
+                            BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
+                            cmdList = (ArrayList<String>) JSON.parseArray(reader.readLine(), String.class);
+                            openFlag = true;
+                            openFreeRDP();
+                        }else{
+                            DialogUtil.warn("不存在会话： " + filePath);
+                        }
                     }
                 }
             });
@@ -427,7 +491,7 @@ public class FreeRdp extends JDialog {
             this.add(enablePanel, BorderLayout.NORTH);
         }
 
-        private void initNoteListTable() {
+        private void initFreeRdpListTable() {
             noteTable = new JTable();
             tableModel = new DefaultTableModel() {
                 // 不可编辑
@@ -453,9 +517,16 @@ public class FreeRdp extends JDialog {
         private void initTable() {
             log.debug("FreeRdpDialog::initTable()");
             tableModel.setRowCount(0);
-            int row = 0;
-
             // 添加 Row 数据
+            File sessionsDir = new File(freeRdpSessionsDirPath);
+            for (File file : sessionsDir.listFiles()){
+                if (file.isFile() && file.getName().endsWith(".json")){
+                    log.debug(file.getAbsolutePath());
+                    String[] row = file.getName().split("_");
+                    row[2] = row[2].substring(0, row[2].lastIndexOf(".json"));
+                    tableModel.addRow(row);
+                }
+            }
 
             noteTable.setModel(tableModel);
         }
@@ -476,9 +547,18 @@ public class FreeRdp extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     if (DialogUtil.yesOrNo(App.mainFrame, "是否删除选中FreeRDP会话设置？") == 0) {
                         int[] rows = noteTable.getSelectedRows();
-
-                        // TODO
-
+                        for (int index : rows){
+                            String address = (String) tableModel.getValueAt(index, 0);
+                            String port = (String) tableModel.getValueAt(index, 1);
+                            String user = (String) tableModel.getValueAt(index, 2);
+                            String filePath = freeRdpSessionsDirPath + "/" + address + "_" + port + "_" + user + ".json";
+                            File file = new File(filePath);
+                            if (file.exists()){
+                                file.delete();
+                            }else{
+                                DialogUtil.warn("不存在会话： " + filePath);
+                            }
+                        }
                         initTable();
                     }
                 }
