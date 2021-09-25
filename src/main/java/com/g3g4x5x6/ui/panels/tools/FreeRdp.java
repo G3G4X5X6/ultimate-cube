@@ -252,11 +252,11 @@ public class FreeRdp extends JDialog {
         controlPane.setLayout(flowLayout);
 
         JButton openBtn = new JButton("打开");
-        JButton saveAndOpenBtn = new JButton("保存并打开");
+        JButton saveBtn = new JButton("保存");
         JButton cancelBtn = new JButton("关闭");
 
         controlPane.add(openBtn);
-        controlPane.add(saveAndOpenBtn);
+        controlPane.add(saveBtn);
         controlPane.add(cancelBtn);
 
         openBtn.addActionListener(new AbstractAction() {
@@ -272,25 +272,18 @@ public class FreeRdp extends JDialog {
             }
         });
 
-        saveAndOpenBtn.addActionListener(new AbstractAction() {
+        saveBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("Save and open FreeRDP");
+                log.debug("Save FreeRDP");
                 saveFreeRDP();
-                // Open FreeRDP
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        openFreeRDP();
-                    }
-                }).start();
             }
         });
 
         cancelBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("Cancel FreeRDP");
+                log.debug("Cancel FreeRDP Dialog");
                 dispose();
             }
         });
