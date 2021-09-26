@@ -468,7 +468,12 @@ public class FreeRdp extends JDialog {
                             BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
                             cmdList = (ArrayList<String>) JSON.parseArray(reader.readLine(), String.class);
                             openFlag = true;
-                            openFreeRDP();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    openFreeRDP();
+                                }
+                            }).start();
                         }else{
                             DialogUtil.warn("不存在会话： " + filePath);
                         }
