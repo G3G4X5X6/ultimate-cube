@@ -237,17 +237,28 @@ public class MainFrame extends JFrame {
         }
     };
 
-    private AbstractAction installPluginAction = new AbstractAction("加载插件") {
+    private AbstractAction loadPluginAction = new AbstractAction("加载插件") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("加载插件");
+            DialogUtil.info("敬请期待");
         }
     };
 
-    private AbstractAction uninstallPluginAction = new AbstractAction("卸载插件") {
+    private AbstractAction managePluginAction = new AbstractAction("插件管理") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            log.debug("卸载插件");
+            log.debug("插件管理");
+            DialogUtil.info("敬请期待");
+        }
+    };
+
+    private AbstractAction apiPluginAction = new AbstractAction("插件规范") {
+        @SneakyThrows
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("插件规范");
+            Desktop.getDesktop().browse(new URL("https://github.com/G3G4X5X6/ultimateshell/wiki/Plugin-development-specification").toURI());
         }
     };
 
@@ -365,8 +376,10 @@ public class MainFrame extends JFrame {
         toolMenu.add(tightVNCAction);
         toolMenu.add(freeRDPAction);
         //
-        pluginMenu.add(installPluginAction);
-        pluginMenu.add(uninstallPluginAction);
+        pluginMenu.add(loadPluginAction);
+        pluginMenu.addSeparator();
+        pluginMenu.add(managePluginAction);
+        pluginMenu.add(apiPluginAction);
 
         // TODO 菜单栏
         this.setJMenuBar(menuBar);
