@@ -248,6 +248,11 @@ public class EditorPane extends JPanel {
             }
         });
 
+        FlatButton checkBtn = new FlatButton();
+        checkBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
+        checkBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/analyzer.svg"));
+        checkBtn.setToolTipText("检查shell脚本");
+
         titleField = new JTextField();
         titleField.setColumns(15);
         titleField.putClientProperty("JTextField.placeholderText", "文件的绝对路径，例如： /home/security/hello.sh");
@@ -258,6 +263,8 @@ public class EditorPane extends JPanel {
         toolBar.addSeparator();
         toolBar.add(importBtn);
         toolBar.add(exportBtn);
+        toolBar.addSeparator();
+        toolBar.add(checkBtn);
         toolBar.addSeparator();
         toolBar.add(titleField);
     }

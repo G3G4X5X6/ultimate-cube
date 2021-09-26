@@ -246,6 +246,12 @@ public class FreeRdp extends JDialog {
                 }
             }
         });
+        /**
+         * https://www.jianshu.com/p/f6fcf5b56fe3
+         * 启用音频输出：
+         * audio-mode的参数为： 0 - redirect；1 - leave on server (or laptop)； 2 - disable audio。
+         * 当使用/audio-mode:1时，表示在远程电脑上输出音频
+         */
         sound = new JCheckBox("Sound");
         sound.setSelected(false);
         microphone = new JCheckBox("Microphone");
@@ -401,7 +407,8 @@ public class FreeRdp extends JDialog {
         // 用户名
         cmdList.add("/u:" + userField.getText());
         // 用户密码
-        cmdList.add("/p:" + String.valueOf(passField.getPassword()));
+        if (!String.valueOf(passField.getPassword()).strip().equals(""))
+            cmdList.add("/p:" + String.valueOf(passField.getPassword()));
         // 全屏设置
         if (fullscreen.isSelected()){
             cmdList.add("/f");
@@ -427,6 +434,10 @@ public class FreeRdp extends JDialog {
         if (microphone.isSelected()){
             cmdList.add("/mic");
         }
+//        // +window-drag 没看出什么效果
+//        cmdList.add("+window-drag");
+//        cmdList.add("+menu-anims");
+//        cmdList.add("+fonts");
     }
 
     private class FreeRdpDialog extends JDialog {
