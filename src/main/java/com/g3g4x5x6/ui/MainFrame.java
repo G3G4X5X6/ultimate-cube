@@ -49,6 +49,7 @@ public class MainFrame extends JFrame {
     private JMenu viewMenu = new JMenu("查看");
     private JMenu optionMenu = new JMenu("选项");
     private JMenu toolMenu = new JMenu("工具");
+    private JMenu pluginMenu = new JMenu("插件");
     private JMenu helpMenu = new JMenu("帮助");
 
     private JPanel statusBar;
@@ -236,6 +237,20 @@ public class MainFrame extends JFrame {
         }
     };
 
+    private AbstractAction installPluginAction = new AbstractAction("加载插件") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("加载插件");
+        }
+    };
+
+    private AbstractAction uninstallPluginAction = new AbstractAction("卸载插件") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("卸载插件");
+        }
+    };
+
     private AbstractAction githubAction = new AbstractAction("GitHub") {
         @SneakyThrows
         @Override
@@ -349,6 +364,9 @@ public class MainFrame extends JFrame {
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         toolMenu.add(freeRDPAction);
+        //
+        pluginMenu.add(installPluginAction);
+        pluginMenu.add(uninstallPluginAction);
 
         // TODO 菜单栏
         this.setJMenuBar(menuBar);
@@ -356,6 +374,7 @@ public class MainFrame extends JFrame {
         menuBar.add(viewMenu);
         menuBar.add(optionMenu);
         menuBar.add(toolMenu);
+        menuBar.add(pluginMenu);
         menuBar.add(helpMenu);
         menuBar.add(Box.createGlue());
         menuBar.add(usersButton);

@@ -434,10 +434,8 @@ public class FreeRdp extends JDialog {
         if (microphone.isSelected()){
             cmdList.add("/mic");
         }
-//        // +window-drag 没看出什么效果
-//        cmdList.add("+window-drag");
-//        cmdList.add("+menu-anims");
-//        cmdList.add("+fonts");
+        // +window-drag 没看出什么效果
+        cmdList.add("+window-drag");
     }
 
     private class FreeRdpDialog extends JDialog {
