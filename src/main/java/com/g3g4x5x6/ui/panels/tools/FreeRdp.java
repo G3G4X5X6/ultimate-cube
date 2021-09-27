@@ -224,14 +224,6 @@ public class FreeRdp extends JDialog {
         height = new JTextField();
         height.setColumns(4);
         height.setEditable(false);
-        sizePane.add(new JLabel("分辨率: "));
-        sizePane.add(new JLabel("Width"));
-        sizePane.add(width);
-        sizePane.add(new JLabel("Height"));
-        sizePane.add(height);
-
-        // CheckBox: fullscreen
-        JPanel checkBoxPane = new JPanel();
         fullscreen = new JCheckBox("Fullscreen");
         fullscreen.setSelected(true);
         fullscreen.addActionListener(new AbstractAction() {
@@ -246,6 +238,15 @@ public class FreeRdp extends JDialog {
                 }
             }
         });
+        sizePane.add(new JLabel("分辨率: "));
+        sizePane.add(new JLabel("Width"));
+        sizePane.add(width);
+        sizePane.add(new JLabel("Height"));
+        sizePane.add(height);
+        sizePane.add(fullscreen);
+
+        // CheckBox: fullscreen
+        JPanel checkBoxPane = new JPanel();
         /**
          * https://www.jianshu.com/p/f6fcf5b56fe3
          * 启用音频输出：
@@ -256,7 +257,6 @@ public class FreeRdp extends JDialog {
         sound.setSelected(false);
         microphone = new JCheckBox("Microphone");
         microphone.setSelected(false);
-        checkBoxPane.add(fullscreen);
         checkBoxPane.add(sound);
         checkBoxPane.add(microphone);
 
@@ -452,7 +452,7 @@ public class FreeRdp extends JDialog {
             this.setPreferredSize(new Dimension(700, 350));
             this.setSize(new Dimension(700, 350));
             this.setLocationRelativeTo(FreeRdp.this);
-            this.setModal(true);
+            this.setModal(false);
             this.setTitle("FreeRDP Lists");
 
             initEnableOption();
