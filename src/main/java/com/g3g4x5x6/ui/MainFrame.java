@@ -15,6 +15,13 @@ import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.ExcelUtil;
+import com.glavsoft.exceptions.CommonException;
+import com.glavsoft.viewer.ParametersHandler;
+import com.glavsoft.viewer.Viewer;
+import com.glavsoft.viewer.cli.Parser;
+import com.glavsoft.viewer.swing.SwingViewerWindowFactory;
+import com.glavsoft.viewer.swing.mac.MacApplicationWrapper;
+import com.glavsoft.viewer.swing.mac.MacUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -101,7 +108,23 @@ public class MainFrame extends JFrame {
     private AbstractAction tightVNCAction = new AbstractAction("TightVNC Viewer") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            DialogUtil.info("敬请期待");
+            if (MacUtils.isMac()) {
+                // do mac os specific things
+                try {
+                    MacApplicationWrapper application = MacApplicationWrapper.getApplication();
+                    application.setEnabledAboutMenu(false);
+                    MacUtils.setName("TightVNC Viewer");
+                    application.setDockIconImage(MacUtils.getIconImage());
+                } catch (CommonException ex) {
+                    log.warn(ex.getMessage());
+                }
+            }
+            Parser parser = new Parser();
+            ParametersHandler.completeParserOptions(parser);
+
+            parser.parse(new String[]{});
+            Viewer viewer = new Viewer(parser);
+            SwingUtilities.invokeLater(viewer);
         }
     };
 
