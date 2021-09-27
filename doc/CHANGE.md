@@ -6,7 +6,7 @@
 
 
 ## 2021-09-
-### ultimateshell_v0.21.14-alpha
+### ultimateshell_v0.22.14-alpha
 #### Added
 - 新增 `SSH` `monitor` 监视器面板
   - 查看系统进程： `ps aux`
@@ -15,6 +15,7 @@
   - 支持多种编程语言高亮
   - 支持多种主题
 - 新增 `FreeRDP` 远程桌面会话支持
+- 新增 `TightVNC Viewer` 会话支持
 - 新增 `help` 菜单按钮
     - GitHub
     - GitPage

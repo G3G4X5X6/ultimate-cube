@@ -43,8 +43,8 @@ See [the security file](SECURITY.md)!
 - [x] Support serial terminal
 - [x] Support Telnet
 - [x] Support RDP
-- [ ] Support FTP
-- [ ] Support VNC
+- [x] Support VNC
+- [ ] <del>Support FTP</del>
 
 ## Build
 
