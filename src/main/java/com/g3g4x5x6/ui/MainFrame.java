@@ -400,8 +400,8 @@ public class MainFrame extends JFrame {
         toolMenu.add(freeRDPAction);
         //
         pluginMenu.add(loadPluginAction);
-        pluginMenu.addSeparator();
         pluginMenu.add(managePluginAction);
+        pluginMenu.addSeparator();
         pluginMenu.add(apiPluginAction);
 
         // TODO 菜单栏
