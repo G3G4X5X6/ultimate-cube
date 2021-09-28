@@ -3,6 +3,7 @@ package com.g3g4x5x6.ui.panels.sftp;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.utils.DialogUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.sftp.client.SftpClient;
@@ -192,11 +193,26 @@ public class SftpBrowser extends JPanel {
         myTable.getColumn("修改时间").setCellRenderer(centerRenderer);
     }
 
+    @SneakyThrows
+    private void upload(File file, String path){
+        Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(path +  "/" + file.getName()));
+        File[] files = file.listFiles();
+        for(File f:files){
+            log.debug(path +  "/" + f.getName());
+            if(f.isDirectory()){
+                upload(f, path + "/" + file.getName());
+            }else{
+                Files.copy(Path.of(f.getAbsolutePath()), fs.getPath(path, file.getName(), f.getName()));
+            }
+        }
+    }
+
     /**
      * 右键菜单动作实现
      */
     private void initPopupMenu() {
         uploadAction = new AbstractAction("上传") {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("上传文件...");
@@ -221,21 +237,16 @@ public class SftpBrowser extends JPanel {
 
                 // TODO 获取上传文件路径
                 JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                chooser.setMultiSelectionEnabled(true);
                 int value = chooser.showOpenDialog(SftpBrowser.this);
                 if (value == JFileChooser.APPROVE_OPTION) {
-                    File file = chooser.getSelectedFile();
-                    log.debug(file.getAbsolutePath());
-
-                    // TODO 上传, 进度, 上传5M分段
-                    try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
-                        Path remotePath = fs.getPath(path + "/" + file.getName());
-                        Files.copy(inputStream, remotePath);
-
-                    } catch (FileNotFoundException fileNotFoundException) {
-                        fileNotFoundException.printStackTrace();
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
+                    File[] files = chooser.getSelectedFiles();
+                    for (File file : files){
+                        if (file.isDirectory())
+                            upload(file, path);
+                        log.debug(path +  "/" + file.getName());
+                        Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(path +  "/" + file.getName()));
                     }
                 }
             }

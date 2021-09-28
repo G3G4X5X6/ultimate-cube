@@ -13,3 +13,4 @@ buildNumber.properties
 # 自定义
 logs
 ultilmateshell.sqlite
+.idea
