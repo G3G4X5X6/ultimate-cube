@@ -51,11 +51,11 @@ See [the security file](SECURITY.md)!
 ```
 # 1. JDK 11+
 # 2. Install dependencies to LocalRepository: jediterm-pty-2.49.jar, jediterm-ssh-2.49.jar, terminal-2.54.jar, jediterm-typeahead-2.54.jar
-mvn install:install-file -Dfile=C:\Users\G3G4X5X6\IdeaProjects\ultimateshell\src\main\resources\lib/jediterm-pty-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.49 -Dpackaging=jar
-mvn install:install-file -Dfile=C:\Users\G3G4X5X6\IdeaProjects\ultimateshell\src\main\resources\lib/jediterm-ssh-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-ssh -Dversion=2.49 -Dpackaging=jar
-mvn install:install-file -Dfile=C:\Users\Security\IdeaProjects\UltimateShell\src\main\resources\lib/terminal-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
-mvn install:install-file -Dfile=C:\Users\Security\IdeaProjects\UltimateShell\src\main\resources\lib/jediterm-typeahead-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
-
+mvn install:install-file -Dfile=C:\Users\G3G4X5X6\IdeaProjects\ultimateshell\src\main\resources\libs/jediterm-pty-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.49 -Dpackaging=jar
+mvn install:install-file -Dfile=C:\Users\G3G4X5X6\IdeaProjects\ultimateshell\src\main\resources\libs/jediterm-ssh-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-ssh -Dversion=2.49 -Dpackaging=jar
+mvn install:install-file -Dfile=C:\Users\Security\IdeaProjects\UltimateShell\src\main\resources\libs/terminal-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
+mvn install:install-file -Dfile=C:\Users\Security\IdeaProjects\UltimateShell\src\main\resources\libs/jediterm-typeahead-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
+mvn install:install-file -Dfile=C:\Users\Security\IdeaProjects\UltimateShell\src\main\resources\libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar 
 ```
 
 ## Usage
