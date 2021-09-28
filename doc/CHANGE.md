@@ -6,7 +6,7 @@
 
 
 ## 2021-09-
-### ultimateshell_v0.22.14-alpha
+### ultimateshell_v0.22.15-alpha
 #### Added
 - 新增 `SSH` `monitor` 监视器面板
   - 查看系统进程： `ps aux`
