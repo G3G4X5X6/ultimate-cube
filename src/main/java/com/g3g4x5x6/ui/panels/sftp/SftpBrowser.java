@@ -18,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.Files;
@@ -46,7 +47,8 @@ public class SftpBrowser extends JPanel {
     private JPopupMenu popMenu;
     private AbstractAction uploadAction;
     private AbstractAction downloadAction;
-    private AbstractAction deleteAction;
+    private AbstractAction deleteFilesAction;
+    private AbstractAction deleteDirsAction;
     private AbstractAction openAction;
 
     private SshClient client;
@@ -193,16 +195,17 @@ public class SftpBrowser extends JPanel {
         myTable.getColumn("修改时间").setCellRenderer(centerRenderer);
     }
 
-    @SneakyThrows
-    private void upload(File file, String path){
-        Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(path +  "/" + file.getName()));
+    private void upload(File file, String path) throws IOException {
+        if (!Files.exists(fs.getPath(path, file.getName())))
+            Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(path, file.getName()));
         File[] files = file.listFiles();
-        for(File f:files){
-            log.debug(path +  "/" + f.getName());
-            if(f.isDirectory()){
+        for (File f : files) {
+            log.debug(path + "/" + f.getName());
+            if (f.isDirectory()) {
                 upload(f, path + "/" + file.getName());
-            }else{
-                Files.copy(Path.of(f.getAbsolutePath()), fs.getPath(path, file.getName(), f.getName()));
+            } else {
+                if (!Files.exists(fs.getPath(path, file.getName(), f.getName())))
+                    Files.copy(Path.of(f.getAbsolutePath()), fs.getPath(path, file.getName(), f.getName()));
             }
         }
     }
@@ -233,6 +236,7 @@ public class SftpBrowser extends JPanel {
                         exception.printStackTrace();
                     }
                 } else {
+
                 }
 
                 // TODO 获取上传文件路径
@@ -241,13 +245,35 @@ public class SftpBrowser extends JPanel {
                 chooser.setMultiSelectionEnabled(true);
                 int value = chooser.showOpenDialog(SftpBrowser.this);
                 if (value == JFileChooser.APPROVE_OPTION) {
-                    File[] files = chooser.getSelectedFiles();
-                    for (File file : files){
-                        if (file.isDirectory())
-                            upload(file, path);
-                        log.debug(path +  "/" + file.getName());
-                        Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(path +  "/" + file.getName()));
-                    }
+                    String finalPath = path;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            File[] files = chooser.getSelectedFiles();
+                            for (File file : files) {
+                                if (file.isDirectory()) {
+                                    try {
+                                        upload(file, finalPath);
+                                    } catch (IOException exception) {
+                                        if (exception.getMessage().equals("Permission denied"))
+                                            DialogUtil.error("权限不足！！！");
+                                    }
+                                }
+                                log.debug(finalPath + "/" + file.getName());
+                                if (!Files.exists(fs.getPath(finalPath, file.getName()))) {
+                                    try {
+                                        Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(finalPath, file.getName()));
+                                    } catch (IOException exception) {
+                                        if (exception.getMessage().equals("Permission denied"))
+                                            DialogUtil.error("权限不足！！！");
+                                    }
+                                }
+                            }
+                            freshTable();
+                            TreePath path = myTree.getSelectionPath();
+                            myTree.expandPath(path);
+                        }
+                    }).start();
                 }
             }
         };
@@ -263,10 +289,11 @@ public class SftpBrowser extends JPanel {
                     // 将下载整个目录
 //                    log.debug("=========== myTree.hasFocus() ===========>" + myTree.hasFocus());
                     if (myTable.getSelectedRowCount() < 1) {
-                        // TODO 批量下载（整目录下载）
+                        // TODO 批量下载（单目录、多目录下载）
                         int yesOrNo = DialogUtil.yesOrNo(SftpBrowser.this, "是否确认整目录下载？");
                         if (yesOrNo == 0) {
                             log.debug("================= 确认整目录下载 ================");
+
                         }
                     } else {
                         // TODO 文件下载（单文件，多文件下载）
@@ -279,7 +306,7 @@ public class SftpBrowser extends JPanel {
                             File outputFile = chooser.getSelectedFile();
                             log.debug(outputFile.getAbsolutePath());
 
-                            for (int index : myTable.getSelectedRows()){
+                            for (int index : myTable.getSelectedRows()) {
                                 String downloadFileName = myTable.getValueAt(index, 0).toString();
 
                                 // TODO 获取下载文件路径
@@ -301,7 +328,7 @@ public class SftpBrowser extends JPanel {
                                         InputStream inputStream = Files.newInputStream(downloadPath);
                                         log.debug("文件大小：" + inputStream.available());
 
-                                        byte[] buf = new byte[1024*1024*5];
+                                        byte[] buf = new byte[1024 * 1024 * 5];
                                         int bytesRead;
                                         while ((bytesRead = inputStream.read(buf)) != -1) {
                                             outputStream.write(buf, 0, bytesRead);
@@ -324,10 +351,30 @@ public class SftpBrowser extends JPanel {
             }
         };
 
-        deleteAction = new AbstractAction("删除") {
+        deleteFilesAction = new AbstractAction("删除文件(s)") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("删除文件...");
+                for (int index : myTable.getSelectedRows()) {
+                    String downloadFileName = myTable.getValueAt(index, 0).toString();
+                    // TODO 获取下载文件路径
+                    TreePath dstPath = myTree.getSelectionPath();
+                    String path = convertTreePathToString(dstPath) + "/" + downloadFileName;
+                    log.info("删除的文件：" + path);
+                    try {
+                        Files.delete(fs.getPath(path));
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+                freshTable();
+            }
+        };
+
+        deleteDirsAction = new AbstractAction("删除目录(s)") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("删除目录...");
             }
         };
 
@@ -335,6 +382,7 @@ public class SftpBrowser extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("打开文件...");
+                DialogUtil.info("敬请期待！");
             }
         };
         popMenu = new JPopupMenu();
@@ -343,7 +391,7 @@ public class SftpBrowser extends JPanel {
         popMenu.add(uploadAction);
         popMenu.add(downloadAction);
         popMenu.addSeparator();
-        popMenu.add(deleteAction);
+        popMenu.add(deleteFilesAction);
 
         myTree.setComponentPopupMenu(popMenu);
         myTable.setComponentPopupMenu(popMenu);
@@ -354,7 +402,6 @@ public class SftpBrowser extends JPanel {
         try {
             entry = fs.getClient().readDir(path);
         } catch (IOException e) {
-
             e.printStackTrace();
         }
         return entry;
@@ -404,6 +451,54 @@ public class SftpBrowser extends JPanel {
         temp[5] = entry.getAttributes().getModifyTime().toString();
 
         return temp;
+    }
+
+    private void freshTable() {
+        // TODO 清空表中旧数据
+        tableModel.setRowCount(0);
+
+        // 获取被选中的相关节点
+        TreePath path = myTree.getSelectionPath();
+
+        DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
+        log.debug(path.toString());
+
+        DefaultMutableTreeNode temp = null;
+        try {
+            for (SftpClient.DirEntry entry : getDirEntry(convertTreePathToString(path))) {
+                log.debug(entry.getLongFilename());
+                if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
+                    continue;
+
+                if (entry.getAttributes().isDirectory()) {
+                    // TODO 当 fs 断开重连时， 判断选中节点下是否已存在相同子节点，应避免重复添加子节点
+                    if (!currentTreeNode.isLeaf()) {
+                        log.debug("================== getChildAt() =>" + currentTreeNode.getChildAt(0).toString());
+                        log.debug("================== getChildCount() =>" + currentTreeNode.getChildCount());
+                        boolean flag = true;
+                        for (int i = 0; i < currentTreeNode.getChildCount(); i++) {
+                            if (currentTreeNode.getChildAt(i).toString().equals(entry.getFilename())) {
+                                flag = false;
+                            }
+                        }
+                        if (flag) {
+                            temp = new DefaultMutableTreeNode(entry.getFilename());
+                            currentTreeNode.add(temp);
+                        }
+                    } else {
+                        temp = new DefaultMutableTreeNode(entry.getFilename());
+                        currentTreeNode.add(temp);
+                    }
+                } else {
+                    // TODO 显示目录下的文件
+                    tableModel.addRow(convertFileLongNameToStringArray(entry));
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            if (exception.getMessage().strip().endsWith("Permission denied"))
+                DialogUtil.error("权限不足！！！");
+        }
     }
 
 
@@ -463,45 +558,8 @@ public class SftpBrowser extends JPanel {
                         log.debug("================== client is open =====================");
                     }
 
-                    // TODO 清空表中旧数据
-                    tableModel.setRowCount(0);
-
-                    // 获取被选中的相关节点
-                    TreePath path = e.getPath();
-
-                    DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
-                    log.debug(path.toString());
-
-                    DefaultMutableTreeNode temp = null;
-                    for (SftpClient.DirEntry entry : getDirEntry(convertTreePathToString(path))) {
-                        log.debug(entry.getLongFilename());
-                        if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
-                            continue;
-
-                        if (entry.getAttributes().isDirectory()) {
-                            // TODO 当 fs 断开重连时， 判断选中节点下是否已存在相同子节点，应避免重复添加子节点
-                            if (!currentTreeNode.isLeaf()) {
-                                log.debug("================== getChildAt() =>" + currentTreeNode.getChildAt(0).toString());
-                                log.debug("================== getChildCount() =>" + currentTreeNode.getChildCount());
-                                Boolean flag = true;
-                                for (int i = 0; i < currentTreeNode.getChildCount(); i++) {
-                                    if (currentTreeNode.getChildAt(i).toString().equals(entry.getFilename())) {
-                                        flag = false;
-                                    }
-                                }
-                                if (flag) {
-                                    temp = new DefaultMutableTreeNode(entry.getFilename());
-                                    currentTreeNode.add(temp);
-                                }
-                            } else {
-                                temp = new DefaultMutableTreeNode(entry.getFilename());
-                                currentTreeNode.add(temp);
-                            }
-                        } else {
-                            // TODO 显示目录下的文件
-                            tableModel.addRow(convertFileLongNameToStringArray(entry));
-                        }
-                    }
+                    // 刷新文件列表
+                    freshTable();
                 }
             });
 
