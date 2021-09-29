@@ -5,6 +5,7 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
+import com.g3g4x5x6.ui.panels.ExternalToolIntegration;
 import com.g3g4x5x6.ui.settings.SettingsDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
@@ -58,7 +59,7 @@ public class MainFrame extends JFrame {
     private JMenu toolMenu = new JMenu("工具");
     private JMenu pluginMenu = new JMenu("插件");
     private JMenu helpMenu = new JMenu("帮助");
-
+    private JMenu externalSubMenu = new JMenu("外部集成工具");
     private JPanel statusBar;
 
     // TODO 菜单弹出面板
@@ -398,11 +399,30 @@ public class MainFrame extends JFrame {
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         toolMenu.add(freeRDPAction);
+        toolMenu.addSeparator();
+        toolMenu.add(externalSubMenu);
         //
         pluginMenu.add(loadPluginAction);
         pluginMenu.add(managePluginAction);
         pluginMenu.addSeparator();
         pluginMenu.add(apiPluginAction);
+        // 外部集成工具
+        externalSubMenu.add(new AbstractAction("添加工具") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("添加工具");
+                DialogUtil.info("敬请期待！");
+            }
+        });
+        externalSubMenu.add(new AbstractAction("工具管理") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("工具管理");
+                DialogUtil.info("敬请期待！");
+            }
+        });
+        externalSubMenu.addSeparator();
+        ExternalToolIntegration integration = new ExternalToolIntegration(externalSubMenu);
 
         // TODO 菜单栏
         this.setJMenuBar(menuBar);

@@ -109,12 +109,12 @@ public class FtpPane extends JPanel {
 
                     // 打开会话
                     mainTabbedPane.insertTab("FTP-" + hostField.getText(), new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                            createTerminalWidget(),
+                            new JPanel(),
                             "FTP-" + hostField.getText(),
                             mainTabbedPane.getSelectedIndex());
                     mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
                 } else {
-                    DialogUtil.warn("FTP is not Open!");
+                    DialogUtil.warn("敬请期待！");
                 }
             }
         });
@@ -124,9 +124,9 @@ public class FtpPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("FTP 测试通信");
                 if (testOpen()) {
-                    DialogUtil.info("FTP is Open!");
+                    DialogUtil.info("敬请期待！");
                 } else {
-                    DialogUtil.warn("FTP is not Open!");
+                    DialogUtil.warn("敬请期待！");
                 }
             }
         });
@@ -150,18 +150,7 @@ public class FtpPane extends JPanel {
     }
 
     private Boolean testOpen() {
-        log.debug(hostField.getText() + " / " + portField.getText());
-        boolean flag = false;
-        TelnetClient telnetClient = new TelnetClient();
-        try {
-            telnetClient.setConnectTimeout(2000);
-            telnetClient.connect(hostField.getText(), Integer.parseInt(portField.getText()));
-            flag = telnetClient.isConnected();
-            telnetClient.disconnect();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return flag;
+        return false;
     }
 
     private @NotNull JediTermWidget createTerminalWidget() {
