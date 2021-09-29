@@ -219,7 +219,6 @@ public class SftpBrowser extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("上传文件...");
-
                 // TODO 获取上传目标路径
                 TreePath dstPath = myTree.getSelectionPath();
                 String path = convertTreePathToString(dstPath);
