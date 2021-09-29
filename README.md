@@ -90,3 +90,9 @@ Small note: If editing the README, please conform to the [standard-readme](https
 ## License
 
 MIT © 2021 勾三股四弦五小六
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/G3G4X5X6/ultimateshell.svg)](https://starchart.cc/G3G4X5X6/ultimateshell)
+
