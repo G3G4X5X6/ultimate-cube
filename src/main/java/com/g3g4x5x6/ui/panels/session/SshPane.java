@@ -115,14 +115,16 @@ public class SshPane extends BaseSessionPane {
                     log.debug(password);
 
                     String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
-
+                    int preIndex = mainTabbedPane.getSelectedIndex();
+                    // 鸠占鹊巢
                     mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(mainTabbedPane, createTerminalWidget(),
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
-                                    String.valueOf(passField.getPassword())), "奥里给", mainTabbedPane.getSelectedIndex());
-                    mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
+                                    String.valueOf(passField.getPassword())), "奥里给", preIndex);
+                    mainTabbedPane.removeTabAt(preIndex+1);
+                    mainTabbedPane.setSelectedIndex(preIndex);
                 } else {
                     DialogUtil.warn("连接失败");
                 }
