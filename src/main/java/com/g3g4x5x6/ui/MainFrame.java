@@ -445,34 +445,31 @@ public class MainFrame extends JFrame {
         menuBar.add(toggleButton);
 
         // 添加更新按钮
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                lastestVersion = CommonUtil.getLastestVersion();
-                String currentVersion = CommonUtil.getCurrentVersion();
-                if (!CommonUtil.getCurrentVersion().equals(lastestVersion)) {
-                    menuBar.add(updateBtn);
-                    log.debug("添加更新按钮");
-                    updateBtn.addActionListener(new AbstractAction() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            // 检查更新
-                            String msg = null;
-                            msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
-                                    "最新版本： <font color='green'>" + lastestVersion + "</font><br><br>" +
-                                    "是否现在下载更新？</html>";
-                            log.debug("Msg: " + msg);
-                            int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
-                            if (code == 0) {
-                                // TODO 更新
-                                log.debug("马上下载更新");
-                            } else {
-                                // TODO 暂不更新
-                                log.debug("暂不下载更新");
-                            }
+        new Thread(() -> {
+            lastestVersion = CommonUtil.getLastestVersion();
+            String currentVersion = CommonUtil.getCurrentVersion();
+            if (!CommonUtil.getCurrentVersion().equals(lastestVersion)) {
+                menuBar.add(updateBtn);
+                log.debug("添加更新按钮");
+                updateBtn.addActionListener(new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // 检查更新
+                        String msg = null;
+                        msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
+                                "最新版本： <font color='green'>" + lastestVersion + "</font><br><br>" +
+                                "是否现在下载更新？</html>";
+                        log.debug("Msg: " + msg);
+                        int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
+                        if (code == 0) {
+                            // TODO 更新
+                            log.debug("马上下载更新");
+                        } else {
+                            // TODO 暂不更新
+                            log.debug("暂不下载更新");
                         }
-                    });
-                }
+                    }
+                });
             }
         }).start();
 
