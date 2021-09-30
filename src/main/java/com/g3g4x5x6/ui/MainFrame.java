@@ -32,6 +32,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
@@ -61,6 +63,7 @@ public class MainFrame extends JFrame {
     private JMenu helpMenu = new JMenu("帮助");
     private JMenu externalSubMenu = new JMenu("外部集成工具");
     private JPanel statusBar;
+    private  InputMap inputMap;
 
     // TODO 菜单弹出面板
     private AboutDialog about = new AboutDialog();
@@ -398,7 +401,11 @@ public class MainFrame extends JFrame {
         toolMenu.add(encodeConversionAction);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
-        toolMenu.add(freeRDPAction);
+        // 快捷键
+        JMenuItem freeRdpItem = new JMenuItem("FreeRDP");
+        freeRdpItem.setAccelerator(KeyStroke.getKeyStroke('D', InputEvent.ALT_DOWN_MASK));
+        freeRdpItem.addActionListener(freeRDPAction);
+        toolMenu.add(freeRdpItem);
         toolMenu.addSeparator();
         toolMenu.add(externalSubMenu);
         //
@@ -423,6 +430,7 @@ public class MainFrame extends JFrame {
         });
         externalSubMenu.addSeparator();
         ExternalToolIntegration integration = new ExternalToolIntegration(externalSubMenu);
+
 
         // TODO 菜单栏
         this.setJMenuBar(menuBar);
