@@ -310,7 +310,8 @@ public class MainFrame extends JFrame {
             DialogUtil.msg("About",
                     "<html>UltimateShell " + CommonUtil.getCurrentVersion() + " <br>" +
                             "Build on " + CommonUtil.getBuildOn() + "<br><br>" +
-                            "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a></html>");
+                            "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a><br>" +
+                            "Email to <a href='mailto://g3g4x5x6@foxmail.com'>g3g4x5x6@foxmail.com</a></html>");
         }
     };
 
@@ -387,7 +388,10 @@ public class MainFrame extends JFrame {
         viewMenu.add(dashboardAction);
         //
         optionMenu.add(themeAction);
-        optionMenu.add(settingsAction);
+        JMenuItem settingsItem = new JMenuItem("全局配置");
+        settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
+        settingsItem.addActionListener(settingsAction);
+        optionMenu.add(settingsItem);
         optionMenu.addSeparator();
         optionMenu.add(importSessionAction);
         optionMenu.add(exportSessionAction);
@@ -464,6 +468,7 @@ public class MainFrame extends JFrame {
                         if (code == 0) {
                             // TODO 更新
                             log.debug("马上下载更新");
+                            CommonUtil.getLatestJar();
                         } else {
                             // TODO 暂不更新
                             log.debug("暂不下载更新");

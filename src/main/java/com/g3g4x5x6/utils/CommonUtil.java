@@ -1,5 +1,6 @@
 package com.g3g4x5x6.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fazecast.jSerialComm.SerialPort;
 import com.github.jarod.qqwry.IPZone;
@@ -7,6 +8,7 @@ import com.github.jarod.qqwry.QQWry;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.HashSet;
@@ -98,6 +100,49 @@ public class CommonUtil {
         String tagName = object.getString("tag_name");
         System.out.println(tagName);
         return tagName;
+    }
+
+    public static void getLatestJar(){
+        StringBuffer result = new StringBuffer();
+        try {
+            URL url = new URL("https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setDoOutput(true);
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type", "application/json");
+            con.connect();
+
+            System.out.println("HTTP状态码=" + con.getResponseCode());
+
+            BufferedReader inn = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+            String value = inn.readLine().trim();
+            while (value != null) {
+                if (!"".equals(value)) {
+                    result.append(value.trim() + "\n");
+                }
+                value = inn.readLine();
+            }
+
+            inn.close();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JSONObject object = JSONObject.parseObject(result.toString());
+        JSONArray upload = object.getJSONArray("assets");
+        JSONObject uploadObj = upload.getJSONObject(0);
+        String browser_download_url = uploadObj.getString("browser_download_url");
+        System.out.println(browser_download_url);
+        try {
+            Desktop.getDesktop().browse(new URL(browser_download_url).toURI());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getCurrentVersion() {
@@ -212,6 +257,7 @@ public class CommonUtil {
 //        System.out.println(getLastestVersion());
 //        System.out.println(getCurrentVersion());
 //        generateSystemInfo();
-        System.out.println(getSystemInfo());
+//        System.out.println(getSystemInfo());
+        getLatestJar();
     }
 }

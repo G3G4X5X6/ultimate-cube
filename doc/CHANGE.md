@@ -6,7 +6,7 @@
 
 
 ## 2021-09-
-### ultimateshell_v0.22.16-alpha
+### ultimateshell_v0.23.16-alpha
 #### Added
 - 新增 `SSH` `monitor` 监视器面板
   - 查看系统进程： `ps aux`
@@ -19,6 +19,7 @@
 - 新增 `help` 菜单按钮
     - GitHub
     - GitPage
+- 支持集成第三方工具
 
 #### Fixed
 - 修复文件上传、下载功能（支持多选，目录）
