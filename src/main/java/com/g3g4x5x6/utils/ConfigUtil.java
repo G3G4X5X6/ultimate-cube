@@ -121,6 +121,22 @@ public class ConfigUtil {
         return themeClass;
     }
 
+    public static String getThemeClass(String themeId) {
+        String themeClass = "";
+        try {
+            Connection connection = DbUtil.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT class FROM theme WHERE id = " + themeId);
+            while (resultSet.next()) {
+                themeClass = resultSet.getString("class");
+            }
+            DbUtil.close(statement, resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return themeClass;
+    }
+
     /**
      * 插入新的设置项
      * @param key

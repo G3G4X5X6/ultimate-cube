@@ -1,5 +1,8 @@
 package com.g3g4x5x6.ui.dialog;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
@@ -52,6 +55,7 @@ public class ThemeDialog extends JDialog {
                 if (e.getClickCount() == 2) {
                     setTerminalColor();
                 }
+                preview();
             }
         });
     }
@@ -67,7 +71,7 @@ public class ThemeDialog extends JDialog {
         if (ConfigUtil.isEnableTheme()) {
             enableCheckBox.setSelected(true);
         }
-        JLabel tips = new JLabel("下次启动生效");
+        JLabel tips = new JLabel("保存配置生效");
         tips.setEnabled(false);
         enablePanel.add(tips);
 
@@ -177,6 +181,28 @@ public class ThemeDialog extends JDialog {
                 dispose();
             }
         });
+    }
+
+    private void preview(){
+        int row = themeTable.getSelectedRow();
+        String themeId = "";
+        if (row != -1) {
+            themeId = (String) tableModel.getValueAt(row, 0);
+            log.debug("Selected theme: " + themeId);
+        }
+        try {
+            if (ConfigUtil.isEnableTheme()) {
+                UIManager.setLookAndFeel(ConfigUtil.getThemeClass(themeId));
+            } else {
+                UIManager.setLookAndFeel(new FlatLightLaf());
+            }
+        } catch (Exception ex) {
+            log.error("Failed to initialize LaF");
+        }
+
+        // update all components
+        FlatLaf.updateUI();
+        FlatAnimatedLafChange.hideSnapshotWithAnimation();
     }
 
     private String getCurrentTheme() {

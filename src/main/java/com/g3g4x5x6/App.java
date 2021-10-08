@@ -30,8 +30,9 @@ public class App {
         // 配置主题皮肤
         try {
             if (ConfigUtil.isEnableTheme()) {
-                Class themeClass = App.class.getClassLoader().loadClass(ConfigUtil.getThemeClass());
-                UIManager.setLookAndFeel((LookAndFeel) themeClass.getConstructor().newInstance());
+//                Class themeClass = App.class.getClassLoader().loadClass(ConfigUtil.getThemeClass());
+//                UIManager.setLookAndFeel((LookAndFeel) themeClass.getConstructor().newInstance());
+                UIManager.setLookAndFeel(ConfigUtil.getThemeClass());
             } else {
                 UIManager.setLookAndFeel(new FlatLightLaf());
             }
