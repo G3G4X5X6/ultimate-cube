@@ -6,6 +6,7 @@ import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
 import com.g3g4x5x6.ui.panels.ExternalToolIntegration;
+import com.g3g4x5x6.ui.panels.tools.ColorPicker;
 import com.g3g4x5x6.ui.settings.SettingsDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
@@ -20,7 +21,6 @@ import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
 import com.glavsoft.viewer.Viewer;
 import com.glavsoft.viewer.cli.Parser;
-import com.glavsoft.viewer.swing.SwingViewerWindowFactory;
 import com.glavsoft.viewer.swing.mac.MacApplicationWrapper;
 import com.glavsoft.viewer.swing.mac.MacUtils;
 import lombok.SneakyThrows;
@@ -33,7 +33,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
@@ -106,6 +105,15 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
 //            EncodeConversion encodeConversion = new EncodeConversion();
             DialogUtil.info("敬请期待");
+        }
+    };
+
+    private AbstractAction colorPickerAction = new AbstractAction("取色器") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("取色器");
+            ColorPicker colorPicker = new ColorPicker();
+            colorPicker.setVisible(true);
         }
     };
 
@@ -403,6 +411,7 @@ public class MainFrame extends JFrame {
         //
         toolMenu.add(myEditorAction);
         toolMenu.add(encodeConversionAction);
+        toolMenu.add(colorPickerAction);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         // 快捷键
