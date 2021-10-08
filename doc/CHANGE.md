@@ -5,6 +5,15 @@
 1. 修订号：当你做了向下兼容的问题修正。
 
 
+## 2021-10-
+### ultimateshell_v0.24.16-alpha
+#### Added
+- 支持主题切换实时预览
+
+
+#### Fixed
+- sss
+
 ## 2021-10-01
 ### ultimateshell_v0.23.16-alpha
 #### Added
