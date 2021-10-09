@@ -62,7 +62,7 @@ public class MainFrame extends JFrame {
     private JMenu helpMenu = new JMenu("帮助");
     private JMenu externalSubMenu = new JMenu("外部集成工具");
     private JPanel statusBar;
-    private  InputMap inputMap;
+    private InputMap inputMap;
 
     // TODO 菜单弹出面板
     private AboutDialog about = new AboutDialog();
@@ -75,7 +75,7 @@ public class MainFrame extends JFrame {
     private AbstractAction myOpenAction = new AbstractAction("新建会话") {
         public void actionPerformed(final ActionEvent e) {
             mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
-            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
+            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
 
@@ -108,12 +108,15 @@ public class MainFrame extends JFrame {
         }
     };
 
-    private AbstractAction colorPickerAction = new AbstractAction("取色器") {
+    private AbstractAction colorPickerAction = new AbstractAction("截图取色") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("取色器");
-            ColorPicker colorPicker = new ColorPicker();
-            colorPicker.setVisible(true);
+            SwingUtilities.invokeLater(() -> {
+                        ColorPicker colorPicker = new ColorPicker();
+                        colorPicker.setVisible(true);
+                    }
+            );
         }
     };
 
@@ -504,7 +507,7 @@ public class MainFrame extends JFrame {
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
                 (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
-                    if (tabIndex != 0){
+                    if (tabIndex != 0) {
                         mainTabbedPane.removeTabAt(tabIndex);
                     }
                 });
@@ -534,7 +537,7 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
 
