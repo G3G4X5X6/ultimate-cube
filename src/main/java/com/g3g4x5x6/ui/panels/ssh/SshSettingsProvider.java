@@ -112,6 +112,7 @@ public class SshSettingsProvider implements SettingsProvider {
 //    }
 
     public TextStyle getSelectionColor() {
+//        return ConfigUtil.getTextStyle();
         return new TextStyle(TerminalColor.WHITE, TerminalColor.rgb(82, 109, 165));
     }
 
