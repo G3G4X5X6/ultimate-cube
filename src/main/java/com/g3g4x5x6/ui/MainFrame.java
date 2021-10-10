@@ -121,7 +121,7 @@ public class MainFrame extends JFrame {
         }
     };
 
-    private AbstractAction qrCodePickerAction = new AbstractAction("QR Code") {
+    private AbstractAction qrCodePickerAction = new AbstractAction("二维码") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("QR Code");
