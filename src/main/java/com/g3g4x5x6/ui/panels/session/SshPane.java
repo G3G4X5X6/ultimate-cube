@@ -2,14 +2,11 @@ package com.g3g4x5x6.ui.panels.session;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.CloseButton;
-import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
 import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
-import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;

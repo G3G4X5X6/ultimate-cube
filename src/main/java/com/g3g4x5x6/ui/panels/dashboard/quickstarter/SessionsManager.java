@@ -4,8 +4,6 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.CloseButton;
-import com.g3g4x5x6.ui.TabbedTitlePane;
 import com.g3g4x5x6.ui.dialog.SessionDialog;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.DbUtil;
