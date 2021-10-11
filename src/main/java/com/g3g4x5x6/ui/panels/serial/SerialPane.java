@@ -63,9 +63,9 @@ public class SerialPane extends JPanel {
         // 串口
         JPanel comPane = new JPanel();
         JLabel comLabel = new JLabel("串口*");
-        String[] defaultComs = new String[]{"COM1", "COM2", "COM3", "COM4", "COM5", "COM6"};
+        String[] defaultComs = new String[]{"COM1  ", "COM2", "COM3", "COM4", "COM5", "COM6"};
         comComboBox = new JComboBox<>(defaultComs);
-        comComboBox.setMinimumSize(new Dimension(200, 20));
+//        comComboBox.setPreferredSize(new Dimension(100, 20));
         if (SerialPort.getCommPorts().length >= 1) {
             comComboBox.removeAllItems();
             for (SerialPort comPort : SerialPort.getCommPorts()) {
