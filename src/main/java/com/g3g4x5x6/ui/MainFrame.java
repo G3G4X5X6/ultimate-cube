@@ -7,6 +7,7 @@ import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
 import com.g3g4x5x6.ui.panels.ExternalToolIntegration;
 import com.g3g4x5x6.ui.panels.tools.ColorPicker;
+import com.g3g4x5x6.ui.panels.tools.QRTool;
 import com.g3g4x5x6.ui.settings.SettingsDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
@@ -117,6 +118,15 @@ public class MainFrame extends JFrame {
                         colorPicker.setVisible(true);
                     }
             );
+        }
+    };
+
+    private AbstractAction qrCodePickerAction = new AbstractAction("二维码") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("QR Code");
+            QRTool qrCode = new QRTool();
+            qrCode.setVisible(true);
         }
     };
 
@@ -415,6 +425,7 @@ public class MainFrame extends JFrame {
         toolMenu.add(myEditorAction);
         toolMenu.add(encodeConversionAction);
         toolMenu.add(colorPickerAction);
+        toolMenu.add(qrCodePickerAction);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         // 快捷键
