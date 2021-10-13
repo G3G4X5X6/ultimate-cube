@@ -100,7 +100,7 @@ public class ConnectionPane extends JPanel {
         if (!temp.exists()) {
             temp.mkdir();
         }
-        String fileName = temp.getAbsolutePath() + "/netstat_" + new Date().getTime() + ".txt";
+        String fileName = temp.getAbsolutePath() + "/netstat.txt";
         String output = CommonUtil.exec("netstat -ano");
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
