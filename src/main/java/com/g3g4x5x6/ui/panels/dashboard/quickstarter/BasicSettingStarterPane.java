@@ -1,23 +1,36 @@
 package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
+import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
 import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
+import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.Md5Util;
 import com.g3g4x5x6.utils.SshUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
 
 
 @Slf4j
@@ -33,6 +46,7 @@ public class BasicSettingStarterPane extends JPanel {
     private int port;
     private String username;
     private String password;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public BasicSettingStarterPane(JTabbedPane mainTabbedPane) {
         flowLayout.setAlignment(FlowLayout.LEFT);
@@ -117,6 +131,25 @@ public class BasicSettingStarterPane extends JPanel {
                                     userField.getText(),
                                     String.valueOf(passField.getPassword())));
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
+
+                    // TODO 保存最近会话到工作目录
+                    LinkedHashMap<String, String> session = new LinkedHashMap<>();
+                    session.put("host", host);
+                    session.put("port", String.valueOf(port));
+                    session.put("username", username);
+                    session.put("password", password);
+//                    session.put("accessTime", simpleDateFormat.format(new Date().getTime()));
+                    String sessionJson = JSON.toJSONString(session);
+                    // Filename: recent_md5_accessTime
+                    String fileName = "recent_" + DigestUtils.md5Hex(JSON.toJSONString(sessionJson)) + ".json";
+                    // 判断是否已存在该会话，存在则删除会话先
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(ConfigUtil.getWorkPath() + "/sessions/" + new File(fileName)))){
+                        writer.write(sessionJson);
+                        writer.flush();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    log.debug("\nFileName: " + fileName + "\nJson: " + sessionJson);
                 } else {
                     DialogUtil.warn("连接失败");
                 }

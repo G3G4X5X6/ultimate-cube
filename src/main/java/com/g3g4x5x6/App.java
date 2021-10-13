@@ -83,6 +83,12 @@ public class App {
             editor.mkdir();
         }
 
+        // TODO 检查会话存储目录
+        File sessions = new File(workspace + "/sessions");
+        if (!sessions.exists()){
+            sessions.mkdir();
+        }
+
         // TODO 检查用户配置
 
     }

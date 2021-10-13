@@ -2,7 +2,6 @@ package com.g3g4x5x6.ui.panels.session;
 
 import com.g3g4x5x6.ui.panels.ftp.FtpPane;
 import com.g3g4x5x6.ui.panels.serial.SerialPane;
-import com.g3g4x5x6.ui.panels.sftp.SftpPane;
 import com.g3g4x5x6.ui.panels.telnet.TelnetPane;
 
 import javax.swing.*;

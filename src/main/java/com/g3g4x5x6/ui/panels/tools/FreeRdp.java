@@ -74,14 +74,8 @@ public class FreeRdp extends JDialog {
         if (!freeRdpDir.exists()){
             freeRdpDir.mkdir();
         }
-        freeRdpDirPath = freeRdpDir.getAbsolutePath() + "/";
-
-        // 远程桌面会话保存文件夹
-        freeRdpSessionsDirPath = ConfigUtil.getWorkPath() + "/freerdp/sessions";
-        File freeRdpSessionsDir = new File(freeRdpSessionsDirPath);
-        if (!freeRdpSessionsDir.exists()){
-            freeRdpSessionsDir.mkdir();
-        }
+        freeRdpDirPath = freeRdpDir + "/";
+        freeRdpSessionsDirPath = ConfigUtil.getWorkPath() + "/sessions";
 
         toolBar = new JToolBar();
 
@@ -362,7 +356,7 @@ public class FreeRdp extends JDialog {
         packCmdList();
         String sessionFile = "";
         if (!hostField.getText().strip().equals("")){
-            sessionFile = freeRdpSessionsDirPath + "/" + hostField.getText() + "_" +
+            sessionFile = freeRdpSessionsDirPath + "/freeRdp_" + hostField.getText() + "_" +
                     (portField.getText().strip().equals("")?"3389":portField.getText().strip()) + "_" +
                     (userField.getText().strip().equals("")?"-":userField.getText().strip()) + ".json";
             log.debug("SessionFile: " + sessionFile);
@@ -471,18 +465,13 @@ public class FreeRdp extends JDialog {
                         String address = (String) tableModel.getValueAt(index, 0);
                         String port = (String) tableModel.getValueAt(index, 1);
                         String user = (String) tableModel.getValueAt(index, 2);
-                        String filePath = freeRdpSessionsDirPath + "/" + address + "_" + port + "_" + user + ".json";
+                        String filePath = freeRdpSessionsDirPath + "/freeRdp_" + address + "_" + port + "_" + user + ".json";
                         File file = new File(filePath);
                         if (file.exists()){
                             BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
                             cmdList = (ArrayList<String>) JSON.parseArray(reader.readLine(), String.class);
                             openFlag = true;
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    openFreeRDP();
-                                }
-                            }).start();
+                            new Thread(() -> openFreeRDP()).start();
                         }else{
                             DialogUtil.warn("不存在会话： " + filePath);
                         }
@@ -534,11 +523,12 @@ public class FreeRdp extends JDialog {
             // 添加 Row 数据
             File sessionsDir = new File(freeRdpSessionsDirPath);
             for (File file : sessionsDir.listFiles()){
-                if (file.isFile() && file.getName().endsWith(".json")){
+                if (file.isFile() && file.getName().endsWith(".json") && file.getName().startsWith("freeRdp")){
                     log.debug(file.getAbsolutePath());
-                    String[] row = file.getName().split("_");
-                    row[2] = row[2].substring(0, row[2].lastIndexOf(".json"));
-                    tableModel.addRow(row);
+                    String[] rows = file.getName().split("_");
+                    rows[3] = rows[3].substring(0, rows[3].lastIndexOf(".json"));
+
+                    tableModel.addRow(new String[]{rows[1], rows[2], rows[3]});
                 }
             }
 

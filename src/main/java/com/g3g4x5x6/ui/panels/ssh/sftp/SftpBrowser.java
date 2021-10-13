@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels.sftp;
+package com.g3g4x5x6.ui.panels.ssh.sftp;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
@@ -18,7 +18,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.Files;
@@ -42,6 +41,7 @@ public class SftpBrowser extends JPanel {
 
     private JDialog dialog;
     private JLabel msg;
+    private JToolBar toolBar;
 
     // TODO 右键菜单动作
     private JPopupMenu popMenu;
@@ -62,6 +62,9 @@ public class SftpBrowser extends JPanel {
         borderLayout = new BorderLayout();
         this.setLayout(borderLayout);
 
+        toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+
         this.fs = sftpFileSystem;
 
         initPane();
@@ -71,6 +74,10 @@ public class SftpBrowser extends JPanel {
     public SftpBrowser(String host, int port, String user, String pass) {
         borderLayout = new BorderLayout();
         this.setLayout(borderLayout);
+
+        toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+
         this.host = host;
         this.port = port;
         this.user = user;
@@ -104,6 +111,13 @@ public class SftpBrowser extends JPanel {
     }
 
     private void initPane() {
+        toolBar.add(new AbstractAction("Test") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        this.add(toolBar, BorderLayout.NORTH);
         splitPane = new JSplitPane();
         splitPane.setDividerLocation(200);
 

@@ -1,9 +1,8 @@
-package com.g3g4x5x6.ui.panels.ssh;
-
+package com.g3g4x5x6.ui.panels.ssh.sftp;
 
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
-import com.g3g4x5x6.ui.panels.sftp.SftpBrowser;
+import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -20,8 +19,7 @@ import java.util.Map;
 
 
 @Slf4j
-@Deprecated
-public class SftpPane_back extends JPanel {
+public class SftpPane extends JPanel {
 
     private BorderLayout borderLayout = new BorderLayout();
     private SftpBrowser sftpBrowser;
@@ -40,13 +38,13 @@ public class SftpPane_back extends JPanel {
     private String username;
     private String password;
 
-    public SftpPane_back() {
+    public SftpPane() {
         this.setLayout(borderLayout);
-
     }
 
 
-    public SftpPane_back(String hostField, String portField, String userField, String passField) {
+    public SftpPane(String hostField, String portField, String userField, String passField) {
+        this();
         this.setLayout(borderLayout);
 
         this.host = hostField;
@@ -66,7 +64,7 @@ public class SftpPane_back extends JPanel {
         }
     }
 
-    public SftpPane_back(JTabbedPane mainTabbedPane) {
+    public SftpPane(JTabbedPane mainTabbedPane) {
         this.setLayout(borderLayout);
         this.mainTabbedPane = mainTabbedPane;
     }
@@ -170,5 +168,4 @@ public class SftpPane_back extends JPanel {
             }
         });
     }
-
 }
