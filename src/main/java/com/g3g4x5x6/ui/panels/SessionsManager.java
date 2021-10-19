@@ -26,9 +26,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,8 +63,6 @@ public class SessionsManager extends JPanel {
 
     private Connection connection;
     private Statement statement;
-    private ResultSet resultSet;
-    private String sql;
 
     public SessionsManager(JTabbedPane mainTabbedPane) {
         borderLayout = new BorderLayout();
@@ -82,6 +84,13 @@ public class SessionsManager extends JPanel {
 
         // 初始化右键菜单
         initPopupMenu();
+
+        sessionTree.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                log.debug("再次获取焦点");
+            }
+        });
     }
 
     /**
@@ -114,7 +123,7 @@ public class SessionsManager extends JPanel {
             public void valueChanged(TreeSelectionEvent e) {
                 // 1. 获取被选中的相关节点信息
                 TreePath path = e.getPath();
-                log.debug("选中标签: " + path.toString());
+                log.debug("选中分类目录: " + path.toString());
 
                 // 2. 获取当前目录
                 String currentTag = convertPathToTag(path);
@@ -130,11 +139,36 @@ public class SessionsManager extends JPanel {
                         temp = new DefaultMutableTreeNode(tag);
                         currentTreeNode.add(temp);
                     }
+                    sessionTree.expandPath(new TreePath(currentTreeNode.getPath()));
+                    sessionTree.setExpandsSelectedPaths(true);
                 }
-                // 4. 刷新会话表
-
             }
         });
+    }
+
+
+    private HashSet<String> getChildrenTag(String tag) {
+        tableModel.setRowCount(0);
+        HashSet<String> tags = new HashSet<>();
+        String path = "";
+        if (!tag.equals("分类目录")){
+            path = tag.substring(tag.indexOf("/"));
+        }
+        String dir = rootPath + path;
+        log.debug(dir);
+        File file = new File(dir);
+        if (!file.exists()){
+            return tags;
+        }
+        for (File f : file.listFiles()) {
+            if (f.isDirectory()) {
+                tags.add(f.getName());
+            }
+            if (f.isFile()) {
+                tableModel.addRow(getSessionFields(f));
+            }
+        }
+        return tags;
     }
 
     private void initTable() {
@@ -168,12 +202,12 @@ public class SessionsManager extends JPanel {
         if (!rootFile.exists()) {
             log.debug("目录不存在 ");
         }
-        for (File file : rootFile.listFiles()){
-            if (file.isDirectory()){
+        for (File file : rootFile.listFiles()) {
+            if (file.isDirectory()) {
                 DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(file.getName());
                 root.add(tempNode);
             }
-            if (file.isFile()){
+            if (file.isFile()) {
                 String[] row = getSessionFields(file);
                 tableModel.addRow(row);
             }
@@ -183,7 +217,7 @@ public class SessionsManager extends JPanel {
         sessionTree.setExpandsSelectedPaths(true);
     }
 
-    private String[] getSessionFields(File file){
+    private String[] getSessionFields(File file) {
         String[] row = new String[6];
         try {
             String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
@@ -200,143 +234,39 @@ public class SessionsManager extends JPanel {
         return row;
     }
 
-    /**
-     * 根据标签刷新会话
-     *
-     * @param tag
-     */
-    private void flushTable(String tag) {
-        tableModel.setRowCount(0);
-        try {
-            sql = "SELECT * FROM session WHERE id in (SELECT session FROM relation WHERE tag in (SELECT id FROM tag WHERE tag = '" + tag + "'))";
-            resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                log.debug("Row: " + resultSet.getString("session_name") + ", " +
-                        resultSet.getString("address") + ", " +
-                        resultSet.getString("port") + ", " +
-                        resultSet.getString("username") + ", " +
-                        resultSet.getString("protocol") + ", " +
-                        resultSet.getString("auth_type"));
-                tableModel.addRow(new String[]{
-                        resultSet.getString("session_name"),
-                        resultSet.getString("protocol"),
-                        resultSet.getString("address"),
-                        resultSet.getString("port"),
-                        resultSet.getString("username"),
-                        resultSet.getString("auth_type"),
-                });
-            }
-            DbUtil.close(statement, resultSet);
-        } catch (Exception e) {
-            log.debug(e.getMessage());
-        }
-    }
-
-    /**
-     * 用于增删会话目录时重载Tree
-     */
-    @Deprecated
-    private void flushTree() {
-        // TODO 1. 获取当前选中的路径
-        TreePath selectedTreePath = sessionTree.getSelectionPath();
-
-        // TODO 2. 重载Tree
-        root.removeAllChildren();
-        loadTreeNode(root);
-        treeModel.reload();
-
-        // TODO 3. 展开选中的路径
-        sessionTree.expandPath(selectedTreePath);
-
-        // TODO 4. 刷新会话列表
-        flushTable(convertPathToTag(selectedTreePath));
-    }
-
-    @Deprecated
-    private void loadTreeNode(DefaultMutableTreeNode node) {
-        String currentTag = node.toString();
-        log.debug("**********当前标签********** " + currentTag);
-        if (node.getChildCount() != 0) {
-            // TODO 获取子标签
-            HashSet<String> tags = getChildrenTag(currentTag);
-            for (String tag : tags) {
-                DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(tag);
-                node.add(newNode);
-                loadTreeNode(newNode);
-            }
-        }
-    }
-
-    private HashSet<String> getChildrenTag(String tag) {
-        HashSet<String> tags = new HashSet<>();
-        try {
-            sql = "select tag from tag where tag LIKE '" + tag + "/%'";
-            resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                log.debug("Tags: " + resultSet.getString("tag"));
-                String tagColumn = resultSet.getString("tag");
-                String currentTag = tagColumn.split("/")[tag.split("/").length];
-                tags.add(currentTag);
-            }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return tags;
-    }
-
 
     /**
      * 初始化右键菜单
      */
     private void initPopupMenu() {
-        AbstractAction addDirectory = new AbstractAction("新增目录") {
+        AbstractAction addDirectory = new AbstractAction("新建目录") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 TreePath treePath = sessionTree.getSelectionPath();
                 String currentTag = convertPathToTag(treePath);
                 String newTag = JOptionPane.showInputDialog(App.mainFrame, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
-                DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
 
-                Boolean flag = true;
-                // 取消添加标签
-                if (newTag == null){
-                    flag = false;
+                String newPath = "";
+                if (currentTag.equals("分类目录")){
+                    newPath = rootPath +  newTag;
                 }else{
-                    // 判断空标签
-                    if (newTag.strip().equals("")){
-                        flag = false;
-                        DialogUtil.warn("目录名称不能为空");
-                    }
-                    // 判断重复标签
-                    for (String tag : getChildrenTag(convertPathToTag(treePath))) {
-                        if (tag.equals(newTag)) {
-                            flag = false;
-                            DialogUtil.warn("已存在该标签");
-                        }
-                    }
-                    // 判断特殊字符
-                    if (newTag.indexOf("/") != -1){
-                        flag = false;
-                        DialogUtil.warn("<html>标签不能存在字符： <strong><font color='red'>/</font></strong></html>");
-                    }
+                    newPath = rootPath + currentTag.substring(currentTag.indexOf("/")) + "/" + newTag;
                 }
-                if (flag){
-                    currentNode.add(new DefaultMutableTreeNode(newTag));
-                    treeModel.reload(currentNode);
-                    String tag = currentTag + "/" + newTag;
-                    log.debug("newTag: " + tag);
+                if (Files.exists(Path.of(newPath))){
+                    log.debug("目录已存在");
+                }else{
                     try {
-                        sql = "INSERT INTO tag VALUES(NULL, '" + tag + "')";
-                        connection = DbUtil.getConnection();
-                        statement = connection.createStatement();
-                        int row = statement.executeUpdate(sql);
-                        log.debug("新建目录: " + sql + ":" + row);
-                        DbUtil.close(statement);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                        Files.createDirectories(Path.of(newPath));
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
                     }
+                    DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(newTag);
+                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
+                    currentNode.add(tempNode);
+                    sessionTree.expandPath(new TreePath(currentNode.getPath()));
+                    sessionTree.setExpandsSelectedPaths(true);
                 }
+
             }
         };
 
@@ -355,22 +285,19 @@ public class SessionsManager extends JPanel {
                     if (bool == 0) {
                         log.debug("确认删除目录");
                         // 删除数据库中的标签
-                        try {
-                            TreePath treePath = sessionTree.getSelectionPath();
-                            String currentTag = convertPathToTag(treePath);
-                            if (!currentTag.equals("会话标签")) {
-                                connection = DbUtil.getConnection();
-                                statement = connection.createStatement();
-
-                                sql = "DELETE FROM tag WHERE tag = '" + currentTag + "'";
-                                statement.executeUpdate(sql);
-                                log.debug("删除目录：" + sql);
-                                DbUtil.close(statement);
-                            } else {
-                                DialogUtil.warn("不能删除根标签");
+                        TreePath treePath = sessionTree.getSelectionPath();
+                        String currentTag = convertPathToTag(treePath);
+                        if (!currentTag.equals("分类目录")) {
+                            String path = rootPath + currentTag.substring(currentTag.indexOf("/"));
+                            if (Files.exists(Path.of(path))){
+                                try {
+                                    Files.delete(Path.of(path));
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                }
+                            }else{
+                                log.debug("目录不存在");
                             }
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
                         }
                         treeModel.removeNodeFromParent(currentTreeNode);
                     }
@@ -382,14 +309,8 @@ public class SessionsManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("新增会话");
-                // TODO 1. 获取当前标签
-                String currentTag = convertPathToTag(sessionTree.getSelectionPath());
-
-                // TODO 2. 弹窗录取信息、添加会话列表（Table）、新增会话（数据库）
-                SessionDialog sessionDialog = new SessionDialog(App.mainFrame, currentTag);
-
-                // TODO 3. 刷新列表
-                flushTable(currentTag);
+                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };
 
@@ -410,39 +331,20 @@ public class SessionsManager extends JPanel {
                         log.debug("删除：" + sessionTable.getSelectedRow() + " => session：" + session + ", protocol：" + protocol +
                                 ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
 
+                        TreePath treePath = sessionTree.getSelectionPath();
+                        String currentTag = convertPathToTag(treePath);
+                        String path = rootPath + currentTag.substring(currentTag.indexOf("/"));
+                        File dir = new File(path);
+                        if (dir.exists()){
+                            for (File file : dir.listFiles()){
+                                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
+                                    file.delete();
+                                }
+                            }
+                        }
                         // 移除出列表
                         tableModel.removeRow(sessionTable.getSelectedRow());
 
-                        // 删除数据库中的会话
-                        try {
-                            connection = DbUtil.getConnection();
-                            statement = connection.createStatement();
-
-                            TreePath treePath = sessionTree.getSelectionPath();
-                            String currentTag = convertPathToTag(treePath);
-
-                            String tag_sql = "DELETE FROM relation WHERE session in (select id from session where " +
-                                    "session_name = '" + session + "' AND " +
-                                    "protocol = '" + protocol + "' AND " +
-                                    "address = '" + address + "' AND " +
-                                    "port = '" + port + "' AND " +
-                                    "username = '" + user + "' AND " +
-                                    "auth_type = '" + auth + "')";
-
-                            String session_sql = "DELETE FROM session WHERE " +
-                                    "session_name = '" + session + "' AND " +
-                                    "protocol = '" + protocol + "' AND " +
-                                    "address = '" + address + "' AND " +
-                                    "port = '" + port + "' AND " +
-                                    "username = '" + user + "' AND " +
-                                    "auth_type = '" + auth + "'";
-                            statement.executeUpdate(tag_sql);
-                            statement.executeUpdate(session_sql);
-
-                            DbUtil.close(statement);
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
                     }
                 }
             }
