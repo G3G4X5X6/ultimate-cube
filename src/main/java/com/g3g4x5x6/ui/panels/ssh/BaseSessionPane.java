@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels.session;
+package com.g3g4x5x6.ui.panels.ssh;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+@Deprecated
 @Slf4j
 public class BaseSessionPane extends JPanel {
     private BorderLayout borderLayout = new BorderLayout();

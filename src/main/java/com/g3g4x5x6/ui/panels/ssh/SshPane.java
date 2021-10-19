@@ -1,12 +1,9 @@
-package com.g3g4x5x6.ui.panels.session;
+package com.g3g4x5x6.ui.panels.ssh;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
-import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
-import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
-import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
@@ -17,13 +14,26 @@ import org.apache.sshd.client.session.ClientSession;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 
 @Slf4j
-public class SshPane extends BaseSessionPane {
+public class SshPane extends JPanel {
+
+    private BorderLayout borderLayout = new BorderLayout();
+    private FlowLayout leftFlow = new FlowLayout();
+
+    protected JTabbedPane basicSettingTabbedPane = new JTabbedPane();
+    protected String basicSettingPaneTitle;
+    protected JPanel basicSettingPane = new JPanel();
+
+    protected JTabbedPane advancedSettingTabbedPane = new JTabbedPane();
+    protected String advancedSettingPaneTitle;
+    protected JPanel advancedSettingPane = new JPanel();
 
     private JTabbedPane mainTabbedPane;
 
@@ -36,17 +46,46 @@ public class SshPane extends BaseSessionPane {
     private String password;
 
     public SshPane(JTabbedPane mainTabbedPane) {
+        this.setLayout(borderLayout);
         this.mainTabbedPane = mainTabbedPane;
 
-        setBasicSettingPaneTitle("Basic SSH Settings");
-        setAdvancedSettingPaneTitle("Advanced SSH Settings");
+        basicSettingPaneTitle = "Basic SSH Settings";
+        advancedSettingPaneTitle = "Advanced SSH Settings";
 
+        leftFlow.setAlignment(FlowLayout.LEFT);
         initSettingPane();
 
         createBasicComponent();
         createAdvancedComponent();
     }
 
+    /**
+     * 初始化面板
+     */
+    protected void initSettingPane(){
+        basicSettingPane.setLayout(leftFlow);
+        basicSettingTabbedPane.addTab(basicSettingPaneTitle, basicSettingPane);
+        advancedSettingTabbedPane.addTab(advancedSettingPaneTitle, advancedSettingPane);
+
+        JPanel btnPane = new JPanel();
+        btnPane.setLayout(leftFlow);
+        JButton saveBtn = new JButton("保存会话");
+        saveBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("保存会话");
+            }
+        });
+        btnPane.add(saveBtn);
+
+        this.add(basicSettingTabbedPane, BorderLayout.NORTH);
+        this.add(advancedSettingTabbedPane, BorderLayout.CENTER);
+        this.add(btnPane, BorderLayout.SOUTH);
+    }
+
+    /**
+     * 基本设置面板
+     */
     private void createBasicComponent() {
         // TODO host address
         JPanel hostPane = new JPanel();
@@ -146,52 +185,14 @@ public class SshPane extends BaseSessionPane {
         });
     }
 
-    private int testConnection() {
-        host = hostField.getText();
-        port = Integer.parseInt(portField.getText());
-        log.debug(host);
-        log.debug(String.valueOf(port));
-
-        HostConfigEntry hostConfigEntry = new HostConfigEntry();
-        hostConfigEntry.setHostName(host);
-        hostConfigEntry.setHost(host);
-        hostConfigEntry.setPort(port);
-
-        SshClient client = SshClient.setUpDefaultClient();
-        client.start();
-
-        if (host.equals("")) {
-            try {
-                client.close();
-            } catch (IOException e) {
-                log.debug(e.getMessage());
-            }
-
-            return 2;
-        }
-
-        try {
-            ClientSession session = client.connect(hostConfigEntry).verify(3000).getClientSession();
-
-            session.close();
-            client.close();
-
-            return 1;
-
-        } catch (IOException ioException) {
-            try {
-                client.close();
-            } catch (IOException e) {
-                log.debug(e.getMessage());
-            }
-
-            log.debug(ioException.getMessage());
-        }
-        return 0;
-    }
-
+    /**
+     * 高级设置面板
+     */
     private void createAdvancedComponent() {
-
+        JSplitPane splitPane = new JSplitPane();
+        splitPane.setDividerLocation(200);
+        advancedSettingPane.setLayout(new BorderLayout());
+        advancedSettingPane.add(splitPane, BorderLayout.CENTER);
     }
 
     private @NotNull JediTermWidget createTerminalWidget() {
@@ -215,6 +216,45 @@ public class SshPane extends BaseSessionPane {
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private int testConnection() {
+        host = hostField.getText();
+        port = Integer.parseInt(portField.getText());
+        log.debug(host);
+        log.debug(String.valueOf(port));
+
+        HostConfigEntry hostConfigEntry = new HostConfigEntry();
+        hostConfigEntry.setHostName(host);
+        hostConfigEntry.setHost(host);
+        hostConfigEntry.setPort(port);
+
+        SshClient client = SshClient.setUpDefaultClient();
+        client.start();
+
+        if (host.equals("")) {
+            try {
+                client.close();
+            } catch (IOException e) {
+                log.debug(e.getMessage());
+            }
+
+            return 2;
+        }
+        try {
+            ClientSession session = client.connect(hostConfigEntry).verify(3000).getClientSession();
+            session.close();
+            client.close();
+            return 1;
+        } catch (IOException ioException) {
+            try {
+                client.close();
+            } catch (IOException e) {
+                log.debug(e.getMessage());
+            }
+            log.debug(ioException.getMessage());
+        }
+        return 0;
     }
 
     // TODO 获取 sFTP channel
