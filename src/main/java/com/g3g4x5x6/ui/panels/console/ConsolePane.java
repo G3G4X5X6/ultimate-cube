@@ -1,6 +1,8 @@
 package com.g3g4x5x6.ui.panels.console;
 
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.jediterm.pty.PtyProcessTtyConnector;
@@ -14,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +26,28 @@ import java.util.Map;
 public class ConsolePane extends JPanel {
 
     private BorderLayout borderLayout = new BorderLayout();
+    private JToolBar toolBar;
 
     public ConsolePane() {
         this.setLayout(borderLayout);
+        toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        FlatButton freshBtn = new FlatButton();
+        freshBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
+        freshBtn.setToolTipText("重置本地终端");
+        freshBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
+        freshBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        log.debug("刷新本地终端");
+                    }
+                }).start();
+            }
+        });
+        toolBar.add(freshBtn);
 
         CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
         cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
@@ -34,6 +56,7 @@ public class ConsolePane extends JPanel {
         terminalPanel.start();
 
         this.add(terminalPanel, BorderLayout.CENTER);
+        this.add(toolBar, BorderLayout.SOUTH);
         log.info("启动本地终端");
     }
 

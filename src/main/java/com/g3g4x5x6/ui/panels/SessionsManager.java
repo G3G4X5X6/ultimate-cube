@@ -1,32 +1,43 @@
-package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
+package com.g3g4x5x6.ui.panels;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.dialog.SessionDialog;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
+import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.SshUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Vector;
 
 
-@Deprecated
 @Slf4j
 public class SessionsManager extends JPanel {
 
@@ -43,6 +54,7 @@ public class SessionsManager extends JPanel {
     private JScrollPane tableScroll;
     private JTable sessionTable;
     private DefaultTableModel tableModel;
+    private String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
     private String[] columnNames = {"会话名称", "协议", "地址", "端口", "登录用户", "认证类型"}; // 添加<创建时间>
 
     private Connection connection;
@@ -76,7 +88,7 @@ public class SessionsManager extends JPanel {
      * TODO 会话树
      */
     private void initTree() {
-        root = new DefaultMutableTreeNode("会话标签");
+        root = new DefaultMutableTreeNode("分类目录");
         treeModel = new DefaultTreeModel(root);
 
         sessionTree = new JTree();
@@ -85,7 +97,7 @@ public class SessionsManager extends JPanel {
         // 设置树显示根节点句柄
         sessionTree.setShowsRootHandles(false);
         // 设置树节点可编辑
-        sessionTree.setEditable(true);
+//        sessionTree.setEditable(true);
 
         treeScroll = new JScrollPane(sessionTree);
         treeScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -102,14 +114,12 @@ public class SessionsManager extends JPanel {
             public void valueChanged(TreeSelectionEvent e) {
                 // 1. 获取被选中的相关节点信息
                 TreePath path = e.getPath();
-                int row = sessionTree.getRowForPath(path);
                 log.debug("选中标签: " + path.toString());
 
-                // 2. 刷新会话列表
-                flushTable(convertPathToTag(path));
-
-                // 3. 展开子标签
+                // 2. 获取当前目录
                 String currentTag = convertPathToTag(path);
+
+                // 3. 获取子目录
                 HashSet<String> children = getChildrenTag(currentTag);
                 // 避免 currentTreeNode 为 null 的问题
                 if (!sessionTree.isSelectionEmpty()) {
@@ -121,6 +131,8 @@ public class SessionsManager extends JPanel {
                         currentTreeNode.add(temp);
                     }
                 }
+                // 4. 刷新会话表
+
             }
         });
     }
@@ -152,33 +164,40 @@ public class SessionsManager extends JPanel {
     }
 
     private void initContent() {
-        try {
-            connection = DbUtil.getConnection();
-            statement = connection.createStatement();
-            sql = "select tag from tag";
-            resultSet = statement.executeQuery(sql);
-
-            HashSet<String> tempSet = new HashSet<>();
-            while (resultSet.next()) {
-                log.debug(resultSet.getString("tag"));
-                String tempTag = resultSet.getString("tag");
-                String[] tempTags = tempTag.split("/");
-
-                if (tempTags.length > 1) {
-                    tempSet.add(tempTags[1]);
-                }
-            }
-            for (String node : tempSet) {
-                DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(node);
+        File rootFile = new File(rootPath);
+        if (!rootFile.exists()) {
+            log.debug("目录不存在 ");
+        }
+        for (File file : rootFile.listFiles()){
+            if (file.isDirectory()){
+                DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(file.getName());
                 root.add(tempNode);
             }
-            sessionTree.expandPath(sessionTree.getSelectionPath());
+            if (file.isFile()){
+                String[] row = getSessionFields(file);
+                tableModel.addRow(row);
+            }
+        }
+        sessionTree.expandPath(new TreePath(root.getPath()));
+        sessionTree.setSelectionPath(new TreePath(root.getPath()));
+        sessionTree.setExpandsSelectedPaths(true);
+    }
 
-            // TODO 默认显示根目录用户列表
-            flushTable("会话标签");
-        } catch (Exception e) {
+    private String[] getSessionFields(File file){
+        String[] row = new String[6];
+        try {
+            String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+            JSONObject jsonObject = JSON.parseObject(json);
+            row[0] = jsonObject.getString("sessionName");
+            row[1] = jsonObject.getString("sessionProtocol");
+            row[2] = jsonObject.getString("sessionAddress");
+            row[3] = jsonObject.getString("sessionPort");
+            row[4] = jsonObject.getString("sessionUser");
+            row[5] = jsonObject.getString("sessionLoginType");
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        return row;
     }
 
     /**

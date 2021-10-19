@@ -1,7 +1,6 @@
 package com.g3g4x5x6.ui.panels.ssh.monitor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.panels.ShowEditorPane;
 import com.g3g4x5x6.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
