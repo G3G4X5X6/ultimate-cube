@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels;
+package com.g3g4x5x6.ui.panels.ssh.monitor;
 
 import com.g3g4x5x6.App;
 

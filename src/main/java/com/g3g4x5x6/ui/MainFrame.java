@@ -5,14 +5,14 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.dialog.AboutDialog;
-import com.g3g4x5x6.ui.panels.ExternalToolIntegration;
+import com.g3g4x5x6.ui.panels.SessionsManager;
+import com.g3g4x5x6.ui.panels.tools.ExternalToolIntegration;
 import com.g3g4x5x6.ui.panels.tools.ColorPicker;
 import com.g3g4x5x6.ui.panels.tools.QRTool;
 import com.g3g4x5x6.ui.settings.SettingsDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
-import com.g3g4x5x6.ui.panels.dashboard.quickstarter.SessionsManager;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
-import com.g3g4x5x6.ui.panels.session.NewTabbedPane;
+import com.g3g4x5x6.ui.panels.NewTabbedPane;
 import com.g3g4x5x6.ui.panels.tools.FreeRdp;
 import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
@@ -80,17 +80,10 @@ public class MainFrame extends JFrame {
         }
     };
 
-    private AbstractAction mysessionAction = new AbstractAction("会话管理") {
+    private AbstractAction mySessionAction = new AbstractAction("会话管理") {
         public void actionPerformed(final ActionEvent e) {
             mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addList.svg"), new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
-        }
-    };
-
-    private AbstractAction dashboardAction = new AbstractAction("仪表板") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            mainTabbedPane.setSelectedIndex(0);
         }
     };
 
@@ -403,12 +396,17 @@ public class MainFrame extends JFrame {
         updateBtn.setFocusable(false);
 
         // TODO 添加菜单动作
+        JMenu openSessionMenu = new JMenu("打开会话");
+        JMenuItem allItem = new JMenuItem("全部会话");
+        openSessionMenu.add(allItem);
+        openSessionMenu.addSeparator();
+        openSessionMenu.add(new JMenuItem("其他"));
         terminalMenu.add(myOpenAction);
-        terminalMenu.add(mysessionAction);
+        terminalMenu.add(openSessionMenu);
+        terminalMenu.add(mySessionAction);
         //
-        viewMenu.add(dashboardAction);
+        viewMenu.add(themeAction);
         //
-        optionMenu.add(themeAction);
         JMenuItem settingsItem = new JMenuItem("全局配置");
         settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         settingsItem.addActionListener(settingsAction);
@@ -422,10 +420,14 @@ public class MainFrame extends JFrame {
         helpMenu.addSeparator();
         helpMenu.add(myAboutAction);
         //
-        toolMenu.add(myEditorAction);
-        toolMenu.add(encodeConversionAction);
-        toolMenu.add(colorPickerAction);
-        toolMenu.add(qrCodePickerAction);
+        JMenu myToolMenu = new JMenu("内置工具");
+        myToolMenu.add(myEditorAction);
+        toolMenu.add(myToolMenu);
+        JMenu otherToolMenu = new JMenu("杂七杂八");
+        otherToolMenu.add(encodeConversionAction);
+        otherToolMenu.add(colorPickerAction);
+        otherToolMenu.add(qrCodePickerAction);
+        toolMenu.add(otherToolMenu);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         // 快捷键

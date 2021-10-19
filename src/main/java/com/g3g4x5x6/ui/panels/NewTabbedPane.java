@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels.session;
+package com.g3g4x5x6.ui.panels;
 
 import javax.swing.*;
 import java.awt.*;

@@ -49,7 +49,6 @@ public class BaseSessionPane extends JPanel {
                 log.debug("取消");
             }
         });
-//        saveBtn.setVisible(false);
         cancelBtn.setVisible(false);
         btnPane.add(saveBtn);
         btnPane.add(cancelBtn);

@@ -34,10 +34,10 @@ public class ConnectionPane extends JPanel {
         toolBar = new JToolBar();
         toolBar.setFloatable(false);
 
-        FlatButton flushBtn = new FlatButton();
-        flushBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
-        flushBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
-        flushBtn.addActionListener(new AbstractAction() {
+        FlatButton freshBtn = new FlatButton();
+        freshBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
+        freshBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
+        freshBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new Thread(new Runnable() {
@@ -49,7 +49,7 @@ public class ConnectionPane extends JPanel {
             }
         });
 
-        toolBar.add(flushBtn);
+        toolBar.add(freshBtn);
 
         table = new JTable();
         tableModel = new DefaultTableModel() {
