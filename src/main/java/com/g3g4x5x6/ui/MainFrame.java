@@ -14,10 +14,7 @@ import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.NewTabbedPane;
 import com.g3g4x5x6.ui.panels.tools.FreeRdp;
-import com.g3g4x5x6.utils.CommonUtil;
-import com.g3g4x5x6.utils.ConfigUtil;
-import com.g3g4x5x6.utils.DialogUtil;
-import com.g3g4x5x6.utils.ExcelUtil;
+import com.g3g4x5x6.utils.*;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
 import com.glavsoft.viewer.Viewer;
@@ -31,6 +28,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -63,7 +61,6 @@ public class MainFrame extends JFrame {
     private JMenu helpMenu = new JMenu("帮助");
     private JMenu externalSubMenu = new JMenu("外部集成工具");
     private JPanel statusBar;
-    private InputMap inputMap;
 
     // TODO 菜单弹出面板
     private AboutDialog about = new AboutDialog();
@@ -397,10 +394,12 @@ public class MainFrame extends JFrame {
 
         // TODO 添加菜单动作
         JMenu openSessionMenu = new JMenu("打开会话");
-        JMenuItem allItem = new JMenuItem("全部会话");
-        openSessionMenu.add(allItem);
-        openSessionMenu.addSeparator();
-        openSessionMenu.add(new JMenuItem("其他"));
+        String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
+        File dir = new File(rootPath);
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        recursiveListDirectory(dir, openSessionMenu);
         terminalMenu.add(myOpenAction);
         terminalMenu.add(openSessionMenu);
         terminalMenu.add(mySessionAction);
@@ -513,6 +512,38 @@ public class MainFrame extends JFrame {
         statusBar.setLayout(flowLayout);
         statusBar.add(new JLabel("状态栏"));
 //        this.add(statusBar, BorderLayout.SOUTH);
+    }
+
+    public void recursiveListDirectory(File directory, JMenuItem menuItem) {
+        // 是目录，获取该目录下面的所有文件（包括目录）
+        File[] files = directory.listFiles();
+        // 判断 files 是否为空？
+        if (null != files) {
+            // 遍历文件数组
+            for (File f : files) {
+                // 判断是否是目录？
+                if (f.isDirectory()) {
+                    // 是目录
+                    System.out.println("目录绝对路径：" + f.getAbsolutePath());
+                    recursiveListDirectory(f, menuItem);
+                } else {
+                    // 不是目录，判断是否是文件？
+                    if (f.isFile()) {
+                        System.out.println("文件绝对路径：" + f.getAbsolutePath());
+                        String itemName = f.getName().substring(f.getName().indexOf("_") + 1, f.getName().length() - 5);
+                        JMenuItem tempItem = new JMenuItem(itemName);
+                        tempItem.addActionListener(new AbstractAction() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                log.debug(f.getAbsolutePath());
+                                new Thread(() -> SessionUtil.openSshSession(f.getAbsolutePath(), mainTabbedPane)).start();
+                            }
+                        });
+                        menuItem.add(tempItem);
+                    }
+                }
+            }
+        }
     }
 
     private void initClosableTabs(JTabbedPane tabbedPane) {

@@ -6,12 +6,8 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.dialog.SessionDialog;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
-import com.g3g4x5x6.utils.ConfigUtil;
-import com.g3g4x5x6.utils.DbUtil;
-import com.g3g4x5x6.utils.DialogUtil;
-import com.g3g4x5x6.utils.SshUtil;
+import com.g3g4x5x6.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
@@ -39,7 +35,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Vector;
 
 
 @Slf4j
@@ -356,60 +351,28 @@ public class SessionsManager extends JPanel {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = sessionTable.getSelectedRows();
                 for (int index : indexs) {
-                    String session = (String) tableModel.getValueAt(index, 0);
-                    String protocol = (String) tableModel.getValueAt(index, 1);
-                    String address = (String) tableModel.getValueAt(index, 2);
-                    String port = (String) tableModel.getValueAt(index, 3);
-                    String user = (String) tableModel.getValueAt(index, 4);
-                    String auth = (String) tableModel.getValueAt(index, 5);
-                    String pass = "";
-                    log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
+                    String session = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 0);
+                    String protocol = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 1);
+                    String address = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 2);
+                    String port = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 3);
+                    String user = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 4);
+                    String auth = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 5);
+                    log.debug("删除：" + sessionTable.getSelectedRow() + " => session：" + session + ", protocol：" + protocol +
                             ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
 
-                    // 数据库获取账户密码
-                    try {
-                        connection = DbUtil.getConnection();
-                        statement = connection.createStatement();
-
-                        String session_sql = "SELECT password FROM session WHERE " +
-                                "session_name = '" + session + "' AND " +
-                                "protocol = '" + protocol + "' AND " +
-                                "address = '" + address + "' AND " +
-                                "port = '" + port + "' AND " +
-                                "username = '" + user + "' AND " +
-                                "auth_type = '" + auth + "'";
-
-                        ResultSet resultSet = statement.executeQuery(session_sql);
-                        while (resultSet.next()) {
-                            pass = resultSet.getString("password");
-                        }
-
-                        DbUtil.close(statement);
-                    } catch (SQLException throwables) {
-                        throwables.printStackTrace();
+                    TreePath treePath = sessionTree.getSelectionPath();
+                    String currentTag = convertPathToTag(treePath);
+                    String path = rootPath;
+                    if (!currentTag.equals("分类目录")){
+                        path = rootPath + currentTag.substring(currentTag.indexOf("/"));
                     }
-
-                    // 更新最近会话访问时间
-                    DbUtil.updateAccessTime(new Date().getTime(), "" +
-                            "session_name = '" + session + "' AND " +
-                            "protocol = '" + protocol + "' AND " +
-                            "address = '" + address + "' AND " +
-                            "port = '" + port + "' AND " +
-                            "username = '" + user + "' AND " +
-                            "auth_type = '" + auth + "'"
-                    );
-
-                    // 打开会话
-                    if (SshUtil.testConnection(address, port) == 1) {
-
-                        String defaultTitle = address.equals("") ? "未命名" : address;
-                        mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                                new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
-                                        address, port, user, pass),             // For Sftp
-                                "快速连接", mainTabbedPane.getTabCount());
-                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
-                    } else {
-                        DialogUtil.warn("连接失败");
+                    File dir = new File(path);
+                    if (dir.exists()){
+                        for (File file : dir.listFiles()){
+                            if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
+                                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
+                            }
+                        }
                     }
                 }
             }
@@ -426,9 +389,9 @@ public class SessionsManager extends JPanel {
                     port = (String) tableModel.getValueAt(index, 3);
 
                     if (SshUtil.testConnection(host, port) == 1) {
-                        DialogUtil.info("连接成功: ssh://" + host + ":" + port);
+                        DialogUtil.info("连接成功: SSH://" + host + ":" + port);
                     } else {
-                        DialogUtil.warn("连接失败: ssh://" + host + ":" + port);
+                        DialogUtil.warn("连接失败: SSH://" + host + ":" + port);
                     }
                 }
             }

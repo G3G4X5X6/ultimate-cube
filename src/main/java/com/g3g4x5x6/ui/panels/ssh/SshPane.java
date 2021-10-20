@@ -2,8 +2,10 @@ package com.g3g4x5x6.ui.panels.ssh;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
+import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
@@ -14,11 +16,17 @@ import org.apache.sshd.client.session.ClientSession;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 
 @Slf4j
@@ -36,6 +44,12 @@ public class SshPane extends JPanel {
     protected JPanel advancedSettingPane = new JPanel();
 
     private JTabbedPane mainTabbedPane;
+    private JSplitPane splitPane;
+    private JPanel rightPane;
+    private JScrollPane treeScroll;
+    private JTree sessionTree;
+    private DefaultTreeModel treeModel;
+    private DefaultMutableTreeNode root;
 
     private JFormattedTextField hostField;
     private JFormattedTextField portField;
@@ -74,6 +88,7 @@ public class SshPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("保存会话");
+                saveSession();
             }
         });
         btnPane.add(saveBtn);
@@ -81,6 +96,18 @@ public class SshPane extends JPanel {
         this.add(basicSettingTabbedPane, BorderLayout.NORTH);
         this.add(advancedSettingTabbedPane, BorderLayout.CENTER);
         this.add(btnPane, BorderLayout.SOUTH);
+    }
+
+    private void saveSession(){
+        LinkedHashMap<String, String> session = new LinkedHashMap<>();
+        session.put("sessionName", "");
+        session.put("sessionProtocol", "SSH");
+        session.put("sessionAddress", "");
+        session.put("sessionPort", "");
+        session.put("sessionUser", "");
+        session.put("sessionPass", "");
+        session.put("sessionLoginType", "");
+        session.put("sessionComment", "");
     }
 
     /**
@@ -189,12 +216,96 @@ public class SshPane extends JPanel {
      * 高级设置面板
      */
     private void createAdvancedComponent() {
-        JSplitPane splitPane = new JSplitPane();
+        splitPane = new JSplitPane();
         splitPane.setDividerLocation(200);
         advancedSettingPane.setLayout(new BorderLayout());
         advancedSettingPane.add(splitPane, BorderLayout.CENTER);
+        initTreePane();
+        initRightPane();
     }
 
+    private void initTreePane(){
+        root = new DefaultMutableTreeNode("选中以下节点以分类");
+        treeModel = new DefaultTreeModel(root);
+
+        sessionTree = new JTree();
+        sessionTree.setModel(treeModel);
+        sessionTree.setSelectionPath(new TreePath(root.getPath()));
+        // 设置树节点可编辑
+        sessionTree.setEditable(false);
+
+        initTreeNode();
+
+        sessionTree.expandPath(new TreePath(root.getPath()));
+        sessionTree.setSelectionPath(new TreePath(root.getPath()));
+        sessionTree.setExpandsSelectedPaths(true);
+
+        treeScroll = new JScrollPane(sessionTree);
+        treeScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        treeScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        DefaultTreeCellRenderer render = new DefaultTreeCellRenderer();
+        render.setLeafIcon(new FlatTreeClosedIcon());
+        sessionTree.setCellRenderer(render);
+        splitPane.setLeftComponent(treeScroll);
+    }
+
+    private void initTreeNode(){
+        String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
+        File dir  = new File(rootPath);
+        if (!dir.exists()){
+            dir.mkdir();
+        }
+        recursiveListDirectory(dir, root);
+
+    }
+
+    private void initRightPane(){
+        rightPane = new JPanel(new BorderLayout());
+
+
+        splitPane.setRightComponent(rightPane);
+    }
+
+    /**
+     * 输出指定目录下面的文件名称，包括子目录
+     */
+    public void recursiveListDirectory(File directory, DefaultMutableTreeNode rootNode) {
+        // 1、判断映射的目录文件是否存在？
+        if (!directory.exists()) {
+            // 不存在则直接返回
+            return;
+        }
+        // 2、判断是否是目录？
+        if (!directory.isDirectory()) {
+            // 不是目录，判断是否是文件？
+            if (directory.isFile()) {
+                System.out.println("文件绝对路径：" + directory.getAbsolutePath());
+            }
+        } else {
+            // 是目录，获取该目录下面的所有文件（包括目录）
+            File[] files = directory.listFiles();
+            // 判断 files 是否为空？
+            if (null != files) {
+                // 遍历文件数组
+                for (File f : files) {
+                    // 判断是否是目录？
+                    if (f.isDirectory()) {
+                        // 是目录
+                        System.out.println("目录绝对路径：" + f.getAbsolutePath());
+                        DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(f.getName());
+                        rootNode.add(tempNode);
+                        recursiveListDirectory(f, tempNode);
+                    } else {
+                        // 不是目录，判断是否是文件？
+                        if (f.isFile()) {
+                            System.out.println("文件绝对路径：" + f.getAbsolutePath());
+                        }
+                    }
+                }
+            }
+        }
+    }
     private @NotNull JediTermWidget createTerminalWidget() {
         SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
         JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
