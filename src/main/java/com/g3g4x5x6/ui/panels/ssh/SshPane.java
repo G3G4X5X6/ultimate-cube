@@ -1,12 +1,14 @@
 package com.g3g4x5x6.ui.panels.ssh;
 
 
+import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.SessionUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,8 @@ import org.apache.sshd.client.session.ClientSession;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -24,8 +28,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 
 
@@ -53,11 +59,17 @@ public class SshPane extends JPanel {
 
     private JFormattedTextField hostField;
     private JFormattedTextField portField;
+    private JFormattedTextField userField;
+    private JPasswordField passField;
+    private JTextField sessionName;
+    private JTextArea commentText;
+    private JLabel keyLabel;
 
     private String host;
     private int port;
     private String username;
     private String password;
+    private String authType = "password";
 
     public SshPane(JTabbedPane mainTabbedPane) {
         this.setLayout(borderLayout);
@@ -100,14 +112,34 @@ public class SshPane extends JPanel {
 
     private void saveSession(){
         LinkedHashMap<String, String> session = new LinkedHashMap<>();
-        session.put("sessionName", "");
+        session.put("sessionName", sessionName.getText());
         session.put("sessionProtocol", "SSH");
-        session.put("sessionAddress", "");
-        session.put("sessionPort", "");
-        session.put("sessionUser", "");
-        session.put("sessionPass", "");
-        session.put("sessionLoginType", "");
-        session.put("sessionComment", "");
+        session.put("sessionAddress", hostField.getText());
+        session.put("sessionPort", portField.getText());
+        session.put("sessionUser", userField.getText());
+        session.put("sessionPass", String.valueOf(passField.getPassword()));
+        session.put("sessionKeyPath", keyLabel.getText());
+        session.put("sessionLoginType", authType);
+        session.put("sessionComment", commentText.getText());
+        log.debug("Comment: " + commentText.getText());
+
+        TreePath treePath = sessionTree.getSelectionPath();
+        String currentDir = SessionUtil.convertPathToTag(treePath);
+        String path = ConfigUtil.getWorkPath() + "sessions/ssh";
+        if (!currentDir.equals("选中以下节点以分类")){
+            path = path + currentDir.substring(currentDir.indexOf("/"));
+        }
+        String fileName = path + "/ssh_" + hostField.getText() +"_" + portField.getText() + "_" + userField.getText() + ".json";
+        try {
+            Files.write(Paths.get(fileName), JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
+            DialogUtil.info("会话保存成功");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            DialogUtil.error("会话保存失败");
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            DialogUtil.error("会话保存失败");
+        }
     }
 
     /**
@@ -135,7 +167,7 @@ public class SshPane extends JPanel {
         // TODO user name
         JPanel userPane = new JPanel();
         JLabel userLabel = new JLabel("Username");
-        JFormattedTextField userField = new JFormattedTextField();
+        userField = new JFormattedTextField();
         userField.setText("security");
         userField.setColumns(8);
         userPane.add(userLabel);
@@ -144,7 +176,7 @@ public class SshPane extends JPanel {
         // TODO password
         JPanel passPane = new JPanel();
         JLabel passLabel = new JLabel("Password");
-        JPasswordField passField = new JPasswordField();
+        passField = new JPasswordField();
         passField.setText("123456");
         passField.setColumns(8);
         passPane.add(passLabel);
@@ -263,7 +295,87 @@ public class SshPane extends JPanel {
     private void initRightPane(){
         rightPane = new JPanel(new BorderLayout());
 
+        JPanel north1 = new JPanel();
+        sessionName = new JTextField();
+        sessionName.setColumns(12);
+        sessionName.putClientProperty("JTextField.placeholderText", "这么懒的吗？");
+        north1.add(new JLabel("<html><strong><font style='font-family:楷体;'>会话名称:</font></strong></html>"));
+        north1.add(sessionName);
 
+        JPanel north2 = new JPanel();
+        JCheckBox checkBox = new JCheckBox("公钥登录");
+        checkBox.setSelected(false);
+        // TODO 启用私钥
+        JButton keyBtn = new JButton();
+        keyBtn.setIcon(new FlatTreeClosedIcon());
+        keyBtn.setEnabled(false);
+        keyLabel = new JLabel("点击按钮选择私钥");
+        keyBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                // 设置默认显示的文件夹为当前文件夹
+                fileChooser.setCurrentDirectory(new File("."));
+                // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                // 设置是否允许多选
+//                    fileChooser.setMultiSelectionEnabled(false);
+//                    // 添加可用的文件过滤器（FileNameExtensionFilter 的第一个参数是描述, 后面是需要过滤的文件扩展名 可变参数）
+//                    fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("zip(*.zip, *.rar)", "zip", "rar"));
+//                    // 设置默认使用的文件过滤器
+//                    fileChooser.setFileFilter(new FileNameExtensionFilter("image(*.jpg, *.png, *.gif)", "jpg", "png", "gif"));
+                // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
+                int result = fileChooser.showOpenDialog(SshPane.this);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // 如果点击了"确定", 则获取选择的文件路径
+                    File file = fileChooser.getSelectedFile();
+                    keyLabel.setText(file.getAbsolutePath());
+                }
+            }
+        });
+        checkBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                // 获取事件源（即复选框本身）
+                JCheckBox checkBox = (JCheckBox) e.getSource();
+                log.debug(checkBox.getText() + " 是否选中: " + checkBox.isSelected());
+
+                if (checkBox.isSelected()) {
+                    authType = "secret";
+                    keyBtn.setEnabled(true);
+                } else {
+                    authType = "password";
+                    keyBtn.setEnabled(false);
+                }
+            }
+        });
+        north2.add(checkBox);
+        north2.add(keyBtn);
+        north2.add(keyLabel);
+        Box hBox = Box.createHorizontalBox();
+        hBox.setAlignmentX(Box.LEFT_ALIGNMENT);
+        JPanel north = new JPanel(leftFlow);
+        hBox.add(north1);
+        hBox.add(north2);
+        north.add(hBox);
+
+        // TODO
+        JPanel centerPane = new JPanel();
+
+
+        JPanel southPane = new JPanel(new BorderLayout());
+        commentText = new JTextArea();
+        commentText.setRows(5);
+        JScrollPane scrollPane = new JScrollPane(commentText);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        southPane.add(new JLabel("<html><strong><font style='font-family:楷体;'>备注描述:</font><br></strong></html>"), BorderLayout.NORTH);
+        southPane.add(scrollPane, BorderLayout.CENTER);
+
+        rightPane.add(north, BorderLayout.NORTH);
+        rightPane.add(centerPane, BorderLayout.CENTER);
+        rightPane.add(southPane, BorderLayout.SOUTH);
         splitPane.setRightComponent(rightPane);
     }
 

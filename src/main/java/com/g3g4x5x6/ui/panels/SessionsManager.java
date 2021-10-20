@@ -241,25 +241,27 @@ public class SessionsManager extends JPanel {
                 String currentTag = convertPathToTag(treePath);
                 String newTag = JOptionPane.showInputDialog(App.mainFrame, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
 
-                String newPath = "";
-                if (currentTag.equals("分类目录")){
-                    newPath = rootPath +  newTag;
-                }else{
-                    newPath = rootPath + currentTag.substring(currentTag.indexOf("/")) + "/" + newTag;
-                }
-                if (Files.exists(Path.of(newPath))){
-                    log.debug("目录已存在");
-                }else{
-                    try {
-                        Files.createDirectories(Path.of(newPath));
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
+                if (newTag != null){
+                    String newPath = "";
+                    if (currentTag.equals("分类目录")){
+                        newPath = rootPath +  newTag;
+                    }else{
+                        newPath = rootPath + currentTag.substring(currentTag.indexOf("/")) + "/" + newTag;
                     }
-                    DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(newTag);
-                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
-                    currentNode.add(tempNode);
-                    sessionTree.expandPath(new TreePath(currentNode.getPath()));
-                    sessionTree.setExpandsSelectedPaths(true);
+                    if (Files.exists(Path.of(newPath))){
+                        log.debug("目录已存在");
+                    }else{
+                        try {
+                            Files.createDirectories(Path.of(newPath));
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+                        DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(newTag);
+                        DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
+                        currentNode.add(tempNode);
+                        sessionTree.expandPath(new TreePath(currentNode.getPath()));
+                        sessionTree.setExpandsSelectedPaths(true);
+                    }
                 }
 
             }

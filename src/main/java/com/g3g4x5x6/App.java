@@ -57,35 +57,35 @@ public class App {
 
         // TODO 检查备忘笔记目录
         File note = new File(workspace + "/note");
-        if (!note.exists()){
+        if (!note.exists()) {
             note.mkdir();
         }
         // TODO 检查会话导出目录
         File export = new File(workspace + "/export");
-        if (!export.exists()){
+        if (!export.exists()) {
             export.mkdir();
         }
         // TODO 检查缓存目录
         File temp = new File(workspace + "/temp");
-        if (!temp.exists()){
+        if (!temp.exists()) {
             temp.mkdir();
         }
 
         // TODO 检查工具目录
         File tools = new File(workspace + "/tools");
-        if (!tools.exists()){
+        if (!tools.exists()) {
             tools.mkdir();
         }
 
         // TODO 检查编辑器缓存目录
         File editor = new File(workspace + "/editor");
-        if (!editor.exists()){
+        if (!editor.exists()) {
             editor.mkdir();
         }
 
         // TODO 检查会话存储目录
         File sessions = new File(workspace + "/sessions");
-        if (!sessions.exists()){
+        if (!sessions.exists()) {
             sessions.mkdir();
         }
 
