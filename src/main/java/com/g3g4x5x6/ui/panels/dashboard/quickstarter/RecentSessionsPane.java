@@ -1,18 +1,22 @@
 package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
-import com.g3g4x5x6.utils.DbUtil;
-import com.g3g4x5x6.utils.DialogUtil;
-import com.g3g4x5x6.utils.SshUtil;
+import com.g3g4x5x6.utils.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -93,32 +97,34 @@ public class RecentSessionsPane extends JPanel {
 
     private void initData(){
         tableModel.setRowCount(0);
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
 
-            String sql = "SELECT * FROM session ORDER BY access_time DESC ";
-
-            ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()){
-                tableModel.addRow(new String[]{
-                        simpleDateFormat.format(new Date(Long.parseLong(resultSet.getString("access_time")))),
-                        resultSet.getString("session_name"),
-                        resultSet.getString("protocol"),
-                        resultSet.getString("address"),
-                        resultSet.getString("port"),
-                        resultSet.getString("username"),
-                        resultSet.getString("auth_type")
-                });
+        File file = new File(ConfigUtil.getWorkPath() + "sessions");
+        if (file.exists()){
+            for (File f : file.listFiles()){
+                if (f.isFile()){
+                    if (f.getName().startsWith("ssh_")){
+                        Long lastModified = f.lastModified();
+                        Date date = new Date(lastModified);
+                        try {
+                            String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+                            JSONObject jsonObject = JSON.parseObject(json);
+                            tableModel.addRow(new String[]{
+                                    simpleDateFormat.format(date),
+                                    jsonObject.getString("sessionName"),
+                                    jsonObject.getString("sessionProtocol"),
+                                    jsonObject.getString("sessionAddress"),
+                                    jsonObject.getString("sessionPort"),
+                                    jsonObject.getString("sessionUser"),
+                                    jsonObject.getString("sessionLoginType"),
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
-
-            DbUtil.close(statement);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
-
         recentTable.setModel(tableModel);
     }
 
@@ -130,7 +136,17 @@ public class RecentSessionsPane extends JPanel {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = recentTable.getSelectedRows();
                 for (int index : indexs) {
-                    openSession(index);
+                    String address = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 3);
+                    String port = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 4);
+                    String user = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 5);
+                    File dir = new File(ConfigUtil.getWorkPath() + "sessions/");
+                    if (dir.exists()){
+                        for (File file : dir.listFiles()){
+                            if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
+                                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
+                            }
+                        }
+                    }
                 }
             }
         };

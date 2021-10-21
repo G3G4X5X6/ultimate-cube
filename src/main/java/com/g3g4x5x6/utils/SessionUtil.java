@@ -9,9 +9,10 @@ import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 @Slf4j
@@ -23,6 +24,9 @@ public class SessionUtil {
     public static void openSshSession(String sessionFile, JTabbedPane mainTabbedPane){
         try {
             File file = new File(sessionFile);
+            if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "sessions/" + file.getName()))){
+                Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(ConfigUtil.getWorkPath() + "sessions/" + file.getName()));
+            }
             String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             JSONObject jsonObject = JSON.parseObject(json);
 
