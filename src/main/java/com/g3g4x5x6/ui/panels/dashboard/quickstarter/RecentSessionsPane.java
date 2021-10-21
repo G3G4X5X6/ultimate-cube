@@ -136,17 +136,7 @@ public class RecentSessionsPane extends JPanel {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = recentTable.getSelectedRows();
                 for (int index : indexs) {
-                    String address = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 3);
-                    String port = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 4);
-                    String user = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 5);
-                    File dir = new File(ConfigUtil.getWorkPath() + "sessions/");
-                    if (dir.exists()){
-                        for (File file : dir.listFiles()){
-                            if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
-                                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
-                            }
-                        }
-                    }
+                    openSession(index);
                 }
             }
         };
@@ -158,61 +148,17 @@ public class RecentSessionsPane extends JPanel {
     }
 
     private void openSession(int index){
-        String session = (String) tableModel.getValueAt(index, 1);
-        String protocol = (String) tableModel.getValueAt(index, 2);
         String address = (String) tableModel.getValueAt(index, 3);
         String port = (String) tableModel.getValueAt(index, 4);
         String user = (String) tableModel.getValueAt(index, 5);
-        String auth = (String) tableModel.getValueAt(index, 6);
-        String pass = "";
-        log.debug("删除：" + index + " => session：" + session + ", protocol：" + protocol +
-                ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
 
-        // 数据库获取账户密码
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-
-            String session_sql = "SELECT password FROM session WHERE " +
-                    "session_name = '" + session + "' AND " +
-                    "protocol = '" + protocol + "' AND " +
-                    "address = '" + address + "' AND " +
-                    "port = '" + port + "' AND " +
-                    "username = '" + user + "' AND " +
-                    "auth_type = '" + auth + "'";
-
-            ResultSet resultSet = statement.executeQuery(session_sql);
-            while (resultSet.next()) {
-                pass = resultSet.getString("password");
+        File dir = new File(ConfigUtil.getWorkPath() + "sessions/");
+        if (dir.exists()){
+            for (File file : dir.listFiles()){
+                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
+                    new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
+                }
             }
-
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        // 更新最近会话访问时间
-        DbUtil.updateAccessTime(new Date().getTime(), "" +
-                "session_name = '" + session + "' AND " +
-                "protocol = '" + protocol + "' AND " +
-                "address = '" + address + "' AND " +
-                "port = '" + port + "' AND " +
-                "username = '" + user + "' AND " +
-                "auth_type = '" + auth + "'"
-        );
-
-        // 打开会话
-        if (SshUtil.testConnection(address, port) == 1) {
-
-            String defaultTitle = address.equals("") ? "未命名" : address;
-            mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                    new SshTabbedPane(mainTabbedPane, SshUtil.createTerminalWidget(address, port, user, pass),
-                            address, port, user, pass));
-            log.debug("打开最近会话");
-            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
-
-        } else {
-            DialogUtil.warn("连接失败");
         }
     }
 }
