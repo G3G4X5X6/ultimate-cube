@@ -299,7 +299,8 @@ public class SshPane extends JPanel {
         sessionName = new JTextField();
         sessionName.setColumns(12);
         sessionName.putClientProperty("JTextField.placeholderText", "这么懒的吗？");
-        north1.add(new JLabel("<html><strong><font style='font-family:楷体;'>会话名称:</font></strong></html>"));
+        north1.add(new JLabel("会话名称:"));
+//        north1.add(new JLabel("<html><strong><font style='font-family:楷体;'>会话名称:</font></strong></html>"));
         north1.add(sessionName);
 
         JPanel north2 = new JPanel();
@@ -353,12 +354,13 @@ public class SshPane extends JPanel {
         north2.add(checkBox);
         north2.add(keyBtn);
         north2.add(keyLabel);
-        Box hBox = Box.createHorizontalBox();
-        hBox.setAlignmentX(Box.LEFT_ALIGNMENT);
+        Box vBox = Box.createVerticalBox();
+        vBox.setAlignmentX(Box.LEFT_ALIGNMENT);
         JPanel north = new JPanel(leftFlow);
-        hBox.add(north1);
-        hBox.add(north2);
-        north.add(hBox);
+        north.setBorder(null);
+        vBox.add(north1);
+        vBox.add(north2);
+        north.add(vBox);
 
         // TODO
         JPanel centerPane = new JPanel();
@@ -370,7 +372,7 @@ public class SshPane extends JPanel {
         JScrollPane scrollPane = new JScrollPane(commentText);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        southPane.add(new JLabel("<html><strong><font style='font-family:楷体;'>备注描述:</font><br></strong></html>"), BorderLayout.NORTH);
+        southPane.add(new JLabel("   备注描述:"), BorderLayout.NORTH);
         southPane.add(scrollPane, BorderLayout.CENTER);
 
         rightPane.add(north, BorderLayout.NORTH);
