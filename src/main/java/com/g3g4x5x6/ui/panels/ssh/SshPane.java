@@ -88,7 +88,7 @@ public class SshPane extends JPanel {
     /**
      * 初始化面板
      */
-    protected void initSettingPane(){
+    protected void initSettingPane() {
         basicSettingPane.setLayout(leftFlow);
         basicSettingTabbedPane.addTab(basicSettingPaneTitle, basicSettingPane);
         advancedSettingTabbedPane.addTab(advancedSettingPaneTitle, advancedSettingPane);
@@ -110,7 +110,7 @@ public class SshPane extends JPanel {
         this.add(btnPane, BorderLayout.SOUTH);
     }
 
-    private void saveSession(){
+    private void saveSession() {
         LinkedHashMap<String, String> session = new LinkedHashMap<>();
         session.put("sessionName", sessionName.getText());
         session.put("sessionProtocol", "SSH");
@@ -126,10 +126,10 @@ public class SshPane extends JPanel {
         TreePath treePath = sessionTree.getSelectionPath();
         String currentDir = SessionUtil.convertPathToTag(treePath);
         String path = ConfigUtil.getWorkPath() + "sessions/ssh";
-        if (!currentDir.equals("选中以下节点以分类")){
+        if (!currentDir.equals("选中以下节点以分类")) {
             path = path + currentDir.substring(currentDir.indexOf("/"));
         }
-        String fileName = path + "/ssh_" + hostField.getText() +"_" + portField.getText() + "_" + userField.getText() + ".json";
+        String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + ".json";
         try {
             Files.write(Paths.get(fileName), JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
             DialogUtil.info("会话保存成功");
@@ -218,7 +218,7 @@ public class SshPane extends JPanel {
                                     portField.getText(),
                                     userField.getText(),
                                     String.valueOf(passField.getPassword())), "奥里给", preIndex);
-                    mainTabbedPane.removeTabAt(preIndex+1);
+                    mainTabbedPane.removeTabAt(preIndex + 1);
                     mainTabbedPane.setSelectedIndex(preIndex);
                 } else {
                     DialogUtil.warn("连接失败");
@@ -256,7 +256,7 @@ public class SshPane extends JPanel {
         initRightPane();
     }
 
-    private void initTreePane(){
+    private void initTreePane() {
         root = new DefaultMutableTreeNode("选中以下节点以分类");
         treeModel = new DefaultTreeModel(root);
 
@@ -282,17 +282,17 @@ public class SshPane extends JPanel {
         splitPane.setLeftComponent(treeScroll);
     }
 
-    private void initTreeNode(){
+    private void initTreeNode() {
         String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
-        File dir  = new File(rootPath);
-        if (!dir.exists()){
+        File dir = new File(rootPath);
+        if (!dir.exists()) {
             dir.mkdir();
         }
         recursiveListDirectory(dir, root);
 
     }
 
-    private void initRightPane(){
+    private void initRightPane() {
         rightPane = new JPanel(new BorderLayout());
 
         JPanel north1 = new JPanel();
@@ -420,6 +420,7 @@ public class SshPane extends JPanel {
             }
         }
     }
+
     private @NotNull JediTermWidget createTerminalWidget() {
         SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
         JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
