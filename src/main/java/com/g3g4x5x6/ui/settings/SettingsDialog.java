@@ -34,9 +34,10 @@ public class SettingsDialog extends JDialog {
         initPanel();
     }
 
-    private void initPanel(){
+    private void initPanel() {
 
         tabbedPane = new JTabbedPane();
+        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.setTabPlacement(SwingConstants.LEFT);
         initTabAlignment(tabbedPane, SwingConstants.TRAILING);
 
@@ -71,16 +72,19 @@ public class SettingsDialog extends JDialog {
         panel.add(southPane, BorderLayout.SOUTH);
     }
 
-    private void initTabAlignment( JTabbedPane tabbedPane, int tabAlignment ) {
+    private void initTabAlignment(JTabbedPane tabbedPane, int tabAlignment) {
         boolean vertical = (tabbedPane.getTabPlacement() == JTabbedPane.LEFT || tabbedPane.getTabPlacement() == JTabbedPane.RIGHT);
-        tabbedPane.putClientProperty( TABBED_PANE_TAB_ALIGNMENT, tabAlignment );
-        if( !vertical )
-            tabbedPane.putClientProperty( TABBED_PANE_MINIMUM_TAB_WIDTH, 80 );
-        tabbedPane.addTab( "基本设置", null );
-        if( vertical ) {
-            tabbedPane.addTab( "行为设置", null );
-            tabbedPane.addTab( "终端设置", null );
-            tabbedPane.addTab( "运行环境", null );
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_ALIGNMENT, tabAlignment);
+        if (!vertical)
+            tabbedPane.putClientProperty(TABBED_PANE_MINIMUM_TAB_WIDTH, 80);
+        tabbedPane.addTab("基本设置", null);
+        if (vertical) {
+            tabbedPane.addTab("行为设置", null);
+            tabbedPane.addTab("终端设置", null);
+            tabbedPane.addTab("运行环境", null);
+//            for (int i = 0; i < 20; i++) {
+//                tabbedPane.add("NewTab" + i, null);
+//            }
         }
     }
 }

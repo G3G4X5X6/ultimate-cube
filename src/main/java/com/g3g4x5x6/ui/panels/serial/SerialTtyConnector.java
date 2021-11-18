@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 
 @Slf4j
-public class SerialTtyConnector implements TtyConnector{
+public class SerialTtyConnector implements TtyConnector {
 
     private InputStream myInputStream;
     private OutputStream myOutputStream;

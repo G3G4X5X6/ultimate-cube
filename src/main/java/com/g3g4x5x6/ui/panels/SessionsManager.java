@@ -146,13 +146,13 @@ public class SessionsManager extends JPanel {
         tableModel.setRowCount(0);
         HashSet<String> tags = new HashSet<>();
         String path = "";
-        if (!tag.equals("分类目录")){
+        if (!tag.equals("分类目录")) {
             path = tag.substring(tag.indexOf("/"));
         }
         String dir = rootPath + path;
         log.debug(dir);
         File file = new File(dir);
-        if (!file.exists()){
+        if (!file.exists()) {
             return tags;
         }
         for (File f : file.listFiles()) {
@@ -241,16 +241,16 @@ public class SessionsManager extends JPanel {
                 String currentTag = convertPathToTag(treePath);
                 String newTag = JOptionPane.showInputDialog(App.mainFrame, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
 
-                if (newTag != null){
+                if (newTag != null) {
                     String newPath = "";
-                    if (currentTag.equals("分类目录")){
-                        newPath = rootPath +  newTag;
-                    }else{
+                    if (currentTag.equals("分类目录")) {
+                        newPath = rootPath + newTag;
+                    } else {
                         newPath = rootPath + currentTag.substring(currentTag.indexOf("/")) + "/" + newTag;
                     }
-                    if (Files.exists(Path.of(newPath))){
+                    if (Files.exists(Path.of(newPath))) {
                         log.debug("目录已存在");
-                    }else{
+                    } else {
                         try {
                             Files.createDirectories(Path.of(newPath));
                         } catch (IOException exception) {
@@ -286,13 +286,13 @@ public class SessionsManager extends JPanel {
                         String currentTag = convertPathToTag(treePath);
                         if (!currentTag.equals("分类目录")) {
                             String path = rootPath + currentTag.substring(currentTag.indexOf("/"));
-                            if (Files.exists(Path.of(path))){
+                            if (Files.exists(Path.of(path))) {
                                 try {
                                     Files.delete(Path.of(path));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                 }
-                            }else{
+                            } else {
                                 log.debug("目录不存在");
                             }
                         }
@@ -330,11 +330,14 @@ public class SessionsManager extends JPanel {
 
                         TreePath treePath = sessionTree.getSelectionPath();
                         String currentTag = convertPathToTag(treePath);
-                        String path = rootPath + currentTag.substring(currentTag.indexOf("/"));
+                        String path = rootPath;
+                        if (!currentTag.equals("分类目录")) {
+                            path = rootPath + currentTag.substring(currentTag.indexOf("/"));
+                        }
                         File dir = new File(path);
-                        if (dir.exists()){
-                            for (File file : dir.listFiles()){
-                                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
+                        if (dir.exists()) {
+                            for (File file : dir.listFiles()) {
+                                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)) {
                                     file.delete();
                                 }
                             }
@@ -365,13 +368,13 @@ public class SessionsManager extends JPanel {
                     TreePath treePath = sessionTree.getSelectionPath();
                     String currentTag = convertPathToTag(treePath);
                     String path = rootPath;
-                    if (!currentTag.equals("分类目录")){
+                    if (!currentTag.equals("分类目录")) {
                         path = rootPath + currentTag.substring(currentTag.indexOf("/"));
                     }
                     File dir = new File(path);
-                    if (dir.exists()){
-                        for (File file : dir.listFiles()){
-                            if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
+                    if (dir.exists()) {
+                        for (File file : dir.listFiles()) {
+                            if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)) {
                                 new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
                             }
                         }
