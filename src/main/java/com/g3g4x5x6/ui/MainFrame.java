@@ -28,10 +28,11 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
@@ -61,6 +62,8 @@ public class MainFrame extends JFrame {
     private JMenu helpMenu = new JMenu("帮助");
     private JMenu externalSubMenu = new JMenu("外部集成工具");
     private JPanel statusBar;
+
+    private JPopupMenu popupMenu = new JPopupMenu();
 
     // TODO 菜单弹出面板
     private AboutDialog about = new AboutDialog();
@@ -339,6 +342,39 @@ public class MainFrame extends JFrame {
         UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
         mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         mainTabbedPane.setEnabled(true);
+        mainTabbedPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == 3){
+                    popupMenu = new JPopupMenu();
+                    popupMenu.add(new AbstractAction("关闭当前") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                        }
+                    });
+                    popupMenu.add(new AbstractAction("关闭其他") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                        }
+                    });
+                    popupMenu.add(new AbstractAction("关闭所有") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                        }
+                    });
+                    popupMenu.add(new AbstractAction("复制当前") {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+
+                        }
+                    });
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
         initClosableTabs(mainTabbedPane);
         customComponents();
 
