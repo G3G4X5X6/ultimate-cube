@@ -11,4 +11,4 @@ after_success:
   - mvn assembly:assembly
 notifications:
   email:
-    - g3g4x5x6@foxmail.com
+    - ${email}
