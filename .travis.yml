@@ -20,5 +20,6 @@ notifications:
   email:
     recipients:
       - ${163mail}
+      - ${gmail}
     on_success: always # default: change, never
     on_failure: always # default: always
