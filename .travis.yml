@@ -12,4 +12,3 @@ after_success:
 notifications:
   email:
     - ${gmail}
-    - ${163mail}
