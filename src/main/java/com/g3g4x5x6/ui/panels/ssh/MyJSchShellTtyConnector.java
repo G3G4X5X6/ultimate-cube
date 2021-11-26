@@ -6,6 +6,7 @@ import com.jcraft.jsch.Session;
 
 import java.io.IOException;
 
+@Deprecated
 public class MyJSchShellTtyConnector extends MyJSchTtyConnector<ChannelShell> {
     public MyJSchShellTtyConnector() {
     }

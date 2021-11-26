@@ -248,12 +248,95 @@ public class SshPane extends JPanel {
      * 高级设置面板
      */
     private void createAdvancedComponent() {
-        splitPane = new JSplitPane();
-        splitPane.setDividerLocation(200);
-        advancedSettingPane.setLayout(new BorderLayout());
-        advancedSettingPane.add(splitPane, BorderLayout.CENTER);
-        initTreePane();
-        initRightPane();
+//        splitPane = new JSplitPane();
+//        splitPane.setDividerLocation(200);
+//        advancedSettingPane.setLayout(new BorderLayout());
+//        advancedSettingPane.add(splitPane, BorderLayout.CENTER);
+//        initTreePane();
+//        initRightPane();
+
+        GroupLayout layout = new GroupLayout(advancedSettingPane);
+        // 自动创建组件之间的间隙
+        layout.setAutoCreateGaps(true);
+        // 自动创建容器与触到容器边框的组件之间的间隙
+        layout.setAutoCreateContainerGaps(true);
+
+//        advancedSettingPane.setLayout(layout);
+
+        // 会话描述
+        commentText = new JTextArea();
+        commentText.setRows(5);
+        JScrollPane scrollPane = new JScrollPane(commentText);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        GroupLayout.ParallelGroup vParalGroup01 = layout.createParallelGroup().
+                addComponent(new JLabel("备注描述:"), GroupLayout.Alignment.LEADING).
+                addComponent(scrollPane, GroupLayout.Alignment.LEADING);
+        layout.setVerticalGroup(vParalGroup01);
+
+    }
+
+    private void initVBox(Box vBox){
+        // 会话名称
+        JPanel north1 = new JPanel();
+        sessionName = new JTextField();
+        sessionName.setColumns(12);
+        sessionName.putClientProperty("JTextField.placeholderText", "这么懒的吗？");
+        north1.add(new JLabel("会话名称:"));
+        north1.add(sessionName);
+
+        // TODO 会话分类
+
+        // 公钥登录
+        JPanel north2 = new JPanel();
+        JCheckBox checkBox = new JCheckBox("公钥登录");
+        checkBox.setSelected(false);
+
+        JButton keyBtn = new JButton();     // 启用私钥
+        keyBtn.setIcon(new FlatTreeClosedIcon());
+        keyBtn.setEnabled(false);
+        keyLabel = new JLabel("点击按钮选择私钥");
+        keyBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                // 设置默认显示的文件夹为当前文件夹
+                fileChooser.setCurrentDirectory(new File("."));
+                // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
+                int result = fileChooser.showOpenDialog(SshPane.this);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // 如果点击了"确定", 则获取选择的文件路径
+                    File file = fileChooser.getSelectedFile();
+                    keyLabel.setText(file.getAbsolutePath());
+                }
+            }
+        });
+        checkBox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                // 获取事件源（即复选框本身）
+                JCheckBox checkBox = (JCheckBox) e.getSource();
+                log.debug(checkBox.getText() + " 是否选中: " + checkBox.isSelected());
+
+                if (checkBox.isSelected()) {
+                    authType = "secret";
+                    keyBtn.setEnabled(true);
+                } else {
+                    authType = "password";
+                    keyBtn.setEnabled(false);
+                }
+            }
+        });
+        north2.add(checkBox);
+        north2.add(keyBtn);
+        north2.add(keyLabel);
+
+        vBox.add(north1);
+        vBox.add(north2);
     }
 
     private void initTreePane() {

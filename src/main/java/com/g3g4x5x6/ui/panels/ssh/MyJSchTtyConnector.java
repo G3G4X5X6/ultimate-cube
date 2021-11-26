@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
+@Deprecated
 @Slf4j
 public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnector{
 
