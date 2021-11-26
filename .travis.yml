@@ -20,5 +20,6 @@ notifications:
   email:
     recipients:
       - ${gmail}
+      - ${netease}
     on_success: always # default: change, never
     on_failure: always # default: always
