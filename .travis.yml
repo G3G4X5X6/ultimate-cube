@@ -11,4 +11,5 @@ after_success:
   - mvn assembly:assembly
 notifications:
   email:
-    - ${email}
+    - ${gmail}
+    - ${163mail}
