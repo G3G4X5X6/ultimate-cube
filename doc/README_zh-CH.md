@@ -47,9 +47,15 @@ See [the security file](SECURITY.md)!
 
 ## 截图
 
-### 仪表板
+### 启动面板
 ![dashboard](screenshot/ultimateshell_v0.14.13-alpha_dashboard.png)
 
+
+### 本地终端
+![dashboard](screenshot/ultimateshell_local_terminal.png)
+
+### 主题皮肤设置
+![dashboard](screenshot/ultimateshell_theme_settings.png)
 
 
 ## 构建
