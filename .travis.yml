@@ -18,4 +18,4 @@ after_success:
 # 邮件通知
 notifications:
   email:
-    - ${gmail}
+    - ${163mail}
