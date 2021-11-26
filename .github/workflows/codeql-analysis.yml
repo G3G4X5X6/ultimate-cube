@@ -40,6 +40,18 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      
+    - name: GitHub Action for Maven
+      # You may pin to the exact commit or the version.
+      # uses: LucaFeger/action-maven-cli@765e218a50f02a12a7596dc9e7321fc385888a27
+      uses: LucaFeger/action-maven-cli@1.1.0
+    - name: Install dependencies
+      run: |
+        mvn install:install-file -Dfile=src/main/resources/libs/jediterm-pty-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.49 -Dpackaging=jar
+        mvn install:install-file -Dfile=src/main/resources/libs/jediterm-ssh-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-ssh -Dversion=2.49 -Dpackaging=jar
+        mvn install:install-file -Dfile=src/main/resources/libs/terminal-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
+        mvn install:install-file -Dfile=src/main/resources/libs/jediterm-typeahead-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
+        mvn install:install-file -Dfile=src/main/resources/libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -55,6 +67,8 @@ jobs:
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
       uses: github/codeql-action/autobuild@v1
+      
+      
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 https://git.io/JvXDl
