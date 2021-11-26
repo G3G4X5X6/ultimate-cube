@@ -33,16 +33,16 @@ See [the security file](SECURITY.md)!
 
 ## 特性
 
-- [x] Support multi-platform
-- [x] Support 63 theme skins
-- [x] Support sessions manager
-- [x] Support local terminal
-- [x] Support ssh, sftp
-- [x] Support serial terminal
-- [x] Support Telnet
-- [x] Support RDP
-- [x] Support VNC
-- [ ] <del>Support FTP</del>
+- [x] 支持多操作系统平台，兼容性测试：`Windows` > `Linux` > `MacOS`
+- [x] 支持60多种主题皮肤切换
+- [x] 支持账户会话管理
+- [x] 支持本地终端(cmd, shell)
+- [x] 支持 `SSH`、 `Sftp`，`SSH` 内置代码编辑器，支持代码高亮、折叠等功能
+- [x] 支持串口调试（自动检测存在的 `COM` 接口）
+- [x] 支持 `Telnet`
+- [x] 支持 `RDP` 远程桌面（`FreeRDP`）
+- [x] 支持 `VNC`，基于`TightVNC Viewer` 实现
+- [ ] <del>Support FTP</del>（暂不支持）
 
 
 ## 截图
