@@ -5,6 +5,7 @@
 ![GitHub](https://img.shields.io/github/license/g3g4x5x6/ultimateshell)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/78bf65e3e6ab4429bc312a21c3d73cfe)](https://app.codacy.com/gh/G3G4X5X6/ultimateshell?utm_source=github.com&utm_medium=referral&utm_content=G3G4X5X6/ultimateshell&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09)](https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade)
 <!-- ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/g3g4x5x6/ultimateshell) -->
 <!-- ![GitHub all releases](https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/total) -->
 <!-- ![GitHub last commit](https://img.shields.io/github/last-commit/g3g4x5x6/ultimateshell) -->
