@@ -72,7 +72,7 @@ public class ConsolePane extends JPanel {
                 envs = new HashMap<>(System.getenv());
                 envs.put("TERM", "xterm-256color");
             }
-            PtyProcess process = new PtyProcessBuilder().setDirectory(MainFrame.getWorkDir()).setCommand(command).setEnvironment(envs).start();
+            PtyProcess process = new PtyProcessBuilder().setDirectory(ConfigUtil.getWorkPath()).setCommand(command).setEnvironment(envs).start();
 
             return new PtyProcessTtyConnector(process, StandardCharsets.UTF_8);
         } catch (Exception e) {

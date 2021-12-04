@@ -4,7 +4,6 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.dialog.AboutDialog;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.tools.ExternalToolIntegration;
 import com.g3g4x5x6.ui.panels.tools.ColorPicker;
@@ -29,10 +28,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
@@ -45,13 +41,352 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
  * 主界面
  */
 @Slf4j
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements MouseListener {
 
-    private int width = Toolkit.getDefaultToolkit().getScreenSize().width;
-    private int height = Toolkit.getDefaultToolkit().getScreenSize().height;
+    public MainFrame() throws HeadlessException {
+        // 主窗口设置
+        this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);      // 提示确认退出
+        this.setSize(new Dimension(1000, 700));
+        this.setMinimumSize(new Dimension(900, 600));
+        this.setPreferredSize(new Dimension(1000, 600));
+        this.setLocationRelativeTo(null);
+        this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
 
-    private String lastestVersion;
+        // 初始化 ”菜单栏“
+        initMenuBar();
 
+        // 初始化 ”菜单栏 - 功能小图标“
+        initFuncIconButton();
+
+        // TODO 初始化 ”工具栏“
+        initToolBar();
+
+        // 初始化 ”主选项卡面板“
+        initMainTabbedPane();
+
+        // TODO 初始化 ”状态栏“
+        initStatusBar();
+    }
+
+    private void initMenuBar() {
+        // TODO 添加菜单动作
+        JMenu openSessionMenu = new JMenu("打开会话");
+        String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
+        File dir = new File(rootPath);
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+        recursiveListDirectory(dir, openSessionMenu);
+        terminalMenu.add(myOpenAction);
+        terminalMenu.add(openSessionMenu);
+        terminalMenu.add(mySessionAction);
+        //
+        viewMenu.add(themeAction);
+        //
+        JMenuItem settingsItem = new JMenuItem("全局配置");
+        settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
+        settingsItem.addActionListener(settingsAction);
+        optionMenu.add(settingsItem);
+        optionMenu.addSeparator();
+        optionMenu.add(importSessionAction);
+        optionMenu.add(exportSessionAction);
+        //
+        helpMenu.add(githubAction);
+        helpMenu.add(gitpageAction);
+        helpMenu.addSeparator();
+        helpMenu.add(myAboutAction);
+        //
+        JMenu myToolMenu = new JMenu("内置工具");
+        myToolMenu.add(myEditorAction);
+        toolMenu.add(myToolMenu);
+        JMenu otherToolMenu = new JMenu("杂七杂八");
+        otherToolMenu.add(encodeConversionAction);
+        otherToolMenu.add(colorPickerAction);
+        otherToolMenu.add(qrCodePickerAction);
+        toolMenu.add(otherToolMenu);
+        toolMenu.addSeparator();
+        toolMenu.add(tightVNCAction);
+        // 快捷键
+        JMenuItem freeRdpItem = new JMenuItem("FreeRDP");
+        freeRdpItem.setAccelerator(KeyStroke.getKeyStroke('D', InputEvent.ALT_DOWN_MASK));
+        freeRdpItem.addActionListener(freeRDPAction);
+        toolMenu.add(freeRdpItem);
+        toolMenu.addSeparator();
+        toolMenu.add(externalSubMenu);
+        //
+        pluginMenu.add(loadPluginAction);
+        pluginMenu.add(managePluginAction);
+        pluginMenu.addSeparator();
+        pluginMenu.add(apiPluginAction);
+        // 外部集成工具
+        externalSubMenu.add(new AbstractAction("添加工具") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("添加工具");
+                DialogUtil.info("敬请期待！");
+            }
+        });
+        externalSubMenu.add(new AbstractAction("工具管理") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("工具管理");
+                DialogUtil.info("敬请期待！");
+            }
+        });
+        externalSubMenu.addSeparator();
+        ExternalToolIntegration integration = new ExternalToolIntegration(externalSubMenu);
+
+        menuBar.add(terminalMenu);
+        menuBar.add(viewMenu);
+        menuBar.add(optionMenu);
+        menuBar.add(toolMenu);
+        menuBar.add(pluginMenu);
+        menuBar.add(helpMenu);
+        this.setJMenuBar(menuBar);
+    }
+
+    private void initFuncIconButton() {
+        // TODO add "Users" button to menubar
+        FlatButton usersButton = new FlatButton();
+        usersButton.setIcon(new FlatSVGIcon("icons/users.svg"));
+        usersButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        usersButton.setFocusable(false);
+        usersButton.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "Hello User! How are you?", "User", JOptionPane.INFORMATION_MESSAGE));
+
+        // TODO 置顶图标按钮
+        FlatToggleButton toggleButton = new FlatToggleButton();
+        toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
+        toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        toggleButton.setToolTipText("窗口置顶");
+        toggleButton.setFocusable(false);
+        toggleButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toggleButton.isSelected()) {
+                    setAlwaysOnTop(true);
+                    toggleButton.setToolTipText("取消置顶");
+                } else {
+                    setAlwaysOnTop(false);
+                    toggleButton.setToolTipText("窗口置顶");
+                }
+            }
+        });
+
+        // TODO update button
+        FlatButton updateBtn = new FlatButton();
+        updateBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ideUpdate.svg"));
+        updateBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
+        updateBtn.setFocusable(false);
+
+        menuBar.add(Box.createGlue());
+        menuBar.add(usersButton);
+        menuBar.add(toggleButton);
+        // 添加更新按钮
+        new Thread(() -> {
+            latestVersion = CommonUtil.getLastestVersion();
+            String currentVersion = CommonUtil.getCurrentVersion();
+            if (!CommonUtil.getCurrentVersion().equals(latestVersion)) {
+                menuBar.add(updateBtn);
+                log.debug("添加更新按钮");
+                updateBtn.addActionListener(new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // 检查更新
+                        String msg = null;
+                        msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
+                                "最新版本： <font color='green'>" + latestVersion + "</font><br><br>" +
+                                "是否现在下载更新？</html>";
+                        log.debug("Msg: " + msg);
+                        int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
+                        if (code == 0) {
+                            // TODO 更新
+                            log.debug("马上下载更新");
+                            CommonUtil.getLatestJar();
+                        } else {
+                            // TODO 暂不更新
+                            log.debug("暂不下载更新");
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void initToolBar() {
+
+    }
+
+    private void initMainTabbedPane() {
+        // 选项卡面板UI设置
+        UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
+
+        // 添加主选项卡面板
+        mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        mainTabbedPane.setEnabled(true);
+        mainTabbedPane.addMouseListener(this);
+        initClosableTabs(mainTabbedPane);
+        customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
+
+        // 添加 ”仪表盘“ 面板
+        mainTabbedPane.addTab("仪表板",
+                new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"),
+                new DashboardPane(mainTabbedPane));
+
+        this.add(mainTabbedPane);
+    }
+
+    private void initStatusBar() {
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        statusBar = new JPanel();
+        statusBar.setLayout(flowLayout);
+        statusBar.add(new JLabel("状态栏"));
+        this.add(statusBar, BorderLayout.SOUTH);
+    }
+
+    private void customComponents() {
+        JToolBar leading = null;
+        JToolBar trailing = null;
+        leading = new JToolBar();
+        leading.setFloatable(false);
+        leading.setBorder(null);
+        trailing = new JToolBar();
+        trailing.setFloatable(false);
+        trailing.setBorder(null);
+
+        JButton dashboardBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"));
+        dashboardBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.setSelectedIndex(0);
+            }
+        });
+
+        JButton addBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/add.svg"));
+        addBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+            }
+        });
+
+        // TODO 选项卡面板前置工具栏，暂不使用
+        leading.add(dashboardBtn);
+//        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
+        // TODO 选项卡面板后置工具栏，待实现
+        trailing.add(addBtn);
+        trailing.add(Box.createHorizontalGlue());
+        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
+        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
+        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg")));
+        mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    public void recursiveListDirectory(File directory, JMenuItem menuItem) {
+        // 是目录，获取该目录下面的所有文件（包括目录）
+        File[] files = directory.listFiles();
+        // 判断 files 是否为空？
+        if (null != files) {
+            // 遍历文件数组
+            for (File f : files) {
+                // 判断是否是目录？
+                if (f.isDirectory()) {
+                    // 是目录
+                    System.out.println("目录绝对路径：" + f.getAbsolutePath());
+                    recursiveListDirectory(f, menuItem);
+                } else {
+                    // 不是目录，判断是否是文件？
+                    if (f.isFile()) {
+                        System.out.println("文件绝对路径：" + f.getAbsolutePath());
+                        String itemName = f.getName().substring(f.getName().indexOf("_") + 1, f.getName().length() - 5);
+                        JMenuItem tempItem = new JMenuItem(itemName);
+                        tempItem.addActionListener(new AbstractAction() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                log.debug(f.getAbsolutePath());
+                                new Thread(() -> SessionUtil.openSshSession(f.getAbsolutePath(), mainTabbedPane)).start();
+                            }
+                        });
+                        menuItem.add(tempItem);
+                    }
+                }
+            }
+        }
+    }
+
+    private void initClosableTabs(JTabbedPane tabbedPane) {
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
+                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
+                    if (tabIndex != 0) {
+                        mainTabbedPane.removeTabAt(tabIndex);
+                    }
+                });
+
+    }
+
+    /**
+     * 内部监听器
+     */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == 3) {
+            popupMenu = new JPopupMenu();
+            popupMenu.add(new AbstractAction("关闭当前") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
+            popupMenu.add(new AbstractAction("关闭其他") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
+            popupMenu.add(new AbstractAction("关闭所有") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
+            popupMenu.add(new AbstractAction("复制当前") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
+            popupMenu.show(e.getComponent(), e.getX(), e.getY());
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
+
+    /**
+     * 定义
+     */
+    public static JTabbedPane mainTabbedPane;
     // TODO JFrame 组件定义
     private JMenuBar menuBar = new JMenuBar();
     private JMenu terminalMenu = new JMenu("终端");
@@ -61,16 +396,11 @@ public class MainFrame extends JFrame {
     private JMenu pluginMenu = new JMenu("插件");
     private JMenu helpMenu = new JMenu("帮助");
     private JMenu externalSubMenu = new JMenu("外部集成工具");
-    private JPanel statusBar;
 
+    private JPanel statusBar;
     private JPopupMenu popupMenu = new JPopupMenu();
 
-    // TODO 菜单弹出面板
-    private AboutDialog about = new AboutDialog();
-
-    private JTabbedPane mainTabbedPane;
-
-    private Integer count = 1;
+    private String latestVersion;
 
     // TODO 菜单动作
     private AbstractAction myOpenAction = new AbstractAction("新建会话") {
@@ -328,342 +658,12 @@ public class MainFrame extends JFrame {
                             "Email to <a href='mailto://g3g4x5x6@foxmail.com'>g3g4x5x6@foxmail.com</a></html>");
         }
     };
-
-    private void init() {
-        // TODO 提示确认退出
-        this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
-
-        this.setSize(new Dimension(1000, 700));
-        this.setMinimumSize(new Dimension(900, 600));
-        this.setPreferredSize(new Dimension(1000, 600));
-        this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
-
-        UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
-        mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        mainTabbedPane.setEnabled(true);
-        mainTabbedPane.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == 3){
-                    popupMenu = new JPopupMenu();
-                    popupMenu.add(new AbstractAction("关闭当前") {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-
-                        }
-                    });
-                    popupMenu.add(new AbstractAction("关闭其他") {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-
-                        }
-                    });
-                    popupMenu.add(new AbstractAction("关闭所有") {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-
-                        }
-                    });
-                    popupMenu.add(new AbstractAction("复制当前") {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-
-                        }
-                    });
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-        });
-        initClosableTabs(mainTabbedPane);
-        customComponents();
-
-        // TODO JTabbedPane's PopupMenu
-        JPopupMenu tabPopupMenu = new JPopupMenu();
-        AbstractAction renameAction = new AbstractAction("重命名") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("重命名Tab标题");
-            }
-        };
-        mainTabbedPane.setComponentPopupMenu(tabPopupMenu);
-
-        // TODO 主面板
-        this.add(mainTabbedPane);
-
-        // 添加主仪表盘
-        mainTabbedPane.addTab("仪表板",
-                new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"),
-                new DashboardPane(mainTabbedPane));
-
-        // TODO add "Users" button to menubar
-        FlatButton usersButton = new FlatButton();
-        usersButton.setIcon(new FlatSVGIcon("icons/users.svg"));
-        usersButton.setButtonType(FlatButton.ButtonType.toolBarButton);
-        usersButton.setFocusable(false);
-        usersButton.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "Hello User! How are you?", "User", JOptionPane.INFORMATION_MESSAGE));
-
-        // TODO 置顶图标按钮
-        FlatToggleButton toggleButton = new FlatToggleButton();
-        toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
-        toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
-        toggleButton.setToolTipText("窗口置顶");
-        toggleButton.setFocusable(false);
-        toggleButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (toggleButton.isSelected()) {
-                    setAlwaysOnTop(true);
-                    toggleButton.setToolTipText("取消置顶");
-                } else {
-                    setAlwaysOnTop(false);
-                    toggleButton.setToolTipText("窗口置顶");
-                }
-            }
-        });
-
-        // TODO update button
-        FlatButton updateBtn = new FlatButton();
-        updateBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ideUpdate.svg"));
-        updateBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
-        updateBtn.setFocusable(false);
-
-        // TODO 添加菜单动作
-        JMenu openSessionMenu = new JMenu("打开会话");
-        String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
-        File dir = new File(rootPath);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-        recursiveListDirectory(dir, openSessionMenu);
-        terminalMenu.add(myOpenAction);
-        terminalMenu.add(openSessionMenu);
-        terminalMenu.add(mySessionAction);
-        //
-        viewMenu.add(themeAction);
-        //
-        JMenuItem settingsItem = new JMenuItem("全局配置");
-        settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
-        settingsItem.addActionListener(settingsAction);
-        optionMenu.add(settingsItem);
-        optionMenu.addSeparator();
-        optionMenu.add(importSessionAction);
-        optionMenu.add(exportSessionAction);
-        //
-        helpMenu.add(githubAction);
-        helpMenu.add(gitpageAction);
-        helpMenu.addSeparator();
-        helpMenu.add(myAboutAction);
-        //
-        JMenu myToolMenu = new JMenu("内置工具");
-        myToolMenu.add(myEditorAction);
-        toolMenu.add(myToolMenu);
-        JMenu otherToolMenu = new JMenu("杂七杂八");
-        otherToolMenu.add(encodeConversionAction);
-        otherToolMenu.add(colorPickerAction);
-        otherToolMenu.add(qrCodePickerAction);
-        toolMenu.add(otherToolMenu);
-        toolMenu.addSeparator();
-        toolMenu.add(tightVNCAction);
-        // 快捷键
-        JMenuItem freeRdpItem = new JMenuItem("FreeRDP");
-        freeRdpItem.setAccelerator(KeyStroke.getKeyStroke('D', InputEvent.ALT_DOWN_MASK));
-        freeRdpItem.addActionListener(freeRDPAction);
-        toolMenu.add(freeRdpItem);
-        toolMenu.addSeparator();
-        toolMenu.add(externalSubMenu);
-        //
-        pluginMenu.add(loadPluginAction);
-        pluginMenu.add(managePluginAction);
-        pluginMenu.addSeparator();
-        pluginMenu.add(apiPluginAction);
-        // 外部集成工具
-        externalSubMenu.add(new AbstractAction("添加工具") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("添加工具");
-                DialogUtil.info("敬请期待！");
-            }
-        });
-        externalSubMenu.add(new AbstractAction("工具管理") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("工具管理");
-                DialogUtil.info("敬请期待！");
-            }
-        });
-        externalSubMenu.addSeparator();
-        ExternalToolIntegration integration = new ExternalToolIntegration(externalSubMenu);
-
-
-        // TODO 菜单栏
-        this.setJMenuBar(menuBar);
-        menuBar.add(terminalMenu);
-        menuBar.add(viewMenu);
-        menuBar.add(optionMenu);
-        menuBar.add(toolMenu);
-        menuBar.add(pluginMenu);
-        menuBar.add(helpMenu);
-        menuBar.add(Box.createGlue());
-        menuBar.add(usersButton);
-        menuBar.add(toggleButton);
-
-        // 添加更新按钮
-        new Thread(() -> {
-            lastestVersion = CommonUtil.getLastestVersion();
-            String currentVersion = CommonUtil.getCurrentVersion();
-            if (!CommonUtil.getCurrentVersion().equals(lastestVersion)) {
-                menuBar.add(updateBtn);
-                log.debug("添加更新按钮");
-                updateBtn.addActionListener(new AbstractAction() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // 检查更新
-                        String msg = null;
-                        msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
-                                "最新版本： <font color='green'>" + lastestVersion + "</font><br><br>" +
-                                "是否现在下载更新？</html>";
-                        log.debug("Msg: " + msg);
-                        int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
-                        if (code == 0) {
-                            // TODO 更新
-                            log.debug("马上下载更新");
-                            CommonUtil.getLatestJar();
-                        } else {
-                            // TODO 暂不更新
-                            log.debug("暂不下载更新");
-                        }
-                    }
-                });
-            }
-        }).start();
-
-
-        // TODO 工具栏
-
-        // TODO 状态栏
-        FlowLayout flowLayout = new FlowLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
-        statusBar = new JPanel();
-        statusBar.setLayout(flowLayout);
-        statusBar.add(new JLabel("状态栏"));
-//        this.add(statusBar, BorderLayout.SOUTH);
-    }
-
-    public void recursiveListDirectory(File directory, JMenuItem menuItem) {
-        // 是目录，获取该目录下面的所有文件（包括目录）
-        File[] files = directory.listFiles();
-        // 判断 files 是否为空？
-        if (null != files) {
-            // 遍历文件数组
-            for (File f : files) {
-                // 判断是否是目录？
-                if (f.isDirectory()) {
-                    // 是目录
-                    System.out.println("目录绝对路径：" + f.getAbsolutePath());
-                    recursiveListDirectory(f, menuItem);
-                } else {
-                    // 不是目录，判断是否是文件？
-                    if (f.isFile()) {
-                        System.out.println("文件绝对路径：" + f.getAbsolutePath());
-                        String itemName = f.getName().substring(f.getName().indexOf("_") + 1, f.getName().length() - 5);
-                        JMenuItem tempItem = new JMenuItem(itemName);
-                        tempItem.addActionListener(new AbstractAction() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                log.debug(f.getAbsolutePath());
-                                new Thread(() -> SessionUtil.openSshSession(f.getAbsolutePath(), mainTabbedPane)).start();
-                            }
-                        });
-                        menuItem.add(tempItem);
-                    }
-                }
-            }
-        }
-    }
-
-    private void initClosableTabs(JTabbedPane tabbedPane) {
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
-                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
-                    if (tabIndex != 0) {
-                        mainTabbedPane.removeTabAt(tabIndex);
-                    }
-                });
-
-    }
-
-    private void customComponents() {
-        JToolBar leading = null;
-        JToolBar trailing = null;
-        leading = new JToolBar();
-        leading.setFloatable(false);
-        leading.setBorder(null);
-        trailing = new JToolBar();
-        trailing.setFloatable(false);
-        trailing.setBorder(null);
-
-        JButton dashboardBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"));
-        dashboardBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.setSelectedIndex(0);
-            }
-        });
-
-        JButton addBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/add.svg"));
-        addBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
-            }
-        });
-
-        leading.add(dashboardBtn);
-        trailing.add(addBtn);
-        trailing.add(Box.createHorizontalGlue());
-        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
-        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
-        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg")));
-//        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
-        mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
-    }
-
-
-    /**
-     * this.setUndecorated(true);                      //去处边框
-     * this.setLayout(null);
-     * this.setExtendedState(JFrame.MAXIMIZED_BOTH);   //最大化
-     * this.setAlwaysOnTop(true);                      //总在最前面
-     * this.setResizable(false);                       //不能改变大小
-     */
-    public MainFrame() throws HeadlessException {
-
-        // UtimateShell 工作目录
-        createDir(getWorkDir());
-
-        // 界面初始化
-        init();
-
-    }
-
-    private void createDir(String path) {
-        File file = new File(path);
-        if (!file.exists() && !file.isDirectory()) {
-            log.debug("工作目录:" + " 不存在，创建目录：" + path);
-            file.mkdir();
-        } else {
-            log.debug("工作目录: " + path + " 已存在");
-        }
-    }
-
-    public static String getUserHome() {
-        return System.getProperty("user.home");
-    }
-
-    public static String getWorkDir() {
-        return getUserHome() + "/.ultimateshell";
-    }
 }
+
+/**
+ * this.setUndecorated(true);                      //去处边框
+ * this.setLayout(null);
+ * this.setExtendedState(JFrame.MAXIMIZED_BOTH);   //最大化
+ * this.setAlwaysOnTop(true);                      //总在最前面
+ * this.setResizable(false);                       //不能改变大小
+ */
