@@ -222,7 +222,7 @@ public class CommonUtil {
             while ((line = br.readLine()) != null) {
                 b.append(line + "\n");
             }
-            System.out.println(b.toString());
+//            System.out.println(b.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -237,7 +237,7 @@ public class CommonUtil {
             exception.printStackTrace();
         }
         IPZone ipzone = qqwry.findIP(ip);
-        System.out.printf("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
+//        System.out.printf("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
         return String.format("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
     }
 

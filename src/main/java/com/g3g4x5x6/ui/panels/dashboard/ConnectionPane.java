@@ -110,7 +110,7 @@ public class ConnectionPane extends JPanel {
             exception.printStackTrace();
         }
         for (String line : output.split("\n")){
-            log.debug(line);
+//            log.debug(line);
             if (line.strip().startsWith("TCP")){
                 // TCP
                 String[] row = line.strip().split("\\s+");

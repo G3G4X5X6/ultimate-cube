@@ -327,10 +327,11 @@
                                 <resource>
                                     <directory>${basedir}/src/main/java</directory>
                                     <includes>
-                                        <include>**/*.xml</include>
-                                        <include>**/*.png</include>
-                                        <include>**/*.svg</include>
-                                        <include>**/*.ico</include>
+<!--                                        <include>**/*.xml</include>-->
+<!--                                        <include>**/*.png</include>-->
+<!--                                        <include>**/*.svg</include>-->
+<!--                                        <include>**/*.ico</include>-->
+                                        <include>**/*.*</include>
                                     </includes>
                                 </resource>
                             </resources>

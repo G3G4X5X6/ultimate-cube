@@ -191,7 +191,8 @@ public class SessionsManager extends JPanel {
     private void initContent() {
         File rootFile = new File(rootPath);
         if (!rootFile.exists()) {
-            log.debug("目录不存在 ");
+            log.debug("目录不存在，正在创建目录...... ");
+            rootFile.mkdir();
         }
         for (File file : rootFile.listFiles()) {
             if (file.isDirectory()) {
