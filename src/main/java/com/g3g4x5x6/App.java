@@ -20,7 +20,7 @@ public class App {
         Utils.checkEnv();
         // 初始化数据库
         DbUtil.createDatabase();
-        // 启动主界面
+        // 启动主程序
         SwingUtilities.invokeLater(() -> {
                     createGUI();
                 }
@@ -31,12 +31,12 @@ public class App {
         // 配置主题皮肤
         initFlatLaf();
 
-        // 启动主界面
+        // 主窗口
         mainFrame = new MainFrame();
         mainFrame.setTitle("UltimateShell");
         mainFrame.pack();
         mainFrame.setVisible(true);
-        log.info("主线程启动完成");
+        log.info(">>>>>>>> 程序启动完成！！！");
     }
 
     /**
@@ -50,8 +50,9 @@ public class App {
             } else {
                 UIManager.setLookAndFeel(new FlatLightLaf());
             }
+            log.info(">>>>>>>> FlatLaf主题加载成功......");
         } catch (Exception ex) {
-            log.error("Failed to initialize LaF");
+            log.error("Failed to initialize LaF !!!!!!!! ");
         }
     }
 

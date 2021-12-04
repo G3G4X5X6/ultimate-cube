@@ -1,12 +1,16 @@
 package com.g3g4x5x6.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 
 
+@Slf4j
 public class DbUtil {
     private static Connection connection = null;
+
     private DbUtil() {
 
     }
@@ -21,9 +25,9 @@ public class DbUtil {
 
     public static Connection getConnection() throws SQLException {
         String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
-        if (connection != null){
+        if (connection != null) {
             return connection;
-        }else {
+        } else {
             connection = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
         }
         return connection;
@@ -32,7 +36,7 @@ public class DbUtil {
     /**
      * 增
      */
-    public static int insert(String sql, String err){
+    public static int insert(String sql, String err) {
         int ret = 0;
         try {
             connection = getConnection();
@@ -49,7 +53,7 @@ public class DbUtil {
     /**
      * 删
      */
-    public static int delete(String sql, String err){
+    public static int delete(String sql, String err) {
         int ret = 0;
         try {
             connection = getConnection();
@@ -66,7 +70,7 @@ public class DbUtil {
     /**
      * 改
      */
-    public static int update(String sql, String err){
+    public static int update(String sql, String err) {
         int ret = 0;
         try {
             connection = getConnection();
@@ -84,7 +88,7 @@ public class DbUtil {
      * 查(有问题)
      */
     @Deprecated
-    public static ResultSet select(String sql, String err){
+    public static ResultSet select(String sql, String err) {
         ResultSet ret = null;
         try {
             Connection connection = getConnection();
@@ -102,44 +106,45 @@ public class DbUtil {
         // TODO 后续切换为 H2 数据库
         String dbPath = System.getProperties().getProperty("user.home") + "/.ultimateshell/ultilmateshell.sqlite";
         if (!Files.exists(Path.of(dbPath))) {
+            log.info(">>>>>>>> 找不到数据库：" + dbPath + "，正在创建......");
             // 创建数据库
             try {
                 Connection connection = DbUtil.getConnection();
-
                 Statement statement = connection.createStatement();
-                int effectSession = statement.executeUpdate("CREATE TABLE \"session\" (\n" +
-                        "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                        "  \"session_name\" TEXT NOT NULL DEFAULT '新建会话',\n" +
-                        "  \"protocol\" TEXT NOT NULL DEFAULT 'SSH',\n" +
-                        "  \"address\" TEXT NOT NULL DEFAULT '127.0.0.1',\n" +
-                        "  \"port\" TEXT NOT NULL DEFAULT 22,\n" +
-                        "  \"auth_type\" TEXT NOT NULL DEFAULT 'password',\n" +
-                        "  \"username\" TEXT,\n" +
-                        "  \"password\" TEXT,\n" +
-                        "  \"private_key\" TEXT,\n" +
-                        "  \"create_time\" TEXT NOT NULL,\n" +
-                        "  \"access_time\" TEXT NOT NULL,\n" +
-                        "  \"modified_time\" TEXT NOT NULL,\n" +
-                        "  \"comment\" TEXT NOT NULL DEFAULT 'Your comment'\n" +
-                        ");\n" +
-                        "PRAGMA foreign_keys = true;");
 
-                int effectTag = statement.executeUpdate("CREATE TABLE \"tag\" (\n" +
-                        "  \"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                        "  \"tag\" TEXT\n" +
-                        ");\n" +
-                        "PRAGMA foreign_keys = true;");
-
-                int effectRelation = statement.executeUpdate("CREATE TABLE \"relation\" (\n" +
-                        "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                        "  \"session\" integer NOT NULL,\n" +
-                        "  \"tag\" integer NOT NULL,\n" +
-                        "  CONSTRAINT \"session\" FOREIGN KEY (\"session\") REFERENCES \"session\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n" +
-                        "  CONSTRAINT \"tag\" FOREIGN KEY (\"tag\") REFERENCES \"tag\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
-                        ");\n" +
-                        "PRAGMA foreign_keys = true;");
-
-                int addTag = statement.executeUpdate("INSERT INTO tag VALUES (null, '会话标签');");
+//                int effectSession = statement.executeUpdate("CREATE TABLE \"session\" (\n" +
+//                        "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+//                        "  \"session_name\" TEXT NOT NULL DEFAULT '新建会话',\n" +
+//                        "  \"protocol\" TEXT NOT NULL DEFAULT 'SSH',\n" +
+//                        "  \"address\" TEXT NOT NULL DEFAULT '127.0.0.1',\n" +
+//                        "  \"port\" TEXT NOT NULL DEFAULT 22,\n" +
+//                        "  \"auth_type\" TEXT NOT NULL DEFAULT 'password',\n" +
+//                        "  \"username\" TEXT,\n" +
+//                        "  \"password\" TEXT,\n" +
+//                        "  \"private_key\" TEXT,\n" +
+//                        "  \"create_time\" TEXT NOT NULL,\n" +
+//                        "  \"access_time\" TEXT NOT NULL,\n" +
+//                        "  \"modified_time\" TEXT NOT NULL,\n" +
+//                        "  \"comment\" TEXT NOT NULL DEFAULT 'Your comment'\n" +
+//                        ");\n" +
+//                        "PRAGMA foreign_keys = true;");
+//
+//                int effectTag = statement.executeUpdate("CREATE TABLE \"tag\" (\n" +
+//                        "  \"id\" INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+//                        "  \"tag\" TEXT\n" +
+//                        ");\n" +
+//                        "PRAGMA foreign_keys = true;");
+//
+//                int effectRelation = statement.executeUpdate("CREATE TABLE \"relation\" (\n" +
+//                        "  \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+//                        "  \"session\" integer NOT NULL,\n" +
+//                        "  \"tag\" integer NOT NULL,\n" +
+//                        "  CONSTRAINT \"session\" FOREIGN KEY (\"session\") REFERENCES \"session\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n" +
+//                        "  CONSTRAINT \"tag\" FOREIGN KEY (\"tag\") REFERENCES \"tag\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n" +
+//                        ");\n" +
+//                        "PRAGMA foreign_keys = true;");
+//
+//                int addTag = statement.executeUpdate("INSERT INTO tag VALUES (null, '会话标签');");
 
                 int effectSettings = statement.executeUpdate("CREATE TABLE settings (" +
                         " id INTEGER NOT NULL, " +
@@ -253,7 +258,7 @@ public class DbUtil {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("找到数据库：" + dbPath);
+            log.info(">>>>>>>> 找到数据库：" + dbPath);
         }
     }
 
