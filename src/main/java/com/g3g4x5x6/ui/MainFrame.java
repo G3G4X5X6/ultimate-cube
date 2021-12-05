@@ -74,7 +74,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private void initMenuBar() {
         // 终端菜单
         JMenu openSessionMenu = new JMenu("打开会话");
-        String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
+        String rootPath = ConfigUtil.getWorkPath() + "/sessions/ssh/";
         File dir = new File(rootPath);
         initOpenSessionMenu(dir, openSessionMenu);
         terminalMenu.add(myOpenAction);
