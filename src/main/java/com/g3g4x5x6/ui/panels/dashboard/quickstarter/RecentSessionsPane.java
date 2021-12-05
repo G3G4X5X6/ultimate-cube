@@ -99,7 +99,7 @@ public class RecentSessionsPane extends JPanel {
         tableModel.setRowCount(0);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        File file = new File(ConfigUtil.getWorkPath() + "sessions");
+        File file = new File(ConfigUtil.getWorkPath() + "/sessions");
         if (file.exists()){
             for (File f : file.listFiles()){
                 if (f.isFile()){
@@ -152,7 +152,7 @@ public class RecentSessionsPane extends JPanel {
         String port = (String) tableModel.getValueAt(index, 4);
         String user = (String) tableModel.getValueAt(index, 5);
 
-        File dir = new File(ConfigUtil.getWorkPath() + "sessions/");
+        File dir = new File(ConfigUtil.getWorkPath() + "/sessions/");
         if (dir.exists()){
             for (File file : dir.listFiles()){
                 if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
