@@ -55,7 +55,7 @@ public class MainFrame extends JFrame implements MouseListener {
         // 初始化 ”菜单栏“
         initMenuBar();
 
-        // 初始化 ”菜单栏 - 功能小图标“
+        // 初始化 ”菜单栏——功能小图标“
         initFuncIconButton();
 
         // TODO 初始化 ”工具栏“
@@ -68,21 +68,23 @@ public class MainFrame extends JFrame implements MouseListener {
         initStatusBar();
     }
 
+    /**
+     * 添加菜单动作
+     */
     private void initMenuBar() {
-        // TODO 添加菜单动作
+        // 终端菜单
         JMenu openSessionMenu = new JMenu("打开会话");
         String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
         File dir = new File(rootPath);
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-        recursiveListDirectory(dir, openSessionMenu);
+        initOpenSessionMenu(dir, openSessionMenu);
         terminalMenu.add(myOpenAction);
         terminalMenu.add(openSessionMenu);
         terminalMenu.add(mySessionAction);
-        //
+
+        // 查看菜单
         viewMenu.add(themeAction);
-        //
+
+        // 选项菜单
         JMenuItem settingsItem = new JMenuItem("全局配置");
         settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         settingsItem.addActionListener(settingsAction);
@@ -90,12 +92,14 @@ public class MainFrame extends JFrame implements MouseListener {
         optionMenu.addSeparator();
         optionMenu.add(importSessionAction);
         optionMenu.add(exportSessionAction);
-        //
+
+        // 帮助菜单
         helpMenu.add(githubAction);
         helpMenu.add(gitpageAction);
         helpMenu.addSeparator();
         helpMenu.add(myAboutAction);
-        //
+
+        // 工具菜单
         JMenu myToolMenu = new JMenu("内置工具");
         myToolMenu.add(myEditorAction);
         toolMenu.add(myToolMenu);
@@ -113,11 +117,13 @@ public class MainFrame extends JFrame implements MouseListener {
         toolMenu.add(freeRdpItem);
         toolMenu.addSeparator();
         toolMenu.add(externalSubMenu);
-        //
+
+        // 插件菜单
         pluginMenu.add(loadPluginAction);
         pluginMenu.add(managePluginAction);
         pluginMenu.addSeparator();
         pluginMenu.add(apiPluginAction);
+
         // 外部集成工具
         externalSubMenu.add(new AbstractAction("添加工具") {
             @Override
@@ -230,7 +236,7 @@ public class MainFrame extends JFrame implements MouseListener {
         // 添加 ”仪表盘“ 面板
         mainTabbedPane.addTab("仪表板",
                 new FlatSVGIcon("com/g3g4x5x6/ui/icons/homeFolder.svg"),
-                new DashboardPane(mainTabbedPane));
+                new DashboardPane());
 
         this.add(mainTabbedPane);
     }
@@ -283,7 +289,7 @@ public class MainFrame extends JFrame implements MouseListener {
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
-    public void recursiveListDirectory(File directory, JMenuItem menuItem) {
+    public void initOpenSessionMenu(File directory, JMenuItem menuItem) {
         // 是目录，获取该目录下面的所有文件（包括目录）
         File[] files = directory.listFiles();
         // 判断 files 是否为空？
@@ -294,7 +300,7 @@ public class MainFrame extends JFrame implements MouseListener {
                 if (f.isDirectory()) {
                     // 是目录
                     System.out.println("目录绝对路径：" + f.getAbsolutePath());
-                    recursiveListDirectory(f, menuItem);
+                    initOpenSessionMenu(f, menuItem);
                 } else {
                     // 不是目录，判断是否是文件？
                     if (f.isFile()) {
@@ -387,6 +393,8 @@ public class MainFrame extends JFrame implements MouseListener {
      * 定义
      */
     public static JTabbedPane mainTabbedPane;
+    public static JPanel statusBar;
+
     // TODO JFrame 组件定义
     private JMenuBar menuBar = new JMenuBar();
     private JMenu terminalMenu = new JMenu("终端");
@@ -396,8 +404,6 @@ public class MainFrame extends JFrame implements MouseListener {
     private JMenu pluginMenu = new JMenu("插件");
     private JMenu helpMenu = new JMenu("帮助");
     private JMenu externalSubMenu = new JMenu("外部集成工具");
-
-    private JPanel statusBar;
     private JPopupMenu popupMenu = new JPopupMenu();
 
     private String latestVersion;

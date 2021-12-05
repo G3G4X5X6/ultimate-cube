@@ -20,10 +20,11 @@ public class ConfigUtil {
     }
 
     public static String getWorkPath() {
-        String work = System.getProperties().getProperty("user.home") + "/.ultimateshell/";
-        File file = new File(work);
+        String work = Path.of(System.getProperties().getProperty("user.home") + "/.ultimateshell/").toString();
+        File file = new File(Path.of(System.getProperties().getProperty("user.home") + "/.ultimateshell/").toString());
         if (!file.exists())
             file.mkdir();
+        log.debug(work);
         return work;
     }
 

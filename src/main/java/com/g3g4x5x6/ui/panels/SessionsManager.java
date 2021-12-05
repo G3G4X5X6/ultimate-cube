@@ -49,7 +49,7 @@ public class SessionsManager extends JPanel {
     private JScrollPane tableScroll;
     private JTable sessionTable;
     private DefaultTableModel tableModel;
-    private String rootPath = ConfigUtil.getWorkPath() + "sessions/ssh/";
+    private String rootPath = ConfigUtil.getWorkPath() + "/sessions/ssh/";
     private String[] columnNames = {"会话名称", "协议", "地址", "端口", "登录用户", "认证类型"}; // 添加<创建时间>
 
     private Connection connection;

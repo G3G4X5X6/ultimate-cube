@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,10 +17,8 @@ import java.awt.*;
 public class QuickStarterPane extends JPanel {
 
     private BorderLayout borderLayout = new BorderLayout();
-
     private JTabbedPane mainTabbedPane;
 
-    // TODO
     protected JTabbedPane basicSettingTabbedPane;
     protected String basicSettingPaneTitle = "基本设置(SSH)";
     protected BasicSettingStarterPane basicSettingPane;
@@ -31,19 +30,19 @@ public class QuickStarterPane extends JPanel {
     protected SessionsManager sessionsManager;
 
 
-    public QuickStarterPane(JTabbedPane mainTabbedPane) {
-        this.mainTabbedPane = mainTabbedPane;
+    public QuickStarterPane() {
+        this.mainTabbedPane = MainFrame.mainTabbedPane;
         this.setLayout(borderLayout);
 
         initQuickPane();
-        log.info("初始化<快速启动>面板完成");
+        log.info(">>>>>>>> “快速启动”窗口初始化完成......");
     }
 
     protected void initQuickPane() {
 
         // 基本设置
         basicSettingTabbedPane = new JTabbedPane();
-        basicSettingPane = new BasicSettingStarterPane(mainTabbedPane);
+        basicSettingPane = new BasicSettingStarterPane();
         basicSettingTabbedPane.addTab(basicSettingPaneTitle, basicSettingPane);
 
         // 会话管理

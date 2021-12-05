@@ -3,6 +3,7 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
@@ -48,12 +49,11 @@ public class BasicSettingStarterPane extends JPanel {
     private String password;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public BasicSettingStarterPane(JTabbedPane mainTabbedPane) {
+    public BasicSettingStarterPane() {
         flowLayout.setAlignment(FlowLayout.LEFT);
         this.setLayout(flowLayout);
-
-        this.mainTabbedPane = mainTabbedPane;
-
+        this.mainTabbedPane = MainFrame.mainTabbedPane;
+        //
         createBasicComponent();
     }
 
@@ -120,7 +120,8 @@ public class BasicSettingStarterPane extends JPanel {
                     port = Integer.parseInt(portField.getText());
                     username = userField.getText();
                     password = String.valueOf(passField.getPassword());
-                    log.debug(password);
+                    // TODO 删除密码日志输出
+                    log.info("快速连接，密码：" + password);
 
                     String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
                     mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
