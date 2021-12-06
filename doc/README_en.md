@@ -12,7 +12,7 @@
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 <br>
-English [简体中文](README.md)
+English [简体中文](../README.md)
 
 <br>
 UltimateShell is a fully open-source, ultimate toolbox for remote management server.
