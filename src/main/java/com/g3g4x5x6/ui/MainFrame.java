@@ -65,7 +65,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initMainTabbedPane();
 
         // TODO 初始化 ”状态栏“
-        initStatusBar();
+//        initStatusBar();
     }
 
     /**

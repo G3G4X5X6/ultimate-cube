@@ -76,8 +76,6 @@ public class SshPane extends JPanel {
 
         createBasicComponent();
         createAdvancedComponent();
-
-        MainFrame.statusBar.hide();
     }
 
     /**
