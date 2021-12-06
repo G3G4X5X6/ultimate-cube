@@ -272,7 +272,7 @@ public class MainFrame extends JFrame implements MouseListener {
         addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
@@ -411,7 +411,7 @@ public class MainFrame extends JFrame implements MouseListener {
     // TODO 菜单动作
     private AbstractAction myOpenAction = new AbstractAction("新建会话") {
         public void actionPerformed(final ActionEvent e) {
-            mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+            mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };

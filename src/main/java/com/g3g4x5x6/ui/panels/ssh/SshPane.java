@@ -422,6 +422,36 @@ public class SshPane extends JPanel {
         return 0;
     }
 
-    // TODO 获取 sFTP channel
+    public void setHostField(String host){
+        hostField.setText(host);
+    }
+
+    public void setPortField(String port){
+        portField.setText(port);
+    }
+
+    public void setUserField(String user){
+        userField.setText(user);
+    }
+
+    public void setPassField(String pass){
+        passField.setText(pass);
+    }
+
+    public void setSessionName(String session){
+        sessionName.setText(session);
+    }
+
+    public void setCategory(String category){
+        categoryCombo.setSelectedItem(category);
+    }
+
+    public void setKeyLabel(String key){
+        keyLabel.setText(key);
+    }
+
+    public void setCommentText(String text){
+        commentText.setText(text);
+    }
 
 }

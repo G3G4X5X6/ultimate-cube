@@ -1,5 +1,7 @@
 package com.g3g4x5x6.ui.panels;
 
+import com.g3g4x5x6.ui.MainFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,12 +12,9 @@ import java.awt.*;
 public class NewTabbedPane extends JPanel {
     // TODO 新建选项卡面板： 会话列表、新增会话、其他
 
-    private JTabbedPane mainTabbedPane;
-
-    public NewTabbedPane(JTabbedPane mainTabbedPane) {
+    public NewTabbedPane() {
         this.setLayout(new BorderLayout());
 
-        this.mainTabbedPane = mainTabbedPane;
-        this.add(new CreateSessionTabbedPane(mainTabbedPane), BorderLayout.CENTER);
+        this.add(new CreateSessionTabbedPane(MainFrame.mainTabbedPane), BorderLayout.CENTER);
     }
 }

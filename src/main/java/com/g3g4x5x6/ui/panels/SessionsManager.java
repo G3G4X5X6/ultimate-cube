@@ -6,6 +6,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.panels.ssh.SshPane;
 import com.g3g4x5x6.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -300,7 +301,7 @@ public class SessionsManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("新增会话");
-                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };
@@ -350,28 +351,10 @@ public class SessionsManager extends JPanel {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = sessionTable.getSelectedRows();
                 for (int index : indexs) {
-                    String session = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 0);
-                    String protocol = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 1);
-                    String address = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 2);
-                    String port = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 3);
-                    String user = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 4);
-                    String auth = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 5);
-                    log.debug("删除：" + sessionTable.getSelectedRow() + " => session：" + session + ", protocol：" + protocol +
-                            ", address：" + address + ", port：" + port + ", user：" + user + ", auth：" + auth);
-
-                    TreePath treePath = sessionTree.getSelectionPath();
-                    String currentTag = convertPathToTag(treePath);
-                    String path = rootPath;
-                    if (!currentTag.equals("分类目录")) {
-                        path = rootPath + currentTag.substring(currentTag.indexOf("/"));
-                    }
-                    File dir = new File(path);
-                    if (dir.exists()) {
-                        for (File file : dir.listFiles()) {
-                            if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)) {
-                                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
-                            }
-                        }
+                    String[] array = getRowFilePath();
+                    File file = new File(array[0]);
+                    if (file.exists()) {
+                        new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
                     }
                 }
             }
@@ -396,6 +379,39 @@ public class SessionsManager extends JPanel {
             }
         };
 
+        AbstractAction editSession = new AbstractAction("编辑会话") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[] indexes = sessionTable.getSelectedRows();
+                for (int index : indexes) {
+                    String[] array = getRowFilePath();
+                    File file = new File(array[0]);
+                    try {
+                        String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                        JSONObject jsonObject = JSON.parseObject(json);
+
+                        String finalCurrentTag = array[1];
+                        new Thread(() -> {
+                            SshPane sshPane = new SshPane();
+                            sshPane.setHostField(jsonObject.getString("sessionAddress"));
+                            sshPane.setPortField(jsonObject.getString("sessionPort"));
+                            sshPane.setUserField(jsonObject.getString("sessionUser"));
+                            sshPane.setPassField(jsonObject.getString("sessionPass"));
+                            sshPane.setKeyLabel(jsonObject.getString("sessionKeyPath"));
+                            sshPane.setSessionName(jsonObject.getString("sessionName"));
+                            sshPane.setCommentText(jsonObject.getString("sessionComment"));
+                            sshPane.setCategory(finalCurrentTag.substring(finalCurrentTag.indexOf("/") + 1));
+                            mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
+                            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+                        }).start();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+
+                }
+            }
+        };
+
         // 会话树右键菜单
         JPopupMenu treePopupMenu = new JPopupMenu();
         treePopupMenu.add(addDirectory);
@@ -407,6 +423,7 @@ public class SessionsManager extends JPanel {
         JPopupMenu tablePopupMenu = new JPopupMenu();
         tablePopupMenu.add(openSession);
         tablePopupMenu.add(testSession);
+        tablePopupMenu.add(editSession);
         tablePopupMenu.add(addSession);
         tablePopupMenu.add(delSession);
         sessionTable.setComponentPopupMenu(tablePopupMenu);
@@ -429,5 +446,23 @@ public class SessionsManager extends JPanel {
 
         log.debug(String.valueOf(tempPath));
         return tempPath.toString();
+    }
+
+    private String[] getRowFilePath() {
+        String address = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 2);
+        String port = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 3);
+        String user = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 4);
+
+        TreePath treePath = sessionTree.getSelectionPath();
+        String currentTag = convertPathToTag(treePath);
+        String path = rootPath;
+        if (!currentTag.equals("分类目录")) {
+            path = rootPath + currentTag.substring(currentTag.indexOf("/"));
+        } else {
+            currentTag = "/";
+        }
+        String fileName = "ssh_" + address + "_" + port + "_" + user + ".json";
+        log.debug(path + fileName);
+        return new String[]{path + "/" + fileName, currentTag};
     }
 }
