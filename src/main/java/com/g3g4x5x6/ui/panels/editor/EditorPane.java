@@ -9,6 +9,9 @@ import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
+import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.sftp.client.SftpClient;
+import org.apache.sshd.sftp.client.SftpClientFactory;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 import org.apache.sshd.sftp.client.fs.SftpPath;
@@ -69,6 +72,7 @@ public class EditorPane extends JPanel {
 
     // 远程文件系统
     private SshClient client;
+    private ClientSession session;
     private SftpFileSystem fs;
     private String host;
     private int port;
@@ -871,22 +875,16 @@ public class EditorPane extends JPanel {
 
     private void createSftpFileSystem() {
         client = SshClient.setUpDefaultClient();
-        // TODO 配置 SshClient
-        // override any default configuration...
-//        client.setSomeConfiguration(...);
-//        client.setOtherConfiguration(...);
         client.start();
-
-        SftpFileSystemProvider provider = new SftpFileSystemProvider(client);
-        URI uri = SftpFileSystemProvider.createFileSystemURI(host, port, user, pass);
         try {
-            // TODO 配置 SftpFileSystem
-            Map<String, Object> params = new HashMap<>();
-//            params.put("param1", value1);
-//            params.put("param2", value2);
-            this.fs = provider.newFileSystem(uri, params);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+            session = client.connect(user, host, port).verify(3000).getSession();
+            session.addPasswordIdentity(pass);
+            session.auth().verify(3000);
+
+            SftpFileSystemProvider provider = new SftpFileSystemProvider();
+            this.fs = provider.newFileSystem(session);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

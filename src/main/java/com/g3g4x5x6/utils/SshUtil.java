@@ -11,6 +11,7 @@ import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.Channel;
+import org.apache.sshd.sftp.client.SftpClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
