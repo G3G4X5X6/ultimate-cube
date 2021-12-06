@@ -48,7 +48,7 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 ## 截图
 
 ### 启动面板
-![dashboard](doc/screenshot/ultimateshell_v0.14.13-alpha_dashboard.png)
+![dashboard](doc/screenshot/ultimateshell_dashboard.png)
 
 
 ### 本地终端
