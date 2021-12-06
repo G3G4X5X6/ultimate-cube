@@ -33,7 +33,7 @@ And, it also supports multiple operating system platforms and theme skin switchi
 - [License](#license)
 
 ## Security
-See [the security file](SECURITY.md)!
+See [the security file](../SECURITY.md)!
 
 ## Features
 
