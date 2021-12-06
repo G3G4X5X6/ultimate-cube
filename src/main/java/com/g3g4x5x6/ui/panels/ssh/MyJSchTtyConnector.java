@@ -114,7 +114,7 @@ public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnec
     public boolean init(Questioner q) {
         this.getAuthDetails(q);
 
-        boolean var3;
+        boolean var3 = true;
         try {
             this.mySession = this.connectSession(q);
             this.myChannelShell = this.openChannel(this.mySession);
@@ -135,6 +135,8 @@ public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnec
             q.showMessage(var9.getMessage());
             log.error("Error opening session or channel", var9);
             var3 = false;
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             this.isInitiated.set(true);
         }
@@ -142,7 +144,7 @@ public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnec
         return var3;
     }
 
-    private Session connectSession(Questioner questioner) throws JSchException {
+    private Session connectSession(Questioner questioner) throws Exception {
         JSch jsch = new JSch();
         this.configureJSch(jsch);
         Session session = jsch.getSession(this.myUser, this.myHost, this.myPort);
@@ -159,7 +161,8 @@ public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnec
         config.put("StrictHostKeyChecking", "no");
         this.configureSession(session, config);
         session.connect();
-        session.setTimeout(0);
+        session.setTimeout(6000);
+        session.sendKeepAliveMsg();
         return session;
     }
 
