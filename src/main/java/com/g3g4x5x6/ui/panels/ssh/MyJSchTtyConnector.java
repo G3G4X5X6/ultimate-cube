@@ -161,6 +161,7 @@ public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnec
         config.put("StrictHostKeyChecking", "no");
         this.configureSession(session, config);
         session.connect();
+        session.sendKeepAliveMsg();
         return session;
     }
 
@@ -170,7 +171,6 @@ public abstract class MyJSchTtyConnector<T extends Channel> implements TtyConnec
     protected void configureSession(Session session, Properties config) throws Exception {
         session.setConfig(config);
         session.setTimeout(5000);
-        session.sendKeepAliveMsg();
     }
 
     private void getAuthDetails(Questioner q) {
