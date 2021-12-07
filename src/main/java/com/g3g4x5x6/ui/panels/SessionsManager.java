@@ -351,7 +351,7 @@ public class SessionsManager extends JPanel {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = sessionTable.getSelectedRows();
                 for (int index : indexs) {
-                    String[] array = getRowFilePath();
+                    String[] array = getRowFilePath(index);
                     File file = new File(array[0]);
                     if (file.exists()) {
                         new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
@@ -384,7 +384,7 @@ public class SessionsManager extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 int[] indexes = sessionTable.getSelectedRows();
                 for (int index : indexes) {
-                    String[] array = getRowFilePath();
+                    String[] array = getRowFilePath(index);
                     File file = new File(array[0]);
                     try {
                         String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
@@ -448,10 +448,10 @@ public class SessionsManager extends JPanel {
         return tempPath.toString();
     }
 
-    private String[] getRowFilePath() {
-        String address = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 2);
-        String port = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 3);
-        String user = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 4);
+    private String[] getRowFilePath(int index) {
+        String address = (String) tableModel.getValueAt(index, 2);
+        String port = (String) tableModel.getValueAt(index, 3);
+        String user = (String) tableModel.getValueAt(index, 4);
 
         TreePath treePath = sessionTree.getSelectionPath();
         String currentTag = convertPathToTag(treePath);
