@@ -88,18 +88,18 @@ public class SshSettingsProvider implements SettingsProvider {
     public Font getTerminalFont() {
         String fontName;
         if (UIUtil.isWindows) {
-            fontName = "新宋体";
+            fontName = "宋体";
         } else if (UIUtil.isMac) {
             fontName = "Menlo";
         } else {
             fontName = "Monospaced";
         }
 
-        return new Font(fontName, 0, (int)this.getTerminalFontSize());
+        return new Font(fontName, Font.PLAIN, (int)this.getTerminalFontSize());
     }
 
     public float getTerminalFontSize() {
-        return 14.0F;
+        return 15.0F;
     }
 
     @Override

@@ -311,7 +311,7 @@ public class SessionsManager extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 // TODO 支持批量删除(多选)
                 int[] indexs = sessionTable.getSelectedRows();
-                int bool = JOptionPane.showConfirmDialog(null, "是否确认删除会话", "删除会话", JOptionPane.YES_NO_OPTION);
+                int bool = JOptionPane.showConfirmDialog(App.mainFrame, "是否确认删除会话", "删除会话", JOptionPane.YES_NO_OPTION);
                 if (bool == 0) {
                     for (int index : indexs) {
                         String session = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 0);
