@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 
 
 /**
@@ -31,6 +34,7 @@ public class QuickStarterPane extends JPanel {
     private SessionsManager sessionsManager;
 
     private JToolBar statusBar;
+    private JLabel usedMemory;
 
 
     public QuickStarterPane() {
@@ -65,6 +69,22 @@ public class QuickStarterPane extends JPanel {
         statusBar = new JToolBar();
         statusBar.setFloatable(false);
         this.add(statusBar, BorderLayout.SOUTH);
+
+//        new Thread(()->{
+//            while (true){
+//                try {
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                MemoryMXBean bean = ManagementFactory.getMemoryMXBean();
+//                MemoryUsage memoryUsage = bean.getHeapMemoryUsage();
+//                double used = memoryUsage.getUsed()/(1024*1024);
+//
+//                java.text.DecimalFormat df = new java.text.DecimalFormat("#.##");
+//                System.out.println("已使用内存 = " + df.format(used));
+//            }
+//        }).start();
 
         JButton statusBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/colors.svg"));
         statusBar.add(statusBtn);

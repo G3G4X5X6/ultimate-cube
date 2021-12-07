@@ -55,5 +55,4 @@ public class App {
             log.error("Failed to initialize LaF !!!!!!!! ");
         }
     }
-
 }
