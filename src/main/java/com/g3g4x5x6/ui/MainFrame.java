@@ -1,5 +1,7 @@
 package com.g3g4x5x6.ui;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
@@ -23,6 +25,7 @@ import com.glavsoft.viewer.swing.mac.MacApplicationWrapper;
 import com.glavsoft.viewer.swing.mac.MacUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -32,6 +35,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.BiConsumer;
 
@@ -77,7 +81,11 @@ public class MainFrame extends JFrame implements MouseListener {
         JMenu openSessionMenu = new JMenu("打开会话");
         String rootPath = ConfigUtil.getWorkPath() + "/sessions/ssh/";
         File dir = new File(rootPath);
-        initOpenSessionMenu(dir, openSessionMenu);
+        try {
+            initOpenSessionMenu(dir, openSessionMenu);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         terminalMenu.add(myOpenAction);
         terminalMenu.add(openSessionMenu);
         terminalMenu.add(mySessionAction);
@@ -290,7 +298,7 @@ public class MainFrame extends JFrame implements MouseListener {
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
-    public void initOpenSessionMenu(File directory, JMenuItem menuItem) {
+    public void initOpenSessionMenu(File directory, JMenuItem menuItem) throws IOException {
         // 是目录，获取该目录下面的所有文件（包括目录）
         File[] files = directory.listFiles();
         // 判断 files 是否为空？
@@ -306,7 +314,13 @@ public class MainFrame extends JFrame implements MouseListener {
                     // 不是目录，判断是否是文件？
                     if (f.isFile()) {
                         System.out.println("文件绝对路径：" + f.getAbsolutePath());
-                        String itemName = f.getName().substring(f.getName().indexOf("_") + 1, f.getName().length() - 5);
+                        String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+                        JSONObject jsonObject = JSON.parseObject(json);
+                        String sessionAddress = jsonObject.getString("sessionAddress");
+                        String sessionName = jsonObject.getString("sessionName");
+                        String itemName = sessionAddress + " | " + sessionName;
+                        if (itemName.strip().equals(""))
+                            itemName = f.getName().substring(f.getName().indexOf("_") + 1, f.getName().length() - 5);
                         JMenuItem tempItem = new JMenuItem(itemName);
                         tempItem.addActionListener(new AbstractAction() {
                             @Override
