@@ -145,6 +145,7 @@ public class CommonUtil {
         }
     }
 
+    @Deprecated
     public static String getCurrentVersion() {
         Properties properties = new Properties();
         // 使用ClassLoader加载properties配置文件生成对应的输入流
@@ -160,6 +161,7 @@ public class CommonUtil {
         return currentVersion;
     }
 
+    @Deprecated
     public static String getBuildOn() {
         Properties properties = new Properties();
         // 使用ClassLoader加载properties配置文件生成对应的输入流

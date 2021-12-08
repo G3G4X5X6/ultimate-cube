@@ -14,6 +14,7 @@ import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.NewTabbedPane;
 import com.g3g4x5x6.ui.panels.tools.FreeRdp;
 import com.g3g4x5x6.utils.*;
+import com.g3g4x5x6.Version;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
 import com.glavsoft.viewer.Viewer;
@@ -658,8 +659,8 @@ public class MainFrame extends JFrame implements MouseListener {
     private AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
         public void actionPerformed(final ActionEvent e) {
             DialogUtil.msg("About",
-                    "<html>UltimateShell " + CommonUtil.getCurrentVersion() + " <br>" +
-                            "Build on " + CommonUtil.getBuildOn() + "<br><br>" +
+                    "<html>UltimateShell " + Version.VERSION + " <br>" +
+                            "Build on " + Version.BUILD_TIMESTAMP + "#" + Version.BUILD_NUMBER + "<br><br>" +
                             "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a><br>" +
                             "Email to <a href='mailto://g3g4x5x6@foxmail.com'>g3g4x5x6@foxmail.com</a></html>");
         }
