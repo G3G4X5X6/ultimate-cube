@@ -6,9 +6,12 @@
 
     <groupId>com.g3g4x5x6</groupId>
     <artifactId>UltimateShell</artifactId>
-    <version>0.23.16-SNAPSHOT</version>
+    <version>${version}</version>
 
     <properties>
+        <!-- $ mvn -Drevision=0.23.16-SNAPSHOT clean package -->
+        <version>0.23.16-SNAPSHOT</version>
+
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
@@ -276,8 +279,63 @@
         </repository>
     </repositories>
 
+    <scm>
+        <connection>scm:svn:http://127.0.0.1/g3g4x5x6</connection>
+        <developerConnection>scm:svn:https://127.0.0.1/g3g4x5x6</developerConnection>
+        <tag>HEAD</tag>
+        <url>http://127.0.0.1/g3g4x5x6</url>
+    </scm>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>buildNumber</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <format>{0,number}</format>
+                            <items>
+                                <item>buildNumber</item>
+                            </items>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>buildTimestamp</id>
+                        <goals>
+                            <goal>create-timestamp</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 指定时间戳变量名 -->
+                            <timestampPropertyName>buildTimestamp</timestampPropertyName>
+                            <!-- 指定日期格式 -->
+                            <timestampFormat>yyyy-MM-dd HH:mm:ss</timestampFormat>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>filtering-java-templates</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Maven Assembly Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -295,6 +353,7 @@
                         </manifest>
                         <manifestEntries>
                             <SplashScreen-Image>splashscreen/dragon-red.png</SplashScreen-Image>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -327,10 +386,6 @@
                                 <resource>
                                     <directory>${basedir}/src/main/java</directory>
                                     <includes>
-<!--                                        <include>**/*.xml</include>-->
-<!--                                        <include>**/*.png</include>-->
-<!--                                        <include>**/*.svg</include>-->
-<!--                                        <include>**/*.ico</include>-->
                                         <include>**/*.*</include>
                                     </includes>
                                 </resource>

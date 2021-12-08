@@ -40,3 +40,15 @@ java  -Djava.ext.dirs=D:\lib test
 > 这个方法需要在jdk1.6以上支持
 > 
 >https://blog.csdn.net/w47_csdn/article/details/80254459
+
+# 这种情况比较简单，只使用了${revision}来替换版本。
+每次版本号变更，只需要修改即可
+
+<properties>
+    <revision>1.0.0-SNAPSHOT</revision>
+  </properties>
+还可以用另一种动态添加参数的方式来指定版本
+
+$ mvn -Drevision=1.0.0-SNAPSHOT clean package
+-D代表设置环境变量
+-D,--define <arg> Define a system property

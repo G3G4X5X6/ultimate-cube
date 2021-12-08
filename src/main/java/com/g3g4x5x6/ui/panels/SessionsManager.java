@@ -165,7 +165,13 @@ public class SessionsManager extends JPanel {
 
     private void initTable() {
         sessionTable = new JTable();
-        tableModel = new DefaultTableModel();
+        tableModel = new DefaultTableModel(){
+            // 不可编辑
+            @Override
+            public boolean isCellEditable(int row,int column){
+                return false;
+            }
+        };
         tableModel.setColumnIdentifiers(columnNames);
 
         sessionTable.setModel(tableModel);
