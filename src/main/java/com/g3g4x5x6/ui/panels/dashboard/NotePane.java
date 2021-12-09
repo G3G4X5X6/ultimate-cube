@@ -3,6 +3,7 @@ package com.g3g4x5x6.ui.panels.dashboard;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -43,8 +44,11 @@ public class NotePane extends JPanel {
     // 新建 note
     private String current_note_id = "";
 
+    private FlowLayout flowLayout;
+
     // TODO toolBar
     private JTextField titleField;
+    private JButton themeBtn;
 
     // TODO editorPane
     private RSyntaxTextArea textArea;
@@ -61,14 +65,17 @@ public class NotePane extends JPanel {
         editorPane = new JPanel();
         statusBar = new JPanel();
 
+        flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.LEADING);
+
         initToolBar();
         initEditorPane();
-        initStatusBar();
+//        initStatusBar();
 
         this.setLayout(borderLayout);
         this.add(toolBar, BorderLayout.NORTH);
         this.add(editorPane, BorderLayout.CENTER);
-        this.add(statusBar, BorderLayout.SOUTH);
+//        this.add(statusBar, BorderLayout.SOUTH);
     }
 
     private void initToolBar() {
@@ -206,12 +213,48 @@ public class NotePane extends JPanel {
         titleField.setColumns(15);
         titleField.putClientProperty("JTextField.placeholderText", "备忘标题");
 
+        themeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/eye.svg"));
+        String[] theme_list = new String[]{"default", "dark", "default-alt", "druid", "eclipse", "idea", "monokai", "vs"};
+        JPopupMenu lanuageMenu = new JPopupMenu();
+        for (String item : theme_list){
+            JMenuItem temp = new JMenuItem(item);
+            temp.addActionListener(new ActionListener() {
+                @SneakyThrows
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Theme theme = Theme.load(this.getClass().getClassLoader().getResourceAsStream("org/fife/ui/rsyntaxtextarea/themes/" + temp.getText() + ".xml"));
+                    theme.apply(textArea);
+                    themeBtn.setToolTipText(temp.getText());
+                }
+            });
+            lanuageMenu.add(temp);
+        }
+        themeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                lanuageMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
+        JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
+        searchBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DialogUtil.info("敬请期待！");
+            }
+        });
+
         toolBar.add(listBtn);
         toolBar.add(addBtn);
         toolBar.add(saveBtn);
+        toolBar.addSeparator();
         toolBar.add(importBtn);
         toolBar.add(exportBtn);
+        toolBar.addSeparator();
+        toolBar.add(searchBtn);
         toolBar.add(titleField);
+        toolBar.addSeparator();
+        toolBar.add(themeBtn);
     }
 
     private void initEditorPane() {
@@ -224,103 +267,16 @@ public class NotePane extends JPanel {
     }
 
     private void initStatusBar() {
-        FlowLayout flowLayout = new FlowLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
         statusBar.setLayout(flowLayout);
-
-        statusBar.add(new JLabel("<html><font color='green'><strong>MARKDOWN</strong></font></html>"));
-        statusBar.add(Box.createGlue());
-        // 主题设置
-        String[] theme_list = new String[]{"default", "dark", "default-alt", "druid", "eclipse", "idea", "monokai", "vs"};
-        JComboBox<String> themeComboBxo = new JComboBox<>(theme_list);
-        // 添加条目选中状态改变的监听器
-        themeComboBxo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                // 只处理选中的状态
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    log.debug("选中: " + themeComboBxo.getSelectedIndex() + " = " + themeComboBxo.getSelectedItem());
-                    try {
-                        Theme theme = Theme.load(this.getClass().getClassLoader().getResourceAsStream("org/fife/ui/rsyntaxtextarea/themes/" + themeComboBxo.getSelectedItem() + ".xml"));
-                        theme.apply(textArea);
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-            }
-        });
-        statusBar.add(themeComboBxo);
-        statusBar.add(Box.createGlue());
-        statusBar.add(Box.createGlue());
-
-        // Create a toolbar with searching options.
-        searchField = new JTextField(30);
-        statusBar.add(searchField);
-        final FlatButton nextButton = new FlatButton();
-        nextButton.setButtonType(FlatButton.ButtonType.toolBarButton);
-        nextButton.setIcon(new FlatSVGIcon("icons/back.svg"));
-        nextButton.setActionCommand("FindNext");
-        nextButton.addActionListener(new AbstractAction() {
+        // TODO
+        JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
+        searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // "FindNext" => search forward, "FindPrev" => search backward
-                String command = e.getActionCommand();
-                boolean forward = "FindNext".equals(command);
-
-                // Create an object defining our search parameters.
-                SearchContext context = new SearchContext();
-                String text = searchField.getText();
-                if (text.length() == 0) {
-                    return;
-                }
-                context.setSearchFor(text);
-                context.setMatchCase(matchCaseCB.isSelected());
-                context.setRegularExpression(regexCB.isSelected());
-                context.setSearchForward(forward);
-                context.setWholeWord(false);
-
-                boolean found = SearchEngine.find(textArea, context).wasFound();
-                if (!found) {
-                    JOptionPane.showMessageDialog(App.mainFrame, "Text not found");
-                }
+                DialogUtil.info("敬请期待！");
             }
         });
-        statusBar.add(nextButton);
-        searchField.addActionListener(e -> nextButton.doClick(0));
-        FlatButton prevButton = new FlatButton();
-        prevButton.setButtonType(FlatButton.ButtonType.toolBarButton);
-        prevButton.setIcon(new FlatSVGIcon("icons/forward.svg"));
-        prevButton.setActionCommand("FindPrev");
-        prevButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // "FindNext" => search forward, "FindPrev" => search backward
-                String command = e.getActionCommand();
-                boolean forward = "FindNext".equals(command);
-
-                // Create an object defining our search parameters.
-                SearchContext context = new SearchContext();
-                String text = searchField.getText();
-                if (text.length() == 0) {
-                    return;
-                }
-                context.setSearchFor(text);
-                context.setMatchCase(matchCaseCB.isSelected());
-                context.setRegularExpression(regexCB.isSelected());
-                context.setSearchForward(forward);
-                context.setWholeWord(false);
-
-                boolean found = SearchEngine.find(textArea, context).wasFound();
-                if (!found) {
-                    JOptionPane.showMessageDialog(App.mainFrame, "Text not found");
-                }
-            }
-        });
-        statusBar.add(prevButton);
-        regexCB = new JCheckBox("Regex");
-        statusBar.add(regexCB);
-        matchCaseCB = new JCheckBox("Match Case");
-        statusBar.add(matchCaseCB);
+        statusBar.add(searchBtn);
     }
 
     private RSyntaxTextArea createTextArea() {

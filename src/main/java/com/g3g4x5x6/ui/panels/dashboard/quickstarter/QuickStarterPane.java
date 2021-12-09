@@ -5,10 +5,14 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.SessionsManager;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -34,6 +38,7 @@ public class QuickStarterPane extends JPanel {
     private SessionsManager sessionsManager;
 
     private JToolBar statusBar;
+    private JPopupMenu statusPopupMenu = new JPopupMenu();
     private JLabel usedMemory;
 
 
@@ -70,24 +75,28 @@ public class QuickStarterPane extends JPanel {
         statusBar.setFloatable(false);
         this.add(statusBar, BorderLayout.SOUTH);
 
-//        new Thread(()->{
-//            while (true){
-//                try {
-//                    Thread.sleep(3000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                MemoryMXBean bean = ManagementFactory.getMemoryMXBean();
-//                MemoryUsage memoryUsage = bean.getHeapMemoryUsage();
-//                double used = memoryUsage.getUsed()/(1024*1024);
-//
-//                java.text.DecimalFormat df = new java.text.DecimalFormat("#.##");
-//                System.out.println("已使用内存 = " + df.format(used));
-//            }
-//        }).start();
+        // TODO statusPopupMenu Items
+        JMenuItem passwdItem = new JMenuItem("生成随机密码");
+        passwdItem.addActionListener(generatePassAction);
+        passwdItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
+        statusPopupMenu.add(passwdItem);
 
         JButton statusBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/colors.svg"));
+        statusBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                statusPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
         statusBar.add(statusBtn);
     }
+
+    private AbstractAction generatePassAction = new AbstractAction("生成随机密码") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DialogUtil.info("敬请期待！");
+        }
+    };
 
 }
