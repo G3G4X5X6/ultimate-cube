@@ -49,21 +49,24 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 
 - *启动面板*
 ![dashboard](doc/screenshot/ultimateshell_dashboard.png)
-
+  
 
 - *本地终端*
 ![dashboard](doc/screenshot/ultimateshell_local_terminal.png)
-
+  
 
 - *SSH 会话*
 ![dashboard](doc/screenshot/ultimateshell_session.png)
+  
 
-- *主题皮肤设置*
+- *主题皮肤设置*<Br>
 ![dashboard](doc/screenshot/ultimateshell_theme_settings.png)
+
 
 - *Dark purple*
 ![dashboard](doc/screenshot/ultimateshell_theme_darkpurple.png)
   
+
 - *Gradianto nature green*
 ![dashboard](doc/screenshot/ultimateshell_theme_gradianto_nature_green.png)
 
