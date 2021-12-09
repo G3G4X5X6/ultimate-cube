@@ -25,7 +25,7 @@ public class SessionUtil {
         try {
             File file = new File(sessionFile);
             if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "/sessions/" + file.getName()))){
-                Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(ConfigUtil.getWorkPath() + "/sessions/" + file.getName()));
+                Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName()));
             }
             String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             JSONObject jsonObject = JSON.parseObject(json);

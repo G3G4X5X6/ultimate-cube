@@ -21,9 +21,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -165,6 +163,14 @@ public class SessionsManager extends JPanel {
 
     private void initTable() {
         sessionTable = new JTable();
+        sessionTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2){
+                    openSession();
+                }
+            }
+        });
         tableModel = new DefaultTableModel(){
             // 不可编辑
             @Override
@@ -355,14 +361,7 @@ public class SessionsManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
-                int[] indexs = sessionTable.getSelectedRows();
-                for (int index : indexs) {
-                    String[] array = getRowFilePath(index);
-                    File file = new File(array[0]);
-                    if (file.exists()) {
-                        new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
-                    }
-                }
+                openSession();
             }
         };
 
@@ -452,6 +451,17 @@ public class SessionsManager extends JPanel {
 
         log.debug(String.valueOf(tempPath));
         return tempPath.toString();
+    }
+
+    private void openSession(){
+        int[] indexs = sessionTable.getSelectedRows();
+        for (int index : indexs) {
+            String[] array = getRowFilePath(index);
+            File file = new File(array[0]);
+            if (file.exists()) {
+                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
+            }
+        }
     }
 
     private String[] getRowFilePath(int index) {

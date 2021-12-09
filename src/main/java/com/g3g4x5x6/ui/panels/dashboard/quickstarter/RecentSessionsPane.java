@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -103,7 +104,7 @@ public class RecentSessionsPane extends JPanel {
         if (file.exists()){
             for (File f : file.listFiles()){
                 if (f.isFile()){
-                    if (f.getName().startsWith("ssh_")){
+                    if (f.getName().startsWith("recent_ssh")){
                         Long lastModified = f.lastModified();
                         Date date = new Date(lastModified);
                         try {
@@ -124,6 +125,11 @@ public class RecentSessionsPane extends JPanel {
                     }
                 }
             }
+            if (tableModel.getRowCount() == 0){
+                tableModel.addRow(
+                        new String[]{"空", "空", "空", "空", "空", "空", "空", }
+                );
+            }
         }
         recentTable.setModel(tableModel);
     }
@@ -140,9 +146,52 @@ public class RecentSessionsPane extends JPanel {
                 }
             }
         };
+
+        AbstractAction deleteMultiAction = new AbstractAction("清除全部") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String path = ConfigUtil.getWorkPath() + "/sessions";
+                File file = new File(path);
+                for (File f : file.listFiles()){
+                    if (f.isFile()){
+                        if (f.getName().startsWith("recent_ssh"))
+                            f.delete();
+                    }
+                }
+            }
+        };
+
+        AbstractAction deleteAllAction = new AbstractAction("清除选中") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String path = ConfigUtil.getWorkPath() + "/sessions";
+                File file = new File(path);
+                for (File f : file.listFiles()){
+                    if (f.isFile()){
+                        int[] indexs = recentTable.getSelectedRows();
+                        for (int index : indexs) {
+                            String protocol = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 2);
+                            String address = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 3);
+                            String port = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 4);
+                            String user = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 5);
+                            if (f.getAbsolutePath().contains(protocol.toLowerCase())
+                                    && f.getAbsolutePath().contains(address.strip())
+                                    && f.getAbsolutePath().contains(port.strip())
+                                    && f.getAbsolutePath().contains(user.strip())
+                            ){
+                                f.delete();
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
         // 会话树右键菜单
         JPopupMenu recentPopupMenu = new JPopupMenu();
         recentPopupMenu.add(reopenAction);
+        recentPopupMenu.add(deleteAllAction);
+        recentPopupMenu.add(deleteMultiAction);
 
         recentTable.setComponentPopupMenu(recentPopupMenu);
     }
