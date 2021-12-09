@@ -61,6 +61,12 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 ### 主题皮肤设置
 ![dashboard](doc/screenshot/ultimateshell_theme_settings.png)
 
+- *Dark purple*
+![dashboard](doc/screenshot/ultimateshell_theme_darkpurple.png)
+  
+- *Gradianto nature green*
+![dashboard](doc/screenshot/ultimateshell_theme_gradianto_nature_green.png)
+
 
 ## 构建
 
