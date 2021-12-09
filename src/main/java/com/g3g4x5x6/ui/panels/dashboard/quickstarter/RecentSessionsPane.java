@@ -3,8 +3,6 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -17,13 +15,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 
 /**
