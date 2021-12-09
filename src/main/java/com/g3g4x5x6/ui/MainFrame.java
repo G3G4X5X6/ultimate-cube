@@ -316,12 +316,13 @@ public class MainFrame extends JFrame implements MouseListener {
                         System.out.println("文件绝对路径：" + f.getAbsolutePath());
                         String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
                         JSONObject jsonObject = JSON.parseObject(json);
-                        String sessionAddress = jsonObject.getString("sessionAddress");
+//                        String sessionAddress = jsonObject.getString("sessionAddress");
                         String sessionName = jsonObject.getString("sessionName");
-                        String itemName = sessionAddress + " | " + sessionName;
+                        String itemName = sessionName;
                         if (itemName.strip().equals(""))
                             itemName = f.getName().substring(f.getName().indexOf("_") + 1, f.getName().length() - 5);
                         JMenuItem tempItem = new JMenuItem(itemName);
+                        tempItem.setToolTipText(f.getPath());
                         tempItem.addActionListener(new AbstractAction() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
