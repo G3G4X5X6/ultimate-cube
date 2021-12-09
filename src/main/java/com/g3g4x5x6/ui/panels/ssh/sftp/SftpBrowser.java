@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.sftp.client.SftpClient;
-import org.apache.sshd.sftp.client.SftpClientFactory;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 
@@ -109,7 +108,7 @@ public class SftpBrowser extends JPanel {
         toolBar.add(new AbstractAction("Test") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                log.debug("Test");
             }
         });
         this.add(toolBar, BorderLayout.NORTH);
