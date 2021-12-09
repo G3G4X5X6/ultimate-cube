@@ -93,9 +93,9 @@ public class SftpBrowser extends JPanel {
         client = SshClient.setUpDefaultClient();
         client.start();
         try {
-            session = client.connect(user, host, port).verify(3000).getSession();
+            session = client.connect(user, host, port).verify(5000).getSession();
             session.addPasswordIdentity(pass);
-            session.auth().verify(3000);
+            session.auth().verify(5000);
 
             SftpFileSystemProvider provider = new SftpFileSystemProvider();
             this.fs = provider.newFileSystem(session);

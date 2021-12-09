@@ -24,12 +24,13 @@ public class SessionUtil {
     public static void openSshSession(String sessionFile, JTabbedPane mainTabbedPane){
         try {
             File file = new File(sessionFile);
-            if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "/sessions/" + file.getName()))){
-                Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName()));
+            if (Files.exists(Path.of(ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName()))){
+                Files.delete(Path.of(ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName()));
             }
+            Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName()));
+
             String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             JSONObject jsonObject = JSON.parseObject(json);
-
             String session = jsonObject.getString("sessionName");
             String host = jsonObject.getString("sessionAddress");
             String port = jsonObject.getString("sessionPort");
