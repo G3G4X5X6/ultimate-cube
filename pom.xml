@@ -9,7 +9,7 @@
     <version>${version}</version>
 
     <properties>
-        <!-- $ mvn -Drevision=0.23.16-SNAPSHOT clean package -->
+        <!-- $ mvn -Dversion=1.28.17-beta clean package -->
         <version>1.28.17-beta</version>
 
         <maven.compiler.source>11</maven.compiler.source>
