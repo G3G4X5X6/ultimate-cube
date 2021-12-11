@@ -1,18 +1,16 @@
 # Security Policy
 
-## Supported Versions
+## Supported Versions（支持的版本）
 
 Use this section to tell people about which versions of your project are
 currently being supported with security updates.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Version       | Supported          |
+| ------------- | ------------------ |
+| 1.28.17-beta  | :white_check_mark: |
+| 0.23.16-alpha | :x:                |
 
-## Reporting a Vulnerability
+## Reporting a Vulnerability（漏洞报告）
 
 Use this section to tell people how to report a vulnerability.
 
