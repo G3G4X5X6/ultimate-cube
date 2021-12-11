@@ -198,7 +198,7 @@ public class SshPane extends JPanel {
         JLabel hostLabel = new JLabel("Remote Host*");
         hostField = new JFormattedTextField(new IpAddressFormatter());
         hostField.setColumns(15);
-        hostField.setText("172.17.200.104");    // For testing
+//        hostField.setText("172.17.200.104");    // For testing
         hostPane.add(hostLabel);
         hostPane.add(hostField);
 
@@ -215,7 +215,7 @@ public class SshPane extends JPanel {
         JPanel userPane = new JPanel();
         JLabel userLabel = new JLabel("Username");
         userField = new JFormattedTextField();
-        userField.setText("security");
+//        userField.setText("security");
         userField.setColumns(12);
         userPane.add(userLabel);
         userPane.add(userField);
@@ -224,7 +224,7 @@ public class SshPane extends JPanel {
         JPanel passPane = new JPanel();
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
-        passField.setText("123456");
+//        passField.setText("123456");
         passField.setColumns(12);
         passPane.add(passLabel);
         passPane.add(passField);

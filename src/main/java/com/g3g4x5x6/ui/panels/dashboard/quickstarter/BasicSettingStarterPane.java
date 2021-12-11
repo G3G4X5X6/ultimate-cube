@@ -64,7 +64,7 @@ public class BasicSettingStarterPane extends JPanel {
         JLabel hostLabel = new JLabel("Remote Host*");
         hostField = new JFormattedTextField(new IpAddressFormatter());
         hostField.setColumns(10);
-        hostField.setText("172.17.200.104");    // For testing
+//        hostField.setText("172.17.200.104");    // For testing
         hostPane.add(hostLabel);
         hostPane.add(hostField);
 
@@ -81,7 +81,7 @@ public class BasicSettingStarterPane extends JPanel {
         JPanel userPane = new JPanel();
         JLabel userLabel = new JLabel("Username");
         JFormattedTextField userField = new JFormattedTextField();
-        userField.setText("security");
+//        userField.setText("security");
         userField.setColumns(8);
         userPane.add(userLabel);
         userPane.add(userField);
@@ -90,7 +90,7 @@ public class BasicSettingStarterPane extends JPanel {
         JPanel passPane = new JPanel();
         JLabel passLabel = new JLabel("Password");
         JPasswordField passField = new JPasswordField();
-        passField.setText("123456");
+//        passField.setText("123456");
         passField.setColumns(8);
         passPane.add(passLabel);
         passPane.add(passField);

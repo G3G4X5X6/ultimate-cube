@@ -63,7 +63,7 @@ public class TelnetPane extends JPanel {
         JLabel hostLabel = new JLabel("Remote Host*");
         hostField = new JFormattedTextField(new IpAddressFormatter());
         hostField.setColumns(10);
-        hostField.setText("172.17.200.12");
+//        hostField.setText("172.17.200.12");
         hostPane.add(hostLabel);
         hostPane.add(hostField);
 
