@@ -7,13 +7,17 @@ import com.github.jarod.qqwry.IPZone;
 import com.github.jarod.qqwry.QQWry;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Properties;
 
+@Slf4j
 public class CommonUtil {
     private static HashSet<SerialPort> ports = new HashSet<>();
 
@@ -203,10 +207,13 @@ public class CommonUtil {
         StringBuffer systemInfo = new StringBuffer();
         String tempStr = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            CharsetMatch cm = CommonUtil.checkCharset(new BufferedInputStream(new FileInputStream(fileName)));
+            log.debug("[systeminfo.txt] Encoding: " + cm.getName());
+            BufferedReader reader = new BufferedReader(cm.getReader());
             while ((tempStr = reader.readLine()) != null) {
                 systemInfo.append(tempStr + "\n");
             }
+            log.debug(systemInfo.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException exception) {

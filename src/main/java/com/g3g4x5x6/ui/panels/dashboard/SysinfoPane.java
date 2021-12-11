@@ -64,15 +64,7 @@ public class SysinfoPane extends JPanel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
-                    try {
-                        flushWinTable();
-                        Thread.sleep(1000*60*10);
-                        log.debug("刷新系统信息");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                flushWinTable();
             }
         }).start();
 
