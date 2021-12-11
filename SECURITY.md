@@ -1,6 +1,6 @@
 # Security Policy
 
-## Supported Versions（支持的版本）
+## Supported Versions（版本支持）
 
 Use this section to tell people about which versions of your project are
 currently being supported with security updates.
