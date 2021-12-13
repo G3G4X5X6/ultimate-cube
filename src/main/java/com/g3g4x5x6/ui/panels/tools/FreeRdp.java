@@ -42,8 +42,6 @@ public class FreeRdp extends JDialog {
 
     private JPanel controlPane;
 
-    private String freeRdpDirPath;
-    private String freeRdpSessionsDirPath;
 
     private ArrayList<String> cmdList;
     // 参数区域: basicSettingPane
@@ -60,6 +58,8 @@ public class FreeRdp extends JDialog {
     private JTextField height;
 
     private boolean openFlag = false;
+    private String freeRdpSessionsDirPath = ConfigUtil.getWorkPath() + "/sessions/freeRdp";
+    private String exePath = ConfigUtil.getWorkPath() + "/tools/freerdp/wfreerdp.exe";
 
     public FreeRdp() {
         super(App.mainFrame);
@@ -68,14 +68,6 @@ public class FreeRdp extends JDialog {
         this.setSize(new Dimension(750, 450));
         this.setMinimumSize(new Dimension(750, 450));
         this.setLocationRelativeTo(App.mainFrame);
-
-        // 检查运行环境
-        File freeRdpDir = new File(ConfigUtil.getWorkPath() + "/freerdp");
-        if (!freeRdpDir.exists()){
-            freeRdpDir.mkdir();
-        }
-        freeRdpDirPath = freeRdpDir + "/";
-        freeRdpSessionsDirPath = ConfigUtil.getWorkPath() + "/sessions";
 
         toolBar = new JToolBar();
 
@@ -196,10 +188,10 @@ public class FreeRdp extends JDialog {
     }
 
     /**
-     *     private JCheckBox fullscreen;
-     *     private JTextField title;
-     *     private JTextField width;
-     *     private JTextField height;
+     * private JCheckBox fullscreen;
+     * private JTextField title;
+     * private JTextField width;
+     * private JTextField height;
      */
     private void initAdvancePane() {
         advancedSettingTabbedPane.addTab(advancedSettingPaneTitle, advancedSettingPane);
@@ -223,10 +215,10 @@ public class FreeRdp extends JDialog {
         fullscreen.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (fullscreen.isSelected()){
+                if (fullscreen.isSelected()) {
                     width.setEditable(false);
                     height.setEditable(false);
-                }else{
+                } else {
                     width.setEditable(true);
                     height.setEditable(true);
                 }
@@ -304,17 +296,17 @@ public class FreeRdp extends JDialog {
         });
     }
 
-    private void openFreeRDP(){
+    private void openFreeRDP() {
         // TODO 打开远程桌面
-        if (!hostField.getText().strip().equals("")){
-            try{
+        if (!hostField.getText().strip().equals("")) {
+            try {
                 //创建ProcessBuilder对象
                 ProcessBuilder processBuilder = new ProcessBuilder();
 
                 //封装执行的第三方程序(命令)
-                if (!openFlag){
+                if (!openFlag) {
                     packCmdList();
-                }else{
+                } else {
                     openFlag = false;
                 }
 
@@ -351,14 +343,14 @@ public class FreeRdp extends JDialog {
         }
     }
 
-    private void saveFreeRDP(){
+    private void saveFreeRDP() {
         // TODO 保存远程桌面设置
         packCmdList();
         String sessionFile = "";
-        if (!hostField.getText().strip().equals("")){
+        if (!hostField.getText().strip().equals("")) {
             sessionFile = freeRdpSessionsDirPath + "/freeRdp_" + hostField.getText() + "_" +
-                    (portField.getText().strip().equals("")?"3389":portField.getText().strip()) + "_" +
-                    (userField.getText().strip().equals("")?"-":userField.getText().strip()) + ".json";
+                    (portField.getText().strip().equals("") ? "3389" : portField.getText().strip()) + "_" +
+                    (userField.getText().strip().equals("") ? "-" : userField.getText().strip()) + ".json";
             log.debug("SessionFile: " + sessionFile);
 
             try {
@@ -372,24 +364,24 @@ public class FreeRdp extends JDialog {
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
-        }else{
+        } else {
             DialogUtil.warn("请输入服务器IP地址或者域名！");
         }
         log.debug(JSON.toJSONString(cmdList));
     }
 
-    private void packCmdList(){
+    private void packCmdList() {
         cmdList = new ArrayList<>();
-        if (OsInfoUtil.isWindows()){
-            cmdList.add(freeRdpDirPath + "wfreerdp.exe");
+        if (OsInfoUtil.isWindows()) {
+            cmdList.add(exePath);
         }
-        if (OsInfoUtil.isLinux()){
+        if (OsInfoUtil.isLinux()) {
 
         }
-        if (OsInfoUtil.isMacOS()){
+        if (OsInfoUtil.isMacOS()) {
 
         }
-        if (OsInfoUtil.isMacOSX()){
+        if (OsInfoUtil.isMacOSX()) {
 
         }
         // 不同操作系统平台通用参数封装
@@ -404,28 +396,28 @@ public class FreeRdp extends JDialog {
         if (!String.valueOf(passField.getPassword()).strip().equals(""))
             cmdList.add("/p:" + String.valueOf(passField.getPassword()));
         // 全屏设置
-        if (fullscreen.isSelected()){
+        if (fullscreen.isSelected()) {
             cmdList.add("/f");
         } else {
             // 分辨率设置：width
-            if (!width.getText().strip().equals("")){
+            if (!width.getText().strip().equals("")) {
                 cmdList.add("/w:" + width.getText().strip());
             }
             // 分辨率设置：height
-            if (!height.getText().strip().equals("")){
+            if (!height.getText().strip().equals("")) {
                 cmdList.add("/h:" + height.getText().strip());
             }
         }
         // 标题设置
-        if (!title.getText().strip().equals("")){
+        if (!title.getText().strip().equals("")) {
             cmdList.add("/t:" + title.getText().strip());
         }
         // 音频重定向： Sound
-        if (sound.isSelected()){
+        if (sound.isSelected()) {
             cmdList.add("/sound");
         }
         // 麦克风设置： Microphone
-        if (microphone.isSelected()){
+        if (microphone.isSelected()) {
             cmdList.add("/mic");
         }
         // +window-drag 没看出什么效果
@@ -467,12 +459,12 @@ public class FreeRdp extends JDialog {
                         String user = (String) tableModel.getValueAt(index, 2);
                         String filePath = freeRdpSessionsDirPath + "/freeRdp_" + address + "_" + port + "_" + user + ".json";
                         File file = new File(filePath);
-                        if (file.exists()){
+                        if (file.exists()) {
                             BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8));
                             cmdList = (ArrayList<String>) JSON.parseArray(reader.readLine(), String.class);
                             openFlag = true;
                             new Thread(() -> openFreeRDP()).start();
-                        }else{
+                        } else {
                             DialogUtil.warn("不存在会话： " + filePath);
                         }
                     }
@@ -522,8 +514,8 @@ public class FreeRdp extends JDialog {
             tableModel.setRowCount(0);
             // 添加 Row 数据
             File sessionsDir = new File(freeRdpSessionsDirPath);
-            for (File file : sessionsDir.listFiles()){
-                if (file.isFile() && file.getName().endsWith(".json") && file.getName().startsWith("freeRdp")){
+            for (File file : sessionsDir.listFiles()) {
+                if (file.isFile() && file.getName().endsWith(".json") && file.getName().startsWith("freeRdp")) {
                     log.debug(file.getAbsolutePath());
                     String[] rows = file.getName().split("_");
                     rows[3] = rows[3].substring(0, rows[3].lastIndexOf(".json"));
@@ -551,15 +543,16 @@ public class FreeRdp extends JDialog {
                 public void actionPerformed(ActionEvent e) {
                     if (DialogUtil.yesOrNo(App.mainFrame, "是否删除选中FreeRDP会话设置？") == 0) {
                         int[] rows = noteTable.getSelectedRows();
-                        for (int index : rows){
+                        for (int index : rows) {
                             String address = (String) tableModel.getValueAt(index, 0);
                             String port = (String) tableModel.getValueAt(index, 1);
                             String user = (String) tableModel.getValueAt(index, 2);
-                            String filePath = freeRdpSessionsDirPath + "/" + address + "_" + port + "_" + user + ".json";
+                            String filePath = freeRdpSessionsDirPath + "/freeRdp_" + address + "_" + port + "_" + user + ".json";
+                            log.debug(filePath);
                             File file = new File(filePath);
-                            if (file.exists()){
+                            if (file.exists()) {
                                 file.delete();
-                            }else{
+                            } else {
                                 DialogUtil.warn("不存在会话： " + filePath);
                             }
                         }

@@ -22,24 +22,19 @@ public class Utils {
             log.info(">>>>>>>> 找不到路径 “" + note.getAbsolutePath().toString() + "”，正在创建中......");
             note.mkdir();
         }
+
         // TODO 检查会话导出目录
         File export = new File(workspace + "/export");
         if (!export.exists()) {
             log.info(">>>>>>>> 找不到路径 “" + export.getAbsolutePath().toString() + "”，正在创建中......");
             export.mkdir();
         }
+
         // TODO 检查缓存目录
         File temp = new File(workspace + "/temp");
         if (!temp.exists()) {
             log.info(">>>>>>>> 找不到路径 “" + temp.getAbsolutePath().toString() + "”，正在创建中......");
             temp.mkdir();
-        }
-
-        // TODO 检查工具目录
-        File tools = new File(workspace + "/tools");
-        if (!tools.exists()) {
-            log.info(">>>>>>>> 找不到路径 “" + tools.getAbsolutePath().toString() + "”，正在创建中......");
-            tools.mkdir();
         }
 
         // TODO 检查编辑器缓存目录
@@ -50,10 +45,27 @@ public class Utils {
         }
 
         // TODO 检查会话存储目录
-        File sessions = new File(workspace + "/sessions/ssh/");
-        if (!sessions.exists()) {
-            log.info(">>>>>>>> 找不到路径 “" + sessions.getAbsolutePath().toString() + "”，正在创建中......");
-            sessions.mkdirs();
+        File sshSessions = new File(workspace + "/sessions/ssh/");
+        if (!sshSessions.exists()) {
+            log.info(">>>>>>>> 找不到路径 “" + sshSessions.getAbsolutePath().toString() + "”，正在创建中......");
+            sshSessions.mkdirs();
+        }
+
+        // TODO 检查工具目录
+        File tools = new File(workspace + "/tools/freerdp");
+        if (!tools.exists()) {
+            log.info(">>>>>>>> 找不到路径 “" + tools.getAbsolutePath().toString() + "”，正在创建中......");
+            tools.mkdirs();
+        }
+        // 检查RDP运行环境
+        File freeRdpDir = new File(ConfigUtil.getWorkPath() + "/freerdp");
+        if (!freeRdpDir.exists()){
+            freeRdpDir.mkdir();
+        }
+        File rdpSessions = new File(workspace + "/sessions/freeRdp/");
+        if (!rdpSessions.exists()) {
+            log.info(">>>>>>>> 找不到路径 “" + rdpSessions.getAbsolutePath().toString() + "”，正在创建中......");
+            rdpSessions.mkdirs();
         }
 
         // TODO 检查用户配置
