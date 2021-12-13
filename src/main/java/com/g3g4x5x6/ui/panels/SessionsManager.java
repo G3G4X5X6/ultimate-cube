@@ -288,7 +288,6 @@ public class SessionsManager extends JPanel {
                     int bool = JOptionPane.showConfirmDialog(App.mainFrame, "是否确认删除目录", "删除目录", JOptionPane.YES_NO_OPTION);
                     if (bool == 0) {
                         log.debug("确认删除目录");
-                        // 删除数据库中的标签
                         TreePath treePath = sessionTree.getSelectionPath();
                         String currentTag = convertPathToTag(treePath);
                         if (!currentTag.equals("分类目录")) {
@@ -313,7 +312,12 @@ public class SessionsManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("新增会话");
-                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
+                TreePath treePath = sessionTree.getSelectionPath();
+                String currentTag = convertPathToTag(treePath);
+                String category = Path.of(currentTag.substring(currentTag.indexOf("/") + 1)).toString();
+                SshPane sshPane = new SshPane();
+                sshPane.setCategory(category);
+                mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };
