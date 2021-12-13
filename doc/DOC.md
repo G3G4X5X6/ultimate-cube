@@ -52,3 +52,7 @@ java  -Djava.ext.dirs=D:\lib test
 $ mvn -Drevision=1.0.0-SNAPSHOT clean package
 -D代表设置环境变量
 -D,--define <arg> Define a system property
+
+
+# 密码管理-加密方式
+https://zhuanlan.zhihu.com/p/379126762

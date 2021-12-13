@@ -3,6 +3,7 @@ package com.g3g4x5x6.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
+@Deprecated
 public class Md5Util {
 
     private static MessageDigest md5;

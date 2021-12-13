@@ -37,18 +37,12 @@ public class QuickStarterPane extends JPanel {
     private String sessionsManagerTitle = "会话管理";
     private SessionsManager sessionsManager;
 
-    private JToolBar statusBar;
-    private JPopupMenu statusPopupMenu = new JPopupMenu();
-    private JLabel usedMemory;
-
-
     public QuickStarterPane() {
         this.mainTabbedPane = MainFrame.mainTabbedPane;
         this.setLayout(borderLayout);
 
         initQuickPane();
 
-        initStatusBar();
         log.info(">>>>>>>> “快速启动”窗口初始化完成......");
     }
 
@@ -68,28 +62,6 @@ public class QuickStarterPane extends JPanel {
 
         this.add(basicSettingTabbedPane, BorderLayout.NORTH);
         this.add(recentSessionTabbedPane, BorderLayout.CENTER);
-    }
-
-    private void initStatusBar() {
-        statusBar = new JToolBar();
-        statusBar.setFloatable(false);
-        this.add(statusBar, BorderLayout.SOUTH);
-
-        // TODO statusPopupMenu Items
-        JMenuItem passwdItem = new JMenuItem("生成随机密码");
-        passwdItem.addActionListener(generatePassAction);
-        passwdItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
-        statusPopupMenu.add(passwdItem);
-
-        JButton statusBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/colors.svg"));
-        statusBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                statusPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
-        });
-
-        statusBar.add(statusBtn);
     }
 
     private AbstractAction generatePassAction = new AbstractAction("生成随机密码") {

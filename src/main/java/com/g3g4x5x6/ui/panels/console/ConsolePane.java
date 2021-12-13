@@ -56,7 +56,7 @@ public class ConsolePane extends JPanel {
         terminalPanel.start();
 
         this.add(terminalPanel, BorderLayout.CENTER);
-        this.add(toolBar, BorderLayout.SOUTH);
+        this.add(toolBar, BorderLayout.NORTH);
         log.info(">>>>>>>> 启动本地终端");
     }
 

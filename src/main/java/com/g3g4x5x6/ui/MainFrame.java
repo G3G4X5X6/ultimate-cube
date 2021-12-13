@@ -86,8 +86,8 @@ public class MainFrame extends JFrame implements MouseListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        terminalMenu.add(myOpenAction);
         terminalMenu.add(openSessionMenu);
+        terminalMenu.add(myNewAction);
         terminalMenu.add(mySessionAction);
 
         // 查看菜单
@@ -425,7 +425,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private String latestVersion;
 
     // TODO 菜单动作
-    private AbstractAction myOpenAction = new AbstractAction("新建会话") {
+    private AbstractAction myNewAction = new AbstractAction("新建会话") {
         public void actionPerformed(final ActionEvent e) {
             mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
