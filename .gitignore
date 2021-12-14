@@ -6,7 +6,6 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 .mvn/timing.properties
-buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
@@ -15,3 +14,4 @@ logs
 ultilmateshell.sqlite
 .idea
 data.db
+./buildNumber.properties
