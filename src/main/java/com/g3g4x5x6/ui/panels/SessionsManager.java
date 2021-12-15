@@ -314,7 +314,10 @@ public class SessionsManager extends JPanel {
                 log.debug("新增会话");
                 TreePath treePath = sessionTree.getSelectionPath();
                 String currentTag = convertPathToTag(treePath);
-                String category = Path.of(currentTag.substring(currentTag.indexOf("/") + 1)).toString();
+                String category = "";
+                int index = currentTag.indexOf("/");
+                if (index != -1)
+                    category = Path.of(currentTag.substring(index + 1)).toString();
                 SshPane sshPane = new SshPane();
                 sshPane.setCategory(category);
                 mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
