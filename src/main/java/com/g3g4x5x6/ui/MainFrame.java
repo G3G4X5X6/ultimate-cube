@@ -200,7 +200,7 @@ public class MainFrame extends JFrame implements MouseListener {
         new Thread(() -> {
             latestVersion = CommonUtil.getLastestVersion();
             String currentVersion = "v" + Version.VERSION;
-            if (!currentVersion .equals(latestVersion)) {
+            if (!currentVersion.equals(latestVersion)) {
                 menuBar.add(updateBtn);
                 log.debug("添加更新按钮");
                 updateBtn.addActionListener(new AbstractAction() {
@@ -228,7 +228,7 @@ public class MainFrame extends JFrame implements MouseListener {
     }
 
     private void initToolBar() {
-
+        // 暂不实现
     }
 
     private void initMainTabbedPane() {
@@ -240,6 +240,7 @@ public class MainFrame extends JFrame implements MouseListener {
         mainTabbedPane.setEnabled(true);
         mainTabbedPane.addMouseListener(this);
         initClosableTabs(mainTabbedPane);
+        initTrailPopupMenu();
         customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
 
         // 添加 ”仪表盘“ 面板
@@ -257,6 +258,18 @@ public class MainFrame extends JFrame implements MouseListener {
         statusBar.setLayout(flowLayout);
         statusBar.add(new JLabel("状态栏"));
         this.add(statusBar, BorderLayout.SOUTH);
+    }
+
+    private void initTrailPopupMenu() {
+        JMenuItem item = new JMenuItem("生成随机密码");
+        item.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
+        item.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DialogUtil.info("敬请期待！");
+            }
+        });
+        trailPopupMenu.add(item);
     }
 
     private void customComponents() {
@@ -290,11 +303,18 @@ public class MainFrame extends JFrame implements MouseListener {
         leading.add(dashboardBtn);
 //        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
         // TODO 选项卡面板后置工具栏，待实现
+        JButton trailMenuBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg"));
+        trailMenuBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                trailPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
         trailing.add(addBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
-        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg")));
+        trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
@@ -421,6 +441,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private JMenu helpMenu = new JMenu("帮助");
     private JMenu externalSubMenu = new JMenu("外部集成工具");
     private JPopupMenu popupMenu = new JPopupMenu();
+    private JPopupMenu trailPopupMenu = new JPopupMenu();
 
     private String latestVersion;
 
