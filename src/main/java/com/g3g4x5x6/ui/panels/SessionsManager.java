@@ -466,7 +466,7 @@ public class SessionsManager extends JPanel {
             String[] array = getRowFilePath(index);
             File file = new File(array[0]);
             if (file.exists()) {
-                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
+                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath())).start();
             }
         }
     }

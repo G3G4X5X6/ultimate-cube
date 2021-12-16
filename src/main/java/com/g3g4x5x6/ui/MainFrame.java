@@ -327,7 +327,7 @@ public class MainFrame extends JFrame implements MouseListener {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 log.debug(f.getAbsolutePath());
-                                new Thread(() -> SessionUtil.openSshSession(f.getAbsolutePath(), mainTabbedPane)).start();
+                                new Thread(() -> SessionUtil.openSshSession(f.getAbsolutePath())).start();
                             }
                         });
                         menuItem.add(tempItem);

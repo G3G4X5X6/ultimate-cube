@@ -3,6 +3,7 @@ package com.g3g4x5x6.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -21,22 +22,24 @@ public class SessionUtil {
 
     }
 
-    public static void openSshSession(String sessionFile, JTabbedPane mainTabbedPane){
+    public static void openSshSession(String sessionFile){
         try {
             File file = new File(sessionFile);
-            String recentPath = ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName();
-            if (!Files.exists(Path.of(recentPath))){
-                Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(recentPath));
-            } else {
-                try{
-                    BufferedWriter fileWriter = new BufferedWriter(new FileWriter(recentPath));
-                    BufferedReader fileReader = new BufferedReader(new FileReader(file));
-                    fileWriter.write(fileReader.readLine());
-                    fileWriter.flush();
-                    fileWriter.close();
-                    fileReader.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (!sessionFile.contains("recent_ssh_")){
+                String recentPath = ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName();
+                if (!Files.exists(Path.of(recentPath))){
+                    Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(recentPath));
+                } else {
+                    try{
+                        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(recentPath));
+                        BufferedReader fileReader = new BufferedReader(new FileReader(file));
+                        fileWriter.write(fileReader.readLine());
+                        fileWriter.flush();
+                        fileWriter.close();
+                        fileReader.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -49,13 +52,13 @@ public class SessionUtil {
             String pass = jsonObject.getString("sessionPass");
             if (SshUtil.testConnection(host, port) == 1) {
                 String defaultTitle = session.equals("") ? "未命名" : session;
-                mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                        new SshTabbedPane(mainTabbedPane,
+                MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                        new SshTabbedPane(MainFrame.mainTabbedPane,
                                 SshUtil.createTerminalWidget(host, port, user, pass),
                                 host, port, user, pass
                         )
                 );
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+                MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
             }
         } catch (IOException e) {
             e.printStackTrace();

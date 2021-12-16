@@ -198,7 +198,7 @@ public class RecentSessionsPane extends JPanel {
         if (dir.exists()){
             for (File file : dir.listFiles()){
                 if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
-                    new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath(), mainTabbedPane)).start();
+                    new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath())).start();
                 }
             }
         }
