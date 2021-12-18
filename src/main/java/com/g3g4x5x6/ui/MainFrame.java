@@ -466,7 +466,7 @@ public class MainFrame extends JFrame implements MouseListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             mainTabbedPane.insertTab("<html><font style='color:green'><strong>本地终端</strong></font></html>",
-                    new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13_dark.svg"),
+                    new FlatSVGIcon("com/g3g4x5x6/ui/icons/console.svg"),
                     new ConsolePane(),
                     "本地终端",
                     mainTabbedPane.getTabCount());
