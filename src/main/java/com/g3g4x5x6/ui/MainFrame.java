@@ -465,7 +465,11 @@ public class MainFrame extends JFrame implements MouseListener {
     private AbstractAction myLocalTerminal = new AbstractAction("本地终端") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            mainTabbedPane.insertTab("本地终端", new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13_dark.svg"), new ConsolePane(), "本地终端", mainTabbedPane.getTabCount());
+            mainTabbedPane.insertTab("<html><font style='color:green'><strong>本地终端</strong></font></html>",
+                    new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13_dark.svg"),
+                    new ConsolePane(),
+                    "本地终端",
+                    mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
