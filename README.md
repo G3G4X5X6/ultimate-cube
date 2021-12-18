@@ -3,10 +3,7 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/g3g4x5x6/ultimateshell)
 ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/g3g4x5x6/ultimateshell?include_prereleases)
 ![GitHub](https://img.shields.io/github/license/g3g4x5x6/ultimateshell)
-[![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
-<!-- ![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/g3g4x5x6/ultimateshell) -->
-<!-- ![GitHub all releases](https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/total) -->
-<!-- ![GitHub last commit](https://img.shields.io/github/last-commit/g3g4x5x6/ultimateshell) -->
+![GitHub Download](https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/latest/total)
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 <br>
