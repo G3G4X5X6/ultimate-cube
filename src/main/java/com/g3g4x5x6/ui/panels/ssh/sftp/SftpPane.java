@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Deprecated
 @Slf4j
 public class SftpPane extends JPanel {
 
