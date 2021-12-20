@@ -27,11 +27,14 @@ public class ConsolePane extends JPanel {
 
     private BorderLayout borderLayout = new BorderLayout();
     private JToolBar toolBar;
+    private JProgressBar progressBar;
 
     public ConsolePane() {
         this.setLayout(borderLayout);
         toolBar = new JToolBar();
         toolBar.setFloatable(false);
+
+        // 刷新按钮
         FlatButton freshBtn = new FlatButton();
         freshBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         freshBtn.setToolTipText("重置本地终端");
@@ -39,25 +42,38 @@ public class ConsolePane extends JPanel {
         freshBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        log.debug("刷新本地终端");
-                    }
+                new Thread(() -> {
+                    log.debug("刷新本地终端");
+                    openTerminal();
                 }).start();
             }
         });
+        // 终端刷新进度条
+        progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+
+        openTerminal();
+
         toolBar.add(freshBtn);
-
-        CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
-        cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
-        JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
-        terminalPanel.setTtyConnector(createTtyConnector());
-        terminalPanel.start();
-
-        this.add(terminalPanel, BorderLayout.CENTER);
+        toolBar.add(Box.createHorizontalGlue());
+        toolBar.add(progressBar);
+        toolBar.add(Box.createHorizontalGlue());
         this.add(toolBar, BorderLayout.NORTH);
         log.info(">>>>>>>> 启动本地终端");
+    }
+
+    private void openTerminal() {
+        new Thread(() -> {
+            progressBar.setVisible(true);
+            CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
+            cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
+            JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
+            terminalPanel.setTtyConnector(createTtyConnector());
+            terminalPanel.start();
+
+            progressBar.setVisible(false);
+            this.add(terminalPanel, BorderLayout.CENTER);
+        }).start();
     }
 
 

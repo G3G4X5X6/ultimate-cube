@@ -8,6 +8,7 @@ import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.Version;
 import com.g3g4x5x6.ui.panels.SessionsManager;
+import com.g3g4x5x6.ui.panels.console.ConsolePane;
 import com.g3g4x5x6.ui.panels.tools.ExternalToolIntegration;
 import com.g3g4x5x6.ui.panels.tools.ColorPicker;
 import com.g3g4x5x6.ui.panels.tools.QRTool;
@@ -89,6 +90,7 @@ public class MainFrame extends JFrame implements MouseListener {
         terminalMenu.add(openSessionMenu);
         terminalMenu.add(myNewAction);
         terminalMenu.add(mySessionAction);
+        terminalMenu.add(myLocalTerminal);
 
         // 查看菜单
         viewMenu.add(themeAction);
@@ -456,6 +458,18 @@ public class MainFrame extends JFrame implements MouseListener {
     private AbstractAction mySessionAction = new AbstractAction("会话管理") {
         public void actionPerformed(final ActionEvent e) {
             mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addList.svg"), new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
+            mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+        }
+    };
+
+    private AbstractAction myLocalTerminal = new AbstractAction("本地终端") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mainTabbedPane.insertTab("<html><font style='color:green'><strong>本地终端</strong></font></html>",
+                    new FlatSVGIcon("com/g3g4x5x6/ui/icons/console.svg"),
+                    new ConsolePane(),
+                    "本地终端",
+                    mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
