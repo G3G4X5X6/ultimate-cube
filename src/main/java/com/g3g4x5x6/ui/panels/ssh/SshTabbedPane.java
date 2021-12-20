@@ -71,7 +71,7 @@ public class SshTabbedPane extends JTabbedPane {
             session = client.connect(this.user, this.host, this.port).verify(3000, TimeUnit.MILLISECONDS).getSession();
             session.addPasswordIdentity(this.pass);
             session.auth().verify(3000, TimeUnit.MILLISECONDS);     // TODO No more authentication methods available
-            session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(5));
+            session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(3));
             return session;
         } catch (IOException e) {
             e.printStackTrace();
