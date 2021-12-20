@@ -1,9 +1,5 @@
 package com.g3g4x5x6.utils;
 
-import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
-import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ClientChannel;
@@ -11,12 +7,9 @@ import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.Channel;
-import org.apache.sshd.sftp.client.SftpClient;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
