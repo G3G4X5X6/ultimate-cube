@@ -132,6 +132,7 @@ public class BasicSettingStarterPane extends JPanel {
 //                    session.put("accessTime", simpleDateFormat.format(new Date().getTime()));
                     String sessionJson = JSON.toJSONString(session);
                     // Filename: recent_md5_accessTime
+                    // TODO Change
                     String fileName = "recent_" + DigestUtils.md5Hex(JSON.toJSONString(sessionJson)) + ".json";
                     // 判断是否已存在该会话，存在则删除会话先
                     try (BufferedWriter writer = new BufferedWriter(new FileWriter(ConfigUtil.getWorkPath() + "/sessions/" + new File(fileName)))){
