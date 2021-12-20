@@ -74,21 +74,10 @@ public class EditorPane extends JPanel {
     private SshClient client;
     private ClientSession session;
     private SftpFileSystem fs;
-    private String host;
-    private int port;
-    private String user;
-    private String pass;
 
-    public EditorPane(String host, int port, String user, String pass) {
+    public EditorPane(SftpFileSystem sftpFileSystem) {
         this();
-
-        this.host = host;
-        this.port = port;
-        this.user = user;
-        this.pass = pass;
-
-        // 创建远程文件系统
-        createSftpFileSystem();
+        this.fs = fs;
     }
 
     public EditorPane() {
@@ -870,21 +859,6 @@ public class EditorPane extends JPanel {
             String themeName = "";
 
             return themeName;
-        }
-    }
-
-    private void createSftpFileSystem() {
-        client = SshClient.setUpDefaultClient();
-        client.start();
-        try {
-            session = client.connect(user, host, port).verify(3000).getSession();
-            session.addPasswordIdentity(pass);
-            session.auth().verify(3000);
-
-            SftpFileSystemProvider provider = new SftpFileSystemProvider();
-            this.fs = provider.newFileSystem(session);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

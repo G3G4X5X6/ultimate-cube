@@ -4,6 +4,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.sshd.client.session.ClientSession;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -22,6 +23,7 @@ public class MonitorPane extends JPanel {
     private DefaultTableModel tableModel;
     private String[] columnNames = {"USER", "PID", "%CPU", "%MEM", "VSZ", "RSS", "TTY", "STAT", "START", "TIME", "COMMAND"};
 
+    private ClientSession session;
     private String host;
     private int port;
     private String user;
@@ -46,23 +48,6 @@ public class MonitorPane extends JPanel {
                 return true;
             }
         };
-
-        new Thread(new Runnable() {
-            @Override
-
-
-            public void run() {
-                while (true) {
-                    try {
-                        flushWinTable();
-                        Thread.sleep(1000 * 60 * 10);
-                        log.debug("刷新系统进程信息");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
 
         table.setModel(tableModel);
         tableModel.setColumnIdentifiers(columnNames);
@@ -97,6 +82,7 @@ public class MonitorPane extends JPanel {
         this.add(toolBar, BorderLayout.NORTH);
     }
 
+    @Deprecated
     public MonitorPane(String host, int port, String user, String pass) {
         this();
 
@@ -104,6 +90,23 @@ public class MonitorPane extends JPanel {
         this.port = port;
         this.user = user;
         this.pass = pass;
+    }
+
+    public MonitorPane(ClientSession session) {
+        this();
+        this.session = session;
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    flushWinTable();
+                    Thread.sleep(1000 * 60 * 10);
+                    log.debug("刷新系统进程信息");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void initToolBarAction() {
@@ -123,7 +126,7 @@ public class MonitorPane extends JPanel {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                String text = SshUtil.exec(host, user, pass, port, 3000, "uname -a").strip();
+                String text = SshUtil.exec(session, "uname -a").strip();
                 ShowEditorPane showPane = new ShowEditorPane();
                 showPane.setTitle("uname -a");
                 showPane.setSize(new Dimension(600, 100));
@@ -136,13 +139,11 @@ public class MonitorPane extends JPanel {
     }
 
     private void flushWinTable() {
-        log.debug("flushWinTable: " + host + ", " + user + ", " + pass + ", " + port);
+        log.debug("flushWinTable");
         try {
-            // public static String exec(String host, String username, String password, int port, long defaultTimeout, String command)
-            System.out.println(SshUtil.exec(host, user, pass, port, 3000, "ps aux"));
             boolean flag = true;
             tableModel.setRowCount(0);
-            for (String line : SshUtil.exec(host, user, pass, port, 3000, "ps aux").split("\n")) {
+            for (String line : SshUtil.exec(session, "ps aux").split("\n")) {
                 if (flag) {
                     flag = false;
                     continue;

@@ -6,18 +6,12 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
-import com.g3g4x5x6.ui.panels.ssh.MyJSchShellTtyConnector;
-import com.g3g4x5x6.ui.panels.ssh.SshSettingsProvider;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
-import com.g3g4x5x6.utils.Md5Util;
 import com.g3g4x5x6.utils.SshUtil;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,10 +21,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedHashMap;
 
 
@@ -125,8 +116,7 @@ public class BasicSettingStarterPane extends JPanel {
 
                     String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
                     mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                            new SshTabbedPane(mainTabbedPane,
-                                    createTerminalWidget(),
+                            new SshTabbedPane(
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
@@ -176,28 +166,28 @@ public class BasicSettingStarterPane extends JPanel {
     }
 
 
-    private @NotNull JediTermWidget createTerminalWidget() {
-        JediTermWidget widget = new JediTermWidget(new SshSettingsProvider());
-        widget.setTtyConnector(createTtyConnector());
-        widget.start();
-        return widget;
-    }
-
-    // TODO 创建 sFTP channel
-    private @NotNull TtyConnector createTtyConnector() {
-        try {
-            if (username.equals("")) {
-                return new MyJSchShellTtyConnector(host, port);
-            }
-            if (password.equals("")) {
-                return new MyJSchShellTtyConnector(host, port, username);
-            }
-            return new MyJSchShellTtyConnector(host, port, username, password);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    // TODO 获取 sFTP channel
+//    private @NotNull JediTermWidget createTerminalWidget() {
+//        JediTermWidget widget = new JediTermWidget(new SshSettingsProvider());
+//        widget.setTtyConnector(createTtyConnector());
+//        widget.start();
+//        return widget;
+//    }
+//
+//    // TODO 创建 sFTP channel
+//    private @NotNull TtyConnector createTtyConnector() {
+//        try {
+//            if (username.equals("")) {
+//                return new MyJSchShellTtyConnector(host, port);
+//            }
+//            if (password.equals("")) {
+//                return new MyJSchShellTtyConnector(host, port, username);
+//            }
+//            return new MyJSchShellTtyConnector(host, port, username, password);
+//        } catch (Exception e) {
+//            throw new IllegalStateException(e);
+//        }
+//    }
+//
+//    // TODO 获取 sFTP channel
 
 }

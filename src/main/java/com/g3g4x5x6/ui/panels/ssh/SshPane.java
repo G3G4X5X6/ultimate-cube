@@ -9,13 +9,10 @@ import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
 import com.g3g4x5x6.ui.formatter.PortFormatter;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.session.ClientSession;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -119,7 +116,7 @@ public class SshPane extends JPanel {
                     int preIndex = mainTabbedPane.getSelectedIndex();
                     // 鸠占鹊巢
                     mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                            new SshTabbedPane(mainTabbedPane, createTerminalWidget(),
+                            new SshTabbedPane(
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
@@ -360,28 +357,27 @@ public class SshPane extends JPanel {
         }
     }
 
-    private @NotNull JediTermWidget createTerminalWidget() {
-        SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
-        JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
-        widget.setTtyConnector(createTtyConnector());
-        widget.start();
-        return widget;
-    }
-
-    // TODO 创建 sFTP channel
-    private @NotNull TtyConnector createTtyConnector() {
-        try {
-            if (username.equals("")) {
-                return new MyJSchShellTtyConnector(host, port);
-            }
-            if (password.equals("")) {
-                return new MyJSchShellTtyConnector(host, port, username);
-            }
-            return new MyJSchShellTtyConnector(host, port, username, password);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
+//    private @NotNull JediTermWidget createTerminalWidget() {
+//        SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
+//        JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
+//        widget.setTtyConnector(createTtyConnector());
+//        widget.start();
+//        return widget;
+//    }
+//
+//    private @NotNull TtyConnector createTtyConnector() {
+//        try {
+//            if (username.equals("")) {
+//                return new MyJSchShellTtyConnector(host, port);
+//            }
+//            if (password.equals("")) {
+//                return new MyJSchShellTtyConnector(host, port, username);
+//            }
+//            return new MyJSchShellTtyConnector(host, port, username, password);
+//        } catch (Exception e) {
+//            throw new IllegalStateException(e);
+//        }
+//    }
 
     private int testConnection() {
         host = hostField.getText();

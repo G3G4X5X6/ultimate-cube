@@ -55,7 +55,7 @@ public class SftpPane extends JPanel {
         try {
 //            this.fs = createFileSystem();
 //            sftpBrowser = new SftpBrowser(fs);
-            sftpBrowser = new SftpBrowser(this.host, this.port, this.username, this.password);
+//            sftpBrowser = new SftpBrowser(this.host, this.port, this.username, this.password);
             this.add(sftpBrowser, BorderLayout.CENTER);
         } catch (Exception e) {
             log.debug("Constructor: " + e.getMessage());

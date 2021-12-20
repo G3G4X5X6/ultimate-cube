@@ -8,7 +8,6 @@ import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
-import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -53,10 +52,7 @@ public class SessionUtil {
             if (SshUtil.testConnection(host, port) == 1) {
                 String defaultTitle = session.equals("") ? "未命名" : session;
                 MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                        new SshTabbedPane(MainFrame.mainTabbedPane,
-                                SshUtil.createTerminalWidget(host, port, user, pass),
-                                host, port, user, pass
-                        )
+                        new SshTabbedPane(host, port, user, pass )
                 );
                 MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
             }

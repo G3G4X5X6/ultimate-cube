@@ -14,4 +14,3 @@ logs
 ultilmateshell.sqlite
 .idea
 data.db
-./buildNumber.properties

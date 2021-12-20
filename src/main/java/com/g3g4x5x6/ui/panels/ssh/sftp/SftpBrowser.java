@@ -9,7 +9,6 @@ import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
-import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -49,13 +48,7 @@ public class SftpBrowser extends JPanel {
     private AbstractAction deleteDirsAction;
     private AbstractAction openAction;
 
-    private SshClient client;
-    private ClientSession session;
     private SftpFileSystem fs;
-    private String host;
-    private int port;
-    private String user;
-    private String pass;
 
     public SftpBrowser(SftpFileSystem sftpFileSystem) {
         borderLayout = new BorderLayout();
@@ -70,37 +63,26 @@ public class SftpBrowser extends JPanel {
         initPopupMenu();
     }
 
-    public SftpBrowser(String host, int port, String user, String pass) {
-        borderLayout = new BorderLayout();
-        this.setLayout(borderLayout);
+//    public SftpBrowser(String host, int port, String user, String pass) {
+//        borderLayout = new BorderLayout();
+//        this.setLayout(borderLayout);
+//
+//        toolBar = new JToolBar();
+//        toolBar.setFloatable(false);
+//
+//        this.host = host;
+//        this.port = port;
+//        this.user = user;
+//        this.pass = pass;
+//
+//        createSftpFileSystem();
+//
+//        initPane();
+//        initPopupMenu();
+//    }
 
-        toolBar = new JToolBar();
-        toolBar.setFloatable(false);
-
-        this.host = host;
-        this.port = port;
-        this.user = user;
-        this.pass = pass;
-
-        createSftpFileSystem();
-
-        initPane();
-        initPopupMenu();
-    }
-
-    private void createSftpFileSystem() {
-        client = SshClient.setUpDefaultClient();
-        client.start();
-        try {
-            session = client.connect(user, host, port).verify(5000).getSession();
-            session.addPasswordIdentity(pass);
-            session.auth().verify(5000);
-
-            SftpFileSystemProvider provider = new SftpFileSystemProvider();
-            this.fs = provider.newFileSystem(session);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setFs(SftpFileSystem fs) {
+        this.fs = fs;
     }
 
 
@@ -557,14 +539,6 @@ public class SftpBrowser extends JPanel {
             this.addTreeSelectionListener(new TreeSelectionListener() {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
-                    // TODO Sftp 存活检测
-                    if (fs.getClientSession().isClosed()) {
-                        log.debug("================== fs.getClientSession().isClosed(), reopen now =====================");
-                        createSftpFileSystem();
-                    } else {
-                        log.debug("================== client is open =====================");
-                    }
-
                     // 刷新文件列表
                     freshTable();
                 }
