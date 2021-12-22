@@ -108,7 +108,8 @@ public class SshTabbedPane extends JTabbedPane {
             if (this.pass.equals("")) {
                 return new MyJSchShellTtyConnector(host, port, this.user);
             }
-            return new MyJSchShellTtyConnector(host, port, user, pass);
+            return new DefaultTtyConnector(session);
+//            return new MyJSchShellTtyConnector(host, port, user, pass);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

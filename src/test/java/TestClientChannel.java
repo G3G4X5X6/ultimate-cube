@@ -25,23 +25,18 @@ public class TestClientChannel {
             session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(3));
 
             try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
-                 ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
                  ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL)) // to execute remote commands
             {
                 channel.setOut(responseStream);
-                channel.setErr(errorStream);
+                channel.setErr(responseStream);
                 try {
                     channel.open().verify(3, TimeUnit.SECONDS);
                     try (OutputStream pipedIn = channel.getInvertedIn()) {
                         pipedIn.write("ls -l\n".getBytes());
                         pipedIn.flush();
                     }
-                    channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
-                            TimeUnit.SECONDS.toMillis(3));
-                    String error = new String(errorStream.toByteArray());
-                    if (!error.isEmpty()) {
-                        throw new Exception(error);
-                    }
+//                    Thread.sleep(3000);
+//                    channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), TimeUnit.SECONDS.toMillis(3));
                     System.out.println(responseStream.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
