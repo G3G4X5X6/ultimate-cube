@@ -357,28 +357,6 @@ public class SshPane extends JPanel {
         }
     }
 
-//    private @NotNull JediTermWidget createTerminalWidget() {
-//        SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
-//        JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
-//        widget.setTtyConnector(createTtyConnector());
-//        widget.start();
-//        return widget;
-//    }
-//
-//    private @NotNull TtyConnector createTtyConnector() {
-//        try {
-//            if (username.equals("")) {
-//                return new MyJSchShellTtyConnector(host, port);
-//            }
-//            if (password.equals("")) {
-//                return new MyJSchShellTtyConnector(host, port, username);
-//            }
-//            return new MyJSchShellTtyConnector(host, port, username, password);
-//        } catch (Exception e) {
-//            throw new IllegalStateException(e);
-//        }
-//    }
-
     private int testConnection() {
         host = hostField.getText();
         port = Integer.parseInt(portField.getText());

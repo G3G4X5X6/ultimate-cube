@@ -1,11 +1,10 @@
 package com.g3g4x5x6.ui.panels.ssh;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.panels.editor.EditorPane;
+import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
 import com.g3g4x5x6.utils.DialogUtil;
-import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
@@ -94,25 +93,9 @@ public class SshTabbedPane extends JTabbedPane {
     private @NotNull JediTermWidget createTerminalWidget() {
         SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
         JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
-        widget.setTtyConnector(createTtyConnector());
+        widget.setTtyConnector(new DefaultTtyConnector(session));
         widget.start();
         return widget;
-    }
-
-    // TODO 创建 sFTP channel
-    private @NotNull TtyConnector createTtyConnector() {
-        try {
-            if (this.user.equals("")) {
-                return new MyJSchShellTtyConnector(host, port);
-            }
-            if (this.pass.equals("")) {
-                return new MyJSchShellTtyConnector(host, port, this.user);
-            }
-            return new DefaultTtyConnector(session);
-//            return new MyJSchShellTtyConnector(host, port, user, pass);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     private void customComponents() {

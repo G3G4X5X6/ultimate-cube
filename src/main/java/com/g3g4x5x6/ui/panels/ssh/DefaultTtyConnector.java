@@ -77,7 +77,6 @@ public class DefaultTtyConnector implements TtyConnector {
 
     @Override
     public int read(char[] chars, int i, int i1) throws IOException {
-        System.out.println(String.valueOf(chars));
         return reader.read(chars, i, i1);
     }
 
