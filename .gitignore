@@ -12,5 +12,5 @@ dependency-reduced-pom.xml
 # 自定义
 logs
 ultilmateshell.sqlite
-.idea
+.idea/
 data.db

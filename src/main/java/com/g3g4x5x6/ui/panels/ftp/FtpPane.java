@@ -160,6 +160,7 @@ public class FtpPane extends JPanel {
         return widget;
     }
 
+    @Deprecated
     private @NotNull TtyConnector createTtyConnector() {
         return new TelnetTtyConnector(hostField.getText(), Integer.parseInt(portField.getText()));
     }

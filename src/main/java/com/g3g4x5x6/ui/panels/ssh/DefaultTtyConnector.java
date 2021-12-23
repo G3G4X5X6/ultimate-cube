@@ -5,14 +5,10 @@ import com.jediterm.terminal.TtyConnector;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.channel.ChannelShell;
-import org.apache.sshd.client.channel.ClientChannel;
-import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.session.ClientSession;
-import org.apache.sshd.common.channel.Channel;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
 
@@ -93,6 +89,7 @@ public class DefaultTtyConnector implements TtyConnector {
 
     @Override
     public void write(String s) throws IOException {
+        log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>" + s);
         this.write(s.getBytes(StandardCharsets.UTF_8));
     }
 

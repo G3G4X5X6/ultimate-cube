@@ -1,5 +1,4 @@
 import com.fazecast.jSerialComm.SerialPort;
-import com.jcraft.jsch.Session;
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,6 @@ public class SerialTtyConnector implements TtyConnector{
     public static final int DEFAULT_PORT = 23;
     private InputStream myInputStream;
     private OutputStream myOutputStream;
-    private Session mySession;
     private AtomicBoolean isInitiated;
     private int myPort;
     private String myUser;
