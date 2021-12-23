@@ -67,9 +67,9 @@ public class SshTabbedPane extends JTabbedPane {
     private ClientSession getSession(SshClient client){
         ClientSession session;
         try {
-            session = client.connect(this.user, this.host, this.port).verify(3000, TimeUnit.MILLISECONDS).getSession();
+            session = client.connect(this.user, this.host, this.port).verify(5000, TimeUnit.MILLISECONDS).getSession();
             session.addPasswordIdentity(this.pass);
-            session.auth().verify(3000, TimeUnit.MILLISECONDS);     // TODO No more authentication methods available
+            session.auth().verify(15, TimeUnit.SECONDS);
             session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(3));
             return session;
         } catch (IOException e) {
@@ -86,6 +86,7 @@ public class SshTabbedPane extends JTabbedPane {
             return sftpFileSystem;
         } catch (IOException e) {
             e.printStackTrace();
+            DialogUtil.error(e.getMessage());
             return null;
         }
     }
@@ -119,5 +120,4 @@ public class SshTabbedPane extends JTabbedPane {
 //        this.putClientProperty( TABBED_PANE_LEADING_COMPONENT, leading );
         this.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
-
 }

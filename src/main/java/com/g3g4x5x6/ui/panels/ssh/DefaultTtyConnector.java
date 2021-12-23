@@ -8,6 +8,7 @@ import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
@@ -34,7 +35,7 @@ public class DefaultTtyConnector implements TtyConnector {
             channelIn = new PipedInputStream(out);
             channelOut = new PipedOutputStream();
             PipedInputStream in = new PipedInputStream(channelOut);
-            reader = new BufferedReader(new InputStreamReader(in));
+            reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             writer = new BufferedWriter(new OutputStreamWriter(out));
 
             channel = initClientChannel(session, channelIn, channelOut);
