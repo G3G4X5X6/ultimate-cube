@@ -17,8 +17,6 @@ import java.awt.*;
 import java.util.Collections;
 
 public class SshSettingsProvider implements SettingsProvider {
-    private TextStyle textStyle;
-
     @NotNull
     public TerminalActionPresentation getNewSessionActionPresentation() {
         return new TerminalActionPresentation("New Session", UIUtil.isMac ? KeyStroke.getKeyStroke(84, 256) : KeyStroke.getKeyStroke(84, 192));
@@ -104,20 +102,16 @@ public class SshSettingsProvider implements SettingsProvider {
 
     @Override
     public TextStyle getDefaultStyle() {
-        return ConfigUtil.getTextStyle();
+        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
+//        return ConfigUtil.getTextStyle();
     }
 
-//    public void setDefaultStyle(TextStyle textStyle){
-//        this.textStyle = textStyle;
-//    }
-
     public TextStyle getSelectionColor() {
-//        return ConfigUtil.getTextStyle();
         return new TextStyle(TerminalColor.WHITE, TerminalColor.rgb(82, 109, 165));
     }
 
     public TextStyle getFoundPatternColor() {
-        return new TextStyle(TerminalColor.BLACK, TerminalColor.rgb(255, 255, 0));
+        return new TextStyle(TerminalColor.rgb(200, 200, 200), TerminalColor.rgb(255, 255, 0));
     }
 
     public TextStyle getHyperlinkColor() {
@@ -129,7 +123,7 @@ public class SshSettingsProvider implements SettingsProvider {
     }
 
     public boolean useInverseSelectionColor() {
-        return true;
+        return false;
     }
 
     public boolean copyOnSelect() {
@@ -190,6 +184,6 @@ public class SshSettingsProvider implements SettingsProvider {
 
     @NotNull
     public TerminalTypeAheadSettings getTypeAheadSettings() {
-        return TerminalTypeAheadSettings.DEFAULT;
+        return DefaultTerminalTypeAheadSettings.DEFAULT;
     }
 }
