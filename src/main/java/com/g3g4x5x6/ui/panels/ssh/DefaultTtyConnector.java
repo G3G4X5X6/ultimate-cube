@@ -6,9 +6,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
+import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
@@ -18,13 +19,15 @@ public class DefaultTtyConnector implements TtyConnector {
     private ClientSession session;
     private ChannelShell channel;
 
+    private Dimension myPendingTermSize;
+
     private PipedOutputStream channelOut;
     private InputStream channelIn;
     private OutputStream outputStream;
     private BufferedReader reader;
     private BufferedWriter writer;
 
-    public DefaultTtyConnector(ClientSession clientSession){
+    public DefaultTtyConnector(ClientSession clientSession) {
         this.session = clientSession;
     }
 
@@ -47,10 +50,9 @@ public class DefaultTtyConnector implements TtyConnector {
         return true;
     }
 
-    private static ChannelShell initClientChannel(ClientSession session, InputStream input,
-                                                   OutputStream output) throws IOException {
+    private ChannelShell initClientChannel(ClientSession session, InputStream input, OutputStream output) throws IOException {
         ChannelShell channel = session.createShellChannel();
-        String lang = (String)System.getenv().get("LANG");
+        String lang = (String) System.getenv().get("LANG");
         channel.setEnv("LANG", lang != null ? lang : "zh_CN.UTF-8");
         channel.setPtyType("xterm");
         channel.setIn(input);
@@ -103,4 +105,27 @@ public class DefaultTtyConnector implements TtyConnector {
     public boolean ready() throws IOException {
         return true;
     }
+
+    @Override
+    public void resize(@NotNull Dimension termWinSize) {
+        this.myPendingTermSize = termWinSize;
+        if (this.channel != null) {
+            this.resizeImmediately();
+        }
+    }
+
+    private void resizeImmediately() {
+        if (this.myPendingTermSize != null) {
+            this.setPtySize(this.channel, this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
+            this.myPendingTermSize = null;
+        }
+
+    }
+    private void setPtySize(ChannelShell channel, int col, int row, int wp, int hp) {
+        channel.setPtyColumns(col);
+        channel.setPtyLines(row);
+        channel.setPtyWidth(wp);
+        channel.setPtyHeight(hp);
+    }
+
 }
