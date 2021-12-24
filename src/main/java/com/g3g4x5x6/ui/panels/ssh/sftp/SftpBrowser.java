@@ -425,13 +425,13 @@ public class SftpBrowser extends JPanel {
         String humanSize = "";
         long size = entry.getAttributes().getSize();
         if (size >= 1024 && size < 1024 * 1024) { // KB
-            double d = size / 1024;
+            double d = size / 1024.0;
             humanSize = String.format("%.2f", d) + "KB";
         } else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) {   // MB
-            double d = size / 1024 / 1024;
+            double d = size / 1024.0 / 1024.0;
             humanSize = String.format("%.2f", d) + "MB";
         } else if (size >= 1024 * 1024 * 1024) {  // GB
-            double d = size / 1024 / 1024 / 1024;
+            double d = size / 1024.0 / 1024.0 / 1024.0;
             humanSize = String.format("%.2f", d) + "GB";
         }
         temp[2] = humanSize;

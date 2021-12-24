@@ -6,11 +6,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.channel.PtyChannelConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -18,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class DefaultTtyConnector implements TtyConnector {
     private ClientSession session;
     private ChannelShell channel;
+    private PtyChannelConfiguration ptyConfig;
+    private Map<String, ?> env;
 
     private Dimension myPendingTermSize;
 
@@ -51,16 +56,29 @@ public class DefaultTtyConnector implements TtyConnector {
     }
 
     private ChannelShell initClientChannel(ClientSession session, InputStream input, OutputStream output) throws IOException {
-        ChannelShell channel = session.createShellChannel();
-        String lang = (String) System.getenv().get("LANG");
-        channel.setEnv("LANG", lang != null ? lang : "zh_CN.UTF-8");
-        channel.setPtyType("xterm");
+        this.ptyConfig = getPtyChannelConfiguration();
+        this.env = getEnv();
+        ChannelShell channel = session.createShellChannel(this.ptyConfig, this.env);
         channel.setIn(input);
         channel.setOut(output);
         channel.setErr(output);
+        channel.setUsePty(true);
         channel.open().verify(3000, TimeUnit.MILLISECONDS);
 
         return channel;
+    }
+
+    private PtyChannelConfiguration getPtyChannelConfiguration(){
+        PtyChannelConfiguration ptyConfig = new PtyChannelConfiguration();
+        ptyConfig.setPtyType("xterm");
+        return ptyConfig;
+    }
+
+    private Map<String, ?> getEnv(){
+        Map<String, String> env = new LinkedHashMap<>();
+        String lang = (String) System.getenv().get("LANG");
+        env.put("LANG", lang != null ? lang : "zh_CN.UTF-8");
+        return env;
     }
 
     @SneakyThrows
@@ -108,24 +126,24 @@ public class DefaultTtyConnector implements TtyConnector {
 
     @Override
     public void resize(@NotNull Dimension termWinSize) {
+        log.debug(termWinSize.height + ":" + termWinSize.width);
         this.myPendingTermSize = termWinSize;
-        if (this.channel != null) {
-            this.resizeImmediately();
-        }
+        resizeImmediately();
     }
 
     private void resizeImmediately() {
         if (this.myPendingTermSize != null) {
-            this.setPtySize(this.channel, this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
+            this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
             this.myPendingTermSize = null;
         }
 
     }
-    private void setPtySize(ChannelShell channel, int col, int row, int wp, int hp) {
-        channel.setPtyColumns(col);
-        channel.setPtyLines(row);
-        channel.setPtyWidth(wp);
-        channel.setPtyHeight(hp);
+
+    private void setPtySize(int col, int row, int wp, int hp) {
+        ptyConfig.setPtyColumns(col);
+        ptyConfig.setPtyLines(row);
+        ptyConfig.setPtyWidth(wp);
+        ptyConfig.setPtyHeight(hp);
     }
 
 }
