@@ -25,6 +25,7 @@ public class DefaultTtyConnector implements TtyConnector {
     private Map<String, ?> env;
 
     private Dimension myPendingTermSize;
+    private Dimension pixelSize;
 
     private PipedOutputStream channelOut;
     private InputStream channelIn;
@@ -62,21 +63,20 @@ public class DefaultTtyConnector implements TtyConnector {
         channel.setIn(input);
         channel.setOut(output);
         channel.setErr(output);
-        channel.setUsePty(true);
         channel.open().verify(3000, TimeUnit.MILLISECONDS);
 
         return channel;
     }
 
-    private PtyChannelConfiguration getPtyChannelConfiguration(){
+    private PtyChannelConfiguration getPtyChannelConfiguration() {
         PtyChannelConfiguration ptyConfig = new PtyChannelConfiguration();
         ptyConfig.setPtyType("xterm");
         return ptyConfig;
     }
 
-    private Map<String, ?> getEnv(){
+    private Map<String, ?> getEnv() {
         Map<String, String> env = new LinkedHashMap<>();
-        String lang = (String) System.getenv().get("LANG");
+        String lang = System.getenv().get("LANG");
         env.put("LANG", lang != null ? lang : "zh_CN.UTF-8");
         return env;
     }
@@ -92,8 +92,17 @@ public class DefaultTtyConnector implements TtyConnector {
         return "SSH";
     }
 
+    /**
+     * TODO 本地保存会话记录：String.valueOf(chars )
+     * @param chars
+     * @param i
+     * @param i1
+     * @return
+     * @throws IOException
+     */
     @Override
     public int read(char[] chars, int i, int i1) throws IOException {
+//        log.debug(">>>>>>>>>>>>>>>" + String.valueOf(chars ));
         return reader.read(chars, i, i1);
     }
 
@@ -108,10 +117,15 @@ public class DefaultTtyConnector implements TtyConnector {
         return channel.isOpen();
     }
 
+    /**
+     * TODO 本地保存命令历史记录：string
+     * @param string
+     * @throws IOException
+     */
     @Override
-    public void write(String s) throws IOException {
-        log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>" + s);
-        this.write(s.getBytes(StandardCharsets.UTF_8));
+    public void write(String string) throws IOException {
+        log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>" + string);
+        this.write(string.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
@@ -125,25 +139,42 @@ public class DefaultTtyConnector implements TtyConnector {
     }
 
     @Override
-    public void resize(@NotNull Dimension termWinSize) {
+    public void resize(Dimension termWinSize, Dimension pixelSize) {
         log.debug(termWinSize.height + ":" + termWinSize.width);
         this.myPendingTermSize = termWinSize;
-        resizeImmediately();
+        this.pixelSize = pixelSize;
+        if (this.channel != null) {
+            this.resizeImmediately();
+        }
     }
+
+//    @Override
+//    public void resize(@NotNull Dimension termWinSize) {
+//        log.debug(termWinSize.height + ":" + termWinSize.width);
+//        this.myPendingTermSize = termWinSize;
+//        if (this.channel != null) {
+//            this.resizeImmediately();
+//        }
+//    }
 
     private void resizeImmediately() {
         if (this.myPendingTermSize != null) {
             this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
+            if (this.pixelSize != null){
+                this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, pixelSize.width, pixelSize.height);
+            }
             this.myPendingTermSize = null;
+            this.pixelSize = null;
         }
 
     }
 
     private void setPtySize(int col, int row, int wp, int hp) {
+        log.debug(col + ":"  + row +"<=>" + wp + ":" + hp);
         ptyConfig.setPtyColumns(col);
         ptyConfig.setPtyLines(row);
-        ptyConfig.setPtyWidth(wp);
-        ptyConfig.setPtyHeight(hp);
+        ptyConfig.setPtyWidth(col);
+        ptyConfig.setPtyHeight(row);
     }
 
 }
