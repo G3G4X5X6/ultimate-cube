@@ -88,7 +88,10 @@ public class DefaultTtyConnector implements TtyConnector {
 
     @Override
     public String getName() {
-        return "SSH";
+        String name = session.getConnectAddress().toString();
+        if (name == null)
+            name = "SSH";
+        return name;
     }
 
     /**
