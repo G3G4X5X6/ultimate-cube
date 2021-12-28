@@ -4,6 +4,24 @@
 1. 次版本号：当你做了向下兼容的功能性新增，
 1. 修订号：当你做了向下兼容的问题修正。
 
+## 2021-12-
+### ultimateshell_v1.28.17-beta.2
+#### Added
+- 新增打开 `本地终端` 菜单功能
+- 新增 `本地终端` 刷新会话功能
+- 新增 `打开工作空间` 菜单功能，打开程序工作目录 `~/home/user/.ultimateshell`
+- TODO SftpBrowser功能完善
+
+#### Fixed
+- s
+
+#### Changed
+- 弃用 `jsch`，使用 `mina-sshd` 替代
+- 修改 `ssh` 会话的创建、使用逻辑
+
+#### 待解决
+- SSH会话中，退出 `vim` 后，终端大小不再自适应改变大小
+
 ## 2021-12-18
 ### ultimateshell_v1.28.17-beta.1
 #### Added

@@ -5,8 +5,6 @@ import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.sshd.client.SshClient;
-import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 
@@ -62,24 +60,6 @@ public class SftpBrowser extends JPanel {
         initPane();
         initPopupMenu();
     }
-
-//    public SftpBrowser(String host, int port, String user, String pass) {
-//        borderLayout = new BorderLayout();
-//        this.setLayout(borderLayout);
-//
-//        toolBar = new JToolBar();
-//        toolBar.setFloatable(false);
-//
-//        this.host = host;
-//        this.port = port;
-//        this.user = user;
-//        this.pass = pass;
-//
-//        createSftpFileSystem();
-//
-//        initPane();
-//        initPopupMenu();
-//    }
 
     public void setFs(SftpFileSystem fs) {
         this.fs = fs;
@@ -491,6 +471,10 @@ public class SftpBrowser extends JPanel {
     }
 
 
+    private class MyTable extends JTable {
+
+    }
+
     private class MyTree extends JTree {
         public MyTree() {
             // 设置树显示根节点句柄
@@ -569,9 +553,5 @@ public class SftpBrowser extends JPanel {
                 }
             });
         }
-    }
-
-    private class MyTable extends JTable {
-
     }
 }

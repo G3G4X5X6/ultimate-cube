@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.PtyChannelConfiguration;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.*;

@@ -104,11 +104,31 @@ public class MainFrame extends JFrame implements MouseListener {
         optionMenu.add(importSessionAction);
         optionMenu.add(exportSessionAction);
 
-        // 帮助菜单
-        helpMenu.add(githubAction);
-        helpMenu.add(gitpageAction);
+        // 帮助菜单 chromium.svg
+        JMenuItem github = new JMenuItem("GitHub");
+        github.addActionListener(githubAction);
+        github.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/BrowserSystemDefault(GrayDark).svg"));
+
+        JMenuItem gitPage = new JMenuItem("GitPage");
+        gitPage.addActionListener(gitPageAction);
+        gitPage.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/BrowserSystemDefault(GrayDark).svg"));
+
+        // pluginIcon.svg
+        JMenuItem openSpace = new JMenuItem("打开工作空间");
+        openSpace.addActionListener(openWorkspace);
+        openSpace.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pluginIcon.svg"));
+
+        // relevantProposal.svg
+        JMenuItem aboutMe = new JMenuItem("关于 UltimateShell");
+        aboutMe.addActionListener(myAboutAction);
+        aboutMe.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/relevantProposal.svg"));
+
+        helpMenu.add(github);
+        helpMenu.add(gitPage);
         helpMenu.addSeparator();
-        helpMenu.add(myAboutAction);
+        helpMenu.add(openSpace);
+        helpMenu.addSeparator();
+        helpMenu.add(aboutMe);
 
         // 工具菜单
         JMenu myToolMenu = new JMenu("内置工具");
@@ -698,11 +718,24 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction gitpageAction = new AbstractAction("GitPage") {
+    private AbstractAction gitPageAction = new AbstractAction("GitPage") {
         @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
             Desktop.getDesktop().browse(new URL("https://g3g4x5x6.github.io/ultimateshell/").toURI());
+        }
+    };
+
+    private AbstractAction openWorkspace = new AbstractAction("打开工作空间") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new Thread(()->{
+                try {
+                    Desktop.getDesktop().open(new File(ConfigUtil.getWorkPath()));
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }).start();
         }
     };
 

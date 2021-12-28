@@ -1,6 +1,5 @@
 package com.g3g4x5x6.ui.panels.ssh;
 
-import com.g3g4x5x6.utils.ConfigUtil;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
@@ -103,7 +102,6 @@ public class SshSettingsProvider implements SettingsProvider {
     @Override
     public TextStyle getDefaultStyle() {
         return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
-//        return ConfigUtil.getTextStyle();
     }
 
     public TextStyle getSelectionColor() {
@@ -123,7 +121,7 @@ public class SshSettingsProvider implements SettingsProvider {
     }
 
     public boolean useInverseSelectionColor() {
-        return false;
+        return true;
     }
 
     public boolean copyOnSelect() {
