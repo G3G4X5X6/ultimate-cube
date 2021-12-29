@@ -1,5 +1,6 @@
 package com.g3g4x5x6.ui.panels.ssh.sftp;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -15,7 +16,7 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -67,13 +68,40 @@ public class SftpBrowser extends JPanel {
 
 
     private void initPane() {
-        toolBar.add(new AbstractAction("Test") {
+        // 工具栏菜单
+        JTextField pathField = new JTextField();
+        pathField.setColumns(20);
+        pathField.putClientProperty("JTextField.placeholderText", "/home/g3g4x5x6/Document");
+        pathField.registerKeyboardAction(new ActionListener() {
+                                             @Override
+                                             public void actionPerformed(ActionEvent e) {
+                                                 log.debug(pathField.getText());
+                                             }
+                                         },
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
+                JComponent.WHEN_FOCUSED);
+
+        // fileTransfer.svg
+        JButton fileTransfer = new JButton();
+        fileTransfer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
+        fileTransfer.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("Test");
+            public void mouseClicked(MouseEvent e) {
+                log.debug("FileTransfer");
             }
         });
-        this.add(toolBar, BorderLayout.NORTH);
+        // 添加工具栏菜单
+        toolBar.add(pathField);
+        toolBar.addSeparator();
+        toolBar.add(fileTransfer);
+//        toolBar.addSeparator();
+//        toolBar.add(new AbstractAction("Test") {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                log.debug("Test");
+//            }
+//        });
+
         splitPane = new JSplitPane();
         splitPane.setDividerLocation(200);
 
@@ -94,6 +122,7 @@ public class SftpBrowser extends JPanel {
         splitPane.setLeftComponent(treeScroll);
         splitPane.setRightComponent(tableScroll);
         this.add(splitPane, BorderLayout.CENTER);
+        this.add(toolBar, BorderLayout.NORTH);
     }
 
     private void init() {
