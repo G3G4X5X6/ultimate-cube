@@ -94,17 +94,10 @@ public class SftpBrowser extends JPanel {
         toolBar.add(pathField);
         toolBar.addSeparator();
         toolBar.add(fileTransfer);
-//        toolBar.addSeparator();
-//        toolBar.add(new AbstractAction("Test") {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                log.debug("Test");
-//            }
-//        });
 
+        //
         splitPane = new JSplitPane();
         splitPane.setDividerLocation(200);
-
         init();
         myTable = new MyTable();
         initTable();
