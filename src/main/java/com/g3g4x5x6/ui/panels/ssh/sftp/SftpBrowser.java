@@ -100,21 +100,23 @@ public class SftpBrowser extends JPanel {
         pathField.setColumns(20);
         pathField.putClientProperty("JTextField.placeholderText", "/home/g3g4x5x6/Document");
         pathField.registerKeyboardAction(e -> {
-                    log.debug(pathField.getText());
+                    String quickPath = pathField.getText();
                     // TODO 1. 检查路径是否存在
-                    if (Files.exists(fs.getPath(pathField.getText()))) {
-                        log.debug("存在远程路径：" + pathField.getText());
+                    if (Files.exists(fs.getPath(quickPath))) {
+                        if (!Files.isDirectory(fs.getPath(quickPath))){
+                            quickPath = fs.getPath(quickPath).getParent().toString();
+                        }
                         DefaultMutableTreeNode parent = root;
                         // TODO 2. 添加快速跳转地址栏的树路径 （问题：如何解决节点重复添加的问题）
-                        for (String child : pathField.getText().split("/")) {
+                        for (String child : quickPath.split("/")) {
                             if (child.strip().equals(""))
                                 continue;
                             DefaultMutableTreeNode resultNode = findTreeNode(parent, child);
-                            if (resultNode == null){
+                            if (resultNode == null) {
                                 DefaultMutableTreeNode temp = new DefaultMutableTreeNode(child);
                                 treeModel.insertNodeInto(temp, parent, 0);
                                 parent = temp;
-                            }else {
+                            } else {
                                 parent = resultNode;
                             }
                         }
@@ -126,7 +128,7 @@ public class SftpBrowser extends JPanel {
                         myTree.expandPath(tempPath);
                         log.debug("执行了个寂寞");
                     } else {
-                        DialogUtil.warn("远程路径不存在：\n" + pathField.getText());
+                        DialogUtil.warn("远程路径不存在：\n" + quickPath);
                     }
                 },
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
@@ -166,6 +168,7 @@ public class SftpBrowser extends JPanel {
         }
         return null;
     }
+
     private DefaultMutableTreeNode findTreeNode(DefaultMutableTreeNode root, String s) {
         @SuppressWarnings("unchecked")
         Enumeration<TreeNode> e = root.depthFirstEnumeration();
