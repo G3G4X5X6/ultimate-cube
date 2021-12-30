@@ -117,9 +117,6 @@ public class SftpBrowser extends JPanel {
                             }else {
                                 parent = resultNode;
                             }
-//                            DefaultMutableTreeNode temp = new DefaultMutableTreeNode(child);
-//                            treeModel.insertNodeInto(temp, parent, 0);
-//                            parent = temp;
                         }
 
                         // TODO 3. 设置地址栏路径为选中和展开状态
@@ -163,7 +160,6 @@ public class SftpBrowser extends JPanel {
         Enumeration<TreeNode> e = root.depthFirstEnumeration();
         while (e.hasMoreElements()) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>" + node.toString());
             if (node.toString().equalsIgnoreCase(s)) {
                 return new TreePath(node.getPath());
             }
@@ -175,7 +171,6 @@ public class SftpBrowser extends JPanel {
         Enumeration<TreeNode> e = root.depthFirstEnumeration();
         while (e.hasMoreElements()) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
-            log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>" + node.toString());
             if (node.toString().equalsIgnoreCase(s)) {
                 return node;
             }
