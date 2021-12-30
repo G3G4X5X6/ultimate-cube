@@ -3,6 +3,8 @@ package com.g3g4x5x6.ui.panels.ssh.sftp;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
+import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,8 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 @Slf4j
@@ -68,33 +72,6 @@ public class SftpBrowser extends JPanel {
 
 
     private void initPane() {
-        // 工具栏菜单
-        JTextField pathField = new JTextField();
-        pathField.setColumns(20);
-        pathField.putClientProperty("JTextField.placeholderText", "/home/g3g4x5x6/Document");
-        pathField.registerKeyboardAction(new ActionListener() {
-                                             @Override
-                                             public void actionPerformed(ActionEvent e) {
-                                                 log.debug(pathField.getText());
-                                             }
-                                         },
-                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
-                JComponent.WHEN_FOCUSED);
-
-        // fileTransfer.svg
-        JButton fileTransfer = new JButton();
-        fileTransfer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
-        fileTransfer.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                log.debug("FileTransfer");
-            }
-        });
-        // 添加工具栏菜单
-        toolBar.add(pathField);
-        toolBar.addSeparator();
-        toolBar.add(fileTransfer);
-
         //
         splitPane = new JSplitPane();
         splitPane.setDividerLocation(200);
@@ -115,6 +92,56 @@ public class SftpBrowser extends JPanel {
         splitPane.setLeftComponent(treeScroll);
         splitPane.setRightComponent(tableScroll);
         this.add(splitPane, BorderLayout.CENTER);
+
+        // 工具栏菜单
+        // 快速跳转工具栏
+        JTextField pathField = new JTextField();
+        pathField.setColumns(20);
+        pathField.putClientProperty("JTextField.placeholderText", "/home/g3g4x5x6/Document");
+        pathField.registerKeyboardAction(e -> {
+                    log.debug(pathField.getText());
+                    // TODO 1. 检查路径是否存在
+                    if (Files.exists(fs.getPath(pathField.getText()))) {
+                        log.debug("存在远程路径：" + pathField.getText());
+                        root.removeAllChildren();
+                        DefaultMutableTreeNode parent = root;
+                        // TODO 2. 添加快速跳转地址栏的树路径
+                        for (String child : pathField.getText().split("/")) {
+                            if (child.strip().equals(""))
+                                continue;
+                            DefaultMutableTreeNode temp = new DefaultMutableTreeNode(child);
+                            treeModel.insertNodeInto(temp, parent, 0);
+
+                            parent = temp;
+                        }
+
+                        // TODO 3. 添加地址栏路径下的目录和文件
+
+
+                        // TODO 4. 设置地址栏路径为选中和展开状态
+                        TreePath tempPath = new TreePath(treeModel.getPathToRoot(parent));
+                        myTree.expandPath(tempPath);
+                        log.debug("执行了个寂寞");
+                    } else {
+                        DialogUtil.warn("远程路径不存在：\n" + pathField.getText());
+                    }
+                },
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
+                JComponent.WHEN_FOCUSED);
+
+        // fileTransfer.svg
+        JButton fileTransfer = new JButton();
+        fileTransfer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
+        fileTransfer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                log.debug("FileTransfer");
+            }
+        });
+        // 添加工具栏菜单
+        toolBar.add(pathField);
+        toolBar.addSeparator();
+        toolBar.add(fileTransfer);
         this.add(toolBar, BorderLayout.NORTH);
     }
 
@@ -180,8 +207,10 @@ public class SftpBrowser extends JPanel {
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
         myTable.getColumn("权限").setCellRenderer(centerRenderer);
-        myTable.getColumn("大小").setCellRenderer(centerRenderer);
+        myTable.getColumn("大小").setCellRenderer(rightRenderer);
         myTable.getColumn("类型").setCellRenderer(centerRenderer);
         myTable.getColumn("属组").setCellRenderer(centerRenderer);
         myTable.getColumn("修改时间").setCellRenderer(centerRenderer);
@@ -428,13 +457,13 @@ public class SftpBrowser extends JPanel {
         long size = entry.getAttributes().getSize();
         if (size >= 1024 && size < 1024 * 1024) { // KB
             double d = size / 1024.0;
-            humanSize = String.format("%.2f", d) + "KB";
+            humanSize = String.format("%.2f", d) + " KB";
         } else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) {   // MB
             double d = size / 1024.0 / 1024.0;
-            humanSize = String.format("%.2f", d) + "MB";
+            humanSize = String.format("%.2f", d) + " MB";
         } else if (size >= 1024 * 1024 * 1024) {  // GB
             double d = size / 1024.0 / 1024.0 / 1024.0;
-            humanSize = String.format("%.2f", d) + "GB";
+            humanSize = String.format("%.2f", d) + " GB";
         }
         temp[2] = humanSize;
         temp[3] = String.valueOf(entry.getAttributes().getType());
