@@ -104,16 +104,22 @@ public class SftpBrowser extends JPanel {
                     // TODO 1. 检查路径是否存在
                     if (Files.exists(fs.getPath(pathField.getText()))) {
                         log.debug("存在远程路径：" + pathField.getText());
-                        root.removeAllChildren();
                         DefaultMutableTreeNode parent = root;
                         // TODO 2. 添加快速跳转地址栏的树路径 （问题：如何解决节点重复添加的问题）
                         for (String child : pathField.getText().split("/")) {
                             if (child.strip().equals(""))
                                 continue;
-                            DefaultMutableTreeNode temp = new DefaultMutableTreeNode(child);
-                            treeModel.insertNodeInto(temp, parent, 0);
-
-                            parent = temp;
+                            DefaultMutableTreeNode resultNode = findTreeNode(parent, child);
+                            if (resultNode == null){
+                                DefaultMutableTreeNode temp = new DefaultMutableTreeNode(child);
+                                treeModel.insertNodeInto(temp, parent, 0);
+                                parent = temp;
+                            }else {
+                                parent = resultNode;
+                            }
+//                            DefaultMutableTreeNode temp = new DefaultMutableTreeNode(child);
+//                            treeModel.insertNodeInto(temp, parent, 0);
+//                            parent = temp;
                         }
 
                         // TODO 3. 设置地址栏路径为选中和展开状态
@@ -147,17 +153,31 @@ public class SftpBrowser extends JPanel {
 
     /**
      * https://www.it1352.com/957345.html
+     *
      * @param root
      * @param s
      * @return
      */
-    private TreePath find(DefaultMutableTreeNode root, String s) {
+    private TreePath findTreePath(DefaultMutableTreeNode root, String s) {
         @SuppressWarnings("unchecked")
         Enumeration<TreeNode> e = root.depthFirstEnumeration();
         while (e.hasMoreElements()) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>" + node.toString());
             if (node.toString().equalsIgnoreCase(s)) {
                 return new TreePath(node.getPath());
+            }
+        }
+        return null;
+    }
+    private DefaultMutableTreeNode findTreeNode(DefaultMutableTreeNode root, String s) {
+        @SuppressWarnings("unchecked")
+        Enumeration<TreeNode> e = root.depthFirstEnumeration();
+        while (e.hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>" + node.toString());
+            if (node.toString().equalsIgnoreCase(s)) {
+                return node;
             }
         }
         return null;
