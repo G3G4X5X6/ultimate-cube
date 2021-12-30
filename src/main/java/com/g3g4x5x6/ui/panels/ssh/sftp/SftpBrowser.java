@@ -4,7 +4,6 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +21,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedList;
 
 
 @Slf4j
@@ -45,12 +42,12 @@ public class SftpBrowser extends JPanel {
     private JToolBar toolBar;
 
     // TODO 右键菜单动作
-    private JPopupMenu popMenu;
+    private JPopupMenu treePopMenu;
+    private JPopupMenu tablePopMenu;
     private AbstractAction uploadAction;
     private AbstractAction downloadAction;
     private AbstractAction deleteFilesAction;
     private AbstractAction deleteDirsAction;
-    private AbstractAction openAction;
 
     private SftpFileSystem fs;
 
@@ -103,7 +100,7 @@ public class SftpBrowser extends JPanel {
                     String quickPath = pathField.getText();
                     // TODO 1. 检查路径是否存在
                     if (Files.exists(fs.getPath(quickPath))) {
-                        if (!Files.isDirectory(fs.getPath(quickPath))){
+                        if (!Files.isDirectory(fs.getPath(quickPath))) {
                             quickPath = fs.getPath(quickPath).getParent().toString();
                         }
                         DefaultMutableTreeNode parent = root;
@@ -407,50 +404,100 @@ public class SftpBrowser extends JPanel {
             }
         };
 
-        deleteFilesAction = new AbstractAction("删除文件(s)") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("删除文件...");
-                for (int index : myTable.getSelectedRows()) {
-                    String downloadFileName = myTable.getValueAt(index, 0).toString();
-                    // TODO 获取下载文件路径
-                    TreePath dstPath = myTree.getSelectionPath();
-                    String path = convertTreePathToString(dstPath) + "/" + downloadFileName;
-                    log.info("删除的文件：" + path);
-                    try {
-                        Files.delete(fs.getPath(path));
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
-                }
-                freshTable();
-            }
-        };
-
-        deleteDirsAction = new AbstractAction("删除目录(s)") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("删除目录...");
-            }
-        };
-
-        openAction = new AbstractAction("打开") {
+        /**
+         *  测试版功能
+         */
+        AbstractAction openAction = new AbstractAction("打开(s)") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("打开文件...");
                 DialogUtil.info("敬请期待！");
+
             }
         };
-        popMenu = new JPopupMenu();
-        popMenu.add(openAction);
-        popMenu.addSeparator();
-        popMenu.add(uploadAction);
-        popMenu.add(downloadAction);
-        popMenu.addSeparator();
-        popMenu.add(deleteFilesAction);
+        AbstractAction uploadsAction = new AbstractAction("上传(s)") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
 
-        myTree.setComponentPopupMenu(popMenu);
-        myTable.setComponentPopupMenu(popMenu);
+            }
+        };
+        AbstractAction downloadsAction = new AbstractAction("下载(s)") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        };
+
+        AbstractAction deleteDirsAction = new AbstractAction("删除目录(s)") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("删除目录");
+                if (myTree.isSelectionEmpty()) {
+                    DialogUtil.warn("请选择删除目录");
+                } else {
+                    TreePath[] dstPath = myTree.getSelectionPaths();
+                    for (TreePath treePath : dstPath) {
+                        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
+                        String path = convertTreePathToString(treePath);
+                        if (Files.exists(fs.getPath(path))) {
+                            int yesNo = DialogUtil.yesOrNo(App.mainFrame, "确认删除目录：\n" + path);
+                            if (yesNo == 0) {
+                                try {
+                                    Files.delete(fs.getPath(path));
+                                    treeModel.removeNodeFromParent(treeNode);
+                                } catch (IOException ioException) {
+                                    DialogUtil.error(ioException.getMessage() + "\n文件夹不为空，无法删除！");
+                                }
+                            }
+                        }
+                    }
+                    myTree.setSelectionPath(new TreePath(root));
+                }
+            }
+        };
+
+        AbstractAction deleteFilesAction = new AbstractAction("删除文件(s)") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("删除文件");
+                int yesNo = DialogUtil.yesOrNo(App.mainFrame, "确认删除选中文件？");
+                if (yesNo == 0) {
+                    for (int index : myTable.getSelectedRows()) {
+                        String downloadFileName = myTable.getValueAt(index, 0).toString();
+                        // TODO 获取下载文件路径
+                        TreePath dstPath = myTree.getSelectionPath();
+                        String path = convertTreePathToString(dstPath) + "/" + downloadFileName;
+                        log.info("删除的文件：" + path);
+                        try {
+                            Files.delete(fs.getPath(path));
+                        } catch (IOException exception) {
+                            exception.printStackTrace();
+                        }
+                    }
+                    freshTable();
+                } else {
+                    // 取消删除操作
+                }
+            }
+        };
+
+        /**
+         *  目录树右键功能：打开文件、上传（单文件、多文件、选中目录：单目录、多目录）、下载（单文件、多文件、选中目录）、删除
+         */
+        treePopMenu = new JPopupMenu();
+        treePopMenu.add(uploadsAction);
+        treePopMenu.add(downloadsAction);
+        treePopMenu.add(deleteDirsAction);
+        myTree.setComponentPopupMenu(treePopMenu);
+
+        /**
+         *  列表右键功能：上传（单文件、多文件、选中目录）、下载（选中目录）、删除
+         */
+        tablePopMenu = new JPopupMenu();
+        tablePopMenu.add(openAction);
+        tablePopMenu.add(uploadsAction);
+        tablePopMenu.add(downloadsAction);
+        tablePopMenu.add(deleteFilesAction);
+        myTable.setComponentPopupMenu(tablePopMenu);
     }
 
     private Iterable<SftpClient.DirEntry> getDirEntry(String path) {

@@ -10,7 +10,7 @@
 - 新增打开 `本地终端` 菜单功能
 - 新增 `本地终端` 刷新会话功能
 - 新增 `打开工作空间` 菜单功能，打开程序工作目录 `~/home/user/.ultimateshell`
-- TODO SftpBrowser功能完善
+- 新增 `SftpBrowser`->`快速跳转地址栏` 功能
 
 #### Fixed
 - s
