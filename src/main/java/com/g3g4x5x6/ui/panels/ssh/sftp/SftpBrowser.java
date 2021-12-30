@@ -23,6 +23,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedList;
 
 
@@ -105,7 +106,7 @@ public class SftpBrowser extends JPanel {
                         log.debug("存在远程路径：" + pathField.getText());
                         root.removeAllChildren();
                         DefaultMutableTreeNode parent = root;
-                        // TODO 2. 添加快速跳转地址栏的树路径
+                        // TODO 2. 添加快速跳转地址栏的树路径 （问题：如何解决节点重复添加的问题）
                         for (String child : pathField.getText().split("/")) {
                             if (child.strip().equals(""))
                                 continue;
@@ -115,11 +116,10 @@ public class SftpBrowser extends JPanel {
                             parent = temp;
                         }
 
-                        // TODO 3. 添加地址栏路径下的目录和文件
-
-
-                        // TODO 4. 设置地址栏路径为选中和展开状态
+                        // TODO 3. 设置地址栏路径为选中和展开状态
                         TreePath tempPath = new TreePath(treeModel.getPathToRoot(parent));
+                        myTree.setSelectionPath(tempPath);
+                        myTree.scrollPathToVisible(tempPath);
                         myTree.expandPath(tempPath);
                         log.debug("执行了个寂寞");
                     } else {
@@ -143,6 +143,24 @@ public class SftpBrowser extends JPanel {
         toolBar.addSeparator();
         toolBar.add(fileTransfer);
         this.add(toolBar, BorderLayout.NORTH);
+    }
+
+    /**
+     * https://www.it1352.com/957345.html
+     * @param root
+     * @param s
+     * @return
+     */
+    private TreePath find(DefaultMutableTreeNode root, String s) {
+        @SuppressWarnings("unchecked")
+        Enumeration<TreeNode> e = root.depthFirstEnumeration();
+        while (e.hasMoreElements()) {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+            if (node.toString().equalsIgnoreCase(s)) {
+                return new TreePath(node.getPath());
+            }
+        }
+        return null;
     }
 
     private void init() {
