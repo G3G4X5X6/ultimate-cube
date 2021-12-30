@@ -11,6 +11,7 @@ import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 
 import javax.swing.*;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
@@ -44,6 +45,7 @@ public class SftpBrowser extends JPanel {
     // TODO 右键菜单动作
     private JPopupMenu treePopMenu;
     private JPopupMenu tablePopMenu;
+    private JPopupMenu transferPopMenu;
     private AbstractAction uploadAction;
     private AbstractAction downloadAction;
     private AbstractAction deleteFilesAction;
@@ -132,12 +134,22 @@ public class SftpBrowser extends JPanel {
                 JComponent.WHEN_FOCUSED);
 
         // fileTransfer.svg
+        transferPopMenu = new JPopupMenu();
+        TaskProgressPanel task1 = new TaskProgressPanel("上传", 0, 100, "/home/sonarqube/66666666666666666666");
+        TaskProgressPanel task2 = new TaskProgressPanel("上传", 0, 100, "/home/sonarqube/66666666666666666666");
+        TaskProgressPanel task3 = new TaskProgressPanel("下载", 0, 100, "/home/sonarqube/66666666666666666666");
+        task1.setProgressBarValue(30);
+        task2.setProgressBarValue(50);
+        task3.setProgressBarValue(70);
+        transferPopMenu.add(task1);
+        transferPopMenu.add(task2);
+        transferPopMenu.add(task3);
         JButton fileTransfer = new JButton();
         fileTransfer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
         fileTransfer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                log.debug("FileTransfer");
+                transferPopMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
         // 添加工具栏菜单
