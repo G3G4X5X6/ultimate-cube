@@ -5,10 +5,12 @@ import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
+import org.jsoup.internal.StringUtil;
 
 import javax.swing.*;
 import javax.swing.border.SoftBevelBorder;
@@ -22,7 +24,9 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Enumeration;
+import java.util.LinkedList;
 
 
 @Slf4j
@@ -38,9 +42,8 @@ public class SftpBrowser extends JPanel {
     private DefaultTableModel tableModel;
     private String[] columns;
 
-    private JDialog dialog;
-    private JLabel msg;
     private JToolBar toolBar;
+    private String finalPath;
 
     // TODO 右键菜单动作
     private JPopupMenu treePopMenu;
@@ -135,15 +138,12 @@ public class SftpBrowser extends JPanel {
 
         // fileTransfer.svg
         transferPopMenu = new JPopupMenu();
-        TaskProgressPanel task1 = new TaskProgressPanel("上传", 0, 100, "/home/sonarqube/66666666666666666666");
-        TaskProgressPanel task2 = new TaskProgressPanel("上传", 0, 100, "/home/sonarqube/66666666666666666666");
-        TaskProgressPanel task3 = new TaskProgressPanel("下载", 0, 100, "/home/sonarqube/66666666666666666666");
-        task1.setProgressBarValue(30);
-        task2.setProgressBarValue(50);
-        task3.setProgressBarValue(70);
-        transferPopMenu.add(task1);
-        transferPopMenu.add(task2);
-        transferPopMenu.add(task3);
+        transferPopMenu.add(new AbstractAction("无文件传输任务") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //
+            }
+        });
         JButton fileTransfer = new JButton();
         fileTransfer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
         fileTransfer.addMouseListener(new MouseAdapter() {
@@ -200,15 +200,6 @@ public class SftpBrowser extends JPanel {
         columns = new String[]{"文件名", "权限", "大小", "类型", "属组", "修改时间"};
         columnModel = new DefaultTableColumnModel();
         tableModel = new DefaultTableModel();
-
-        // TODO 弹窗提醒
-        dialog = new JDialog();
-        dialog.setTitle("SFTP浏览器");
-        dialog.setModal(true);
-        dialog.setSize(new Dimension(300, 200));
-        dialog.setLocationRelativeTo(null);
-        msg = new JLabel();
-        dialog.add(msg);
     }
 
     private void initTree() {
@@ -217,7 +208,7 @@ public class SftpBrowser extends JPanel {
         render.setLeafIcon(new FlatTreeClosedIcon());
         myTree.setCellRenderer(render);
 
-        DefaultMutableTreeNode child = null;
+        DefaultMutableTreeNode child;
         try {
             for (SftpClient.DirEntry entry : fs.getClient().readDir(root.toString())) {
                 if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
@@ -261,88 +252,10 @@ public class SftpBrowser extends JPanel {
         myTable.getColumn("修改时间").setCellRenderer(centerRenderer);
     }
 
-    private void upload(File file, String path) throws IOException {
-        if (!Files.exists(fs.getPath(path, file.getName())))
-            Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(path, file.getName()));
-        File[] files = file.listFiles();
-        for (File f : files) {
-            log.debug(path + "/" + f.getName());
-            if (f.isDirectory()) {
-                upload(f, path + "/" + file.getName());
-            } else {
-                if (!Files.exists(fs.getPath(path, file.getName(), f.getName())))
-                    Files.copy(Path.of(f.getAbsolutePath()), fs.getPath(path, file.getName(), f.getName()));
-            }
-        }
-    }
-
     /**
      * 右键菜单动作实现
      */
     private void initPopupMenu() {
-        uploadAction = new AbstractAction("上传") {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("上传文件...");
-                // TODO 获取上传目标路径
-                TreePath dstPath = myTree.getSelectionPath();
-                String path = convertTreePathToString(dstPath);
-                if (myTree.isSelectionEmpty()) {
-                    msg.setText("尚未选择上传路径，将使用根目录 / ");
-                    dialog.setVisible(true);
-
-                    try {
-                        // TODO 默认上传至用户目录 getDefaultDir()
-                        path = fs.getDefaultDir().toRealPath().toString();
-                        log.debug("默认用户目录：" + path);
-                        log.debug(path);
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
-                } else {
-
-                }
-
-                // TODO 获取上传文件路径
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-                chooser.setMultiSelectionEnabled(true);
-                int value = chooser.showOpenDialog(SftpBrowser.this);
-                if (value == JFileChooser.APPROVE_OPTION) {
-                    String finalPath = path;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            File[] files = chooser.getSelectedFiles();
-                            for (File file : files) {
-                                if (file.isDirectory()) {
-                                    try {
-                                        upload(file, finalPath);
-                                    } catch (IOException exception) {
-                                        if (exception.getMessage().equals("Permission denied"))
-                                            DialogUtil.error("权限不足！！！");
-                                    }
-                                }
-                                log.debug(finalPath + "/" + file.getName());
-                                if (!Files.exists(fs.getPath(finalPath, file.getName()))) {
-                                    try {
-                                        Files.copy(Path.of(file.getAbsolutePath()), fs.getPath(finalPath, file.getName()));
-                                    } catch (IOException exception) {
-                                        if (exception.getMessage().equals("Permission denied"))
-                                            DialogUtil.error("权限不足！！！");
-                                    }
-                                }
-                            }
-                            freshTable();
-                            TreePath path = myTree.getSelectionPath();
-                            myTree.expandPath(path);
-                        }
-                    }).start();
-                }
-            }
-        };
-
         downloadAction = new AbstractAction("下载") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -430,7 +343,78 @@ public class SftpBrowser extends JPanel {
         AbstractAction uploadsAction = new AbstractAction("上传(s)") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                log.debug("上传(s)");
+                String path = "";
+                if (myTree.isSelectionEmpty()) {
+                    try {
+                        // TODO 默认上传至用户目录 getDefaultDir()
+                        path = fs.getDefaultDir().toRealPath().toString();
+                        log.debug("默认用户目录：" + path);
+                        log.debug(path);
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                } else {
+                    TreePath dstPath = myTree.getSelectionPath();
+                    path = convertTreePathToString(dstPath);
+                }
+                // TODO 获取上传文件路径
+                LinkedList<File> chooserFile = new LinkedList<>();
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                chooser.setMultiSelectionEnabled(true);
+                int value = chooser.showOpenDialog(SftpBrowser.this);
+                if (value == JFileChooser.APPROVE_OPTION) {
+                    File[] files = chooser.getSelectedFiles();
+                    LinkedList<File> fileList = new LinkedList<>();
+                    for (File file : files) {
+                        chooserFile.add(file);
+                        FileUtil.traverseFolder(file, fileList);
+                    }
+                    TaskProgressPanel taskPanel = new TaskProgressPanel("上传", 0, 100, "");
+                    transferPopMenu.add(taskPanel);
+                    String tmpPath = path;
+                    new Thread(() -> {
+                        int fileCount = fileList.size();
+                        for (File file : fileList) {
+                            log.debug(file.getAbsolutePath());
+                            taskPanel.setFileCount(fileCount);
+                            taskPanel.setTaskLabel(file.getAbsolutePath());
+                            taskPanel.setMin(0);
+                            taskPanel.setMax((int) file.length());
+                            try {
+                                for (File f : chooserFile) {
+                                    if (file.getAbsolutePath().contains(f.getAbsolutePath())) {
+                                        log.debug(tmpPath + ">>>>>>>>>>>>>>>>>>index>>>>>>>>>>>>>>>" + file.getAbsolutePath().substring(f.getParent().length()));
+                                        finalPath = Path.of(tmpPath, file.getAbsolutePath().substring(f.getParent().length())).toString();
+                                    }
+                                }
+                                if (Files.isDirectory(fs.getPath(finalPath))){
+                                    Files.createDirectories(fs.getPath(finalPath));
+                                }else{
+                                    Files.createDirectories(fs.getPath(finalPath).getParent());
+                                }
+                                log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>SSH Parent>>>>>>>>>>>>>>>>>>>>>>>>>>" + fs.getPath(finalPath).getParent());
+                                log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>SSH>>>>>>>>>>>>>>>>>>>>>>>>>>" + fs.getPath(finalPath));
+                                FileInputStream fis = new FileInputStream(file);
+                                OutputStream outputStream = Files.newOutputStream(fs.getPath(finalPath));
+                                byte data[] = new byte[1024 * 8];   // 缓冲区
+                                int len = 0;        // 创建长度
+                                int sendLen = 0;    // 已发送长度
+                                while ((len = fis.read(data)) != -1) {
+                                    outputStream.write(data, 0, len);
+                                    outputStream.flush();
+                                    sendLen += len;
+                                    taskPanel.setProgressBarValue(sendLen);
+                                }
+                                fileCount -= 1;
+                            } catch (IOException fileNotFoundException) {
+                                fileNotFoundException.printStackTrace();
+                            }
+                        }
+                        transferPopMenu.remove(taskPanel);
+                    }).start();
+                }
             }
         };
         AbstractAction downloadsAction = new AbstractAction("下载(s)") {
