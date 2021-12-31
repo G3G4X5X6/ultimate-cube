@@ -460,9 +460,7 @@ public class SftpBrowser extends JPanel {
                             exception.printStackTrace();
                         }
                     }
-                    new Thread(()->{
-                        freshTable();
-                    }).start();
+                    freshTable();
                 } else {
                     // 取消删除操作
                 }
@@ -647,9 +645,7 @@ public class SftpBrowser extends JPanel {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
                     // 刷新文件列表
-                    new Thread(()->{
-                        freshTable();
-                    }).start();
+                    freshTable();
                 }
             });
 
