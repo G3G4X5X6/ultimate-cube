@@ -49,10 +49,7 @@ public class SftpBrowser extends JPanel {
     private JPopupMenu treePopMenu;
     private JPopupMenu tablePopMenu;
     private JPopupMenu transferPopMenu;
-    private AbstractAction uploadAction;
     private AbstractAction downloadAction;
-    private AbstractAction deleteFilesAction;
-    private AbstractAction deleteDirsAction;
 
     private SftpFileSystem fs;
 
@@ -138,12 +135,6 @@ public class SftpBrowser extends JPanel {
 
         // fileTransfer.svg
         transferPopMenu = new JPopupMenu();
-        transferPopMenu.add(new AbstractAction("无文件传输任务") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //
-            }
-        });
         JButton fileTransfer = new JButton();
         fileTransfer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
         fileTransfer.addMouseListener(new MouseAdapter() {
@@ -389,9 +380,9 @@ public class SftpBrowser extends JPanel {
                                         finalPath = Path.of(tmpPath, file.getAbsolutePath().substring(f.getParent().length())).toString();
                                     }
                                 }
-                                if (Files.isDirectory(fs.getPath(finalPath))){
+                                if (Files.isDirectory(fs.getPath(finalPath))) {
                                     Files.createDirectories(fs.getPath(finalPath));
-                                }else{
+                                } else {
                                     Files.createDirectories(fs.getPath(finalPath).getParent());
                                 }
                                 log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>SSH Parent>>>>>>>>>>>>>>>>>>>>>>>>>>" + fs.getPath(finalPath).getParent());
@@ -469,7 +460,9 @@ public class SftpBrowser extends JPanel {
                             exception.printStackTrace();
                         }
                     }
-                    freshTable();
+                    new Thread(()->{
+                        freshTable();
+                    }).start();
                 } else {
                     // 取消删除操作
                 }
@@ -654,7 +647,9 @@ public class SftpBrowser extends JPanel {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
                     // 刷新文件列表
-                    freshTable();
+                    new Thread(()->{
+                        freshTable();
+                    }).start();
                 }
             });
 
