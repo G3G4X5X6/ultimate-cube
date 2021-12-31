@@ -673,6 +673,15 @@ public class SftpBrowser extends JPanel {
                     log.debug("结构改变: " + e.getTreePath());
                 }
             });
+
+            this.addMouseListener(new MouseInputAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2){
+                        freshTable();
+                    }
+                }
+            });
         }
     }
 }
