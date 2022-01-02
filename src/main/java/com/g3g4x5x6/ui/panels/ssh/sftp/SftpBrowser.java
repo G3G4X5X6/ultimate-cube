@@ -6,6 +6,7 @@ import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.FileUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -19,8 +20,11 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -327,6 +331,7 @@ public class SftpBrowser extends JPanel {
             }
         };
         AbstractAction downloadsAction = new AbstractAction("下载(s)") {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("下载文件...");
@@ -334,16 +339,69 @@ public class SftpBrowser extends JPanel {
                 if (myTree.isSelectionEmpty()) {
                     DialogUtil.warn("请先选择文件目录");
                 } else {
-                    // 将下载整个目录
-//                    log.debug("=========== myTree.hasFocus() ===========>" + myTree.hasFocus());
                     if (myTable.getSelectedRowCount() < 1) {
                         // TODO 批量下载（单目录、多目录下载）
                         int yesOrNo = DialogUtil.yesOrNo(SftpBrowser.this, "是否确认整目录下载？");
                         if (yesOrNo == 0) {
                             log.debug("================= 确认整目录下载 ================");
-                            // TODO 获取下载文件路径
-                            TreePath dstPath = myTree.getSelectionPath();
-                            String path = convertTreePathToString(dstPath);
+                            JFileChooser chooser = new JFileChooser();
+                            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                            chooser.setMultiSelectionEnabled(false);
+                            int value = chooser.showOpenDialog(SftpBrowser.this);
+                            if (value == JFileChooser.APPROVE_OPTION) {
+                                File outputFile = chooser.getSelectedFile();
+                                // TODO 获取下载文件路径
+                                TreePath dstPath = myTree.getSelectionPath();
+                                String path = convertTreePathToString(dstPath);
+
+                                new Thread(()->{
+                                    TaskProgressPanel taskPanel = new TaskProgressPanel("下载", 0, 100, "");
+                                    transferPopMenu.add(taskPanel);
+                                    AtomicInteger fileCount = new AtomicInteger(0);
+                                    taskPanel.setFileCount("下载完成：" + fileCount.get());
+                                    try {
+                                        Files.walkFileTree(fs.getPath(path), new SimpleFileVisitor<>(){
+                                            @Override
+                                            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                                                String to = outputFile.getPath() + "/" + fs.getPath(path).getParent().relativize(file);
+                                                Path toPath = Path.of(to);
+                                                log.debug("visitFile: " + file.toString());
+                                                log.debug("toPath: " + toPath.toString());
+
+                                                if (Files.isDirectory(toPath)){
+                                                    Files.createDirectories(toPath);
+                                                }else{
+                                                    Files.createDirectories(toPath.getParent());
+                                                }
+                                                BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(toPath.toFile()));
+                                                InputStream inputStream = Files.newInputStream(file);
+                                                log.debug("文件大小：" + Files.size(fs.getPath(path)));
+
+                                                taskPanel.setTaskLabel(file.toString());
+                                                taskPanel.setMin(0);
+                                                taskPanel.setMax((int) Files.size(file));
+                                                byte[] buf = new byte[1024 * 8];
+                                                int bytesRead;
+                                                int sendLen = 0;
+                                                while ((bytesRead = inputStream.read(buf)) != -1) {
+                                                    outputStream.write(buf, 0, bytesRead);
+                                                    sendLen += bytesRead;
+                                                    taskPanel.setProgressBarValue(sendLen);
+                                                }
+                                                outputStream.flush();
+                                                outputStream.close();
+                                                inputStream.close();
+                                                int count = fileCount.addAndGet(+1);
+                                                taskPanel.setFileCount("下载完成：" + count);
+                                                return FileVisitResult.CONTINUE;
+                                            }
+                                        });
+                                    } catch (IOException ioException) {
+                                        ioException.printStackTrace();
+                                    }
+                                    transferPopMenu.remove(taskPanel);
+                                }).start();
+                            }
                         }
                     } else {
                         // TODO 文件下载（单文件，多文件下载）
@@ -394,7 +452,8 @@ public class SftpBrowser extends JPanel {
                                         outputStream.flush();
                                         outputStream.close();
                                         inputStream.close();
-                                        fileCount.addAndGet(-1);
+                                        int count = fileCount.addAndGet(-1);
+                                        taskPanel.setFileCount(count);
                                         log.info("下载完成：" + destPath);
                                     } catch (IOException fileNotFoundException) {
                                         fileNotFoundException.printStackTrace();

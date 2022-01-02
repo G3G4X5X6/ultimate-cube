@@ -56,4 +56,7 @@ public class TaskProgressPanel extends JPanel {
     public void setFileCount(int count){
         fileCount.setText("文件数：" + count);
     }
+    public void setFileCount(String countLabel){
+        fileCount.setText(countLabel);
+    }
 }
