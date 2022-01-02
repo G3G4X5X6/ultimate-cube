@@ -11,6 +11,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
+import org.apache.sshd.sftp.common.SftpConstants;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -354,7 +355,7 @@ public class SftpBrowser extends JPanel {
                             if (value == JFileChooser.APPROVE_OPTION) {
                                 File outputFile = chooser.getSelectedFile();
                                 // TODO 获取下载文件路径
-                                for (TreePath dstPath: myTree.getSelectionPaths()){
+                                for (TreePath dstPath : myTree.getSelectionPaths()) {
                                     String path = convertTreePathToString(dstPath);
                                     downloadRemoteDir(path, outputFile);
                                 }
@@ -432,10 +433,10 @@ public class SftpBrowser extends JPanel {
                 String dir = JOptionPane.showInputDialog(App.mainFrame, "新建目录名");
                 TreePath dstPath = myTree.getSelectionPath();
                 String path = convertTreePathToString(dstPath);
-                if (dir != null){
-                    if (Files.exists(fs.getPath(path + "/" + dir))){
+                if (dir != null) {
+                    if (Files.exists(fs.getPath(path + "/" + dir))) {
                         DialogUtil.warn("已存在目录：" + path + "/" + dir);
-                    }else{
+                    } else {
                         Files.createDirectories(fs.getPath(path + "/" + dir));
 
                         DefaultMutableTreeNode node = new DefaultMutableTreeNode(dir);
@@ -644,7 +645,47 @@ public class SftpBrowser extends JPanel {
             humanSize = String.format("%.2f", d) + " GB";
         }
         temp[2] = humanSize;
-        temp[3] = String.valueOf(entry.getAttributes().getType());
+
+        /**
+         *     public static final int SSH_FILEXFER_TYPE_REGULAR = 1;
+         *     public static final int SSH_FILEXFER_TYPE_DIRECTORY = 2;
+         *     public static final int SSH_FILEXFER_TYPE_SYMLINK = 3;
+         *     public static final int SSH_FILEXFER_TYPE_SPECIAL = 4;
+         *     public static final int SSH_FILEXFER_TYPE_UNKNOWN = 5;
+         *     public static final int SSH_FILEXFER_TYPE_SOCKET = 6; // v5
+         *     public static final int SSH_FILEXFER_TYPE_CHAR_DEVICE = 7; // v5
+         *     public static final int SSH_FILEXFER_TYPE_BLOCK_DEVICE = 8; // v5
+         *     public static final int SSH_FILEXFER_TYPE_FIFO = 9; // v5
+         */
+        switch (entry.getAttributes().getType()){
+            case SftpConstants.SSH_FILEXFER_TYPE_REGULAR:
+                temp[3] = "Regular";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_DIRECTORY:
+                temp[3] = "Directory";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_SYMLINK:
+                temp[3] = "Symlink";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_SPECIAL:
+                temp[3] = "Special";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_UNKNOWN:
+                temp[3] = "Unknown";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_SOCKET:
+                temp[3] = "Socket";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_CHAR_DEVICE:
+                temp[3] = "Char_Device";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_BLOCK_DEVICE:
+                temp[3] = "Block_Device";
+                break;
+            case SftpConstants.SSH_FILEXFER_TYPE_FIFO:
+                temp[3] = "FIFO";
+                break;
+        }
         temp[4] = entry.getLongFilename().split("\\s+")[2] + "/" + entry.getLongFilename().split("\\s+")[3];
         temp[5] = entry.getAttributes().getModifyTime().toString();
 
@@ -671,8 +712,6 @@ public class SftpBrowser extends JPanel {
                 if (entry.getAttributes().isDirectory()) {
                     // TODO 当 fs 断开重连时， 判断选中节点下是否已存在相同子节点，应避免重复添加子节点
                     if (!currentTreeNode.isLeaf()) {
-                        log.debug("================== getChildAt() =>" + currentTreeNode.getChildAt(0).toString());
-                        log.debug("================== getChildCount() =>" + currentTreeNode.getChildCount());
                         boolean flag = true;
                         for (int i = 0; i < currentTreeNode.getChildCount(); i++) {
                             if (currentTreeNode.getChildAt(i).toString().equals(entry.getFilename())) {

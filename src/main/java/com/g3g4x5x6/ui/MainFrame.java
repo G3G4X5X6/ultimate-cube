@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.sshd.common.util.OsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -325,7 +326,18 @@ public class MainFrame extends JFrame implements MouseListener {
         leading.add(dashboardBtn);
 //        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
         // TODO 选项卡面板后置工具栏，待实现
-        JButton trailMenuBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg"));
+        String iconPath = null;
+        if (OsUtils.isWin32()){
+            // windows.svg
+            iconPath = "com/g3g4x5x6/ui/icons/windows.svg";
+        }else if (OsUtils.isUNIX()){
+            // linux.svg
+            iconPath = "com/g3g4x5x6/ui/icons/linux.svg";
+        }else if (OsUtils.isOSX()){
+            // macOS.svg
+            iconPath = "com/g3g4x5x6/ui/icons/macOS.svg";
+        }
+        JButton trailMenuBtn = new JButton(new FlatSVGIcon(iconPath));
         trailMenuBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -334,8 +346,8 @@ public class MainFrame extends JFrame implements MouseListener {
         });
         trailing.add(addBtn);
         trailing.add(Box.createHorizontalGlue());
-        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
-        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
+//        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
+//        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
