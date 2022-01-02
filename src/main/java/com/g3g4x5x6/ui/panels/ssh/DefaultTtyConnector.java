@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.PtyChannelConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.*;
@@ -24,7 +25,6 @@ public class DefaultTtyConnector implements TtyConnector {
     private Map<String, ?> env;
 
     private Dimension myPendingTermSize;
-    private Dimension pixelSize;
 
     private PipedOutputStream channelOut;
     private InputStream channelIn;
@@ -62,8 +62,11 @@ public class DefaultTtyConnector implements TtyConnector {
         channel.setIn(input);
         channel.setOut(output);
         channel.setErr(output);
+//        channel.setPtyLines(40);
+//        channel.setPtyColumns(140);
         channel.open().verify(3000, TimeUnit.MILLISECONDS);
-
+//        channel.setPtyLines(40);
+//        channel.setPtyColumns(140);
         return channel;
     }
 
@@ -77,6 +80,9 @@ public class DefaultTtyConnector implements TtyConnector {
         Map<String, String> env = new LinkedHashMap<>();
         String lang = System.getenv().get("LANG");
         env.put("LANG", lang != null ? lang : "zh_CN.UTF-8");
+        env.put("compression.s2c", "zlib,none");
+        env.put("compression.c2s", "zlib,none");
+        env.put("StrictHostKeyChecking", "no");
         return env;
     }
 
@@ -141,42 +147,26 @@ public class DefaultTtyConnector implements TtyConnector {
     }
 
     @Override
-    public void resize(Dimension termWinSize, Dimension pixelSize) {
+    public void resize(@NotNull Dimension termWinSize) {
         log.debug(termWinSize.height + ":" + termWinSize.width);
         this.myPendingTermSize = termWinSize;
-        this.pixelSize = pixelSize;
         if (this.channel != null) {
             this.resizeImmediately();
         }
     }
 
-//    @Override
-//    public void resize(@NotNull Dimension termWinSize) {
-//        log.debug(termWinSize.height + ":" + termWinSize.width);
-//        this.myPendingTermSize = termWinSize;
-//        if (this.channel != null) {
-//            this.resizeImmediately();
-//        }
-//    }
-
     private void resizeImmediately() {
         if (this.myPendingTermSize != null) {
             this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
-            if (this.pixelSize != null){
-                this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, pixelSize.width, pixelSize.height);
-            }
             this.myPendingTermSize = null;
-            this.pixelSize = null;
         }
 
     }
 
     private void setPtySize(int col, int row, int wp, int hp) {
         log.debug(col + ":"  + row +"<=>" + wp + ":" + hp);
-        ptyConfig.setPtyColumns(col);
-        ptyConfig.setPtyLines(row);
-        ptyConfig.setPtyWidth(col);
-        ptyConfig.setPtyHeight(row);
+        channel.setPtyColumns(col);
+        channel.setPtyLines(row);
     }
 
 }
