@@ -5,6 +5,7 @@ import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
@@ -44,10 +45,11 @@ public class SshTabbedPane extends JTabbedPane {
 
         init();
 
-        this.sshPane = createTerminalWidget();
+//        this.sshPane = createTerminalWidget();
+        this.sshPane = createTerminalWidget(hostField, portField, userField, passField);
         this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
+        this.editorPane = new EditorPane(this.sftpFileSystem);
         this.monitorPane = new MonitorPane(this.session);
-        this.editorPane = new EditorPane(sftpFileSystem);
 
         this.addTab("SSH", this.sshPane);
         this.addTab("SFTP", this.sftpBrowser);
@@ -97,6 +99,32 @@ public class SshTabbedPane extends JTabbedPane {
         widget.setTtyConnector(new DefaultTtyConnector(session));
         widget.start();
         return widget;
+    }
+
+    @Deprecated
+    @NotNull
+    public static JediTermWidget createTerminalWidget(String host, String port, String username, String password) {
+        JediTermWidget widget = new JediTermWidget(new SshSettingsProvider());
+        widget.setTtyConnector(createTtyConnector(host, port, username, password));
+        widget.start();
+        return widget;
+    }
+
+    // TODO 创建 sFTP channel
+    @Deprecated
+    private @NotNull
+    static TtyConnector createTtyConnector(String host, String port, String username, String password) {
+        try {
+            if (username.equals("")) {
+                return new MyJSchShellTtyConnector(host, Integer.parseInt(port));
+            }
+            if (password.equals("")) {
+                return new MyJSchShellTtyConnector(host, port, username);
+            }
+            return new MyJSchShellTtyConnector(host, Integer.parseInt(port), username, password);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private void customComponents() {

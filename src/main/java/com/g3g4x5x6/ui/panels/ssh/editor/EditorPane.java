@@ -14,8 +14,6 @@ import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpPath;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.fife.ui.rtextarea.SearchContext;
-import org.fife.ui.rtextarea.SearchEngine;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -31,8 +29,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -59,19 +57,11 @@ public class EditorPane extends JPanel {
     private RSyntaxTextArea textArea;
     private RTextScrollPane sp;
 
-    // TODO statusBar
-    private JTextField searchField;
-    private JCheckBox regexCB;
-    private JCheckBox matchCaseCB;
-
-    // 远程文件系统
-    private SshClient client;
-    private ClientSession session;
     private SftpFileSystem fs;
 
     public EditorPane(SftpFileSystem sftpFileSystem) {
         this();
-        this.fs = fs;
+        this.fs = sftpFileSystem;
     }
 
     public EditorPane() {
@@ -238,10 +228,22 @@ public class EditorPane extends JPanel {
         checkBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
         checkBtn.setToolTipText("安全检查(shell)");
 
+        // 搜索
+        JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
+        searchBtn.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                SearchDialog searchDialog = new SearchDialog(textArea);
+                searchDialog.setVisible(true);
+                searchDialog.setLocationRelativeTo(EditorPane.this);
+            }
+        });
+
         titleField = new JTextField();
         titleField.setColumns(15);
         titleField.putClientProperty("JTextField.placeholderText", "远程文件的绝对路径，例如： /home/g3g4x5x6/hello.sh");
 
+        // 主题设置
         JButton themeBtn = new JButton("default");
         themeBtn.setSelected(true);
         String[] theme_list = new String[]{"default", "dark", "default-alt", "druid", "eclipse", "idea", "monokai", "vs"};
@@ -277,14 +279,10 @@ public class EditorPane extends JPanel {
             try {
                 String langStr = (String) field.get(syntaxConstantsClass);
                 JMenuItem temp = new JMenuItem(langStr);
-                temp.addActionListener(new ActionListener() {
-                    @SneakyThrows
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        textArea.setSyntaxEditingStyle(langStr);
-                        langBtn.setToolTipText(langStr);
-                        langBtn.setText(langStr);
-                    }
+                temp.addActionListener(e -> {
+                    textArea.setSyntaxEditingStyle(langStr);
+                    langBtn.setToolTipText(langStr);
+                    langBtn.setText(langStr);
                 });
                 langMenu.add(temp);
             } catch (IllegalAccessException e) {
@@ -307,6 +305,8 @@ public class EditorPane extends JPanel {
         toolBar.addSeparator();
         toolBar.add(checkBtn);
         toolBar.addSeparator();
+        toolBar.add(searchBtn);
+        toolBar.addSeparator();
         toolBar.add(titleField);
         toolBar.addSeparator();
         toolBar.add(themeBtn);
@@ -323,7 +323,6 @@ public class EditorPane extends JPanel {
     }
 
     private RSyntaxTextArea createTextArea() {
-
         RSyntaxTextArea textArea = new RSyntaxTextArea();
         textArea.setCaretPosition(0);
         textArea.requestFocusInWindow();
@@ -340,7 +339,7 @@ public class EditorPane extends JPanel {
 
         int ctrlShift = InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, ctrlShift), "copyAsStyledText");
-        am.put("copyAsStyledText", new RSyntaxTextAreaEditorKit.CopyAsStyledTextAction());
+        am.put("copyAsStyledText", new RSyntaxTextAreaEditorKit.CopyCutAsStyledTextAction(true));
 
         try {
 
@@ -366,7 +365,7 @@ public class EditorPane extends JPanel {
     private Action createCopyAsStyledTextAction(String themeName) throws IOException {
         String resource = "/org/fife/ui/rsyntaxtextarea/themes/" + themeName + ".xml";
         Theme theme = Theme.load(this.getClass().getResourceAsStream(resource));
-        return new RSyntaxTextAreaEditorKit.CopyAsStyledTextAction(themeName, theme);
+        return new RSyntaxTextAreaEditorKit.CopyCutAsStyledTextAction(themeName, theme, true);
     }
 
     private void insertOrUpdate() {
@@ -426,20 +425,7 @@ public class EditorPane extends JPanel {
     }
 
     private void openNote(String id) {
-        String sqlForId = "SELECT * FROM note where id=" + id;
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sqlForId);
-            while (resultSet.next()) {
-                titleField.setText(resultSet.getString("title"));
-                textArea.setText(new String(Base64.getDecoder().decode(resultSet.getString("content")), "utf-8"));
-            }
-            DbUtil.close(statement);
-        } catch (SQLException | UnsupportedEncodingException throwables) {
-            throwables.printStackTrace();
-        }
-
+        DialogUtil.info("敬请期待");
     }
 
     private void importFile() {

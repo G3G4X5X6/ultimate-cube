@@ -3,6 +3,8 @@ package com.g3g4x5x6.ui.panels.dashboard;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
+import com.g3g4x5x6.ui.panels.ssh.editor.SearchDialog;
 import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
@@ -240,7 +242,9 @@ public class NotePane extends JPanel {
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogUtil.info("敬请期待！");
+                SearchDialog searchDialog = new SearchDialog(textArea);
+                searchDialog.setVisible(true);
+                searchDialog.setLocationRelativeTo(NotePane.this);
             }
         });
 
@@ -297,7 +301,7 @@ public class NotePane extends JPanel {
 
         int ctrlShift = InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_C, ctrlShift), "copyAsStyledText");
-        am.put("copyAsStyledText", new RSyntaxTextAreaEditorKit.CopyAsStyledTextAction());
+        am.put("copyAsStyledText", new RSyntaxTextAreaEditorKit.CopyCutAsStyledTextAction(true));
 
         try {
 
@@ -323,7 +327,7 @@ public class NotePane extends JPanel {
     private Action createCopyAsStyledTextAction(String themeName) throws IOException {
         String resource = "/org/fife/ui/rsyntaxtextarea/themes/" + themeName + ".xml";
         Theme theme = Theme.load(this.getClass().getResourceAsStream(resource));
-        return new RSyntaxTextAreaEditorKit.CopyAsStyledTextAction(themeName, theme);
+        return new RSyntaxTextAreaEditorKit.CopyCutAsStyledTextAction(themeName, theme, true);
     }
 
     private void insertOrUpdate() throws UnsupportedEncodingException {
