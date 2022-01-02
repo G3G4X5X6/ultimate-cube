@@ -6,6 +6,7 @@ import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.FileUtil;
+import com.g3g4x5x6.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
@@ -279,6 +280,7 @@ public class SftpBrowser extends JPanel {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 chooser.setMultiSelectionEnabled(true);
+                chooser.setDialogTitle("选择上传路径");
                 int value = chooser.showOpenDialog(SftpBrowser.this);
                 if (value == JFileChooser.APPROVE_OPTION) {
                     File[] files = chooser.getSelectedFiles();
@@ -347,60 +349,15 @@ public class SftpBrowser extends JPanel {
                             JFileChooser chooser = new JFileChooser();
                             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                             chooser.setMultiSelectionEnabled(false);
+                            chooser.setDialogTitle("选择保存路径");
                             int value = chooser.showOpenDialog(SftpBrowser.this);
                             if (value == JFileChooser.APPROVE_OPTION) {
                                 File outputFile = chooser.getSelectedFile();
                                 // TODO 获取下载文件路径
-                                TreePath dstPath = myTree.getSelectionPath();
-                                String path = convertTreePathToString(dstPath);
-
-                                new Thread(()->{
-                                    TaskProgressPanel taskPanel = new TaskProgressPanel("下载", 0, 100, "");
-                                    transferPopMenu.add(taskPanel);
-                                    AtomicInteger fileCount = new AtomicInteger(0);
-                                    taskPanel.setFileCount("下载完成：" + fileCount.get());
-                                    try {
-                                        Files.walkFileTree(fs.getPath(path), new SimpleFileVisitor<>(){
-                                            @Override
-                                            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                                                String to = outputFile.getPath() + "/" + fs.getPath(path).getParent().relativize(file);
-                                                Path toPath = Path.of(to);
-                                                log.debug("visitFile: " + file.toString());
-                                                log.debug("toPath: " + toPath.toString());
-
-                                                if (Files.isDirectory(toPath)){
-                                                    Files.createDirectories(toPath);
-                                                }else{
-                                                    Files.createDirectories(toPath.getParent());
-                                                }
-                                                BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(toPath.toFile()));
-                                                InputStream inputStream = Files.newInputStream(file);
-                                                log.debug("文件大小：" + Files.size(fs.getPath(path)));
-
-                                                taskPanel.setTaskLabel(file.toString());
-                                                taskPanel.setMin(0);
-                                                taskPanel.setMax((int) Files.size(file));
-                                                byte[] buf = new byte[1024 * 8];
-                                                int bytesRead;
-                                                int sendLen = 0;
-                                                while ((bytesRead = inputStream.read(buf)) != -1) {
-                                                    outputStream.write(buf, 0, bytesRead);
-                                                    sendLen += bytesRead;
-                                                    taskPanel.setProgressBarValue(sendLen);
-                                                }
-                                                outputStream.flush();
-                                                outputStream.close();
-                                                inputStream.close();
-                                                int count = fileCount.addAndGet(+1);
-                                                taskPanel.setFileCount("下载完成：" + count);
-                                                return FileVisitResult.CONTINUE;
-                                            }
-                                        });
-                                    } catch (IOException ioException) {
-                                        ioException.printStackTrace();
-                                    }
-                                    transferPopMenu.remove(taskPanel);
-                                }).start();
+                                for (TreePath dstPath: myTree.getSelectionPaths()){
+                                    String path = convertTreePathToString(dstPath);
+                                    downloadRemoteDir(path, outputFile);
+                                }
                             }
                         }
                     } else {
@@ -410,6 +367,7 @@ public class SftpBrowser extends JPanel {
                         JFileChooser chooser = new JFileChooser();
                         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         chooser.setMultiSelectionEnabled(false);
+                        chooser.setDialogTitle("选择保存路径");
                         int value = chooser.showOpenDialog(SftpBrowser.this);
                         if (value == JFileChooser.APPROVE_OPTION) {
                             File outputFile = chooser.getSelectedFile();
@@ -449,7 +407,7 @@ public class SftpBrowser extends JPanel {
                                             sendLen += bytesRead;
                                             taskPanel.setProgressBarValue(sendLen);
                                         }
-                                        outputStream.flush();
+                                        outputStream.flush();   //
                                         outputStream.close();
                                         inputStream.close();
                                         int count = fileCount.addAndGet(-1);
@@ -467,7 +425,28 @@ public class SftpBrowser extends JPanel {
             }
         };
 
-        AbstractAction deleteDirsAction = new AbstractAction("删除目录(s)") {
+        AbstractAction newDirAction = new AbstractAction("新建目录") {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String dir = JOptionPane.showInputDialog(App.mainFrame, "新建目录名");
+                TreePath dstPath = myTree.getSelectionPath();
+                String path = convertTreePathToString(dstPath);
+                if (dir != null){
+                    if (Files.exists(fs.getPath(path + "/" + dir))){
+                        DialogUtil.warn("已存在目录：" + path + "/" + dir);
+                    }else{
+                        Files.createDirectories(fs.getPath(path + "/" + dir));
+
+                        DefaultMutableTreeNode node = new DefaultMutableTreeNode(dir);
+                        DefaultMutableTreeNode parent = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
+                        treeModel.insertNodeInto(node, parent, 0);
+                    }
+                }
+            }
+        };
+
+        AbstractAction deleteDirsAction = new AbstractAction("删除目录") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("删除目录");
@@ -483,6 +462,7 @@ public class SftpBrowser extends JPanel {
                             if (yesNo == 0) {
                                 try {
                                     Files.delete(fs.getPath(path));
+                                    myTree.setSelectionPath(myTree.getSelectionPath().getParentPath());
                                     treeModel.removeNodeFromParent(treeNode);
                                 } catch (IOException ioException) {
                                     DialogUtil.error(ioException.getMessage() + "\n文件夹不为空，无法删除！");
@@ -490,7 +470,6 @@ public class SftpBrowser extends JPanel {
                             }
                         }
                     }
-                    myTree.setSelectionPath(new TreePath(root));
                 }
             }
         };
@@ -520,13 +499,37 @@ public class SftpBrowser extends JPanel {
             }
         };
 
+        AbstractAction deleteForceAction = new AbstractAction("强制删除(rm -rf)") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TreePath dstPath = myTree.getSelectionPath();
+                String path = convertTreePathToString(dstPath);
+                int yesOrNo = DialogUtil.yesOrNo(SftpBrowser.this, "是否强制删除目录: " + path + " ?");
+                if (yesOrNo == 0) {
+                    try {
+                        SshUtil.exec(fs.getClientSession(), "rm -rf " + path);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                        DialogUtil.error(exception.getMessage());
+                    }
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
+                    myTree.setSelectionPath(myTree.getSelectionPath().getParentPath());
+                    treeModel.removeNodeFromParent(node);
+                }
+            }
+        };
+
         /**
          *  目录树右键功能：打开文件、上传（单文件、多文件、选中目录：单目录、多目录）、下载（单文件、多文件、选中目录）、删除
          */
         treePopMenu = new JPopupMenu();
         treePopMenu.add(uploadsAction);
         treePopMenu.add(downloadsAction);
+        treePopMenu.addSeparator();
+        treePopMenu.add(newDirAction);
         treePopMenu.add(deleteDirsAction);
+        treePopMenu.addSeparator();
+        treePopMenu.add(deleteForceAction);
         myTree.setComponentPopupMenu(treePopMenu);
 
         /**
@@ -538,6 +541,56 @@ public class SftpBrowser extends JPanel {
         tablePopMenu.add(downloadsAction);
         tablePopMenu.add(deleteFilesAction);
         myTable.setComponentPopupMenu(tablePopMenu);
+    }
+
+    private void downloadRemoteDir(String path, File outputFile) {
+        new Thread(() -> {
+            TaskProgressPanel taskPanel = new TaskProgressPanel("下载", 0, 100, "");
+            transferPopMenu.add(taskPanel);
+            AtomicInteger fileCount = new AtomicInteger(0);
+            taskPanel.setFileCount("下载完成：" + fileCount.get());
+            try {
+                Files.walkFileTree(fs.getPath(path), new SimpleFileVisitor<>() {
+                    @Override
+                    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        String to = outputFile.getPath() + "/" + fs.getPath(path).getParent().relativize(file);
+                        Path toPath = Path.of(to);
+                        log.debug("visitFile: " + file.toString());
+                        log.debug("toPath: " + toPath.toString());
+
+                        if (Files.isDirectory(toPath)) {
+                            Files.createDirectories(toPath);
+                        } else {
+                            Files.createDirectories(toPath.getParent());
+                        }
+                        BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(toPath.toFile()));
+                        InputStream inputStream = Files.newInputStream(file);
+                        log.debug("文件大小：" + Files.size(fs.getPath(path)));
+
+                        taskPanel.setTaskLabel(file.toString());
+                        taskPanel.setMin(0);
+                        taskPanel.setMax((int) Files.size(file));
+                        byte[] buf = new byte[1024 * 8];
+                        int bytesRead;
+                        int sendLen = 0;
+                        while ((bytesRead = inputStream.read(buf)) != -1) {
+                            outputStream.write(buf, 0, bytesRead);
+                            sendLen += bytesRead;
+                            taskPanel.setProgressBarValue(sendLen);
+                        }
+                        outputStream.flush();   //
+                        outputStream.close();
+                        inputStream.close();
+                        int count = fileCount.addAndGet(+1);
+                        taskPanel.setFileCount("下载完成：" + count);
+                        return FileVisitResult.CONTINUE;
+                    }
+                });
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            transferPopMenu.remove(taskPanel);
+        }).start();
     }
 
     private Iterable<SftpClient.DirEntry> getDirEntry(String path) {
@@ -565,6 +618,8 @@ public class SftpBrowser extends JPanel {
         }
         tempPath.deleteCharAt(tempPath.length() - 1);
 
+        if (tempPath.toString().startsWith("//"))
+            return tempPath.substring(1);
         return tempPath.toString();
     }
 

@@ -242,7 +242,7 @@ public class EditorPane extends JPanel {
 
         titleField = new JTextField();
         titleField.setColumns(15);
-        titleField.putClientProperty("JTextField.placeholderText", "文件的绝对路径，例如： /home/security/hello.sh");
+        titleField.putClientProperty("JTextField.placeholderText", "远程文件的绝对路径，例如： /home/g3g4x5x6/hello.sh");
 
         toolBar.add(listBtn);
         toolBar.add(addBtn);

@@ -10,6 +10,7 @@ import org.apache.sshd.common.channel.Channel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
@@ -99,6 +100,36 @@ public class SshUtil {
             return responseStream.toString();
         } finally {
             client.stop();
+        }
+    }
+
+    /**
+     * Test
+     * @param session
+     * @param command
+     * @return
+     * @throws Exception
+     */
+    public static String execCmd(ClientSession session, String command) throws Exception {
+        try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();
+             ClientChannel channel = session.createChannel(Channel.CHANNEL_SHELL)) {
+            channel.setOut(responseStream);
+            try {
+                channel.open().verify(3, TimeUnit.SECONDS);
+                try (OutputStream pipedIn = channel.getInvertedIn()) {
+                    pipedIn.write(command.getBytes());
+                    pipedIn.flush();
+                }
+
+                channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
+                        TimeUnit.SECONDS.toMillis(3));
+                String responseString = new String(responseStream.toByteArray());
+                System.out.println(responseString);
+                return responseString;
+            } finally {
+                channel.close(false);
+                return null;
+            }
         }
     }
 
