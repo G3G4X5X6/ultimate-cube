@@ -7,6 +7,7 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.Version;
+import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.console.ConsolePane;
 import com.g3g4x5x6.ui.panels.tools.ExternalToolIntegration;
@@ -477,6 +478,8 @@ public class MainFrame extends JFrame implements MouseListener {
     private JPopupMenu popupMenu = new JPopupMenu();
     private JPopupMenu trailPopupMenu = new JPopupMenu();
 
+    private static EmbedEditor embedEditor;
+
     private String latestVersion;
 
     // TODO 菜单动作
@@ -509,7 +512,10 @@ public class MainFrame extends JFrame implements MouseListener {
     private AbstractAction myEditorAction = new AbstractAction("内置编辑器") {
         public void actionPerformed(final ActionEvent e) {
             // TODO 内置编辑器
-            DialogUtil.info("敬请期待");
+            if (embedEditor == null){
+                embedEditor = new EmbedEditor();
+            }
+            embedEditor.setVisible(true);
         }
     };
 
