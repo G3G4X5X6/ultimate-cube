@@ -1,6 +1,8 @@
 package com.g3g4x5x6.ui.embed.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.components.FlatButton;
+import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
@@ -11,8 +13,8 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static com.formdev.flatlaf.FlatClientProperties.*;
@@ -32,6 +34,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JMenu runMenu = new JMenu("运行");
     private JMenu pluginMenu = new JMenu("插件");
     private JMenu winMenu = new JMenu("窗口");
+    private JMenu aboutMenu = new JMenu("关于");
 
     private JToolBar toolBar = new JToolBar();
     private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
@@ -50,7 +53,6 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JPopupMenu trailPopupMenu = new JPopupMenu();
 
     private LinkedList<EditorPanel> globalWindows = new LinkedList<>();
-    private LinkedHashMap<EditorPanel, Integer> tmpWindows = new LinkedHashMap<>();     // <EditorPanel, index>
 
     public EmbedEditor() {
         this.setLayout(new BorderLayout());
@@ -58,6 +60,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
         this.setSize(new Dimension(1200, 700));
         this.setPreferredSize(new Dimension(1200, 700));
         this.setLocationRelativeTo(null);
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
@@ -70,6 +73,27 @@ public class EmbedEditor extends JFrame implements ActionListener {
         menuBar.add(runMenu);
         menuBar.add(pluginMenu);
         menuBar.add(winMenu);
+        menuBar.add(aboutMenu);
+        // TODO 置顶图标按钮
+        FlatToggleButton toggleButton = new FlatToggleButton();
+        toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
+        toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        toggleButton.setToolTipText("窗口置顶");
+        toggleButton.setFocusable(false);
+        toggleButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toggleButton.isSelected()) {
+                    setAlwaysOnTop(true);
+                    toggleButton.setToolTipText("取消置顶");
+                } else {
+                    setAlwaysOnTop(false);
+                    toggleButton.setToolTipText("窗口置顶");
+                }
+            }
+        });
+        menuBar.add(Box.createGlue());
+        menuBar.add(toggleButton);
 
         toolBar.setFloatable(false);
         toolBar.add(newBtn);
@@ -94,7 +118,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
 
         statusBar = new JToolBar();
         statusBar.setFloatable(false);
-        statusBar.add(new JLabel("文本文件"));
+        initStatusBar();
 
         this.setJMenuBar(menuBar);
         this.add(toolBar, BorderLayout.NORTH);
@@ -103,20 +127,20 @@ public class EmbedEditor extends JFrame implements ActionListener {
     }
 
     private void initToolbarAction() {
-        newBtn.registerKeyboardAction(new ActionListener() {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                quickAction("newAction");
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
-        saveBtn.registerKeyboardAction(new ActionListener() {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                quickAction("saveAction");
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        newBtn.setToolTipText("新建(N)");
+        newBtn.addActionListener(newAction);
+        newBtn.registerKeyboardAction(newAction, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        openBtn.setToolTipText("打开(O)");
+        saveBtn.setToolTipText("保存(S)");
+        saveBtn.addActionListener(saveAction);
+        saveBtn.registerKeyboardAction(saveAction, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        saveAllBtn.setToolTipText("全部保存(E)");   // Ctrl + E
+        closeBtn.setToolTipText("关闭(C)");
+        closeAllBtn.setToolTipText("全部关闭(E)");  // Ctrl + Alt + E
+    }
+
+    private void initStatusBar() {
+        statusBar.add(new JLabel("文本文件"));
     }
 
     private void initClosableTabs(JTabbedPane tabbedPane) {
@@ -245,4 +269,20 @@ public class EmbedEditor extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         log.debug(e.getActionCommand());
     }
+
+    AbstractAction newAction = new AbstractAction("newAction") {
+        @SneakyThrows
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            quickAction("newAction");
+        }
+    };
+
+    AbstractAction saveAction = new AbstractAction("saveAction") {
+        @SneakyThrows
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            quickAction("saveAction");
+        }
+    };
 }

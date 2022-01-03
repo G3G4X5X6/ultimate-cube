@@ -40,6 +40,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static com.formdev.flatlaf.FlatClientProperties.*;
@@ -58,7 +59,7 @@ public class MainFrame extends JFrame implements MouseListener {
         this.setMinimumSize(new Dimension(900, 600));
         this.setPreferredSize(new Dimension(1000, 600));
         this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon(this.getClass().getClassLoader().getResource("icon.png")).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
 
         // 初始化 ”菜单栏“
         initMenuBar();
@@ -133,9 +134,8 @@ public class MainFrame extends JFrame implements MouseListener {
         helpMenu.add(aboutMe);
 
         // 工具菜单
-        JMenu myToolMenu = new JMenu("内置工具");
-        myToolMenu.add(myEditorAction);
-        toolMenu.add(myToolMenu);
+        toolMenu.add(myEditorAction);
+        toolMenu.addSeparator();
         JMenu otherToolMenu = new JMenu("杂七杂八");
         otherToolMenu.add(encodeConversionAction);
         otherToolMenu.add(colorPickerAction);
@@ -148,6 +148,11 @@ public class MainFrame extends JFrame implements MouseListener {
         freeRdpItem.setAccelerator(KeyStroke.getKeyStroke('D', InputEvent.ALT_DOWN_MASK));
         freeRdpItem.addActionListener(freeRDPAction);
         toolMenu.add(freeRdpItem);
+        toolMenu.addSeparator();
+
+        JMenu myToolMenu = new JMenu("内置工具");
+        myToolMenu.add(new JMenuItem("占个坑"));
+        toolMenu.add(myToolMenu);
         toolMenu.addSeparator();
         toolMenu.add(externalSubMenu);
 
@@ -328,13 +333,13 @@ public class MainFrame extends JFrame implements MouseListener {
 //        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
         // TODO 选项卡面板后置工具栏，待实现
         String iconPath = null;
-        if (OsUtils.isWin32()){
+        if (OsUtils.isWin32()) {
             // windows.svg
             iconPath = "com/g3g4x5x6/ui/icons/windows.svg";
-        }else if (OsUtils.isUNIX()){
+        } else if (OsUtils.isUNIX()) {
             // linux.svg
             iconPath = "com/g3g4x5x6/ui/icons/linux.svg";
-        }else if (OsUtils.isOSX()){
+        } else if (OsUtils.isOSX()) {
             // macOS.svg
             iconPath = "com/g3g4x5x6/ui/icons/macOS.svg";
         }
@@ -509,10 +514,10 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction myEditorAction = new AbstractAction("内置编辑器") {
+    private AbstractAction myEditorAction = new AbstractAction("简易编辑器") {
         public void actionPerformed(final ActionEvent e) {
             // TODO 内置编辑器
-            if (embedEditor == null){
+            if (embedEditor == null) {
                 embedEditor = new EmbedEditor();
             }
             embedEditor.setVisible(true);
@@ -747,7 +752,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private AbstractAction openWorkspace = new AbstractAction("打开工作空间") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            new Thread(()->{
+            new Thread(() -> {
                 try {
                     Desktop.getDesktop().open(new File(ConfigUtil.getWorkPath()));
                 } catch (IOException ioException) {
