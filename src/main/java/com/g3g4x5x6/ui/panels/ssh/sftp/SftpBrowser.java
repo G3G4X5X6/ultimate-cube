@@ -4,6 +4,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.MainFrame;
+import com.g3g4x5x6.ui.embed.editor.EditorPanel;
+import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.FileUtil;
 import com.g3g4x5x6.utils.SshUtil;
@@ -30,6 +33,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.g3g4x5x6.ui.MainFrame.embedEditor;
 
 
 @Slf4j
@@ -251,11 +256,33 @@ public class SftpBrowser extends JPanel {
      */
     private void initPopupMenu() {
         AbstractAction openAction = new AbstractAction("打开(s)") {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("打开文件...");
-                DialogUtil.info("敬请期待！");
-
+                if (embedEditor == null){
+                    embedEditor = new EmbedEditor();
+                }
+                // TODO 配置编辑面板: 标题、文本、fs、icon、savePath
+                new Thread(()->{
+                    String openFileName = myTable.getValueAt(myTable.getSelectedRow(), 0).toString();
+                    TreePath dstPath = myTree.getSelectionPath();
+                    String savePath = convertTreePathToString(dstPath) + "/" + openFileName;
+                    String text = "";
+                    try {
+                        for (String line :  Files.readAllLines(fs.getPath(savePath))){
+                            text += line + "\n";
+                        }
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    EditorPanel editorPanel = new EditorPanel(openFileName, savePath);
+                    editorPanel.setFs(fs);
+                    editorPanel.setSavePath(savePath);
+                    editorPanel.setTextArea(text);
+                    embedEditor.addAndSelectPanel(editorPanel);
+                    embedEditor.setVisible(true);
+                }).start();
             }
         };
         AbstractAction uploadsAction = new AbstractAction("上传(s)") {

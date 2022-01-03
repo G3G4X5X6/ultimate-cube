@@ -465,6 +465,7 @@ public class MainFrame extends JFrame implements MouseListener {
      */
     public static JTabbedPane mainTabbedPane;
     public static JPanel statusBar;
+    public static EmbedEditor embedEditor;
 
     // TODO JFrame 组件定义
     private JMenuBar menuBar = new JMenuBar();
@@ -478,7 +479,6 @@ public class MainFrame extends JFrame implements MouseListener {
     private JPopupMenu popupMenu = new JPopupMenu();
     private JPopupMenu trailPopupMenu = new JPopupMenu();
 
-    private static EmbedEditor embedEditor;
 
     private String latestVersion;
 
