@@ -46,8 +46,8 @@ public class SshTabbedPane extends JTabbedPane {
 
         init();
 
-//        this.sshPane = createTerminalWidget();
-        this.sshPane = createTerminalWidget(hostField, portField, userField, passField);
+        this.sshPane = createTerminalWidget();
+//        this.sshPane = createTerminalWidget(hostField, portField, userField, passField);
         this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
         this.editorPane = new EditorPane(this.sftpFileSystem);
         this.monitorPane = new MonitorPane(this.session);

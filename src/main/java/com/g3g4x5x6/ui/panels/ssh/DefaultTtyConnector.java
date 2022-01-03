@@ -25,6 +25,7 @@ public class DefaultTtyConnector implements TtyConnector {
     private Map<String, ?> env;
 
     private Dimension myPendingTermSize;
+    private Dimension pixelSize;
 
     private PipedOutputStream channelOut;
     private InputStream channelIn;
@@ -147,9 +148,10 @@ public class DefaultTtyConnector implements TtyConnector {
     }
 
     @Override
-    public void resize(@NotNull Dimension termWinSize) {
+    public void resize(Dimension termWinSize, Dimension pixelSize) {
         log.debug(termWinSize.height + ":" + termWinSize.width);
         this.myPendingTermSize = termWinSize;
+        this.pixelSize = pixelSize;
         if (this.channel != null) {
             this.resizeImmediately();
         }
@@ -157,16 +159,22 @@ public class DefaultTtyConnector implements TtyConnector {
 
     private void resizeImmediately() {
         if (this.myPendingTermSize != null) {
-            this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
+            if (this.pixelSize == null){
+                this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
+            }
+            this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, pixelSize.width, pixelSize.height);
             this.myPendingTermSize = null;
+            this.pixelSize = null;
         }
-
     }
 
     private void setPtySize(int col, int row, int wp, int hp) {
-        log.debug(col + ":"  + row +"<=>" + wp + ":" + hp);
-        channel.setPtyColumns(col);
-        channel.setPtyLines(row);
+        log.debug(col + ":" + row + "==" + wp + ":" + hp);
+        try {
+            channel.sendWindowChange(col, row);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

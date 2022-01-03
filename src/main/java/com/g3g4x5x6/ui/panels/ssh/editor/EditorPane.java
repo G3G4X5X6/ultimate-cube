@@ -29,6 +29,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -51,7 +52,7 @@ public class EditorPane extends JPanel {
     private String remotePath = "";
 
     // TODO toolBar
-    private JTextField titleField;
+    private JComboBox<String> titleField;
 
     // TODO editorPane
     private RSyntaxTextArea textArea;
@@ -81,19 +82,6 @@ public class EditorPane extends JPanel {
     }
 
     private void initToolBar() {
-        FlatButton listBtn = new FlatButton();
-        listBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
-        listBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg"));
-        listBtn.setToolTipText("最近打开");
-        listBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("最近打开列表");
-                EditorDialog editorDialog = new EditorDialog();
-                editorDialog.setVisible(true);
-            }
-        });
-
         FlatButton addBtn = new FlatButton();
         addBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         addBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
@@ -103,32 +91,35 @@ public class EditorPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("新建文件");
-                // TODO 1. 判断是否为空，不为空则提示是否保存现有备忘内容，否则清空
-                if (!textArea.getText().strip().equals("")) {
+                // TODO 1. 判断是否为空，不为空则提示是否保存现有内容，否则清空
+                if (!textArea.getText().strip().equals("") && !titleField.getSelectedItem().toString().strip().equals("")) {
                     int ret = JOptionPane.showConfirmDialog(App.mainFrame, "是否保存现有文件内容？", "提示", JOptionPane.YES_NO_CANCEL_OPTION);
                     log.debug(">>>>>>>>>>>>>>>>" + ret);
                     if (ret == 0) {
                         log.debug("保存现有文件内容");
-                        // TODO 询问保存路径和文件名
-                        if (tmpFilePath.equals("")) {
-                            File editor = new File(ConfigUtil.getWorkPath() + "/editor");
-                            if (!editor.exists()) {
-                                editor.mkdir();
+                        new Thread(() -> {
+                            // 1. 保存到本地临时文件
+
+                            // 2. 保存到远程服务器
+                            try {
+                                if (!Files.exists(fs.getPath(titleField.getSelectedItem().toString().strip()))) {
+                                    Files.createDirectories(fs.getPath(titleField.getSelectedItem().toString().strip()).getParent());
+                                }
+                                log.debug("保存文件：" + titleField.getSelectedItem().toString().strip());
+                                Files.write(fs.getPath(titleField.getSelectedItem().toString().strip()), textArea.getText().getBytes(StandardCharsets.UTF_8));
+                                // 清空
+                                addAndSelectItem("");
+                                textArea.setText("");
+                                tmpFilePath = "";
+                                remotePath = "";
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                                DialogUtil.error(ioException.getMessage());
                             }
-                            String tmpDir = editor.getAbsolutePath() + "/";
-                            tmpFilePath = tmpDir + new Date().getTime();
-                            titleField.setText(defaultDir + new Date().getTime());
-                            remotePath = titleField.getText();
-                        }
-                        insertOrUpdate();
-                        // 先保存, 再清空
-                        titleField.setText("");
-                        textArea.setText("");
-                        tmpFilePath = "";
-                        remotePath = "";
+                        }).start();
                     } else if (ret == 1) {
                         // 不保存, 清空
-                        titleField.setText("");
+                        addAndSelectItem("");
                         textArea.setText("");
                         tmpFilePath = "";
                         remotePath = "";
@@ -136,7 +127,7 @@ public class EditorPane extends JPanel {
                     // 取消
                     // 啥也不做
                 } else {
-                    titleField.setText("");
+                    addAndSelectItem("");
                     textArea.setText("");
                     tmpFilePath = "";
                     remotePath = "";
@@ -151,7 +142,11 @@ public class EditorPane extends JPanel {
         saveBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                insertOrUpdate();
+                if (!titleField.getSelectedItem().toString().strip().equals("")) {
+                    save();
+                } else {
+                    DialogUtil.warn("请输入保存文件的绝对路径名！");
+                }
             }
         });
 
@@ -205,12 +200,12 @@ public class EditorPane extends JPanel {
                     // 如果点击了"确定", 则获取选择的文件路径
                     File file = fileChooser.getSelectedFile();
                     String fileName = String.valueOf(new Date().getTime());
-                    if (!titleField.getText().strip().equals("")) {
-                        int index = titleField.getText().lastIndexOf("/");
+                    if (!titleField.getSelectedItem().toString().strip().equals("")) {
+                        int index = titleField.getSelectedItem().toString().lastIndexOf("/");
                         if (index != -1) {
-                            fileName = titleField.getText().strip().substring(index);
+                            fileName = titleField.getSelectedItem().toString().strip().substring(index);
                         } else {
-                            fileName = titleField.getText().strip();
+                            fileName = titleField.getSelectedItem().toString().strip();
                         }
                     }
                     try (BufferedWriter writer = Files.newBufferedWriter(Path.of(file.getAbsolutePath() + "/" + fileName), StandardCharsets.UTF_8)) {
@@ -230,7 +225,7 @@ public class EditorPane extends JPanel {
 
         // 搜索
         JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
-        searchBtn.addMouseListener(new MouseAdapter(){
+        searchBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 SearchDialog searchDialog = new SearchDialog(textArea);
@@ -239,16 +234,29 @@ public class EditorPane extends JPanel {
             }
         });
 
-        titleField = new JTextField();
-        titleField.setColumns(15);
-        titleField.putClientProperty("JTextField.placeholderText", "远程文件的绝对路径，例如： /home/g3g4x5x6/hello.sh");
+        // 清空缓存路径
+        JButton cleanBtn = new JButton();
+        cleanBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/delete.svg"));
+        cleanBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String oldItem = titleField.getSelectedItem().toString();
+                titleField.removeAllItems();
+                titleField.addItem(oldItem);
+                titleField.setSelectedItem(oldItem);
+            }
+        });
+
+        titleField = new JComboBox<String>();
+        titleField.setEditable(true);
+        titleField.putClientProperty("JComboBox.placeholderText", "远程文件的绝对路径，例如： /home/g3g4x5x6/hello.sh");
 
         // 主题设置
         JButton themeBtn = new JButton("default");
         themeBtn.setSelected(true);
         String[] theme_list = new String[]{"default", "dark", "default-alt", "druid", "eclipse", "idea", "monokai", "vs"};
         JPopupMenu lanuageMenu = new JPopupMenu();
-        for (String item : theme_list){
+        for (String item : theme_list) {
             JMenuItem temp = new JMenuItem(item);
             temp.addActionListener(new ActionListener() {
                 @SneakyThrows
@@ -296,7 +304,6 @@ public class EditorPane extends JPanel {
             }
         });
 
-        toolBar.add(listBtn);
         toolBar.add(addBtn);
         toolBar.add(saveBtn);
         toolBar.addSeparator();
@@ -307,6 +314,7 @@ public class EditorPane extends JPanel {
         toolBar.addSeparator();
         toolBar.add(searchBtn);
         toolBar.addSeparator();
+        toolBar.add(cleanBtn);
         toolBar.add(titleField);
         toolBar.addSeparator();
         toolBar.add(themeBtn);
@@ -368,6 +376,25 @@ public class EditorPane extends JPanel {
         return new RSyntaxTextAreaEditorKit.CopyCutAsStyledTextAction(themeName, theme, true);
     }
 
+    private void save() {
+        new Thread(() -> {
+            // 1. 保存到本地临时文件
+
+            // 2. 保存到远程服务器
+            try {
+                if (!Files.exists(fs.getPath(titleField.getSelectedItem().toString().strip()))) {
+                    Files.createDirectories(fs.getPath(titleField.getSelectedItem().toString().strip()).getParent());
+                }
+                log.debug("保存文件：" + titleField.getSelectedItem().toString().strip());
+                Files.write(fs.getPath(titleField.getSelectedItem().toString().strip()), textArea.getText().getBytes(StandardCharsets.UTF_8));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+                DialogUtil.error(ioException.getMessage());
+            }
+        }).start();
+
+    }
+
     private void insertOrUpdate() {
         File editor = new File(ConfigUtil.getWorkPath() + "/editor");
         if (!editor.exists()) {
@@ -376,20 +403,20 @@ public class EditorPane extends JPanel {
         String tmpDir = editor.getAbsolutePath() + "/";
 
         //获取文件的后缀名
-        String ext = getExt(titleField.getText().strip());
-        String filePath = getFileName(titleField.getText().strip());
+        String ext = getExt(titleField.getSelectedItem().toString().strip());
+        String filePath = getFileName(titleField.getSelectedItem().toString().strip());
 
         // 每次检查更新缓存文件
-        if (!remotePath.equals("") && !remotePath.equals(titleField.getText().strip())) {
-            if (titleField.getText().strip().startsWith("/")) {
+        if (!remotePath.equals("") && !remotePath.equals(titleField.getSelectedItem().toString().strip())) {
+            if (titleField.getSelectedItem().toString().strip().startsWith("/")) {
                 for (String each : filePath.strip().split("/")) {
                     if (each.equals(""))
                         continue;
                     tmpDir += each + "_";
                 }
             }
-            setDefineTmpFilePath(defaultDir + titleField.getText().strip());
-            remotePath = titleField.getText().strip();
+            setDefineTmpFilePath(defaultDir + titleField.getSelectedItem().toString().strip());
+            remotePath = titleField.getSelectedItem().toString().strip();
         }
 
         // 初次缓存
@@ -397,7 +424,7 @@ public class EditorPane extends JPanel {
             setMark();
             // 保存文件
             if (saveToTmpFile(tmpFilePath)) {
-                SftpPath path = fs.getPath(titleField.getText());
+                SftpPath path = fs.getPath(titleField.getSelectedItem().toString());
                 try {
                     log.debug(textArea.getText());
                     Files.write(path, textArea.getText().getBytes(StandardCharsets.UTF_8));
@@ -411,7 +438,7 @@ public class EditorPane extends JPanel {
 
         } else {    // 更新操作
             if (saveToTmpFile(tmpFilePath)) {
-                SftpPath path = fs.getPath(titleField.getText());
+                SftpPath path = fs.getPath(titleField.getSelectedItem().toString());
                 try {
                     Files.write(path, textArea.getText().getBytes(StandardCharsets.UTF_8));
                 } catch (IOException e) {
@@ -422,10 +449,6 @@ public class EditorPane extends JPanel {
                 log.debug("文件更新失败");
             }
         }
-    }
-
-    private void openNote(String id) {
-        DialogUtil.info("敬请期待");
     }
 
     private void importFile() {
@@ -454,7 +477,9 @@ public class EditorPane extends JPanel {
             if (i > 0) {
                 fileName = fileName.substring(0, i);
             }
-            titleField.setText(file.getName());
+//            titleField.addItem(defaultDir + file.getName());
+//            titleField.setSelectedItem(defaultDir + file.getName());
+            addAndSelectItem(defaultDir + file.getName());
             textArea.setText(sbf.toString());
         }
     }
@@ -485,7 +510,7 @@ public class EditorPane extends JPanel {
         this.tmpFilePath = tmpFilePath;
     }
 
-    private void setMark(){
+    private void setMark() {
         File editor = new File(ConfigUtil.getWorkPath() + "/editor");
         if (!editor.exists()) {
             editor.mkdir();
@@ -493,11 +518,11 @@ public class EditorPane extends JPanel {
         String tmpDir = editor.getAbsolutePath() + "/";
 
         //获取文件的后缀名
-        String ext = getExt(titleField.getText().strip());
-        String filePath = getFileName(titleField.getText().strip());
+        String ext = getExt(titleField.getSelectedItem().toString().strip());
+        String filePath = getFileName(titleField.getSelectedItem().toString().strip());
 
         // 使用自定义保存路径
-        if (titleField.getText().strip().startsWith("/")) {
+        if (titleField.getSelectedItem().toString().strip().startsWith("/")) {
             for (String each : filePath.strip().split("/")) {
                 if (each.equals(""))
                     continue;
@@ -505,7 +530,7 @@ public class EditorPane extends JPanel {
             }
             tmpDir += new Date().getTime() + ext;
             setDefineTmpFilePath(tmpDir);
-            remotePath = titleField.getText().strip();
+            remotePath = titleField.getSelectedItem().toString().strip();
             log.debug("tmp_file_path: " + tmpFilePath);
 
             // 使用默认保存路径
@@ -527,13 +552,25 @@ public class EditorPane extends JPanel {
             }
             tmpDir += new Date().getTime() + ext;
             setDefineTmpFilePath(tmpDir);
-            remotePath = defaultDir + titleField.getText().strip();
-            titleField.setText(defaultDir + titleField.getText().strip());
+            remotePath = defaultDir + titleField.getSelectedItem().toString().strip();
+            addAndSelectItem(defaultDir + titleField.getSelectedItem().toString().strip());
         }
     }
 
-    private void cleanMark(){
-        titleField.setText("");
+    private void addAndSelectItem(String item){
+        Boolean flag = false;
+        for (int i = 0; i < titleField.getItemCount(); i++) {
+            if (titleField.getItemAt(i).toString().equals(item)){
+                flag = true;
+            }
+        }
+        if (!flag)
+            titleField.addItem(item);
+        titleField.setSelectedItem(item);
+    }
+
+    private void cleanMark() {
+        titleField.setSelectedItem("");
         textArea.setText("");
         tmpFilePath = "";
         remotePath = "";
@@ -546,204 +583,10 @@ public class EditorPane extends JPanel {
             fileOutputStream.write(textArea.getText().getBytes(StandardCharsets.UTF_8));
             fileOutputStream.flush();
             fileOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
         return true;
-    }
-
-    private class EditorDialog extends JDialog {
-        private JTable editorTable;
-        private DefaultTableModel tableModel;
-        private String[] columnNames = {"访问时间", "文件路径"};
-
-        private JButton delButton;
-        private JButton closeButton;
-
-        public EditorDialog() {
-            super(App.mainFrame);
-            this.setLayout(new BorderLayout());
-            this.setPreferredSize(new Dimension(600, 350));
-            this.setSize(new Dimension(600, 350));
-            this.setLocationRelativeTo(App.mainFrame);
-            this.setModal(true);
-            this.setTitle("最近打开文件");
-
-            initEnableOption();
-
-            initNoteListTable();
-
-            initControlButton();
-
-            editorTable.addMouseListener(new MouseAdapter() {
-                @SneakyThrows
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
-                        log.debug("双击打开文件");
-                        // 双击动作: 打开选中笔记
-                        int row = editorTable.getSelectedRow();
-                        String noteId = "";
-                        if (row != -1) {
-                            noteId = (String) tableModel.getValueAt(row, 0);
-                            log.debug("row: " + noteId);
-                        }
-                        if (tmpFilePath.equals("")) {
-                            if (textArea.getText().strip().equals("")) {
-                                // 直接打开
-                                log.debug("openNote DIR");
-                                openNote(noteId);
-                                dispose();
-                            } else {
-                                // 询问是否保存现有备忘笔记
-                                log.debug("Tips");
-                                if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
-                                    insertOrUpdate();
-                                    openNote(noteId);
-                                    dispose();
-                                }
-
-                            }
-                        } else {
-                            if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有备忘笔记？") == 0) {
-                                insertOrUpdate();
-                                openNote(noteId);
-                                dispose();
-                            } else {
-                                openNote(noteId);
-                                dispose();
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        private void initEnableOption() {
-            // TODO Enable Option
-            JPanel enablePanel = new JPanel();
-            FlowLayout flowLayout = new FlowLayout();
-            flowLayout.setAlignment(FlowLayout.LEFT);
-            enablePanel.setLayout(flowLayout);
-
-            JLabel tips = new JLabel("双击打开选中文件");
-            tips.setEnabled(false);
-            enablePanel.add(tips);
-
-            this.add(enablePanel, BorderLayout.NORTH);
-        }
-
-        private void initNoteListTable() {
-            editorTable = new JTable();
-            tableModel = new DefaultTableModel() {
-                // 不可编辑
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            tableModel.setColumnIdentifiers(columnNames);
-
-            initTable();
-
-            editorTable.getColumnModel().getColumn(0).setMaxWidth(150);
-            editorTable.getColumnModel().getColumn(0).setMinWidth(150);
-
-            JScrollPane tableScroll = new JScrollPane(editorTable);
-            tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-            centerRenderer.setHorizontalAlignment(JTextField.CENTER);
-            editorTable.getColumn("访问时间").setCellRenderer(centerRenderer);
-            this.add(tableScroll, BorderLayout.CENTER);
-        }
-
-        private void initTable() {
-            // 获取主题数据
-            tableModel.setRowCount(0);
-            int row = 0;
-            try {
-                Connection connection = DbUtil.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT * From note");
-
-                while (resultSet.next()) {
-                    tableModel.addRow(new String[]{
-                            resultSet.getString("id"),
-                            resultSet.getString("id").equals(tmpFilePath) ?
-                                    "<html><strong><font color='red'>" + getCurrentNote() + "</font></strong></html>" :
-                                    resultSet.getString("title")
-                    });
-                    row = tableModel.getRowCount() - 1;
-                }
-                DbUtil.close(statement, resultSet);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            editorTable.setModel(tableModel);
-        }
-
-        private void initControlButton() {
-            JPanel controlPane = new JPanel();
-            FlowLayout flowLayout = new FlowLayout();
-            flowLayout.setAlignment(FlowLayout.LEFT);
-            controlPane.setLayout(flowLayout);
-            delButton = new JButton("清空缓存");
-            closeButton = new JButton("关闭窗口");
-            controlPane.add(delButton);
-            controlPane.add(closeButton);
-            this.add(controlPane, BorderLayout.SOUTH);
-
-            delButton.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (DialogUtil.yesOrNo(App.mainFrame, "是否删除选中备忘记录？") == 0) {
-                        int[] rows = editorTable.getSelectedRows();
-                        int ret = 0;
-                        for (int row : rows) {
-                            if (row != -1) {
-                                String noteId = (String) tableModel.getValueAt(row, 0);
-                                log.debug("Selected note: " + noteId);
-                                String sql = "DELETE FROM note WHERE id=" + noteId;
-                                try {
-                                    Connection connection = DbUtil.getConnection();
-                                    Statement statement = connection.createStatement();
-                                    ret = statement.executeUpdate(sql);
-                                    DbUtil.close(statement);
-                                } catch (SQLException throwables) {
-                                    throwables.printStackTrace();
-                                }
-                                // 删除的笔记如果正在编辑，需重置 current_id = ""
-                                if (noteId.equals(tmpFilePath)) {
-
-                                }
-                            }
-                        }
-                        if (ret == 1) {
-                            DialogUtil.info("删除备忘记录成功");
-                        }
-                        initTable();
-                    }
-                }
-            });
-
-            closeButton.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    dispose();
-                }
-            });
-        }
-
-        private String getCurrentNote() {
-            String themeName = "";
-
-            return themeName;
-        }
     }
 }
