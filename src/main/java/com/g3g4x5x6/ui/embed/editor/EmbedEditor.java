@@ -3,6 +3,8 @@ package com.g3g4x5x6.ui.embed.editor;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
+import com.g3g4x5x6.App;
+import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
@@ -10,9 +12,12 @@ import org.apache.sshd.common.util.OsUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -48,6 +53,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JButton pasteBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-paste.svg"));
     private JButton undoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/undo.svg"));
     private JButton redoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/redo.svg"));
+    private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
     private JTabbedPane tabbedPane;
     private JToolBar statusBar;
     private JPopupMenu trailPopupMenu = new JPopupMenu();
@@ -109,6 +115,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
         toolBar.addSeparator();
         toolBar.add(undoBtn);
         toolBar.add(redoBtn);
+        toolBar.addSeparator();
+        toolBar.add(terminalBtn);
         initToolbarAction();
 
         tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -137,6 +145,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
         saveAllBtn.setToolTipText("全部保存(E)");   // Ctrl + E
         closeBtn.setToolTipText("关闭(C)");
         closeAllBtn.setToolTipText("全部关闭(E)");  // Ctrl + Alt + E
+        terminalBtn.setToolTipText("返回 UltimateShell");
+        terminalBtn.addActionListener(retTerminalAction);
     }
 
     private void initStatusBar() {
@@ -259,6 +269,23 @@ public class EmbedEditor extends JFrame implements ActionListener {
                     Files.write(editorPanel.getFs().getPath(editorPanel.getSavePath()), editorPanel.getTextArea().getBytes(StandardCharsets.UTF_8));
                 } else {
                     // 本地文件保存
+                    if (editorPanel.getSavePath() == null) {
+                        // 新建保存
+                        JFileChooser fileChooser = new JFileChooser();
+                        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                        fileChooser.setMultiSelectionEnabled(false);
+                        fileChooser.setSelectedFile(new File("新建文件.txt"));
+                        int result = fileChooser.showOpenDialog(this);
+                        if (result == JFileChooser.APPROVE_OPTION) {
+                            File file = fileChooser.getSelectedFile();
+                            log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>" + file.getAbsolutePath());
+                            editorPanel.setSavePath(file.getAbsolutePath());
+                            Files.write(Path.of(file.getAbsolutePath()), editorPanel.getTextArea().getBytes(StandardCharsets.UTF_8));
+                        }
+                    }else{
+                        // 更新保存
+                        Files.write(Path.of(editorPanel.getSavePath()), editorPanel.getTextArea().getBytes(StandardCharsets.UTF_8));
+                    }
                 }
                 break;
         }
@@ -283,6 +310,13 @@ public class EmbedEditor extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             quickAction("saveAction");
+        }
+    };
+
+    AbstractAction retTerminalAction = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            App.mainFrame.setVisible(true);
         }
     };
 }

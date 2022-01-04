@@ -327,6 +327,16 @@ public class MainFrame extends JFrame implements MouseListener {
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
+        // swiftPackage.svg
+        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/swiftPackage.svg"));
+        sessionManagerBtn.setToolTipText("会话管理面板");
+        sessionManagerBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addList.svg"), new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+            }
+        });
 
         // TODO 选项卡面板前置工具栏，暂不使用
         leading.add(dashboardBtn);
@@ -351,6 +361,7 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
         trailing.add(addBtn);
+        trailing.add(sessionManagerBtn);
         trailing.add(Box.createHorizontalGlue());
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
