@@ -250,6 +250,25 @@ public class EditorPane extends JPanel {
         titleField = new JComboBox<String>();
         titleField.setEditable(true);
         titleField.putClientProperty("JComboBox.placeholderText", "远程文件的绝对路径，例如： /home/g3g4x5x6/hello.sh");
+        titleField.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug(titleField.getSelectedItem().toString());
+                if (Files.exists(fs.getPath(titleField.getSelectedItem().toString()))){
+                    String text = "";
+                    try {
+                        for (String line :  Files.readAllLines(fs.getPath(titleField.getSelectedItem().toString()))){
+                            text += line + "\n";
+                        }
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    textArea.setText(text);
+                }else if (!titleField.getSelectedItem().toString().strip().equalsIgnoreCase("")){
+                    DialogUtil.warn("文件不存在：\n" + titleField.getSelectedItem().toString());
+                }
+            }
+        });
 
         // 主题设置
         JButton themeBtn = new JButton("default");
