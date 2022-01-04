@@ -8,7 +8,6 @@ import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import org.apache.sshd.client.SshClient;
-import org.apache.sshd.client.config.hosts.HostConfigEntry;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.session.SessionHeartbeatController;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -68,12 +67,6 @@ public class SshTabbedPane extends JTabbedPane {
     }
 
     private ClientSession getSession(SshClient client){
-        /**
-         HostConfigEntry hostConfig = new HostConfigEntry();
-         hostConfig.setHost(this.host);
-         hostConfig.setPort(this.port);
-         hostConfig.setUsername(this.user);
-         */
         ClientSession session;
         try {
             session = client.connect(this.user, this.host, this.port).verify(5000, TimeUnit.MILLISECONDS).getSession();

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
 
 import javax.swing.*;
+import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -150,7 +151,19 @@ public class EmbedEditor extends JFrame implements ActionListener {
     }
 
     private void initStatusBar() {
-        statusBar.add(new JLabel("文本文件"));
+        JLabel syntaxLabel = new JLabel("text/plain");
+        syntaxLabel.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-text.svg"));
+        syntaxLabel.addMouseListener(new MouseInputAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == 3){    // 右键鼠标
+                    log.debug("改变编辑器语言语法风格");
+                }
+            }
+        });
+        statusBar.add(Box.createGlue());
+        statusBar.addSeparator();
+        statusBar.add(syntaxLabel);
     }
 
     private void initClosableTabs(JTabbedPane tabbedPane) {
@@ -253,6 +266,15 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private boolean exist(EditorPanel editorPanel) {
 
         return false;
+    }
+
+    /**
+     * TODO getCurrentEditorPanel for statusBar or other
+     * @param
+     * @throws IOException
+     */
+    private EditorPanel getCurrentEditorPanel(){
+        return null;
     }
 
     private void quickAction(String command) throws IOException {

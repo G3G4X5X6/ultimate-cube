@@ -301,6 +301,9 @@ public class EditorPane extends JPanel {
         JButton langBtn = new JButton("text/unix");
         langBtn.setSelected(true);
         JPopupMenu langMenu = new JPopupMenu();
+        langMenu.setAutoscrolls(true);
+        langMenu.setSize(new Dimension(200, 1000));
+        langMenu.setPreferredSize(new Dimension(200, 1000));
         Class syntaxConstantsClass = SyntaxConstants.class;
         Field[] fields = syntaxConstantsClass.getDeclaredFields();
         for (Field field : fields) {

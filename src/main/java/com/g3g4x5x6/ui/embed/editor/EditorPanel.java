@@ -23,6 +23,7 @@ public class EditorPanel extends JPanel {
     private FlatSVGIcon icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-text.svg");
     private RSyntaxTextArea textArea;
     private RTextScrollPane sp;
+    private String syntax = "text/plain";
 
     private SftpFileSystem fs;
     private String savePath;
@@ -31,6 +32,7 @@ public class EditorPanel extends JPanel {
         this.setLayout(new BorderLayout());
         textArea = createTextArea();
         sp = new RTextScrollPane(textArea);
+        sp.setBorder(null);
         this.add(sp, BorderLayout.CENTER);
     }
     public EditorPanel(String savePath){
@@ -57,7 +59,7 @@ public class EditorPanel extends JPanel {
         textArea.setCodeFoldingEnabled(true);
         textArea.setClearWhitespaceLinesEnabled(false);
         textArea.setCodeFoldingEnabled(true);
-        textArea.setSyntaxEditingStyle("text/unix");
+        textArea.setSyntaxEditingStyle(syntax);
 
         InputMap im = textArea.getInputMap();
         ActionMap am = textArea.getActionMap();
@@ -150,5 +152,14 @@ public class EditorPanel extends JPanel {
 
     public String getTextArea(){
         return this.textArea.getText();
+    }
+
+    public String getSyntax() {
+        return syntax;
+    }
+
+    public void setSyntax(String syntax) {
+        this.syntax = syntax;
+        textArea.setSyntaxEditingStyle(syntax);
     }
 }
