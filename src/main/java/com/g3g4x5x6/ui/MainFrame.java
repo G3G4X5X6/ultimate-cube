@@ -134,13 +134,10 @@ public class MainFrame extends JFrame implements MouseListener {
         helpMenu.add(aboutMe);
 
         // 工具菜单
-        toolMenu.add(myEditorAction);
-        toolMenu.addSeparator();
-        JMenu otherToolMenu = new JMenu("杂七杂八");
-        otherToolMenu.add(encodeConversionAction);
-        otherToolMenu.add(colorPickerAction);
-        otherToolMenu.add(qrCodePickerAction);
-        toolMenu.add(otherToolMenu);
+        JMenuItem editorItem = new JMenuItem("简易编辑器");
+        editorItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/editScheme.svg"));
+        editorItem.addActionListener(myEditorAction);
+        toolMenu.add(editorItem);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         // 快捷键
@@ -150,9 +147,15 @@ public class MainFrame extends JFrame implements MouseListener {
         toolMenu.add(freeRdpItem);
         toolMenu.addSeparator();
 
-        JMenu myToolMenu = new JMenu("内置工具");
-        myToolMenu.add(new JMenuItem("占个坑"));
-        toolMenu.add(myToolMenu);
+//        JMenu myToolMenu = new JMenu("内置工具");
+//        myToolMenu.add(new JMenuItem("占个坑"));
+//        toolMenu.add(myToolMenu);
+//        toolMenu.addSeparator();
+        JMenu otherToolMenu = new JMenu("杂七杂八");
+        otherToolMenu.add(encodeConversionAction);
+        otherToolMenu.add(colorPickerAction);
+        otherToolMenu.add(qrCodePickerAction);
+        toolMenu.add(otherToolMenu);
         toolMenu.addSeparator();
         toolMenu.add(externalSubMenu);
 
@@ -360,11 +363,14 @@ public class MainFrame extends JFrame implements MouseListener {
                 trailPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+        JButton editorBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/editScheme.svg"));
+        editorBtn.addActionListener(myEditorAction);
         trailing.add(addBtn);
         trailing.add(sessionManagerBtn);
         trailing.add(Box.createHorizontalGlue());
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
+        trailing.add(editorBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
