@@ -15,6 +15,7 @@ import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.ListIterator;
 import java.util.Properties;
 
 @Slf4j
@@ -63,13 +64,13 @@ public class CommonUtil {
 
     /**
      * example: 这将获取所有的版本
-     * https://api.github.com/repos/januwA/flutter_anime_app/releases
+     * https://api.github.com/repos/G3G4X5X6/ultimateshell/releases
      * <p>
      * 最新版本:
-     * https://api.github.com/repos/januwA/flutter_anime_app/releases/latest
+     * https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest
      * <p>
      * 下载最新的包
-     * https://api.github.com/repos/januwA/flutter_anime_app/releases/latest  // 获取下载地址: r.assets[0].browser_download_url
+     * https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest  // 获取下载地址: r.assets[0].browser_download_url
      */
     public static String getLastestVersion() {
         StringBuffer result = new StringBuffer();
@@ -137,8 +138,14 @@ public class CommonUtil {
         }
         JSONObject object = JSONObject.parseObject(result.toString());
         JSONArray upload = object.getJSONArray("assets");
-        JSONObject uploadObj = upload.getJSONObject(0);
-        String browser_download_url = uploadObj.getString("browser_download_url");
+        ListIterator<Object> iterator = upload.listIterator();
+        String browser_download_url = "https://github.com/G3G4X5X6/ultimateshell/releases/";
+        while (iterator.hasNext()){
+            JSONObject obj = (JSONObject) iterator.next();
+            if (obj.getString("name").contains("jar-with-dependencies.jar")){
+                browser_download_url = obj.getString("browser_download_url");
+            }
+        }
         System.out.println(browser_download_url);
         try {
             Desktop.getDesktop().browse(new URL(browser_download_url).toURI());

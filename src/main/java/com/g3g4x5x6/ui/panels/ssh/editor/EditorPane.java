@@ -350,6 +350,7 @@ public class EditorPane extends JPanel {
         textArea.setSyntaxEditingStyle("text/unix");
         textArea.setCodeFoldingEnabled(true);
         sp = new RTextScrollPane(textArea);
+        sp.setBorder(null);
         editorPane.add(sp);
     }
 

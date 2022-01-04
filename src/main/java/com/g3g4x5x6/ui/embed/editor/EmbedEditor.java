@@ -8,13 +8,17 @@ import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,6 +62,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JTabbedPane tabbedPane;
     private JToolBar statusBar;
     private JPopupMenu trailPopupMenu = new JPopupMenu();
+    private JLabel syntaxLabel;
 
     private LinkedList<EditorPanel> globalWindows = new LinkedList<>();
 
@@ -124,6 +129,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
         initClosableTabs(tabbedPane);
         customComponents();
         addAndSelectPanel(new EditorPanel());
+        tabbedPane.addChangeListener(e -> resetIcon(e));
 
         statusBar = new JToolBar();
         statusBar.setFloatable(false);
@@ -133,6 +139,16 @@ public class EmbedEditor extends JFrame implements ActionListener {
         this.add(toolBar, BorderLayout.NORTH);
         this.add(tabbedPane, BorderLayout.CENTER);
         this.add(statusBar, BorderLayout.SOUTH);
+    }
+
+    private void resetIcon(ChangeEvent e){
+        JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
+        int index = tabbedPane.getSelectedIndex();
+        if (index != -1){
+            EditorPanel editorPanel = (EditorPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+            syntaxLabel.setIcon(editorPanel.getIcon());
+            syntaxLabel.setText(editorPanel.getSyntax());
+        }
     }
 
     private void initToolbarAction() {
@@ -151,13 +167,35 @@ public class EmbedEditor extends JFrame implements ActionListener {
     }
 
     private void initStatusBar() {
-        JLabel syntaxLabel = new JLabel("text/plain");
+        syntaxLabel = new JLabel("text/plain");
         syntaxLabel.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-text.svg"));
+        JPopupMenu langMenu = new JPopupMenu();
+        langMenu.setAutoscrolls(true);
+        langMenu.setSize(new Dimension(200, 1000));
+        langMenu.setPreferredSize(new Dimension(200, 1000));
+        Class syntaxConstantsClass = SyntaxConstants.class;
+        Field[] fields = syntaxConstantsClass.getDeclaredFields();
+        for (Field field : fields) {
+            try {
+                String langStr = (String) field.get(syntaxConstantsClass);
+                JMenuItem temp = new JMenuItem(langStr);
+                temp.addActionListener(e -> {
+                    EditorPanel editorPanel = (EditorPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+                    editorPanel.setSyntax(langStr);
+                    syntaxLabel.setText(langStr);
+                    syntaxLabel.setIcon(editorPanel.getIcon());
+                });
+                langMenu.add(temp);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         syntaxLabel.addMouseListener(new MouseInputAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == 3){    // 右键鼠标
                     log.debug("改变编辑器语言语法风格");
+                    langMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         });
