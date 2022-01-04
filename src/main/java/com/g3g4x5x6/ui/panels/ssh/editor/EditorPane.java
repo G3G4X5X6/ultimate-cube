@@ -264,6 +264,7 @@ public class EditorPane extends JPanel {
                         ioException.printStackTrace();
                     }
                     textArea.setText(text);
+                    addAndSelectItem(titleField.getSelectedItem().toString().strip());
                 }else if (!titleField.getSelectedItem().toString().strip().equalsIgnoreCase("")){
                     DialogUtil.warn("文件不存在：\n" + titleField.getSelectedItem().toString());
                 }
