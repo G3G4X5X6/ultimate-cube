@@ -49,8 +49,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JToolBar toolBar = new JToolBar();
     private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/savedContext.svg"));
-    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/Save.svg"));
+    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/Save.svg"));
+    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/savedContext.svg"));
     private JButton closeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
     private JButton closeAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
     private JButton cutBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-cut.svg"));
@@ -156,6 +156,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
         newBtn.addActionListener(newAction);
         newBtn.registerKeyboardAction(newAction, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         openBtn.setToolTipText("打开(O)");
+        openBtn.addActionListener(openAction);
+        openBtn.registerKeyboardAction(openAction, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         saveBtn.setToolTipText("保存(S)");
         saveBtn.addActionListener(saveAction);
         saveBtn.registerKeyboardAction(saveAction, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -365,6 +367,33 @@ public class EmbedEditor extends JFrame implements ActionListener {
         }
     };
 
+    AbstractAction openAction = new AbstractAction("openAction") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.setMultiSelectionEnabled(true);
+            int result = fileChooser.showOpenDialog(EmbedEditor.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File[] files = fileChooser.getSelectedFiles();
+                for (File file: files){
+                    String text = "";
+                    try {
+                        for (String line :  Files.readAllLines(Path.of(file.getAbsolutePath()))){
+                            text += line + "\n";
+                        }
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    EditorPanel editorPanel = new EditorPanel(file.getAbsolutePath());
+                    editorPanel.setTitle(file.getName());
+                    editorPanel.setTextArea(text);
+                    addAndSelectPanel(editorPanel);
+                }
+            }
+        }
+    };
+
     AbstractAction saveAction = new AbstractAction("saveAction") {
         @SneakyThrows
         @Override
@@ -379,4 +408,6 @@ public class EmbedEditor extends JFrame implements ActionListener {
             App.mainFrame.setVisible(true);
         }
     };
+
+
 }
