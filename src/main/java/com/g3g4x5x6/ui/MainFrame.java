@@ -148,10 +148,6 @@ public class MainFrame extends JFrame implements MouseListener {
         toolMenu.add(freeRdpItem);
         toolMenu.addSeparator();
 
-//        JMenu myToolMenu = new JMenu("内置工具");
-//        myToolMenu.add(new JMenuItem("占个坑"));
-//        toolMenu.add(myToolMenu);
-//        toolMenu.addSeparator();
         JMenu otherToolMenu = new JMenu("杂七杂八");
         otherToolMenu.add(encodeConversionAction);
         otherToolMenu.add(colorPickerAction);
