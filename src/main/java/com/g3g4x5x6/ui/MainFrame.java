@@ -41,6 +41,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 import static com.formdev.flatlaf.FlatClientProperties.*;
@@ -55,9 +56,9 @@ public class MainFrame extends JFrame implements MouseListener {
     public MainFrame() throws HeadlessException {
         // 主窗口设置
         this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);      // 提示确认退出
-        this.setSize(new Dimension(1000, 700));
+        this.setSize(new Dimension(1200, 700));
         this.setMinimumSize(new Dimension(900, 600));
-        this.setPreferredSize(new Dimension(1000, 600));
+        this.setPreferredSize(new Dimension(1200, 700));
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
 
@@ -365,8 +366,15 @@ public class MainFrame extends JFrame implements MouseListener {
         });
         JButton editorBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/editScheme.svg"));
         editorBtn.addActionListener(myEditorAction);
+
+        waitProgressBar = new JProgressBar();
+        waitProgressBar.setIndeterminate(true);
+        waitProgressBar.setVisible(false);
+
         trailing.add(addBtn);
         trailing.add(sessionManagerBtn);
+        trailing.add(Box.createHorizontalGlue());
+        trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
@@ -481,6 +489,18 @@ public class MainFrame extends JFrame implements MouseListener {
 
     }
 
+    public static void addWaitProgressBar(){
+        waitCount.incrementAndGet();
+        waitProgressBar.setVisible(true);
+    }
+
+    public static void removeWaitProgressBar(){
+        int count = waitCount.decrementAndGet();
+        if (count == 0){
+            waitProgressBar.setVisible(false);
+        }
+    }
+
 
     /**
      * 定义
@@ -488,6 +508,8 @@ public class MainFrame extends JFrame implements MouseListener {
     public static JTabbedPane mainTabbedPane;
     public static JPanel statusBar;
     public static EmbedEditor embedEditor;
+    public static JProgressBar waitProgressBar;
+    public static AtomicInteger waitCount = new AtomicInteger(0);
 
     // TODO JFrame 组件定义
     private JMenuBar menuBar = new JMenuBar();

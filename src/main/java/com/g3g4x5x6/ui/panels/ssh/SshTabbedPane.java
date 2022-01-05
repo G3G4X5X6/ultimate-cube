@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.panels.ssh;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
@@ -42,31 +43,32 @@ public class SshTabbedPane extends JTabbedPane {
         this.port = Integer.parseInt(portField);
         this.user = userField;
         this.pass = passField;
+        // 等待进度条
+        MainFrame.addWaitProgressBar();
 
         init();
-
         this.sshPane = createTerminalWidget();
-//        this.sshPane = createTerminalWidget(hostField, portField, userField, passField);
         this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
         this.editorPane = new EditorPane(this.sftpFileSystem);
         this.monitorPane = new MonitorPane(this.session);
-
         this.addTab("SSH", this.sshPane);
         this.addTab("SFTP", this.sftpBrowser);
         this.addTab("Editor", this.editorPane);
         this.addTab("Monitor", this.monitorPane);
-
         customComponents();
+
+        // 关闭进度条
+        MainFrame.removeWaitProgressBar();
     }
 
-    private void init(){
+    private void init() {
         this.client = SshClient.setUpDefaultClient();
         this.client.start();
         this.session = getSession(client);
         this.sftpFileSystem = getSftpFileSystem(session);
     }
 
-    private ClientSession getSession(SshClient client){
+    private ClientSession getSession(SshClient client) {
         ClientSession session;
         try {
             session = client.connect(this.user, this.host, this.port).verify(5000, TimeUnit.MILLISECONDS).getSession();
