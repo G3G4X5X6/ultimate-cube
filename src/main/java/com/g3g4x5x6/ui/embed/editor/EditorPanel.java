@@ -410,6 +410,11 @@ public class EditorPanel extends JPanel {
                     break;
 //                String SYNTAX_STYLE_UNIX_SHELL = "text/unix";
                 case "sh":
+                case "bashrc":
+                case "profile":
+                case "viminfo":
+                case "bash_logout":
+                case "bash_history":
                     setSyntax("text/unix");
                     icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-unknown.svg");
                     break;

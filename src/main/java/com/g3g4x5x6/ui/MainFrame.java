@@ -533,11 +533,13 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private AbstractAction myEditorAction = new AbstractAction("简易编辑器") {
         public void actionPerformed(final ActionEvent e) {
-            // TODO 内置编辑器
-            if (embedEditor == null) {
-                embedEditor = new EmbedEditor();
-            }
-            embedEditor.setVisible(true);
+            new Thread(()->{
+                // TODO 内置编辑器
+                if (embedEditor == null) {
+                    embedEditor = new EmbedEditor();
+                }
+                embedEditor.setVisible(true);
+            }).start();
         }
     };
 

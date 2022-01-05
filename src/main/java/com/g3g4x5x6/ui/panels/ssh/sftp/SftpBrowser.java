@@ -4,7 +4,6 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -260,11 +259,11 @@ public class SftpBrowser extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("打开文件...");
-                if (embedEditor == null){
-                    embedEditor = new EmbedEditor();
-                }
                 // TODO 配置编辑面板: 标题、文本、fs、icon、savePath
                 new Thread(()->{
+                    if (embedEditor == null){
+                        embedEditor = new EmbedEditor();
+                    }
                     String openFileName = myTable.getValueAt(myTable.getSelectedRow(), 0).toString();
                     TreePath dstPath = myTree.getSelectionPath();
                     String savePath = convertTreePathToString(dstPath) + "/" + openFileName;
