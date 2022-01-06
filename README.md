@@ -1,5 +1,8 @@
 # UltimateShell
 
+
+![OpenJDK](https://img.shields.io/badge/openjdk-11%2B-blue)
+![build system](https://img.shields.io/badge/build%20system-maven-blue)
 ![GitHub top language](https://img.shields.io/github/languages/top/g3g4x5x6/ultimateshell)
 ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/g3g4x5x6/ultimateshell?include_prereleases)
 ![GitHub](https://img.shields.io/github/license/g3g4x5x6/ultimateshell)
