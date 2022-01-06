@@ -200,10 +200,11 @@ public class EditorPanel extends JPanel {
             } else if (title.equalsIgnoreCase("makefile")) {
 //                String SYNTAX_STYLE_MAKEFILE = "text/makefile";
                 setSyntax("text/makefile");
+            }else{
+                // String SYNTAX_STYLE_UNIX_SHELL = "text/unix";
+                // 默认：text/unix -> bash
+                setSyntax("text/unix");
             }
-            // String SYNTAX_STYLE_UNIX_SHELL = "text/unix";
-            // 默认：text/unix -> bash
-            setSyntax("text/unix");
         } else {
             // 造孽呀
             String ext = title.substring(title.lastIndexOf(".") + 1);
@@ -233,6 +234,7 @@ public class EditorPanel extends JPanel {
                     break;
 //                String SYNTAX_STYLE_C = "text/c";
                 case "c":
+                case "h":
                     setSyntax("text/c");
                     break;
 //                String SYNTAX_STYLE_CLOJURE = "text/clojure";
@@ -241,6 +243,7 @@ public class EditorPanel extends JPanel {
                     break;
 //                String SYNTAX_STYLE_CPLUSPLUS = "text/cpp";
                 case "cpp":
+                case "hpp":
                 case "cc":
                     setSyntax("text/cpp");
                     break;
@@ -414,6 +417,7 @@ public class EditorPanel extends JPanel {
                     break;
 //                String SYNTAX_STYLE_UNIX_SHELL = "text/unix";
                 case "sh":
+                case "rc":
                 case "bashrc":
                 case "profile":
                 case "viminfo":
