@@ -90,7 +90,7 @@ java -jar UltimateShell-${version}-SNAPSHOT-jar-with-dependencies.jar
 ```
 详细使用技巧查看 [项目WIKI](https://github.com/G3G4X5X6/ultimateshell/wiki)
 
-## 依赖
+## 致谢
 - JediTerm: [https://github.com/JetBrains/jediterm](https://github.com/JetBrains/jediterm)
 - FlatLaf: [https://github.com/JFormDesigner/FlatLaf](https://github.com/JFormDesigner/FlatLaf)
 - Apache MINA SSHD: [https://github.com/apache/mina-sshd](https://github.com/apache/mina-sshd)
