@@ -58,6 +58,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JButton pasteBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-paste.svg"));
     private JButton undoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/undo.svg"));
     private JButton redoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/redo.svg"));
+    private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
     private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
     private JTabbedPane tabbedPane;
     private JToolBar statusBar;
@@ -122,6 +123,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
         toolBar.add(undoBtn);
         toolBar.add(redoBtn);
         toolBar.addSeparator();
+        toolBar.add(lineWrapBtn);
+        toolBar.addSeparator();
         toolBar.add(terminalBtn);
         initToolbarAction();
 
@@ -141,10 +144,10 @@ public class EmbedEditor extends JFrame implements ActionListener {
         this.add(statusBar, BorderLayout.SOUTH);
     }
 
-    private void resetIcon(ChangeEvent e){
+    private void resetIcon(ChangeEvent e) {
         JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
         int index = tabbedPane.getSelectedIndex();
-        if (index != -1){
+        if (index != -1) {
             EditorPanel editorPanel = (EditorPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
             syntaxLabel.setIcon(editorPanel.getIcon());
             syntaxLabel.setText(editorPanel.getSyntax());
@@ -164,6 +167,18 @@ public class EmbedEditor extends JFrame implements ActionListener {
         saveAllBtn.setToolTipText("全部保存(E)");   // Ctrl + E
         closeBtn.setToolTipText("关闭(C)");
         closeAllBtn.setToolTipText("全部关闭(E)");  // Ctrl + Alt + E
+        lineWrapBtn.setToolTipText("自动换行");
+        lineWrapBtn.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                EditorPanel editorPanel = (EditorPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+                if (lineWrapBtn.isSelected()) {
+                    editorPanel.setLineWrap(true);
+                } else {
+                    editorPanel.setLineWrap(false);
+                }
+            }
+        });
         terminalBtn.setToolTipText("返回 UltimateShell");
         terminalBtn.addActionListener(retTerminalAction);
     }
@@ -195,7 +210,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
         syntaxLabel.addMouseListener(new MouseInputAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == 3){    // 右键鼠标
+                if (e.getButton() == 3) {    // 右键鼠标
                     log.debug("改变编辑器语言语法风格");
                     langMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -310,10 +325,11 @@ public class EmbedEditor extends JFrame implements ActionListener {
 
     /**
      * TODO getCurrentEditorPanel for statusBar or other
+     *
      * @param
      * @throws IOException
      */
-    private EditorPanel getCurrentEditorPanel(){
+    private EditorPanel getCurrentEditorPanel() {
         return null;
     }
 
@@ -344,7 +360,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
                             editorPanel.setSavePath(file.getAbsolutePath());
                             Files.write(Path.of(file.getAbsolutePath()), editorPanel.getTextArea().getBytes(StandardCharsets.UTF_8));
                         }
-                    }else{
+                    } else {
                         // 更新保存
                         Files.write(Path.of(editorPanel.getSavePath()), editorPanel.getTextArea().getBytes(StandardCharsets.UTF_8));
                     }
@@ -376,10 +392,10 @@ public class EmbedEditor extends JFrame implements ActionListener {
             int result = fileChooser.showOpenDialog(EmbedEditor.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File[] files = fileChooser.getSelectedFiles();
-                for (File file: files){
+                for (File file : files) {
                     String text = "";
                     try {
-                        for (String line :  Files.readAllLines(Path.of(file.getAbsolutePath()))){
+                        for (String line : Files.readAllLines(Path.of(file.getAbsolutePath()))) {
                             text += line + "\n";
                         }
                     } catch (IOException ioException) {

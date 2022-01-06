@@ -184,6 +184,10 @@ public class EditorPanel extends JPanel {
         textArea.setSyntaxEditingStyle(syntax);
     }
 
+    public void setLineWrap(boolean flag){
+        textArea.setLineWrap(flag);
+    }
+
     private void autoSetSyntaxStyle(String title) {
         int index = title.lastIndexOf(".");
         if (index == -1) {

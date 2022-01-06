@@ -491,9 +491,12 @@ public class MainFrame extends JFrame implements MouseListener {
     }
 
     public static void removeWaitProgressBar(){
-        int count = waitCount.decrementAndGet();
-        if (count == 0){
-            waitProgressBar.setVisible(false);
+        int count;
+        if (waitCount.get() > 0){
+            count = waitCount.decrementAndGet();
+            if (count == 0){
+                waitProgressBar.setVisible(false);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -11,6 +12,7 @@ import com.g3g4x5x6.utils.FileUtil;
 import com.g3g4x5x6.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.chainsaw.Main;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.common.SftpConstants;
@@ -31,6 +33,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.g3g4x5x6.ui.MainFrame.embedEditor;
@@ -56,10 +59,12 @@ public class SftpBrowser extends JPanel {
     private JPopupMenu treePopMenu;
     private JPopupMenu tablePopMenu;
     private JPopupMenu transferPopMenu;
-    private AbstractAction downloadAction;
 
+    private SftpClient sftpClient;
     private SftpFileSystem fs;
+    private AtomicBoolean listFlag = new AtomicBoolean(true);
 
+    @SneakyThrows
     public SftpBrowser(SftpFileSystem sftpFileSystem) {
         borderLayout = new BorderLayout();
         this.setLayout(borderLayout);
@@ -68,6 +73,7 @@ public class SftpBrowser extends JPanel {
         toolBar.setFloatable(false);
 
         this.fs = sftpFileSystem;
+        this.sftpClient = fs.getClient();
 
         initPane();
         initPopupMenu();
@@ -261,6 +267,9 @@ public class SftpBrowser extends JPanel {
                 log.debug("打开文件...");
                 // TODO 配置编辑面板: 标题、文本、fs、icon、savePath
                 new Thread(()->{
+                    // 显示等待进度条
+                    MainFrame.addWaitProgressBar();
+
                     if (embedEditor == null){
                         embedEditor = new EmbedEditor();
                     }
@@ -275,12 +284,16 @@ public class SftpBrowser extends JPanel {
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
+
                     EditorPanel editorPanel = new EditorPanel(openFileName, savePath);
                     editorPanel.setFs(fs);
                     editorPanel.setSavePath(savePath);
                     editorPanel.setTextArea(text);
                     embedEditor.addAndSelectPanel(editorPanel);
                     embedEditor.setVisible(true);
+
+                    // 关闭等待进度条
+                    MainFrame.removeWaitProgressBar();
                 }).start();
             }
         };
@@ -623,7 +636,7 @@ public class SftpBrowser extends JPanel {
     private Iterable<SftpClient.DirEntry> getDirEntry(String path) {
         Iterable<SftpClient.DirEntry> entry = null;
         try {
-            entry = fs.getClient().readDir(path);
+            entry = this.sftpClient.readDir(path);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -730,6 +743,7 @@ public class SftpBrowser extends JPanel {
 
         DefaultMutableTreeNode temp = null;
         try {
+            log.debug(">>>>>>>>>>>>>>>>java.lang.NullPointerException>>>>>>>" + convertTreePathToString(path));
             for (SftpClient.DirEntry entry : getDirEntry(convertTreePathToString(path))) {
                 log.debug(entry.getLongFilename());
                 if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
@@ -759,9 +773,10 @@ public class SftpBrowser extends JPanel {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
-            if (exception.getMessage().strip().endsWith("Permission denied"))
-                DialogUtil.error("权限不足！！！");
+            DialogUtil.error(exception.getMessage());
         }
+        myTree.setSelectionPath(path);
+        myTree.expandPath(myTree.getSelectionPath());
     }
 
 
@@ -818,7 +833,17 @@ public class SftpBrowser extends JPanel {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
                     // 刷新文件列表
-                    freshTable();
+                    if (listFlag.get()){
+                        listFlag.set(false);
+                        new Thread(()->{
+                            MainFrame.addWaitProgressBar();
+                            freshTable();
+                            MainFrame.removeWaitProgressBar();
+                            listFlag.set(true);
+                        }).start();
+                    } else {
+                        DialogUtil.warn("已有一个展开任务，请等待！");
+                    }
                 }
             });
 
@@ -851,7 +876,7 @@ public class SftpBrowser extends JPanel {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (e.getClickCount() == 2) {
-                        freshTable();
+//                        freshTable();
                     }
                 }
             });
