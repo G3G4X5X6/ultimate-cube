@@ -1,6 +1,5 @@
 package com.g3g4x5x6.ui.panels.tools;
 
-import cn.hutool.core.io.FileUtil;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.CommonUtil;
@@ -17,7 +16,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -289,7 +287,7 @@ public class EncodeConversion extends JDialog {
 //                                converionWriter.close();
 
                                 Files.copy(file, new File(outputDir.getAbsolutePath() + "/" + file.getName()));
-                                FileUtil.convertCharset(new File(outputDir.getAbsolutePath() + "/" + file.getName()), Charset.forName(cm.getName()), Charset.forName(dstComboBox.getSelectedItem().toString()));
+//                                FileUtil.convertCharset(new File(outputDir.getAbsolutePath() + "/" + file.getName()), Charset.forName(cm.getName()), Charset.forName(dstComboBox.getSelectedItem().toString()));
 
                                 CharsetMatch tmp = CommonUtil.checkCharset(new BufferedInputStream(new FileInputStream(outputDir.getAbsolutePath() + "/" + file.getName())));
                                 rightModel.addRow(new String[]{file.getName(), tmp.getName(), String.valueOf(tmp.getConfidence())});

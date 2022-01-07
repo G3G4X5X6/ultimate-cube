@@ -1,5 +1,4 @@
 import org.apache.commons.net.telnet.TelnetClient;
-import org.codehaus.plexus.util.IOUtil;
 
 
 import java.io.IOException;
