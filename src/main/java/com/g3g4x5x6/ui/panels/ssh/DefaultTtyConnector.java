@@ -63,11 +63,7 @@ public class DefaultTtyConnector implements TtyConnector {
         channel.setIn(input);
         channel.setOut(output);
         channel.setErr(output);
-//        channel.setPtyLines(40);
-//        channel.setPtyColumns(140);
         channel.open().verify(3000, TimeUnit.MILLISECONDS);
-//        channel.setPtyLines(40);
-//        channel.setPtyColumns(140);
         return channel;
     }
 

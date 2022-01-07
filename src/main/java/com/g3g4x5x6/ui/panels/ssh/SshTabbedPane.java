@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
@@ -75,6 +76,7 @@ public class SshTabbedPane extends JTabbedPane {
             session.addPasswordIdentity(this.pass);
             session.auth().verify(15, TimeUnit.SECONDS);
             session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(3));
+            session.sendIgnoreMessage("".getBytes(StandardCharsets.UTF_8));
             return session;
         } catch (IOException e) {
             e.printStackTrace();

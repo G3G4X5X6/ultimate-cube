@@ -239,7 +239,7 @@ public class MainFrame extends JFrame implements MouseListener {
                         String msg = null;
                         msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
                                 "最新版本： <font color='green'>" + latestVersion + "</font><br><br>" +
-                                "是否现在下载更新？</html>";
+                                "是否现在下载最新版本？</html>";
                         log.debug("Msg: " + msg);
                         int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
                         if (code == 0) {
