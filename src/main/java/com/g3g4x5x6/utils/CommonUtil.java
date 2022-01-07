@@ -3,6 +3,7 @@ package com.g3g4x5x6.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fazecast.jSerialComm.SerialPort;
+import com.g3g4x5x6.os.OsInfoUtil;
 import com.github.jarod.qqwry.IPZone;
 import com.github.jarod.qqwry.QQWry;
 import com.ibm.icu.text.CharsetDetector;
@@ -142,8 +143,14 @@ public class CommonUtil {
         String browser_download_url = "https://github.com/G3G4X5X6/ultimateshell/releases/";
         while (iterator.hasNext()){
             JSONObject obj = (JSONObject) iterator.next();
-            if (obj.getString("name").contains("jar-with-dependencies.jar")){
-                browser_download_url = obj.getString("browser_download_url");
+            if (OsInfoUtil.isLinux() || OsInfoUtil.isMacOS()){
+                if (obj.getString("name").contains("jar-with-dependencies.jar")){
+                    browser_download_url = obj.getString("browser_download_url");
+                }
+            }else if (OsInfoUtil.isWindows()){
+                if (obj.getString("name").contains("setup.exe")){
+                    browser_download_url = obj.getString("browser_download_url");
+                }
             }
         }
         System.out.println(browser_download_url);
