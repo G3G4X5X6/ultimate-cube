@@ -48,7 +48,9 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 ## 正式版录屏
 [comment]: <> (https://github.com/G3G4X5X6/ultimateshell/blob/gh-pages/20220107_220007.mp4?raw=true)
 <video width="800" controls>
-  <source src="https://github.com/G3G4X5X6/ultimateshell/blob/gh-pages/20220107_220007.mp4?raw=true" type="video/mp4">
+
+[comment]: <> (  <source src="https://github.com/G3G4X5X6/ultimateshell/blob/gh-pages/20220107_220007.mp4?raw=true" type="video/mp4">)
+  <source src="https://raw.githubusercontent.com/G3G4X5X6/ultimateshell/blob/gh-pages/20220107_220007.mp4" type="video/mp4">
 </video>
 
 ## 截图
