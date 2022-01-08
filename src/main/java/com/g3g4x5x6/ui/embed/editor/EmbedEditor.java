@@ -59,6 +59,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JButton pasteBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-paste.svg"));
     private JButton undoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/undo.svg"));
     private JButton redoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/redo.svg"));
+    private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
+    private JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
     private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
     private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
     private JTabbedPane tabbedPane;
@@ -67,6 +69,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JPopupMenu rightPopupMenu = new JPopupMenu();
     private Clipboard clipboard;
     private JLabel syntaxLabel;
+    private JLabel searchStatusLabel;
 
     private LinkedList<EditorPanel> globalWindows = new LinkedList<>();
 
@@ -128,13 +131,16 @@ public class EmbedEditor extends JFrame implements ActionListener {
         toolBar.addSeparator();
         toolBar.add(lineWrapBtn);
         toolBar.addSeparator();
+        toolBar.add(searchBtn);
+        toolBar.add(replaceBtn);
+        toolBar.addSeparator();
         toolBar.add(terminalBtn);
         initToolbarAction();
 
         tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         initClosableTabs(tabbedPane);
         customComponents();
-        addAndSelectPanel(new EditorPanel());
+//        addAndSelectPanel(new EditorPanel());
         tabbedPane.addChangeListener(e -> resetIcon(e));
         initRightPopupMenu();
         tabbedPane.addMouseListener(new MouseAdapter() {
@@ -190,11 +196,26 @@ public class EmbedEditor extends JFrame implements ActionListener {
                 }
             }
         });
+        searchBtn.setToolTipText("搜索......");
+        searchBtn.addActionListener(showFindDialogAction);
+        searchBtn.registerKeyboardAction(showFindDialogAction, KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        replaceBtn.setToolTipText("替换......");
+        replaceBtn.addActionListener(showReplaceDialogAction);
+        replaceBtn.registerKeyboardAction(showReplaceDialogAction, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
         terminalBtn.setToolTipText("返回 UltimateShell");
         terminalBtn.addActionListener(retTerminalAction);
     }
 
+
+
     private void initStatusBar() {
+        /**
+         * 搜索状态
+         */
+        searchStatusLabel = new JLabel("Ready");
+        /**
+         * 文件类型
+         */
         syntaxLabel = new JLabel("text/plain");
         syntaxLabel.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-text.svg"));
         JPopupMenu langMenu = new JPopupMenu();
@@ -228,6 +249,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
             }
         });
         statusBar.add(Box.createGlue());
+        statusBar.addSeparator();
+        statusBar.add(searchStatusLabel);
         statusBar.addSeparator();
         statusBar.add(syntaxLabel);
     }
@@ -335,16 +358,14 @@ public class EmbedEditor extends JFrame implements ActionListener {
     }
 
     /**
-     * TODO getCurrentEditorPanel for statusBar or other
-     *
-     * @param
-     * @throws IOException
+     * 获取当前选中的Tab面板
+     * @return EditorPanel
      */
     private EditorPanel getCurrentEditorPanel() {
-        return null;
+        return (EditorPanel) this.tabbedPane.getComponentAt(this.tabbedPane.getSelectedIndex());
     }
 
-    private void initRightPopupMenu(){
+    private void initRightPopupMenu() {
         rightPopupMenu.add(copyPathAction);
     }
 
@@ -356,7 +377,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
                 break;
             case "saveAction":
                 log.debug("saveAction");
-                EditorPanel editorPanel = (EditorPanel) this.tabbedPane.getComponentAt(this.tabbedPane.getSelectedIndex());
+                EditorPanel editorPanel = getCurrentEditorPanel();
                 if (editorPanel.getFs() != null) {
                     // 远程文件保存   Files.write(fs.getPath(titleField.getSelectedItem().toString().strip()), textArea.getText().getBytes(StandardCharsets.UTF_8));
                     Files.write(editorPanel.getFs().getPath(editorPanel.getSavePath()), editorPanel.getTextArea().getBytes(StandardCharsets.UTF_8));
@@ -382,6 +403,18 @@ public class EmbedEditor extends JFrame implements ActionListener {
                 }
                 break;
         }
+    }
+
+
+    /**
+     * Getter & Setter
+     */
+    public String getSearchStatusLabelStr() {
+        return searchStatusLabel.getText();
+    }
+
+    public void setSearchStatusLabelStr(String searchStatusLabel) {
+        this.searchStatusLabel.setText(searchStatusLabel);
     }
 
     /**
@@ -450,7 +483,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
     AbstractAction copyPathAction = new AbstractAction("复制路径") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EditorPanel editorPanel = (EditorPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+            EditorPanel editorPanel = getCurrentEditorPanel();
             if (clipboard == null)
                 clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); //获得系统剪贴板
             Transferable transferable = new StringSelection(editorPanel.getSavePath());
@@ -458,5 +491,25 @@ public class EmbedEditor extends JFrame implements ActionListener {
         }
     };
 
+    AbstractAction showFindDialogAction = new AbstractAction("查找") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorPanel editorPanel = getCurrentEditorPanel();
+            if (editorPanel.getReplaceDialog().isVisible()) {
+                editorPanel.getReplaceDialog().setVisible(false);
+            }
+            editorPanel.getFindDialog().setVisible(true);
+        }
+    };
 
+    AbstractAction showReplaceDialogAction = new AbstractAction("替换") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorPanel editorPanel = getCurrentEditorPanel();
+            if (editorPanel.getFindDialog().isVisible()) {
+                editorPanel.getFindDialog().setVisible(false);
+            }
+            editorPanel.getReplaceDialog().setVisible(true);
+        }
+    };
 }

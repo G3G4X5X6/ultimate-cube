@@ -1,10 +1,15 @@
 package com.g3g4x5x6.ui.embed.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.MainFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
+import org.fife.rsta.ui.search.*;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchEngine;
+import org.fife.ui.rtextarea.SearchResult;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +22,7 @@ import java.util.UUID;
 
 
 @Slf4j
-public class EditorPanel extends JPanel {
+public class EditorPanel extends JPanel implements SearchListener {
 
     private String title = "新建文件.txt";
     private String tips = "默认提示文本";
@@ -25,6 +30,8 @@ public class EditorPanel extends JPanel {
     private FlatSVGIcon icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-text.svg");
     private RSyntaxTextArea textArea;
     private RTextScrollPane sp;
+    private FindDialog findDialog;
+    private ReplaceDialog replaceDialog;
     private String syntax = "text/plain";
     private LinkedList<String> allSyntax = new LinkedList<>();
 
@@ -38,6 +45,7 @@ public class EditorPanel extends JPanel {
         this.sp = new RTextScrollPane(textArea);
         this.sp.setBorder(null);
         this.add(sp, BorderLayout.CENTER);
+        initSearchDialogs();
     }
 
     public EditorPanel(String savePath) {
@@ -102,6 +110,17 @@ public class EditorPanel extends JPanel {
         String resource = "/org/fife/ui/rsyntaxtextarea/themes/" + themeName + ".xml";
         Theme theme = Theme.load(this.getClass().getResourceAsStream(resource));
         return new RSyntaxTextAreaEditorKit.CopyCutAsStyledTextAction(themeName, theme, true);
+    }
+
+    private void initSearchDialogs() {
+        log.debug("initSearchDialogs");
+        findDialog = new FindDialog(MainFrame.embedEditor, this);
+        replaceDialog = new ReplaceDialog(MainFrame.embedEditor, this);
+
+        // This ties the properties of the two dialogs together (match case,
+        // regex, etc.).
+        SearchContext context = findDialog.getSearchContext();
+        replaceDialog.setSearchContext(context);
     }
 
     private void initSyntaxStyle() {
@@ -449,5 +468,67 @@ public class EditorPanel extends JPanel {
             }
         }
     }
+
+    @Override
+    public String getSelectedText() {
+        return textArea.getSelectedText();
+    }
+
+    @Override
+    public void searchEvent(SearchEvent e) {
+        SearchEvent.Type type = e.getType();
+        SearchContext context = e.getSearchContext();
+        SearchResult result;
+
+        switch (type) {
+            default: // Prevent FindBugs warning later
+            case MARK_ALL:
+                result = SearchEngine.markAll(textArea, context);
+                break;
+            case FIND:
+                result = SearchEngine.find(textArea, context);
+                if (!result.wasFound() || result.isWrapped()) {
+                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+                }
+                break;
+            case REPLACE:
+                result = SearchEngine.replace(textArea, context);
+                if (!result.wasFound() || result.isWrapped()) {
+                    UIManager.getLookAndFeel().provideErrorFeedback(textArea);
+                }
+                break;
+            case REPLACE_ALL:
+                result = SearchEngine.replaceAll(textArea, context);
+                JOptionPane.showMessageDialog(null, result.getCount() +
+                        " occurrences replaced.");
+                break;
+        }
+
+        String text;
+        if (result.wasFound()) {
+            text = "Text found; occurrences marked: " + result.getMarkedCount();
+        }
+        else if (type==SearchEvent.Type.MARK_ALL) {
+            if (result.getMarkedCount()>0) {
+                text = "Occurrences marked: " + result.getMarkedCount();
+            }
+            else {
+                text = "";
+            }
+        }
+        else {
+            text = "Text not found";
+        }
+        MainFrame.embedEditor.setSearchStatusLabelStr(text);
+    }
+
+    public FindDialog getFindDialog(){
+        return findDialog;
+    }
+
+    public ReplaceDialog getReplaceDialog(){
+        return replaceDialog;
+    }
+
 
 }

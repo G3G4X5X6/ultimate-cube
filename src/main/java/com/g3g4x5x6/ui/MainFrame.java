@@ -506,7 +506,7 @@ public class MainFrame extends JFrame implements MouseListener {
      */
     public static JTabbedPane mainTabbedPane;
     public static JPanel statusBar;
-    public static EmbedEditor embedEditor;
+    public static EmbedEditor embedEditor = new EmbedEditor();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
 

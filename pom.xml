@@ -90,6 +90,11 @@
             <artifactId>rsyntaxtextarea</artifactId>
             <version>3.1.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rstaui</artifactId>
+            <version>3.1.3</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
