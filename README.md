@@ -21,7 +21,6 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 ## 目录
 - [安全通告](#安全通告)
 - [功能特性](#功能特性)
-- [截图](#截图)
 - [项目构建](#构建)
 - [使用](#使用)
 - [依赖](#依赖)
@@ -46,49 +45,31 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 - [ ] <del>Support FTP</del>（暂不支持）
 
 
-## 截图
-
-- *启动面板*
-![dashboard](doc/screenshot/ultimateshell_dashboard.png)
-  
-
-- *本地终端*
-![dashboard](doc/screenshot/ultimateshell_local_terminal.png)
-  
-
-- *SSH 会话*
-![dashboard](doc/screenshot/ultimateshell_session.png)
-  
-
-- *主题皮肤设置*<Br>
-![dashboard](doc/screenshot/ultimateshell_theme_settings.png)
-
-
-- *Dark purple*
-![dashboard](doc/screenshot/ultimateshell_theme_darkpurple.png)
-  
-
-- *Gradianto nature green*
-![dashboard](doc/screenshot/ultimateshell_theme_gradianto_nature_green.png)
-
-
 ## 构建
+1. 构建环境：`JDK11+`, `IDEA`
+1. 安装依赖：
+   ```shell
+    # tightvnc-jviewer.jar, jediterm-pty-2.49.jar, terminal-2.54.jar, jediterm-typeahead-2.54.jar
+    mvn install:install-file -Dfile=src/main/resources/libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
+    mvn install:install-file -Dfile=src/main/resources/libs/jediterm-typeahead-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
+    mvn install:install-file -Dfile=src/main/resources/libs/terminal-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
+    mvn install:install-file -Dfile=src/main/resources/libs/jediterm-pty-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.49 -Dpackaging=jar
+   ```
+1. 编译运行：
+    1. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
+    1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
+    1. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
 
-```shell
-# 1. JDK 11+
-# 2. 需要先安装依赖包到本地仓库: jediterm-pty-2.49.jar, jediterm-ssh-2.49.jar, terminal-2.54.jar, jediterm-typeahead-2.54.jar
-```
+
 
 ## 使用
+1. 程序依赖运行环境：`JDK11+`
+1. `linux`, `OSX` 用户建议使用自带依赖的通用版本 UltimateShell-x.x.x-beta.1-jar-with-dependencies.jar
+1. `Windows` 用户 `无JDK` 环境的,建议使用 `ultimateshell_setup.exe` 安装包（体积较大）
+1. 关于使用过程中的任何疑问，请于 `Discussions` 中的对应版本进行提问和反馈。
 
-```shell
-# 运行环境： JDK 11+ 
-# 1. 命令行执行
-java -jar UltimateShell-${version}-SNAPSHOT-jar-with-dependencies.jar
-
-# 2. 双击执行
-```
 详细使用技巧查看 [项目WIKI](https://github.com/G3G4X5X6/ultimateshell/wiki)
+
 
 ## 致谢
 - JediTerm: [https://github.com/JetBrains/jediterm](https://github.com/JetBrains/jediterm)
