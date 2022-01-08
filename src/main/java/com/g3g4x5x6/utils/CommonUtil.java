@@ -203,7 +203,7 @@ public class CommonUtil {
         String fileName = temp.getAbsolutePath() + "/systeminfo.txt";
         String output = exec("systeminfo");
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, StandardCharsets.UTF_8));
             writer.write(output);
             writer.flush();
             writer.close();
@@ -240,12 +240,12 @@ public class CommonUtil {
         StringBuffer b = new StringBuffer();
         Runtime runtime = Runtime.getRuntime();
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(runtime.exec(cmd).getInputStream()));
+            CharsetMatch cm = CommonUtil.checkCharset(runtime.exec(cmd).getInputStream());
+            BufferedReader br = new BufferedReader(cm.getReader());
             String line = null;
             while ((line = br.readLine()) != null) {
                 b.append(line + "\n");
             }
-//            System.out.println(b.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
