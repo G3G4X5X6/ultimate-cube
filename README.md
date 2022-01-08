@@ -2,6 +2,7 @@
 
 
 [![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09)](https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade)
 ![OpenJDK](https://img.shields.io/badge/openjdk-11%2B-blue)
 ![build system](https://img.shields.io/badge/build%20system-maven-blue)
 ![GitHub top language](https://img.shields.io/github/languages/top/g3g4x5x6/ultimateshell)
