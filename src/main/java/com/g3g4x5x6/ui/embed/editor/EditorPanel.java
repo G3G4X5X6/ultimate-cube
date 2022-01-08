@@ -303,6 +303,7 @@ public class EditorPanel extends JPanel {
                     break;
 //                String SYNTAX_STYLE_HTML = "text/html";
                 case "html":
+                case "ftl": // 模板文件
                     setSyntax("text/html");
                     icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-html.svg");
                     break;

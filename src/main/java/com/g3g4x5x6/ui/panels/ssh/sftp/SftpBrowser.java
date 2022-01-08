@@ -12,7 +12,6 @@ import com.g3g4x5x6.utils.FileUtil;
 import com.g3g4x5x6.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.chainsaw.Main;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.common.SftpConstants;
@@ -35,6 +34,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.g3g4x5x6.ui.MainFrame.embedEditor;
 
@@ -266,23 +266,25 @@ public class SftpBrowser extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("打开文件...");
                 // TODO 配置编辑面板: 标题、文本、fs、icon、savePath
-                new Thread(()->{
+                new Thread(() -> {
                     // 显示等待进度条
                     MainFrame.addWaitProgressBar();
 
-                    if (embedEditor == null){
+                    if (embedEditor == null) {
                         embedEditor = new EmbedEditor();
                     }
                     String openFileName = myTable.getValueAt(myTable.getSelectedRow(), 0).toString();
                     TreePath dstPath = myTree.getSelectionPath();
                     String savePath = convertTreePathToString(dstPath) + "/" + openFileName;
                     String text = "";
-                    try {
-                        for (String line :  Files.readAllLines(fs.getPath(savePath))){
+                    try(BufferedReader reader = new BufferedReader(new InputStreamReader(sftpClient.read(savePath)))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
                             text += line + "\n";
                         }
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
+                        DialogUtil.error(ioException.getMessage());
                     }
 
                     EditorPanel editorPanel = new EditorPanel(openFileName, savePath);
@@ -696,7 +698,7 @@ public class SftpBrowser extends JPanel {
          *     public static final int SSH_FILEXFER_TYPE_BLOCK_DEVICE = 8; // v5
          *     public static final int SSH_FILEXFER_TYPE_FIFO = 9; // v5
          */
-        switch (entry.getAttributes().getType()){
+        switch (entry.getAttributes().getType()) {
             case SftpConstants.SSH_FILEXFER_TYPE_REGULAR:
                 temp[3] = "Regular";
                 break;
@@ -833,9 +835,9 @@ public class SftpBrowser extends JPanel {
                 @Override
                 public void valueChanged(TreeSelectionEvent e) {
                     // 刷新文件列表
-                    if (listFlag.get()){
+                    if (listFlag.get()) {
                         listFlag.set(false);
-                        new Thread(()->{
+                        new Thread(() -> {
                             MainFrame.addWaitProgressBar();
                             freshTable();
                             MainFrame.removeWaitProgressBar();

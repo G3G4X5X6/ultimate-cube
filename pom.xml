@@ -17,6 +17,7 @@
     </properties>
 
     <dependencies>
+<!--        commons-codec是Apache开源组织提供的用于摘要运算、编码解码的包。常见的编码解码工具Base64、MD5、Hex、SHA1、DES等。-->
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/commons-codec/commons-codec &ndash;&gt;-->
 <!--        <dependency>-->
 <!--            <groupId>commons-codec</groupId>-->
@@ -162,7 +163,6 @@
             <artifactId>jna-platform</artifactId>
             <version>5.8.0</version>
         </dependency>
-
 
         <dependency>
             <groupId>com.github.jarod</groupId>
