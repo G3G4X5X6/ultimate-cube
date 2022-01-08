@@ -23,6 +23,9 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.io.*;
 import java.nio.file.FileVisitResult;
@@ -53,6 +56,7 @@ public class SftpBrowser extends JPanel {
 
     private JToolBar toolBar;
     private String finalPath;
+    private Clipboard clipboard;
 
     // TODO 右键菜单动作
     private JPopupMenu treePopMenu;
@@ -560,6 +564,20 @@ public class SftpBrowser extends JPanel {
             }
         };
 
+        AbstractAction copyPathAction = new AbstractAction("复制路径") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String openFileName = myTable.getValueAt(myTable.getSelectedRow(), 0).toString();
+                TreePath dstPath = myTree.getSelectionPath();
+                String copyPath = convertTreePathToString(dstPath) + "/" + openFileName;
+
+                if (clipboard == null)
+                    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); //获得系统剪贴板
+                Transferable transferable = new StringSelection(copyPath);
+                clipboard.setContents(transferable, null);
+            }
+        };
+
         /**
          *  目录树右键功能：打开文件、上传（单文件、多文件、选中目录：单目录、多目录）、下载（单文件、多文件、选中目录）、删除
          */
@@ -580,6 +598,8 @@ public class SftpBrowser extends JPanel {
         tablePopMenu.add(openAction);
         tablePopMenu.add(uploadsAction);
         tablePopMenu.add(downloadsAction);
+        tablePopMenu.add(copyPathAction);
+        tablePopMenu.addSeparator();
         tablePopMenu.add(deleteFilesAction);
         myTable.setComponentPopupMenu(tablePopMenu);
     }
