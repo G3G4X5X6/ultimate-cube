@@ -14,6 +14,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +64,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JTabbedPane tabbedPane;
     private JToolBar statusBar;
     private JPopupMenu trailPopupMenu = new JPopupMenu();
+    private JPopupMenu rightPopupMenu = new JPopupMenu();
+    private Clipboard clipboard;
     private JLabel syntaxLabel;
 
     private LinkedList<EditorPanel> globalWindows = new LinkedList<>();
@@ -131,6 +136,13 @@ public class EmbedEditor extends JFrame implements ActionListener {
         customComponents();
         addAndSelectPanel(new EditorPanel());
         tabbedPane.addChangeListener(e -> resetIcon(e));
+        initRightPopupMenu();
+        tabbedPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                rightPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
 
         statusBar = new JToolBar();
         statusBar.setFloatable(false);
@@ -331,6 +343,10 @@ public class EmbedEditor extends JFrame implements ActionListener {
         return null;
     }
 
+    private void initRightPopupMenu(){
+        rightPopupMenu.add(copyPathAction);
+    }
+
     private void quickAction(String command) throws IOException {
         switch (command) {
             case "newAction":
@@ -367,6 +383,9 @@ public class EmbedEditor extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * toolBar Action 区域
+     */
     @SneakyThrows
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -420,6 +439,21 @@ public class EmbedEditor extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             App.mainFrame.setVisible(true);
+        }
+    };
+
+
+    /**
+     * tabbedPane 右键菜单 Action 区域
+     */
+    AbstractAction copyPathAction = new AbstractAction("复制路径") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorPanel editorPanel = (EditorPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+            if (clipboard == null)
+                clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); //获得系统剪贴板
+            Transferable transferable = new StringSelection(editorPanel.getSavePath());
+            clipboard.setContents(transferable, null);
         }
     };
 
