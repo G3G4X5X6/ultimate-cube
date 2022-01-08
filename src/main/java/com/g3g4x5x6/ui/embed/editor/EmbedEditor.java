@@ -140,7 +140,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
         tabbedPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                rightPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                if (e.getButton() == 3)
+                    rightPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
 
