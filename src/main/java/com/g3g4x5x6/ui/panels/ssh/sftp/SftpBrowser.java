@@ -34,7 +34,6 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.g3g4x5x6.ui.MainFrame.embedEditor;
 
