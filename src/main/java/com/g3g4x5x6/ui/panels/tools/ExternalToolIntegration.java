@@ -3,7 +3,7 @@ package com.g3g4x5x6.ui.panels.tools;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.g3g4x5x6.os.OsInfoUtil;
+import com.g3g4x5x6.utils.os.OsInfoUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 

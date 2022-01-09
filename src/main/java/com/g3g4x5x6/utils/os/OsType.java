@@ -1,4 +1,4 @@
-package com.g3g4x5x6.os;
+package com.g3g4x5x6.utils.os;
 
 public enum OsType {
 

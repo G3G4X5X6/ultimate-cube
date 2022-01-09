@@ -443,6 +443,7 @@ public class EditorPanel extends JPanel implements SearchListener {
                 case "viminfo":
                 case "bash_logout":
                 case "bash_history":
+                case "bash_profile":
                     setSyntax("text/unix");
                     icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-unknown.svg");
                     break;

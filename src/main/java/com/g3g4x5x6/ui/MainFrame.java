@@ -55,7 +55,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
     public MainFrame() throws HeadlessException {
         // 主窗口设置
-        this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);      // 提示确认退出
+        this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);      // TODO 自定义退出操作
         this.setSize(new Dimension(1000, 600));
         this.setMinimumSize(new Dimension(900, 600));
         this.setPreferredSize(new Dimension(1000, 600));
@@ -567,7 +567,6 @@ public class MainFrame extends JFrame implements MouseListener {
     private AbstractAction encodeConversionAction = new AbstractAction("文件编码转换") {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            EncodeConversion encodeConversion = new EncodeConversion();
             DialogUtil.info("敬请期待");
         }
     };

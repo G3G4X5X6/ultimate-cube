@@ -28,18 +28,16 @@ public class App {
         // 配置主题皮肤
         initFlatLaf();
 
-        // 主窗口
+        // 程序主窗口
         mainFrame = new MainFrame();
         mainFrame.setTitle("UltimateShell");
         mainFrame.pack();
         mainFrame.setVisible(true);
-        log.info(">>>>>>>> 程序启动完成！！！");
+        log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        log.info("<<<<<<<<<<<<<<<<<<<<<程序启动完成>>>>>>>>>>>>>>>>>>>>>");
+        log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>");
     }
 
-    /**
-     * Class themeClass = App.class.getClassLoader().loadClass(ConfigUtil.getThemeClass());
-     * UIManager.setLookAndFeel((LookAndFeel) themeClass.getConstructor().newInstance());
-     */
     private static void initFlatLaf() {
         try {
             if (ConfigUtil.isEnableTheme()) {
@@ -47,9 +45,8 @@ public class App {
             } else {
                 UIManager.setLookAndFeel(new FlatLightLaf());
             }
-            log.info(">>>>>>>> FlatLaf主题加载成功......");
         } catch (Exception ex) {
-            log.error("Failed to initialize LaF !!!!!!!! ");
+            log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
     }
 }

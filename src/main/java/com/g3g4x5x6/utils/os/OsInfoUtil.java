@@ -1,4 +1,4 @@
-package com.g3g4x5x6.os;
+package com.g3g4x5x6.utils.os;
 
 public class OsInfoUtil {
     private static String OS = System.getProperty("os.name").toLowerCase();
