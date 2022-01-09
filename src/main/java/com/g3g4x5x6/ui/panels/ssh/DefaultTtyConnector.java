@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.channel.ChannelShell;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.PtyChannelConfiguration;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.*;
@@ -19,19 +18,13 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultTtyConnector implements TtyConnector {
-    private ClientSession session;
+    private final ClientSession session;
     private ChannelShell channel;
-    private PtyChannelConfiguration ptyConfig;
-    private Map<String, ?> env;
 
     private Dimension myPendingTermSize;
-    private Dimension pixelSize;
 
-    private PipedOutputStream channelOut;
-    private InputStream channelIn;
     private OutputStream outputStream;
     private BufferedReader reader;
-    private BufferedWriter writer;
 
     public DefaultTtyConnector(ClientSession clientSession) {
         this.session = clientSession;
@@ -41,14 +34,13 @@ public class DefaultTtyConnector implements TtyConnector {
     public boolean init(Questioner questioner) {
         try {
             PipedOutputStream out = new PipedOutputStream();
-            channelIn = new PipedInputStream(out);
-            channelOut = new PipedOutputStream();
+            InputStream channelIn = new PipedInputStream(out);
+            PipedOutputStream channelOut = new PipedOutputStream();
             PipedInputStream in = new PipedInputStream(channelOut);
-            reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            writer = new BufferedWriter(new OutputStreamWriter(out));
 
             channel = initClientChannel(session, channelIn, channelOut);
 
+            reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             outputStream = channel.getInvertedIn();
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,9 +49,9 @@ public class DefaultTtyConnector implements TtyConnector {
     }
 
     private ChannelShell initClientChannel(ClientSession session, InputStream input, OutputStream output) throws IOException {
-        this.ptyConfig = getPtyChannelConfiguration();
-        this.env = getEnv();
-        ChannelShell channel = session.createShellChannel(this.ptyConfig, this.env);
+        PtyChannelConfiguration ptyConfig = getPtyChannelConfiguration();
+        Map<String, ?> env = getEnv();
+        ChannelShell channel = session.createShellChannel(ptyConfig, env);
         channel.setIn(input);
         channel.setOut(output);
         channel.setErr(output);
@@ -99,15 +91,9 @@ public class DefaultTtyConnector implements TtyConnector {
 
     /**
      * TODO 本地保存会话记录：String.valueOf(chars )
-     * @param chars
-     * @param i
-     * @param i1
-     * @return
-     * @throws IOException
      */
     @Override
     public int read(char[] chars, int i, int i1) throws IOException {
-//        log.debug(">>>>>>>>>>>>>>>" + String.valueOf(chars ));
         return reader.read(chars, i, i1);
     }
 
@@ -124,8 +110,6 @@ public class DefaultTtyConnector implements TtyConnector {
 
     /**
      * TODO 本地保存命令历史记录：string
-     * @param string
-     * @throws IOException
      */
     @Override
     public void write(String string) throws IOException {
@@ -139,15 +123,14 @@ public class DefaultTtyConnector implements TtyConnector {
     }
 
     @Override
-    public boolean ready() throws IOException {
+    public boolean ready() {
         return true;
     }
 
     @Override
-    public void resize(Dimension termWinSize, Dimension pixelSize) {
+    public void resize(Dimension termWinSize) {
         log.debug(termWinSize.height + ":" + termWinSize.width);
         this.myPendingTermSize = termWinSize;
-        this.pixelSize = pixelSize;
         if (this.channel != null) {
             this.resizeImmediately();
         }
@@ -155,22 +138,16 @@ public class DefaultTtyConnector implements TtyConnector {
 
     private void resizeImmediately() {
         if (this.myPendingTermSize != null) {
-            if (this.pixelSize == null){
-                this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, 0, 0);
-            }
-            this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height, pixelSize.width, pixelSize.height);
+            this.setPtySize(this.myPendingTermSize.width, this.myPendingTermSize.height);
             this.myPendingTermSize = null;
-            this.pixelSize = null;
         }
     }
 
-    private void setPtySize(int col, int row, int wp, int hp) {
-        log.debug(col + ":" + row + "==" + wp + ":" + hp);
+    private void setPtySize(int col, int row) {
         try {
             channel.sendWindowChange(col, row);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 
-import com.g3g4x5x6.utils.Utils;
+import com.g3g4x5x6.utils.CheckUtil;
 
 
 @Slf4j
@@ -17,7 +17,7 @@ public class App {
 
     public static void main(String[] args) {
         // 检查程序运行环境
-        Utils.checkEnv();
+        CheckUtil.checkEnv();
         // 初始化数据库
         DbUtil.createDatabase();
         // 启动主程序
