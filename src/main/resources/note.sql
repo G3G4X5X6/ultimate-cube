@@ -13,8 +13,6 @@
  Date: 05/09/2021 14:30:39
 */
 
-PRAGMA foreign_keys = false;
-
 -- ----------------------------
 -- Table structure for note
 -- ----------------------------
@@ -29,4 +27,3 @@ CREATE TABLE "note" (
   PRIMARY KEY ("id")
 );
 
-PRAGMA foreign_keys = true;

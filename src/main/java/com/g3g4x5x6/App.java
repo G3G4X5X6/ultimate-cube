@@ -21,10 +21,7 @@ public class App {
         // 初始化数据库
         DbUtil.createDatabase();
         // 启动主程序
-        SwingUtilities.invokeLater(() -> {
-                    createGUI();
-                }
-        );
+        SwingUtilities.invokeLater(App::createGUI);
     }
 
     private static void createGUI() {

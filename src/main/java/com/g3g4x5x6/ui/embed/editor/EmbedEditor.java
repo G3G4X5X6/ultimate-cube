@@ -50,8 +50,8 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JToolBar toolBar = new JToolBar();
     private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/Save.svg"));
-    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/savedContext.svg"));
+    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/SavedContext.svg"));
+    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
     private JButton closeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
     private JButton closeAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
     private JButton cutBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-cut.svg"));
@@ -409,10 +409,6 @@ public class EmbedEditor extends JFrame implements ActionListener {
     /**
      * Getter & Setter
      */
-    public String getSearchStatusLabelStr() {
-        return searchStatusLabel.getText();
-    }
-
     public void setSearchStatusLabelStr(String searchStatusLabel) {
         this.searchStatusLabel.setText(searchStatusLabel);
     }
