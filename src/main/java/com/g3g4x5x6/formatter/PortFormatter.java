@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.formatter;
+package com.g3g4x5x6.formatter;
 
 import javax.swing.text.DefaultFormatter;
 import java.text.ParseException;

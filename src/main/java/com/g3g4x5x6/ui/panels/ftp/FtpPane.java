@@ -2,21 +2,19 @@ package com.g3g4x5x6.ui.panels.ftp;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
-import com.g3g4x5x6.ui.formatter.PortFormatter;
+import com.g3g4x5x6.formatter.IpAddressFormatter;
+import com.g3g4x5x6.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.telnet.TelnetSettingsProvider;
 import com.g3g4x5x6.ui.panels.telnet.TelnetTtyConnector;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.net.telnet.TelnetClient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 
 @Slf4j

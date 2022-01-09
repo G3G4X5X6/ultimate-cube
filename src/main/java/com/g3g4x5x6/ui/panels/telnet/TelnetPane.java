@@ -2,8 +2,8 @@ package com.g3g4x5x6.ui.panels.telnet;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
-import com.g3g4x5x6.ui.formatter.PortFormatter;
+import com.g3g4x5x6.formatter.IpAddressFormatter;
+import com.g3g4x5x6.formatter.PortFormatter;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;

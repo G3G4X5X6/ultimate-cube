@@ -1,14 +1,13 @@
 package com.g3g4x5x6.ui.dialog;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
-import com.g3g4x5x6.ui.formatter.IpAddressFormatter;
-import com.g3g4x5x6.ui.formatter.PortFormatter;
+import com.g3g4x5x6.formatter.IpAddressFormatter;
+import com.g3g4x5x6.formatter.PortFormatter;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
