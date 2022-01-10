@@ -2,9 +2,13 @@ package com.g3g4x5x6.ui.embed.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.MainFrame;
+import com.g3g4x5x6.ui.embed.editor.provider.BashCompletionProvider;
+import com.g3g4x5x6.ui.embed.editor.provider.JavaCompletionProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.fife.rsta.ui.search.*;
+import org.fife.ui.autocomplete.AutoCompletion;
+import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
@@ -14,6 +18,7 @@ import org.fife.ui.rtextarea.SearchResult;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -32,6 +37,7 @@ public class EditorPanel extends JPanel implements SearchListener {
     private RTextScrollPane sp;
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
+    private AutoCompletion ac = null;
     private String syntax = "text/plain";
     private LinkedList<String> allSyntax = new LinkedList<>();
 
@@ -223,6 +229,9 @@ public class EditorPanel extends JPanel implements SearchListener {
                 // String SYNTAX_STYLE_UNIX_SHELL = "text/unix";
                 // 默认：text/unix -> bash
                 setSyntax("text/unix");
+                icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg");
+                ac = new AutoCompletion(new BashCompletionProvider());
+                ac.install(textArea);
             }
         } else {
             // 造孽呀
@@ -334,6 +343,8 @@ public class EditorPanel extends JPanel implements SearchListener {
                 case "java":
                     setSyntax("text/java");
                     icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-java.svg");
+                    ac = new AutoCompletion(new JavaCompletionProvider());
+                    ac.install(textArea);
                     break;
 //                String SYNTAX_STYLE_JAVASCRIPT = "text/javascript";
                 case "js":
@@ -445,7 +456,9 @@ public class EditorPanel extends JPanel implements SearchListener {
                 case "bash_history":
                 case "bash_profile":
                     setSyntax("text/unix");
-                    icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-unknown.svg");
+                    icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg");
+                    ac = new AutoCompletion(new BashCompletionProvider());
+                    ac.install(textArea);
                     break;
 //                String SYNTAX_STYLE_VISUAL_BASIC = "text/vb";
                 case "vb":
@@ -467,6 +480,12 @@ public class EditorPanel extends JPanel implements SearchListener {
                     icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-yaml.svg");
                     break;
             }
+        }
+        if (ac != null){
+            // TODO 快捷键与自动激活作为一个用户设置，二选一
+//            ac.setAutoActivationEnabled(true);  // 找到唯一符合的关键字，将直接自动完成
+            ac.setTriggerKey(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK));
+            log.debug("setAutoActivationEnabled");
         }
     }
 
