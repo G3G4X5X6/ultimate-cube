@@ -5,7 +5,6 @@ import com.jediterm.terminal.TextStyle;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.ResultSet;

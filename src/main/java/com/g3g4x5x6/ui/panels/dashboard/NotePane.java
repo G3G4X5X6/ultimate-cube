@@ -3,9 +3,7 @@ package com.g3g4x5x6.ui.panels.dashboard;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.editor.SearchDialog;
-import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -13,8 +11,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.fife.ui.rtextarea.SearchContext;
-import org.fife.ui.rtextarea.SearchEngine;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

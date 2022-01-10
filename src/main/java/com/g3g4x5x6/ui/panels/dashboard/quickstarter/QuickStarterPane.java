@@ -2,7 +2,6 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -11,11 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryUsage;
 
 
 /**

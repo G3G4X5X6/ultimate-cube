@@ -6,7 +6,6 @@ import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
 import com.g3g4x5x6.utils.DialogUtil;
-import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
