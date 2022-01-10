@@ -19,7 +19,7 @@ public class CheckUtil {
                 workspace + "/editor",                      // 检查编辑器缓存目录
                 workspace + "/sessions/ssh/",               // 检查SSH会话存储目录
                 workspace + "/sessions/freeRdp/",           // 检查RDP会话存储目录
-                workspace + "/tools/external_tools",        // 检查外部集成工具目录
+                workspace + "/tools/external_tools",        // 检查外部集成工具目录，重点在于 `settings.json`
                 workspace + "/tools/xpack_tools",           // 检查内置功能增强工具目录
                 workspace + "/tools/xpack_tools/freerdp",   // 检查RDP运行环境
         };

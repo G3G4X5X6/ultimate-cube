@@ -7,17 +7,18 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.Version;
+import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.console.ConsolePane;
-import com.g3g4x5x6.ui.panels.tools.ExternalToolIntegration;
+import com.g3g4x5x6.ui.panels.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.panels.tools.ColorPicker;
 import com.g3g4x5x6.ui.panels.tools.QRTool;
 import com.g3g4x5x6.ui.settings.SettingsDialog;
 import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.NewTabbedPane;
-import com.g3g4x5x6.ui.panels.tools.FreeRdp;
+import com.g3g4x5x6.ui.panels.tools.xpack.FreeRdp;
 import com.g3g4x5x6.utils.*;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
@@ -163,22 +164,19 @@ public class MainFrame extends JFrame implements MouseListener {
         pluginMenu.add(apiPluginAction);
 
         // 外部集成工具
-        externalSubMenu.add(new AbstractAction("添加工具") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("添加工具");
-                DialogUtil.info("敬请期待！");
-            }
-        });
         externalSubMenu.add(new AbstractAction("工具管理") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("工具管理");
-                DialogUtil.info("敬请期待！");
+                if (embedEditor == null) {
+                    embedEditor = new EmbedEditor();
+                }
+                embedEditor.addAndSelectPanel(new EditorPanel(ExternalToolIntegration.settings_path));
+                embedEditor.setVisible(true);
             }
         });
         externalSubMenu.addSeparator();
-        ExternalToolIntegration integration = new ExternalToolIntegration(externalSubMenu);
+        integration.initExternalToolsMenu(externalSubMenu);
 
         menuBar.add(terminalMenu);
         menuBar.add(viewMenu);
@@ -509,6 +507,8 @@ public class MainFrame extends JFrame implements MouseListener {
     public static EmbedEditor embedEditor = new EmbedEditor();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
+
+    private final ExternalToolIntegration integration = new ExternalToolIntegration();
 
     // TODO JFrame 组件定义
     private JMenuBar menuBar = new JMenuBar();

@@ -4,6 +4,8 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.embed.editor.provider.BashCompletionProvider;
 import com.g3g4x5x6.ui.embed.editor.provider.JavaCompletionProvider;
+import com.g3g4x5x6.utils.DialogUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.fife.rsta.ui.search.*;
@@ -18,7 +20,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.UUID;
@@ -55,6 +57,8 @@ public class EditorPanel extends JPanel implements SearchListener {
     public EditorPanel(String savePath) {
         this();
         this.savePath = savePath;
+        this.setTitle(savePath.substring(savePath.lastIndexOf("/") + 1));
+        this.setTextArea(getTextFromPath());
     }
 
     public EditorPanel(String title, String tips) {
@@ -138,6 +142,24 @@ public class EditorPanel extends JPanel implements SearchListener {
                 e.printStackTrace();
             }
         }
+    }
+
+    @SneakyThrows
+    private String getTextFromPath() {
+        StringBuilder str = new StringBuilder();
+        if (getFs() == null){
+            try(BufferedReader reader = new BufferedReader(new FileReader(savePath))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    str.append(line);
+                    str.append("\n");
+                }
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+                DialogUtil.error(ioException.getMessage());
+            }
+        }
+        return str.toString();
     }
 
     public String getTitle() {

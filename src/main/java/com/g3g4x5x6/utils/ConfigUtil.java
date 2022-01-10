@@ -21,9 +21,12 @@ public class ConfigUtil {
 
     public static String getWorkPath() {
         String work = Path.of(System.getProperties().getProperty("user.home") + "/.ultimateshell/").toString();
-        File file = new File(Path.of(System.getProperties().getProperty("user.home") + "/.ultimateshell/").toString());
-        if (!file.exists())
-            file.mkdir();
+        File file = new File(work);
+        if (!file.exists()){
+            if (!file.mkdir()){
+                log.debug("文件夹创建失败：" + work);
+            }
+        }
         log.debug(work);
         return work;
     }

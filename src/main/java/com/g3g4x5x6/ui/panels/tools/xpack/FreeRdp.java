@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels.tools;
+package com.g3g4x5x6.ui.panels.tools.xpack;
 
 import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
