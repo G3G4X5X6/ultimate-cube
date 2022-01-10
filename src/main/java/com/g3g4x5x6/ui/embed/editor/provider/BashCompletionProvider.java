@@ -34,16 +34,16 @@ public class BashCompletionProvider extends DefaultCompletionProvider {
         // Add a couple of "shorthand" completions. These completions don't
         // require the input text to be the same thing as the replacement text.
         this.addCompletion(new ShorthandCompletion(this, "if",
-                "if COMMANDS; then \n  COMMANDS; \nfi",
+                "if COMMANDS; then \n    COMMANDS; \nfi",
                 "if COMMANDS; then COMMANDS; [ elif COMMANDS; then COMMANDS; ]... >"));
         this.addCompletion(new ShorthandCompletion(this, "for",
-                "for (( exp1; exp2; exp3 )); do COMMANDS; done",
-                "for (( exp1; exp2; exp3 )); \ndo \n  COMMANDS; \ndone"));
+                "for (( exp1; exp2; exp3 )); \ndo \n    COMMANDS; \ndone",
+                "for (( exp1; exp2; exp3 )); \ndo \n    COMMANDS; \ndone"));
         this.addCompletion(new ShorthandCompletion(this, "while",
-                "while COMMANDS; \ndo \n  COMMANDS; \ndone",
+                "while COMMANDS; \ndo \n    COMMANDS; \ndone",
                 "while COMMANDS; do COMMANDS; done"));
         this.addCompletion(new ShorthandCompletion(this, "func",
-                "function name {\n  COMMANDS ; \n}",
+                "function name {\n    COMMANDS ; \n}",
                 "function name { COMMANDS ; } or name () { COMMANDS ; }"));
     }
 }
