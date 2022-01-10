@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.fife.rsta.ui.search.*;
 import org.fife.ui.autocomplete.AutoCompletion;
-import org.fife.ui.autocomplete.DefaultCompletionProvider;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
@@ -18,7 +17,6 @@ import org.fife.ui.rtextarea.SearchResult;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -549,6 +547,4 @@ public class EditorPanel extends JPanel implements SearchListener {
     public ReplaceDialog getReplaceDialog(){
         return replaceDialog;
     }
-
-
 }
