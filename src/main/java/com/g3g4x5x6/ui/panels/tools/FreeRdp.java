@@ -57,7 +57,7 @@ public class FreeRdp extends JDialog {
 
     private boolean openFlag = false;
     private String freeRdpSessionsDirPath = ConfigUtil.getWorkPath() + "/sessions/freeRdp";
-    private String exePath = ConfigUtil.getWorkPath() + "/tools/freerdp/wfreerdp.exe";
+    private String exePath = ConfigUtil.getWorkPath() + "/tools/xpack_tools/freerdp/wfreerdp.exe";
 
     public FreeRdp() {
         super(App.mainFrame);
@@ -331,10 +331,9 @@ public class FreeRdp extends JDialog {
                 }
                 inputStream.close();
                 reader.close();
-            } catch (UnsupportedEncodingException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-            } catch (IOException exception) {
-                exception.printStackTrace();
+                DialogUtil.error(e.getMessage());
             }
         } else {
             DialogUtil.warn("请输入服务器IP地址或者域名！");
