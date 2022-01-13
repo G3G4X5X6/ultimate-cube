@@ -1,6 +1,8 @@
 package com.g3g4x5x6.ui.embed.nuclei;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.nuclei.panel.RunningPanel;
 import com.g3g4x5x6.ui.embed.nuclei.panel.SettingsPanel;
 import com.g3g4x5x6.ui.embed.nuclei.panel.TemplatesPanel;
@@ -10,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
+import java.util.function.BiConsumer;
+
+import static com.formdev.flatlaf.FlatClientProperties.*;
 
 @Slf4j
 public class NucleiFrame extends JFrame {
@@ -51,14 +56,25 @@ public class NucleiFrame extends JFrame {
         menuBar.add(aboutMenu);
 
         tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Templates", new TemplatesPanel());
-        tabbedPane.addTab("Settings", new SettingsPanel());
-        tabbedPane.addTab("Running", new RunningPanel());
+        initClosableTabs(tabbedPane);
+        tabbedPane.addTab("Templates", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new TemplatesPanel());
+        tabbedPane.addTab("Settings", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new SettingsPanel());
+        tabbedPane.addTab("Running", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new RunningPanel());
 
         this.setJMenuBar(menuBar);
         this.add(tabbedPane, BorderLayout.CENTER);
     }
 
+    private void initClosableTabs(JTabbedPane tabbedPane) {
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
+                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
+                    if (tabbedPane.getTabCount() > 3){
+                        tabbedPane.removeTabAt(tabIndex);
+                    }
+                });
+    }
 
     public static void main(String[] args) {
         initFlatLaf();

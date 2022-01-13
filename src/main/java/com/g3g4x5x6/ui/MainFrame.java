@@ -226,7 +226,7 @@ public class MainFrame extends JFrame implements MouseListener {
         // 添加更新按钮
         new Thread(() -> {
             latestVersion = CommonUtil.getLastestVersion();
-            String currentVersion = "v" + Version.VERSION;
+            String currentVersion = "v" + Version.VERSION ;
             if (!currentVersion.equals(latestVersion)) {
                 menuBar.add(updateBtn);
                 log.debug("添加更新按钮");

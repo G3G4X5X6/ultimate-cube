@@ -1,9 +1,7 @@
 package com.g3g4x5x6.ui.embed.nuclei.panel;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.embed.nuclei.model.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 
@@ -11,6 +9,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,10 +40,12 @@ public class TemplatesPanel extends JPanel {
     private JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
     private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
     private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
+    private JTextField searchField = new JTextField();
 
     private JScrollPane tableScroll;
     private JTable templatesTable;
     private DefaultTableModel tableModel;
+    private JPopupMenu tablePopMenu;
 
     private final LinkedList<String> templatesList = new LinkedList<>();
 
@@ -70,6 +73,20 @@ public class TemplatesPanel extends JPanel {
         toolBar.add(replaceBtn);
         toolBar.addSeparator();
         toolBar.add(terminalBtn);
+        toolBar.addSeparator();
+        toolBar.add(Box.createGlue());
+        toolBar.add(searchField);
+
+
+        tablePopMenu = new JPopupMenu();
+        tablePopMenu.add(editAction);
+        tablePopMenu.add(openDirAction);
+        tablePopMenu.add(copyPathAction);
+        tablePopMenu.addSeparator();
+        tablePopMenu.add(generateWithSelectedAction);
+        tablePopMenu.add(generateWithTagsAction);
+        tablePopMenu.add(runWithSelectedAction);
+        tablePopMenu.add(runWithTagsAction);
 
 
         templatesTable = new JTable();
@@ -80,7 +97,8 @@ public class TemplatesPanel extends JPanel {
                 return true;
             }
         };
-        String[] columnNames = {"#",
+        String[] columnNames = {
+                "#",
                 "templates_id",
                 "templates_name",
                 "templates_severity",
@@ -91,7 +109,6 @@ public class TemplatesPanel extends JPanel {
         tableModel.setColumnIdentifiers(columnNames);
         templatesTable.setModel(tableModel);
         initDataForTable();
-        templatesTable.getColumnModel().getColumn(0).setPreferredWidth(20);
         tableScroll = new JScrollPane(templatesTable);
         tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -100,6 +117,18 @@ public class TemplatesPanel extends JPanel {
         centerRenderer.setHorizontalAlignment(JTextField.CENTER);
         templatesTable.getColumn("#").setCellRenderer(centerRenderer);
         templatesTable.getColumn("templates_severity").setCellRenderer(centerRenderer);
+
+        templatesTable.getColumn("#").setPreferredWidth(20);
+        templatesTable.getColumn("templates_id").setPreferredWidth(60);
+        templatesTable.getColumn("templates_name").setPreferredWidth(100);
+        templatesTable.getColumn("templates_severity").setPreferredWidth(40);
+        templatesTable.getColumn("templates_author").setPreferredWidth(30);
+        templatesTable.setComponentPopupMenu(tablePopMenu);
+        templatesTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+        });
 
         this.add(toolBar, BorderLayout.NORTH);
         this.add(tableScroll, BorderLayout.CENTER);
@@ -145,7 +174,6 @@ public class TemplatesPanel extends JPanel {
         // 调基础工具类的方法
         Yaml yaml = new Yaml();
         template = yaml.loadAs(inputStream, Map.class);
-        log.debug(template.toString());
         return template;
     }
 
@@ -157,23 +185,80 @@ public class TemplatesPanel extends JPanel {
      * @throws IOException 抛出异常
      */
     private int getAllTemplatesFromPath(String rootPath) throws IOException {
-        Files.walkFileTree(Paths.get(rootPath), new SimpleFileVisitor<>() {
-            // 访问文件时触发
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                if (file.toString().endsWith(".yaml")) {
-                    templatesList.add(file.toString());
+        if (Files.exists(Path.of(rootPath))){
+            Files.walkFileTree(Paths.get(rootPath), new SimpleFileVisitor<>() {
+                // 访问文件时触发
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    if (file.toString().endsWith(".yaml")) {
+                        templatesList.add(file.toString());
+                    }
+                    return FileVisitResult.CONTINUE;
                 }
-                return FileVisitResult.CONTINUE;
-            }
 
-            // 访问目录时触发
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                return FileVisitResult.CONTINUE;
-            }
-        });
-        return templatesList.size();
+                // 访问目录时触发
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+            return templatesList.size();
+        }
+        return 0;
     }
+
+    private AbstractAction editAction = new AbstractAction("Edit Template") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Edit This Template");
+        }
+    };
+
+    private AbstractAction openDirAction = new AbstractAction("Open in Folder") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Open in Folder");
+        }
+    };
+
+    private AbstractAction copyPathAction = new AbstractAction("Copy Path") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Copy Path");
+        }
+    };
+
+    /**
+     * 目标是可以做到多选
+     */
+    private AbstractAction generateWithSelectedAction = new AbstractAction("Generate command with Selected") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Generate command with Selected");
+        }
+    };
+
+    private AbstractAction generateWithTagsAction = new AbstractAction("Generate command with Tags") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Generate command with Tags");
+        }
+    };
+
+    private AbstractAction runWithSelectedAction = new AbstractAction("Run command with Selected") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Run command with Selected");
+        }
+    };
+
+    private AbstractAction runWithTagsAction = new AbstractAction("Run command with Tags") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Run command with Tags");
+        }
+    };
+
+
 
 }

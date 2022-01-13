@@ -53,6 +53,8 @@ public class ExternalToolIntegration {
             e.printStackTrace();
             return new JSONArray();
         }
+        if (array == null)
+            array = new JSONArray();
         return array;
     }
 
