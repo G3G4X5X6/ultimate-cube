@@ -77,13 +77,6 @@
             <version>1.5</version>
         </dependency>
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/com.jcraft/jsch &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>com.jcraft</groupId>-->
-<!--            <artifactId>jsch</artifactId>-->
-<!--            <version>0.1.55</version>-->
-<!--        </dependency>-->
-
         <!-- https://mvnrepository.com/artifact/com.fifesoft/rsyntaxtextarea -->
         <dependency>
             <groupId>com.fifesoft</groupId>
@@ -180,19 +173,6 @@
             <version>0.8.0</version>
         </dependency>
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/net.sf.trove4j/trove4j &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>net.sf.trove4j</groupId>-->
-<!--            <artifactId>trove4j</artifactId>-->
-<!--            <version>3.0.3</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>com.github.fracpete</groupId>-->
-<!--            <artifactId>vfsjfilechooser2</artifactId>-->
-<!--            <version>0.2.9</version>-->
-<!--        </dependency>-->
-
         <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>
             <groupId>org.xerial</groupId>
@@ -221,11 +201,6 @@
             <artifactId>tightvnc-jviewer</artifactId>
             <version>2.8.3</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.g3g4x5x6</groupId>-->
-<!--            <artifactId>jediterm-ssh</artifactId>-->
-<!--            <version>2.49</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -240,7 +215,12 @@
             <scope>compile</scope>
         </dependency>
 
-
+        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.30</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
