@@ -27,7 +27,6 @@ public class TemplatesPanel extends JPanel {
     private JToolBar toolBar = new JToolBar();
     private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/SavedContext.svg"));
     private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
     private JButton closeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
     private JButton closeAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
@@ -36,16 +35,23 @@ public class TemplatesPanel extends JPanel {
     private JButton pasteBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-paste.svg"));
     private JButton undoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/undo.svg"));
     private JButton redoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/redo.svg"));
-    private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
-    private JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
+    private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
     private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
     private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
+    private JButton severityBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/sortBySeverity.svg"));
     private JTextField searchField = new JTextField();
 
     private JScrollPane tableScroll;
     private JTable templatesTable;
     private DefaultTableModel tableModel;
     private JPopupMenu tablePopMenu;
+
+    private final JPopupMenu severityPopupMenu = new JPopupMenu();
+    private JCheckBox infoBox = new JCheckBox("Information");
+    private JCheckBox lowBox = new JCheckBox("Low");
+    private JCheckBox mediumBox = new JCheckBox("Medium");
+    private JCheckBox highBox = new JCheckBox("High");
+    private JCheckBox criticalBox = new JCheckBox("Critical");
 
     private final LinkedList<String> templatesList = new LinkedList<>();
 
@@ -55,7 +61,6 @@ public class TemplatesPanel extends JPanel {
         toolBar.setFloatable(false);
         toolBar.add(newBtn);
         toolBar.add(openBtn);
-        toolBar.add(saveBtn);
         toolBar.add(saveAllBtn);
         toolBar.add(closeBtn);
         toolBar.add(closeAllBtn);
@@ -69,13 +74,14 @@ public class TemplatesPanel extends JPanel {
         toolBar.addSeparator();
         toolBar.add(lineWrapBtn);
         toolBar.addSeparator();
-        toolBar.add(searchBtn);
-        toolBar.add(replaceBtn);
+        toolBar.add(severityBtn);
         toolBar.addSeparator();
         toolBar.add(terminalBtn);
         toolBar.addSeparator();
         toolBar.add(Box.createGlue());
         toolBar.add(searchField);
+        toolBar.add(searchBtn);
+        initToolBarAction();
 
 
         tablePopMenu = new JPopupMenu();
@@ -132,6 +138,40 @@ public class TemplatesPanel extends JPanel {
 
         this.add(toolBar, BorderLayout.NORTH);
         this.add(tableScroll, BorderLayout.CENTER);
+    }
+
+    private void initToolBarAction() {
+        infoBox.setSelected(true);
+        lowBox.setSelected(true);
+        mediumBox.setSelected(true);
+        highBox.setSelected(true);
+        criticalBox.setSelected(true);
+        severityPopupMenu.add(infoBox);
+        severityPopupMenu.add(lowBox);
+        severityPopupMenu.add(mediumBox);
+        severityPopupMenu.add(highBox);
+        severityPopupMenu.add(criticalBox);
+        JMenuItem okMenuItem = new JMenuItem("确认");
+        okMenuItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/inspectionsOK.svg"));
+        okMenuItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO 过滤风险级别
+            }
+        });
+        severityPopupMenu.add(okMenuItem);
+        severityBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                severityPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+        terminalBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO 跳转至运行面板：RunningPanel
+            }
+        });
     }
 
     /**
