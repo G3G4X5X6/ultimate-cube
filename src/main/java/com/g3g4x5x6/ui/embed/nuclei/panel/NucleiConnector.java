@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.panels.console;
+package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
@@ -8,15 +8,15 @@ import java.awt.*;
 import java.io.*;
 import java.nio.charset.Charset;
 
-public class CmdConnector implements TtyConnector {
+public class NucleiConnector implements TtyConnector {
 
     protected final InputStream myInputStream;
     protected final OutputStream myOutputStream;
     protected final InputStreamReader myReader;
-    protected final Charset myCharset;
+    protected final String myCharset;
     private final Process myProcess;
 
-    public CmdConnector(@NotNull Process process, Charset charset) throws UnsupportedEncodingException {
+    public NucleiConnector(@NotNull Process process, @NotNull String charset) throws UnsupportedEncodingException {
         this.myOutputStream = process.getOutputStream();
         this.myCharset = charset;
         this.myInputStream = process.getInputStream();

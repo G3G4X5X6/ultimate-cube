@@ -23,6 +23,7 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 @Slf4j
 public class NucleiFrame extends JFrame {
     public static NucleiFrame nucleiFrame = new NucleiFrame();
+    public static JTabbedPane tabbedPane;
     private JMenu fileMenu = new JMenu("文件");
     private JMenu editMenu = new JMenu("编辑");
     private JMenu searchMenu = new JMenu("搜索");
@@ -36,7 +37,6 @@ public class NucleiFrame extends JFrame {
     private JMenu winMenu = new JMenu("窗口");
     private JMenu aboutMenu = new JMenu("关于");
 
-    private JTabbedPane tabbedPane;
     private JPopupMenu trailPopupMenu = new JPopupMenu();
 
     public NucleiFrame() {
@@ -144,10 +144,10 @@ public class NucleiFrame extends JFrame {
         trailing.add(addBtn);
         trailing.add(targetBtn);
         trailing.add(Box.createHorizontalGlue());
+        trailing.add(Box.createHorizontalGlue());
         trailing.add(trailMenuBtn);
         tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
-
 
     public static void main(String[] args) {
         initFlatLaf();

@@ -1,4 +1,4 @@
-package com.g3g4x5x6.ui.embed.nuclei.panel;
+package com.g3g4x5x6.ui.embed.nuclei;
 
 import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.autocomplete.BasicCompletion;

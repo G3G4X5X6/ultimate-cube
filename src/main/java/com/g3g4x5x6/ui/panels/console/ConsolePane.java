@@ -80,6 +80,7 @@ public class ConsolePane extends JPanel {
     private static @NotNull TtyConnector createTtyConnector() {
         try {
             Map<String, String> envs = System.getenv();
+            log.debug(envs.get("Path"));
             String[] command;
             if (UIUtil.isWindows) {
                 command = new String[]{"cmd.exe"};

@@ -44,8 +44,6 @@ import static com.g3g4x5x6.ui.MainFrame.embedEditor;
 @Slf4j
 public class SftpBrowser extends JPanel {
 
-    private BorderLayout borderLayout;
-    private JSplitPane splitPane;
     private MyTree myTree;
     private DefaultTreeModel treeModel;
     private DefaultMutableTreeNode root;
@@ -54,7 +52,7 @@ public class SftpBrowser extends JPanel {
     private DefaultTableModel tableModel;
     private String[] columns;
 
-    private JToolBar toolBar;
+    private final JToolBar toolBar;
     private String finalPath;
     private Clipboard clipboard;
 
@@ -69,7 +67,7 @@ public class SftpBrowser extends JPanel {
 
     @SneakyThrows
     public SftpBrowser(SftpFileSystem sftpFileSystem) {
-        borderLayout = new BorderLayout();
+        BorderLayout borderLayout = new BorderLayout();
         this.setLayout(borderLayout);
 
         toolBar = new JToolBar();
@@ -89,7 +87,7 @@ public class SftpBrowser extends JPanel {
 
     private void initPane() {
         //
-        splitPane = new JSplitPane();
+        JSplitPane splitPane = new JSplitPane();
         splitPane.setDividerLocation(200);
         init();
         myTable = new MyTable();

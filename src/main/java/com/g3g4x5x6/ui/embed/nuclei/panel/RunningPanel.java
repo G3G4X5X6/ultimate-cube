@@ -1,51 +1,72 @@
 package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.ui.panels.console.CmdSettingsProvider;
+import com.g3g4x5x6.utils.ConfigUtil;
+import com.jediterm.pty.PtyProcessTtyConnector;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.ui.JediTermWidget;
+import com.jediterm.terminal.ui.UIUtil;
+import com.pty4j.PtyProcess;
+import com.pty4j.PtyProcessBuilder;
+import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
+
+@Slf4j
 public class RunningPanel extends JPanel {
+    public static String nucleiPath = ConfigUtil.getWorkPath() + "/tools/xpack_tools/nuclei/";
     private JToolBar toolBar = new JToolBar();
-    private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/SavedContext.svg"));
-    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
-    private JButton closeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
-    private JButton closeAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
-    private JButton cutBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-cut.svg"));
-    private JButton copyBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/copy.svg"));
-    private JButton pasteBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-paste.svg"));
-    private JButton undoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/undo.svg"));
-    private JButton redoBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/redo.svg"));
-    private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
-    private JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
-    private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
-    private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
+    private JButton refreshBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
 
-    public RunningPanel(){
+    public RunningPanel() {
         this.setLayout(new BorderLayout());
         this.add(toolBar, BorderLayout.NORTH);
+
         toolBar.setFloatable(false);
-        toolBar.add(newBtn);
         toolBar.add(openBtn);
-        toolBar.add(saveBtn);
-        toolBar.add(saveAllBtn);
-        toolBar.add(closeBtn);
-        toolBar.add(closeAllBtn);
-        toolBar.addSeparator();
-        toolBar.add(cutBtn);
-        toolBar.add(copyBtn);
-        toolBar.add(pasteBtn);
-        toolBar.addSeparator();
-        toolBar.add(undoBtn);
-        toolBar.add(redoBtn);
-        toolBar.addSeparator();
-        toolBar.add(lineWrapBtn);
-        toolBar.addSeparator();
-        toolBar.add(searchBtn);
-        toolBar.add(replaceBtn);
-        toolBar.addSeparator();
-        toolBar.add(terminalBtn);
+        toolBar.add(refreshBtn);
+        toolBar.add(Box.createGlue());
+
+        this.add(createTerminal(), BorderLayout.CENTER);
+    }
+
+    private JediTermWidget createTerminal() {
+        CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
+        cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
+        JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
+        terminalPanel.setTtyConnector(createTtyConnector());
+        terminalPanel.start();
+        return terminalPanel;
+    }
+
+    private static @NotNull TtyConnector createTtyConnector() {
+        try {
+            Map<String, String> envs = System.getenv();
+            log.debug(envs.toString());
+            String[] command;
+            if (UIUtil.isWindows) {
+                String path = envs.get("Path") + ";" + RunningPanel.nucleiPath;
+                envs = new HashMap<>(System.getenv());
+                envs.put("Path", path);
+                command = new String[]{"cmd.exe"};
+            } else {
+                command = new String[]{"/bin/bash", "--login"};
+                envs = new HashMap<>(System.getenv());
+                envs.put("TERM", "xterm-256color");
+            }
+            PtyProcess process = new PtyProcessBuilder().setDirectory(ConfigUtil.getWorkPath()).setCommand(command).setEnvironment(envs).start();
+
+            return new PtyProcessTtyConnector(process, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 }
