@@ -2,14 +2,19 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
@@ -45,6 +50,7 @@ public class TemplatesPanel extends JPanel {
     private JTable templatesTable;
     private DefaultTableModel tableModel;
     private JPopupMenu tablePopMenu;
+    private TableRowSorter<DefaultTableModel> sorter;
 
     private final JPopupMenu severityPopupMenu = new JPopupMenu();
     private JCheckBox infoBox = new JCheckBox("Information");
@@ -136,6 +142,10 @@ public class TemplatesPanel extends JPanel {
             }
         });
 
+        // 搜索功能
+        sorter = new TableRowSorter<DefaultTableModel>(tableModel);
+        templatesTable.setRowSorter(sorter);
+
         this.add(toolBar, BorderLayout.NORTH);
         this.add(tableScroll, BorderLayout.CENTER);
     }
@@ -170,6 +180,21 @@ public class TemplatesPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO 跳转至运行面板：RunningPanel
+            }
+        });
+
+        searchField.registerKeyboardAction(e -> {
+                    String searchKeyWord = searchField.getText().strip();
+                    sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
+                },
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
+                JComponent.WHEN_FOCUSED);
+
+        searchBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchKeyWord = searchField.getText().strip();
+                sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
             }
         });
     }
@@ -225,7 +250,7 @@ public class TemplatesPanel extends JPanel {
      * @throws IOException 抛出异常
      */
     private int getAllTemplatesFromPath(String rootPath) throws IOException {
-        if (Files.exists(Path.of(rootPath))){
+        if (Files.exists(Path.of(rootPath))) {
             Files.walkFileTree(Paths.get(rootPath), new SimpleFileVisitor<>() {
                 // 访问文件时触发
                 @Override
@@ -298,7 +323,5 @@ public class TemplatesPanel extends JPanel {
             log.debug("Run command with Tags");
         }
     };
-
-
 
 }
