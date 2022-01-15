@@ -77,7 +77,7 @@ public class NucleiFrame extends JFrame {
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
                 (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
-                    if (tabbedPane.getTabCount() > 3) {
+                    if (tabIndex >= 3) {
                         tabbedPane.removeTabAt(tabIndex);
                     }
                 });

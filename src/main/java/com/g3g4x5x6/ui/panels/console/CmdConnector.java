@@ -18,7 +18,7 @@ public class CmdConnector implements TtyConnector {
 
     public CmdConnector(@NotNull Process process, Charset charset) throws UnsupportedEncodingException {
         this.myOutputStream = process.getOutputStream();
-        this.myCharset = charset;
+         this.myCharset = charset;
         this.myInputStream = process.getInputStream();
         this.myReader = new InputStreamReader(this.myInputStream, Charset.defaultCharset());
         this.myProcess = process;
