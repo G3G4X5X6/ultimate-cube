@@ -11,14 +11,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedHashMap;
@@ -41,6 +41,7 @@ public class TemplatesPanel extends JPanel {
     private DefaultTableModel tableModel;
     private JPopupMenu tablePopMenu;
     private TableRowSorter<DefaultTableModel> sorter;
+    private Clipboard clipboard;
 
     private final JPopupMenu severityPopupMenu = new JPopupMenu();
     private JCheckBox infoBox = new JCheckBox("Information");
@@ -155,6 +156,11 @@ public class TemplatesPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 new Thread(()->{
                     // nuclei -ut  [-ut, -update-templates         update nuclei-templates to latest released version]
+                    try {
+                        RunningPanel.ttyConnector.write("nuclei -ut\r");
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
 
                     // 清除旧列表
                     templates.clear();
@@ -328,6 +334,18 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Open in Folder");
+            for (int index : templatesTable.getSelectedRows()) {
+                int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                String savePath = templates.get(num).get("path");
+                log.debug(savePath);
+                new Thread(() -> {
+                    try {
+                        Desktop.getDesktop().open(new File(savePath).getParentFile());
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                }).start();
+            }
         }
     };
 
@@ -335,6 +353,17 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Copy Path");
+            String savePath = "\n";
+            for (int index : templatesTable.getSelectedRows()) {
+                int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                savePath += templates.get(num).get("path") + "\n";
+                log.debug(savePath);
+            }
+            savePath = savePath.strip();
+            if (clipboard == null)
+                clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); //获得系统剪贴板
+            Transferable transferable = new StringSelection(savePath);
+            clipboard.setContents(transferable, null);
         }
     };
 

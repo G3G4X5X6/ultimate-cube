@@ -25,25 +25,26 @@ import java.util.Map;
 @Slf4j
 public class RunningPanel extends JPanel {
     public static String nucleiPath = ConfigUtil.getWorkPath() + "/tools/xpack_tools/nuclei/";
-    private JToolBar toolBar = new JToolBar();
-    private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton refreshBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
+    public static NucleiProcessTtyConnector ttyConnector;
 
     public RunningPanel() {
         this.setLayout(new BorderLayout());
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
         this.add(toolBar, BorderLayout.NORTH);
 
-        toolBar.setFloatable(false);
+        JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
         toolBar.add(openBtn);
+        JButton refreshBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
         toolBar.add(refreshBtn);
         toolBar.add(Box.createGlue());
-        refreshTerminal();
         refreshBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 refreshTerminal();
             }
         });
+        refreshTerminal();
     }
 
     private void refreshTerminal(){
@@ -56,6 +57,7 @@ public class RunningPanel extends JPanel {
         JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
         terminalPanel.setTtyConnector(createTtyConnector());
         terminalPanel.start();
+        ttyConnector = (NucleiProcessTtyConnector) terminalPanel.getTtyConnector();
         return terminalPanel;
     }
 
@@ -103,7 +105,7 @@ public class RunningPanel extends JPanel {
         }
 
         public String getName() {
-            return "Local";
+            return "Nuclei-Console";
         }
     }
 
