@@ -1,7 +1,5 @@
 package com.g3g4x5x6.ui.embed.nuclei.panel.connector;
 
-import com.g3g4x5x6.utils.CommonUtil;
-import com.ibm.icu.text.CharsetMatch;
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.Charset;
-
 
 @Slf4j
 public abstract class ProcessTtyConnector implements TtyConnector {
