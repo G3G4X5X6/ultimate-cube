@@ -17,6 +17,7 @@ public class CheckUtil {
                 workspace + "/export",                      // 检查会话导出目录
                 workspace + "/temp",                        // 检查缓存目录
                 workspace + "/temp/nuclei",                 // 检查 Nuclei 运行缓存目录
+                workspace + "/report/nuclei",               // 检查 Nuclei 报告保存目录
                 workspace + "/editor",                      // 检查编辑器缓存目录
                 workspace + "/sessions/ssh/",               // 检查SSH会话存储目录
                 workspace + "/sessions/freeRdp/",           // 检查RDP会话存储目录

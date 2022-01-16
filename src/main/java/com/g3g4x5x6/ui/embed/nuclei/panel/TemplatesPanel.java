@@ -3,6 +3,9 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
+import com.g3g4x5x6.ui.embed.nuclei.model.SelectedConfig;
+import com.g3g4x5x6.utils.ConfigUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 
@@ -21,9 +24,7 @@ import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class TemplatesPanel extends JPanel {
@@ -73,6 +74,7 @@ public class TemplatesPanel extends JPanel {
         tablePopMenu.add(editAction);
         tablePopMenu.add(openDirAction);
         tablePopMenu.add(copyPathAction);
+        tablePopMenu.add(deleteTemplateAction);
         tablePopMenu.addSeparator();
         tablePopMenu.add(generateWithSelectedAction);
         tablePopMenu.add(generateWithTagsAction);
@@ -154,7 +156,7 @@ public class TemplatesPanel extends JPanel {
         refreshBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(()->{
+                new Thread(() -> {
                     // nuclei -ut  [-ut, -update-templates         update nuclei-templates to latest released version]
                     try {
                         RunningPanel.ttyConnector.write("nuclei -ut\r");
@@ -221,19 +223,19 @@ public class TemplatesPanel extends JPanel {
     private LinkedHashMap<String, String> getTemplate(String path) {
         LinkedHashMap<String, String> templateInfo = new LinkedHashMap<>();
         Map map = getMapFromYaml(path);
-        if (map != null){
+        if (map != null) {
             JSONObject jsonObject = new JSONObject(map);
             JSONObject info = jsonObject.getJSONObject("info");
 
             templateInfo.put("path", path);
-            templateInfo.put("id", jsonObject.getString("id")==null?"空":jsonObject.getString("id"));
+            templateInfo.put("id", jsonObject.getString("id") == null ? "空" : jsonObject.getString("id"));
             templateInfo.put("name", info.getString("name"));
             templateInfo.put("severity", info.getString("severity"));
             templateInfo.put("author", info.getString("author"));
             templateInfo.put("description", info.getString("description"));
             templateInfo.put("reference", info.getString("reference"));
             templateInfo.put("tags", info.getString("tags"));
-        }else{
+        } else {
             templateInfo.put("path", path);
             templateInfo.put("id", "空");
             templateInfo.put("name", "空");
@@ -314,7 +316,7 @@ public class TemplatesPanel extends JPanel {
         return 0;
     }
 
-    private AbstractAction editAction = new AbstractAction("Edit Template") {
+    private AbstractAction editAction = new AbstractAction("编辑-概念验证模板") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Edit This Template");
@@ -330,7 +332,7 @@ public class TemplatesPanel extends JPanel {
         }
     };
 
-    private AbstractAction openDirAction = new AbstractAction("Open in Folder") {
+    private AbstractAction openDirAction = new AbstractAction("打开-模板所在文件夹") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Open in Folder");
@@ -349,7 +351,7 @@ public class TemplatesPanel extends JPanel {
         }
     };
 
-    private AbstractAction copyPathAction = new AbstractAction("Copy Path") {
+    private AbstractAction copyPathAction = new AbstractAction("复制-模板绝对路径") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Copy Path");
@@ -367,31 +369,87 @@ public class TemplatesPanel extends JPanel {
         }
     };
 
-    /**
-     * 目标是可以做到多选
-     */
-    private AbstractAction generateWithSelectedAction = new AbstractAction("Generate command with Selected") {
+    private AbstractAction deleteTemplateAction = new AbstractAction("删除-选中的模板") {
+        @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
-            log.debug("Generate command with Selected");
+            for (int index : templatesTable.getSelectedRows()) {
+                int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                String savePath = templates.get(num).get("path");
+                Files.delete(Path.of(savePath));
+                refreshDataForTable();
+            }
         }
     };
 
-    private AbstractAction generateWithTagsAction = new AbstractAction("Generate command with Tags") {
+    /**
+     * 目标是可以做到多选
+     * <html><font style='color:red'></font></html>
+     */
+    private AbstractAction generateWithSelectedAction = new AbstractAction("<html>为选中的<font style='color:red'>模板</font>生成执行命令</html>") {
+        @SneakyThrows
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            log.debug("Generate command with Selected");
+            if (!TargetPanel.textArea.getText().strip().equals("")){
+                SelectedConfig selected = new SelectedConfig();
+
+                ArrayList<String> tempTemplate = new ArrayList<>();
+                for (int index : templatesTable.getSelectedRows()) {
+                    int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                    String savePath = templates.get(num).get("path");
+                    tempTemplate.add(savePath);
+                }
+                selected.setTemplates(tempTemplate);
+                selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+
+                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
+                Yaml yaml = new Yaml();
+                yaml.dump(selected, new FileWriter(configPath));
+                RunningPanel.ttyConnector.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir);
+                NucleiFrame.tabbedPane.setSelectedIndex(2);
+            }else{
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告",JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    };
+
+    private AbstractAction generateWithTagsAction = new AbstractAction("<html>为选中的<font style='color:blue'>标签</font>生成执行命令</html>") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Tags");
         }
     };
 
-    private AbstractAction runWithSelectedAction = new AbstractAction("Run command with Selected") {
+    private AbstractAction runWithSelectedAction = new AbstractAction("运行选中的模板") {
+        @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Run command with Selected");
+            if (!TargetPanel.textArea.getText().strip().equals("")){
+                SelectedConfig selected = new SelectedConfig();
+
+                ArrayList<String> tempTemplate = new ArrayList<>();
+                for (int index : templatesTable.getSelectedRows()) {
+                    int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                    String savePath = templates.get(num).get("path");
+                    tempTemplate.add(savePath);
+                }
+                selected.setTemplates(tempTemplate);
+                selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+
+                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
+                Yaml yaml = new Yaml();
+                yaml.dump(selected, new FileWriter(configPath));
+                RunningPanel.ttyConnector.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
+                NucleiFrame.tabbedPane.setSelectedIndex(2);
+            }else{
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告",JOptionPane.WARNING_MESSAGE);
+            }
         }
     };
 
-    private AbstractAction runWithTagsAction = new AbstractAction("Run command with Tags") {
+    private AbstractAction runWithTagsAction = new AbstractAction("运行包含选中标签的模板") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Run command with Tags");
