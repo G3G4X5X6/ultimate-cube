@@ -440,6 +440,10 @@ public class TemplatesPanel extends JPanel {
 
                 String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
+                File file = new File(configPath);
+                if (!file.getParentFile().exists()){
+                    file.getParentFile().mkdirs();
+                }
                 yaml.dump(selected, new FileWriter(configPath));
                 RunningPanel.ttyConnector.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
                 NucleiFrame.tabbedPane.setSelectedIndex(2);

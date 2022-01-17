@@ -52,8 +52,8 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
    ```shell
     # tightvnc-jviewer.jar, jediterm-pty-2.49.jar, terminal-2.54.jar, jediterm-typeahead-2.54.jar
     mvn install:install-file -Dfile=src/main/resources/libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
-    mvn install:install-file -Dfile=src/main/resources/libs/jediterm-typeahead-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
-    mvn install:install-file -Dfile=src/main/resources/libs/terminal-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
+    mvn install:install-file -Dfile=src/main/resources/libs/jediterm-typeahead-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
+    mvn install:install-file -Dfile=src/main/resources/libs/terminal-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
     mvn install:install-file -Dfile=src/main/resources/libs/jediterm-pty-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.49 -Dpackaging=jar
    ```
 1. 编译运行：

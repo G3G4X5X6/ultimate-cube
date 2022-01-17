@@ -269,6 +269,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initClosableTabs(mainTabbedPane);
         initTrailPopupMenu();
         customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
+        initTabPopupMenu();     //  定制 ”选项卡面板“ 标签右键功能
 
         // 添加 ”仪表盘“ 面板
         mainTabbedPane.addTab("仪表板",
@@ -428,37 +429,55 @@ public class MainFrame extends JFrame implements MouseListener {
 
     }
 
+    private void initTabPopupMenu(){
+        AbstractAction renameCurrentTabAction = new AbstractAction("命名标签") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题", "");
+                if (!input.strip().equalsIgnoreCase("")){
+                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), new JLabel(input));
+                }
+            }
+        };
+        AbstractAction closeCurrentTabAction = new AbstractAction("关闭当前") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        AbstractAction closeOtherAction = new AbstractAction("关闭其他") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        AbstractAction closeAllTabAction = new AbstractAction("关闭所有") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        AbstractAction copyCurrentTabAction = new AbstractAction("复制当前") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+
+        popupMenu.add(renameCurrentTabAction);
+        popupMenu.addSeparator();
+        popupMenu.add(closeCurrentTabAction);
+        popupMenu.add(closeOtherAction);
+        popupMenu.add(closeAllTabAction);
+        popupMenu.add(copyCurrentTabAction);
+    }
+
     /**
      * 内部监听器
      */
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == 3) {
-            popupMenu = new JPopupMenu();
-            popupMenu.add(new AbstractAction("关闭当前") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                }
-            });
-            popupMenu.add(new AbstractAction("关闭其他") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                }
-            });
-            popupMenu.add(new AbstractAction("关闭所有") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                }
-            });
-            popupMenu.add(new AbstractAction("复制当前") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                }
-            });
             popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }

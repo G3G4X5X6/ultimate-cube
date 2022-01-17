@@ -33,13 +33,12 @@ public class EditorPanel extends JPanel implements SearchListener {
     private String tips = "默认提示文本";
     private String uuid = UUID.randomUUID().toString();
     private FlatSVGIcon icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-text.svg");
-    private RSyntaxTextArea textArea;
-    private RTextScrollPane sp;
+    private final RSyntaxTextArea textArea;
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
     private AutoCompletion ac = null;
     private String syntax = "text/plain";
-    private LinkedList<String> allSyntax = new LinkedList<>();
+    private final LinkedList<String> allSyntax = new LinkedList<>();
 
     private SftpFileSystem fs;
     private String savePath;
@@ -48,8 +47,8 @@ public class EditorPanel extends JPanel implements SearchListener {
         this.setLayout(new BorderLayout());
         this.initSyntaxStyle();
         this.textArea = createTextArea();
-        this.sp = new RTextScrollPane(textArea);
-        this.sp.setBorder(null);
+        RTextScrollPane sp = new RTextScrollPane(textArea);
+        sp.setBorder(null);
         this.add(sp, BorderLayout.CENTER);
         initSearchDialogs();
     }
@@ -147,8 +146,8 @@ public class EditorPanel extends JPanel implements SearchListener {
     @SneakyThrows
     private String getTextFromPath() {
         StringBuilder str = new StringBuilder();
-        if (getFs() == null){
-            try(BufferedReader reader = new BufferedReader(new FileReader(savePath))) {
+        if (getFs() == null) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(savePath))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     str.append(line);
@@ -229,7 +228,7 @@ public class EditorPanel extends JPanel implements SearchListener {
         textArea.setSyntaxEditingStyle(syntax);
     }
 
-    public void setLineWrap(boolean flag){
+    public void setLineWrap(boolean flag) {
         textArea.setLineWrap(flag);
     }
 
@@ -245,7 +244,7 @@ public class EditorPanel extends JPanel implements SearchListener {
             } else if (title.equalsIgnoreCase("makefile")) {
 //                String SYNTAX_STYLE_MAKEFILE = "text/makefile";
                 setSyntax("text/makefile");
-            }else{
+            } else {
                 // String SYNTAX_STYLE_UNIX_SHELL = "text/unix";
                 // 默认：text/unix -> bash
                 setSyntax("text/unix");
@@ -501,7 +500,7 @@ public class EditorPanel extends JPanel implements SearchListener {
                     break;
             }
         }
-        if (ac != null){
+        if (ac != null) {
             // TODO 快捷键与自动激活作为一个用户设置，二选一
 //            ac.setAutoActivationEnabled(true);  // 找到唯一符合的关键字，将直接自动完成
             ac.setTriggerKey(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_DOWN_MASK));
@@ -547,26 +546,23 @@ public class EditorPanel extends JPanel implements SearchListener {
         String text;
         if (result.wasFound()) {
             text = "Text found; occurrences marked: " + result.getMarkedCount();
-        }
-        else if (type==SearchEvent.Type.MARK_ALL) {
-            if (result.getMarkedCount()>0) {
+        } else if (type == SearchEvent.Type.MARK_ALL) {
+            if (result.getMarkedCount() > 0) {
                 text = "Occurrences marked: " + result.getMarkedCount();
-            }
-            else {
+            } else {
                 text = "";
             }
-        }
-        else {
+        } else {
             text = "Text not found";
         }
         MainFrame.embedEditor.setSearchStatusLabelStr(text);
     }
 
-    public FindDialog getFindDialog(){
+    public FindDialog getFindDialog() {
         return findDialog;
     }
 
-    public ReplaceDialog getReplaceDialog(){
+    public ReplaceDialog getReplaceDialog() {
         return replaceDialog;
     }
 }
