@@ -9,6 +9,7 @@ import com.g3g4x5x6.App;
 import com.g3g4x5x6.Version;
 import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
+import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.console.ConsolePane;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
@@ -338,6 +339,19 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
+        // Administrator.svg
+        JButton nucleiBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/Administrator.svg"));
+        nucleiBtn.setToolTipText("Nuclei: 漏洞验证框架GUI");
+        nucleiBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (nucleiFrame == null)
+                    nucleiFrame = new NucleiFrame();
+                nucleiFrame.setVisible(true);
+            }
+        });
+
+
         // TODO 选项卡面板前置工具栏，暂不使用
         leading.add(dashboardBtn);
 //        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
@@ -374,6 +388,7 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
 //        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
+        trailing.add(nucleiBtn);
         trailing.add(editorBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
@@ -544,6 +559,7 @@ public class MainFrame extends JFrame implements MouseListener {
     public static JTabbedPane mainTabbedPane;
     public static JPanel statusBar;
     public static EmbedEditor embedEditor = new EmbedEditor();
+    public static NucleiFrame nucleiFrame = new NucleiFrame();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
 
