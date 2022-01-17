@@ -11,6 +11,7 @@ import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.console.ConsolePane;
+import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.ui.panels.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.panels.tools.ColorPicker;
 import com.g3g4x5x6.ui.panels.tools.QRTool;
@@ -226,7 +227,7 @@ public class MainFrame extends JFrame implements MouseListener {
         // 添加更新按钮
         new Thread(() -> {
             latestVersion = CommonUtil.getLastestVersion();
-            String currentVersion = "v" + Version.VERSION ;
+            String currentVersion = "v" + Version.VERSION;
             if (!currentVersion.equals(latestVersion)) {
                 menuBar.add(updateBtn);
                 log.debug("添加更新按钮");
@@ -423,20 +424,38 @@ public class MainFrame extends JFrame implements MouseListener {
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
                 (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
                     if (tabIndex != 0) {
+                        /**
+                         * TODO 会话清理
+                         * security pts/2        192.168.106.21   Mon Jan 17 06:50   still logged in
+                         * security pts/1        192.168.106.21   Mon Jan 17 06:50   still logged in
+                         * security pts/0        192.168.106.21   Mon Jan 17 06:50   still logged in
+                         */
                         mainTabbedPane.removeTabAt(tabIndex);
                     }
                 });
 
     }
 
-    private void initTabPopupMenu(){
+    private void initTabPopupMenu() {
         AbstractAction renameCurrentTabAction = new AbstractAction("命名标签") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题", "");
-                if (input != null && !input.strip().equalsIgnoreCase("")){
-                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), new JLabel(input));
+                if (input != null && !input.strip().equalsIgnoreCase("")) {
+                    JLabel newTabTitle = new JLabel(input);
+                    newTabTitle.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"));
+                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), newTabTitle);
                 }
+            }
+        };
+        AbstractAction copyCurrentTabAction = new AbstractAction("复制当前") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
+                SshTabbedPane newTabbedPane = new SshTabbedPane(selectedTabbedPane.getSession());
+                mainTabbedPane.addTab("复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()),
+                        new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"), newTabbedPane);
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };
         AbstractAction closeCurrentTabAction = new AbstractAction("关闭当前") {
@@ -445,7 +464,13 @@ public class MainFrame extends JFrame implements MouseListener {
 
             }
         };
-        AbstractAction closeOtherAction = new AbstractAction("关闭其他") {
+        AbstractAction closeLeftAction = new AbstractAction("关闭左边") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        };
+        AbstractAction closeRightAction = new AbstractAction("关闭右边") {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -457,19 +482,14 @@ public class MainFrame extends JFrame implements MouseListener {
 
             }
         };
-        AbstractAction copyCurrentTabAction = new AbstractAction("复制当前") {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        };
 
         popupMenu.add(renameCurrentTabAction);
+        popupMenu.add(copyCurrentTabAction);
         popupMenu.addSeparator();
         popupMenu.add(closeCurrentTabAction);
-        popupMenu.add(closeOtherAction);
+        popupMenu.add(closeLeftAction);
+        popupMenu.add(closeRightAction);
         popupMenu.add(closeAllTabAction);
-        popupMenu.add(copyCurrentTabAction);
     }
 
     /**
@@ -502,16 +522,16 @@ public class MainFrame extends JFrame implements MouseListener {
 
     }
 
-    public static void addWaitProgressBar(){
+    public static void addWaitProgressBar() {
         waitCount.incrementAndGet();
         waitProgressBar.setVisible(true);
     }
 
-    public static void removeWaitProgressBar(){
+    public static void removeWaitProgressBar() {
         int count;
-        if (waitCount.get() > 0){
+        if (waitCount.get() > 0) {
             count = waitCount.decrementAndGet();
-            if (count == 0){
+            if (count == 0) {
                 waitProgressBar.setVisible(false);
             }
         }
@@ -573,7 +593,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private AbstractAction myEditorAction = new AbstractAction("简易编辑器") {
         public void actionPerformed(final ActionEvent e) {
-            new Thread(()->{
+            new Thread(() -> {
                 // TODO 内置编辑器
                 if (embedEditor == null) {
                     embedEditor = new EmbedEditor();

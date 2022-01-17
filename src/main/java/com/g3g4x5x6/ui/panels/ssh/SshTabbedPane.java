@@ -61,6 +61,31 @@ public class SshTabbedPane extends JTabbedPane {
         MainFrame.removeWaitProgressBar();
     }
 
+    public SshTabbedPane(ClientSession session){
+        this.session = session;
+        this.sftpFileSystem = getSftpFileSystem(session);
+
+        // 等待进度条
+        MainFrame.addWaitProgressBar();
+
+        this.sshPane = createTerminalWidget();
+        this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
+        this.editorPane = new EditorPane(this.sftpFileSystem);
+        this.monitorPane = new MonitorPane(this.session);
+        this.addTab("SSH", this.sshPane);
+        this.addTab("SFTP", this.sftpBrowser);
+        this.addTab("Editor", this.editorPane);
+        this.addTab("Monitor", this.monitorPane);
+        customComponents();
+
+        // 关闭进度条
+        MainFrame.removeWaitProgressBar();
+    }
+
+    public ClientSession getSession() {
+        return session;
+    }
+
     private void init() {
         this.client = SshClient.setUpDefaultClient();
         this.client.start();
