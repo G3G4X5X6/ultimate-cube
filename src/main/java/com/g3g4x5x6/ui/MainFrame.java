@@ -10,6 +10,7 @@ import com.g3g4x5x6.Version;
 import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
+import com.g3g4x5x6.ui.embed.nuclei.panel.EditPanel;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.console.ConsolePane;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
@@ -581,21 +582,21 @@ public class MainFrame extends JFrame implements MouseListener {
     private String latestVersion;
 
     // TODO 菜单动作
-    private AbstractAction myNewAction = new AbstractAction("新建会话") {
+    private final AbstractAction myNewAction = new AbstractAction("新建会话") {
         public void actionPerformed(final ActionEvent e) {
             mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
 
-    private AbstractAction mySessionAction = new AbstractAction("会话管理") {
+    private final AbstractAction mySessionAction = new AbstractAction("会话管理") {
         public void actionPerformed(final ActionEvent e) {
             mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addList.svg"), new SessionsManager(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
 
-    private AbstractAction myLocalTerminal = new AbstractAction("本地终端") {
+    private final AbstractAction myLocalTerminal = new AbstractAction("本地终端") {
         @Override
         public void actionPerformed(ActionEvent e) {
             mainTabbedPane.insertTab("<html><font style='color:green'><strong>本地终端</strong></font></html>",
@@ -607,26 +608,31 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction myEditorAction = new AbstractAction("简易编辑器") {
+    private final AbstractAction myEditorAction = new AbstractAction("简易编辑器") {
         public void actionPerformed(final ActionEvent e) {
             new Thread(() -> {
                 // TODO 内置编辑器
                 if (embedEditor == null) {
                     embedEditor = new EmbedEditor();
                 }
+                if (embedEditor.getTabbedPane().getTabCount() ==  0){
+                    EditorPanel editorPanel = new EditorPanel();
+                    embedEditor.getTabbedPane().addTab(editorPanel.getTitle(), editorPanel.getIcon(), editorPanel, editorPanel.getTips());
+                    embedEditor.getTabbedPane().setSelectedIndex(embedEditor.getTabbedPane().getTabCount() - 1);
+                }
                 embedEditor.setVisible(true);
             }).start();
         }
     };
 
-    private AbstractAction encodeConversionAction = new AbstractAction("文件编码转换") {
+    private final AbstractAction encodeConversionAction = new AbstractAction("文件编码转换") {
         @Override
         public void actionPerformed(ActionEvent e) {
             DialogUtil.info("敬请期待");
         }
     };
 
-    private AbstractAction colorPickerAction = new AbstractAction("截图取色") {
+    private final AbstractAction colorPickerAction = new AbstractAction("截图取色") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("取色器");
@@ -638,7 +644,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction qrCodePickerAction = new AbstractAction("二维码") {
+    private final AbstractAction qrCodePickerAction = new AbstractAction("二维码") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("QR Code");
@@ -647,7 +653,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction tightVNCAction = new AbstractAction("TightVNC Viewer") {
+    private final AbstractAction tightVNCAction = new AbstractAction("TightVNC Viewer") {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (MacUtils.isMac()) {
@@ -670,7 +676,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction freeRDPAction = new AbstractAction("FreeRDP") {
+    private final AbstractAction freeRDPAction = new AbstractAction("FreeRDP") {
         @Override
         public void actionPerformed(ActionEvent e) {
             FreeRdp freeRdp = new FreeRdp();
@@ -678,7 +684,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction themeAction = new AbstractAction("切换主题") {
+    private final AbstractAction themeAction = new AbstractAction("切换主题") {
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO 主题切换
@@ -687,7 +693,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction settingsAction = new AbstractAction("全局配置") {
+    private final AbstractAction settingsAction = new AbstractAction("全局配置") {
         @Override
         public void actionPerformed(ActionEvent e) {
             // TODO 全局设置
@@ -696,10 +702,10 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction importSessionAction = new AbstractAction("导入会话") {
+    private final AbstractAction importSessionAction = new AbstractAction("导入会话") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            FileInputStream fis = null;
+            FileInputStream fis;
             try {
                 // 创建一个默认的文件选取器
                 JFileChooser fileChooser = new JFileChooser();
@@ -763,15 +769,13 @@ public class MainFrame extends JFrame implements MouseListener {
                         ExcelUtil.importBackup(sql_relation);
                     }
                 }
-            } catch (FileNotFoundException fileNotFoundException) {
+            } catch (IOException fileNotFoundException) {
                 fileNotFoundException.printStackTrace();
-            } catch (IOException exception) {
-                exception.printStackTrace();
             }
         }
     };
 
-    private AbstractAction exportSessionAction = new AbstractAction("导出会话") {
+    private final AbstractAction exportSessionAction = new AbstractAction("导出会话") {
         @Override
         public void actionPerformed(ActionEvent e) {
             // 导出文件

@@ -193,10 +193,11 @@ public class TemplatesPanel extends JPanel {
      */
     private void refreshDataForTable() {
         // 搜索功能
-        sorter = new TableRowSorter<DefaultTableModel>(tableModel);
+        sorter = new TableRowSorter<>(tableModel);
         templatesTable.setRowSorter(sorter);
         new Thread(() -> {
             tableModel.setRowCount(0);
+            templates.clear();
             try {
                 // 初始化列表并输出列表大小
                 log.debug("Templates Count: " + getAllTemplatesFromPath());
@@ -375,6 +376,7 @@ public class TemplatesPanel extends JPanel {
                 int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
                 String savePath = templates.get(num).get("path");
                 Files.delete(Path.of(savePath));
+                templates.remove(num);
                 refreshDataForTable();
             }
         }

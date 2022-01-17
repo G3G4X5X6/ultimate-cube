@@ -352,6 +352,10 @@ public class EmbedEditor extends JFrame implements ActionListener {
         }
     }
 
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
+    }
+
     private boolean exist(EditorPanel editorPanel) {
 
         return false;
