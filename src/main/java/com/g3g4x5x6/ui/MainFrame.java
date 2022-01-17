@@ -434,7 +434,7 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题", "");
-                if (!input.strip().equalsIgnoreCase("")){
+                if (input != null && !input.strip().equalsIgnoreCase("")){
                     mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), new JLabel(input));
                 }
             }
