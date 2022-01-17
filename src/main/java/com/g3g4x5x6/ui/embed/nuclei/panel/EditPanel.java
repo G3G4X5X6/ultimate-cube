@@ -2,7 +2,6 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.MainFrame;
-import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiYamlCompletionProvider;
 import com.g3g4x5x6.utils.DialogUtil;

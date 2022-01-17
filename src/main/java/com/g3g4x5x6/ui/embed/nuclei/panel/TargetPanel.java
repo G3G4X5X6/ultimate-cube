@@ -149,7 +149,7 @@ public class TargetPanel extends JPanel {
                 // TODO 搞个专门存放报告的文件夹
                 ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
                 consolePanel.write("nuclei -l " + targetPath + " -markdown-export " + tempDir + "\r");
-                NucleiFrame.tabbedPane.setSelectedIndex(2);
+                NucleiFrame.frameTabbedPane.setSelectedIndex(2);
             }
         });
     }

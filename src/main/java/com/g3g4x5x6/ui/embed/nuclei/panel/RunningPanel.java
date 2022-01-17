@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
+import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ProcessTtyConnector;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,7 +52,7 @@ public class RunningPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 count++;
-                tabbedPane.addTab("#" + String.valueOf(count), new ConsolePanel());
+                tabbedPane.addTab("#" + count, new ConsolePanel());
                 tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
             }
         });
@@ -69,5 +70,9 @@ public class RunningPanel extends JPanel {
         trailing.add(refreshBtn);
         trailing.add(Box.createHorizontalGlue());
         tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    public ProcessTtyConnector getTtyConnector(String title){
+     return    null;
     }
 }

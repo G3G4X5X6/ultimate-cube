@@ -10,7 +10,6 @@ import com.g3g4x5x6.Version;
 import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
-import com.g3g4x5x6.ui.embed.nuclei.panel.EditPanel;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.console.ConsolePane;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;

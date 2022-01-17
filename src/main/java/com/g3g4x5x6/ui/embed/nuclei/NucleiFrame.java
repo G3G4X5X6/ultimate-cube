@@ -20,7 +20,7 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 @Slf4j
 public class NucleiFrame extends JFrame {
     public static NucleiFrame nucleiFrame = new NucleiFrame();
-    public static JTabbedPane tabbedPane;
+    public static JTabbedPane frameTabbedPane;
     public static String reportDir = ConfigUtil.getWorkPath() + "/report/nuclei";
     private JMenu fileMenu = new JMenu("文件");
     private JMenu editMenu = new JMenu("编辑");
@@ -35,7 +35,7 @@ public class NucleiFrame extends JFrame {
     private JMenu winMenu = new JMenu("窗口");
     private JMenu aboutMenu = new JMenu("关于");
 
-    private JPopupMenu trailPopupMenu = new JPopupMenu();
+    private final JPopupMenu trailPopupMenu = new JPopupMenu();
     private final TargetPanel targetPanel = new TargetPanel();
 
     public NucleiFrame() {
@@ -60,31 +60,31 @@ public class NucleiFrame extends JFrame {
         menuBar.add(winMenu);
         menuBar.add(aboutMenu);
 
-        tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-        initClosableTabs(tabbedPane);
+        frameTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+        initClosableTabs(frameTabbedPane);
         customComponents();
-        tabbedPane.addTab("Templates", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new TemplatesPanel());
-        tabbedPane.addTab("Settings", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new SettingsPanel());
-        tabbedPane.addTab("Running", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new RunningPanel());
+        frameTabbedPane.addTab("Templates", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new TemplatesPanel());
+        frameTabbedPane.addTab("Settings", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new SettingsPanel());
+        frameTabbedPane.addTab("Running", new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"), new RunningPanel());
 
         this.setJMenuBar(menuBar);
-        this.add(tabbedPane, BorderLayout.CENTER);
+        this.add(frameTabbedPane, BorderLayout.CENTER);
     }
 
-    private void initClosableTabs(JTabbedPane tabbedPane) {
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
+    private void initClosableTabs(JTabbedPane frameTabbedPane) {
+        frameTabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
+        frameTabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
+        frameTabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
                 (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
                     if (tabIndex >= 3) {
-                        tabbedPane.removeTabAt(tabIndex);
+                        frameTabbedPane.removeTabAt(tabIndex);
                     }
                 });
     }
 
 
     private void customComponents() {
-        JToolBar trailing = null;
+        JToolBar trailing;
         trailing = new JToolBar();
         trailing.setFloatable(false);
         trailing.setBorder(null);
@@ -93,12 +93,11 @@ public class NucleiFrame extends JFrame {
         addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                log.debug("Add EditPanel");
                 // TODO 添加 Template
-                EditPanel editorPanel = new EditPanel();
-                tabbedPane.addTab(editorPanel.getTitle(),
-                        editorPanel.getIcon(),
-                        editorPanel);
-                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+                EditPanel editPanel = new EditPanel();
+                frameTabbedPane.addTab(editPanel.getTitle(), editPanel.getIcon(), editPanel);
+                frameTabbedPane.setSelectedIndex(frameTabbedPane.getTabCount() - 1);
             }
         });
 
@@ -107,8 +106,8 @@ public class NucleiFrame extends JFrame {
         targetBtn.setToolTipText("设置目标URL");
         JPopupMenu targetPopupMenu = new JPopupMenu();
         targetPopupMenu.setBorder(null);
-        targetPopupMenu.setSize(new Dimension(700, 200));
-        targetPopupMenu.setPreferredSize(new Dimension(700, 200));
+        targetPopupMenu.setSize(new Dimension(500, 200));
+        targetPopupMenu.setPreferredSize(new Dimension(500, 200));
         targetPopupMenu.add(targetPanel);
         targetBtn.addMouseListener(new MouseAdapter() {
             @Override
@@ -160,7 +159,7 @@ public class NucleiFrame extends JFrame {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(Box.createHorizontalGlue());
         trailing.add(trailMenuBtn);
-        tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+        frameTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
     public static void main(String[] args) {
