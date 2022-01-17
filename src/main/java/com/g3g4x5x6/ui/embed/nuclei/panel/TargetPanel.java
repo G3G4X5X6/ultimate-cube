@@ -2,6 +2,7 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
+import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -146,7 +147,8 @@ public class TargetPanel extends JPanel {
                 String targetPath = tempDir + "/" + UUID.randomUUID() + ".txt";
                 Files.write(Path.of(targetPath), textArea.getText().getBytes(StandardCharsets.UTF_8));
                 // TODO 搞个专门存放报告的文件夹
-                RunningPanel.ttyConnector.write("nuclei -l " + targetPath + " -markdown-export " + tempDir + "\r");
+                ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
+                consolePanel.write("nuclei -l " + targetPath + " -markdown-export " + tempDir + "\r");
                 NucleiFrame.tabbedPane.setSelectedIndex(2);
             }
         });

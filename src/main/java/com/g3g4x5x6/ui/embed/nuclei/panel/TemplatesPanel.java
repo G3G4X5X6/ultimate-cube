@@ -3,7 +3,8 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
-import com.g3g4x5x6.ui.embed.nuclei.model.SelectedConfig;
+import com.g3g4x5x6.ui.embed.nuclei.model.SelectedTemplatesConfig;
+import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -158,11 +159,8 @@ public class TemplatesPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 new Thread(() -> {
                     // nuclei -ut  [-ut, -update-templates         update nuclei-templates to latest released version]
-                    try {
-                        RunningPanel.ttyConnector.write("nuclei -ut\r");
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
+                    ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
+                    consolePanel.write("nuclei -ut\r");
 
                     // 清除旧列表
                     templates.clear();
@@ -392,7 +390,7 @@ public class TemplatesPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Selected");
             if (!TargetPanel.textArea.getText().strip().equals("")){
-                SelectedConfig selected = new SelectedConfig();
+                SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
                 ArrayList<String> tempTemplate = new ArrayList<>();
                 for (int index : templatesTable.getSelectedRows()) {
@@ -406,7 +404,8 @@ public class TemplatesPanel extends JPanel {
                 String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
                 yaml.dump(selected, new FileWriter(configPath));
-                RunningPanel.ttyConnector.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir);
+                ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
+                consolePanel.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir);
                 NucleiFrame.tabbedPane.setSelectedIndex(2);
             }else{
                 JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告",JOptionPane.WARNING_MESSAGE);
@@ -427,7 +426,7 @@ public class TemplatesPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             log.debug("Run command with Selected");
             if (!TargetPanel.textArea.getText().strip().equals("")){
-                SelectedConfig selected = new SelectedConfig();
+                SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
                 ArrayList<String> tempTemplate = new ArrayList<>();
                 for (int index : templatesTable.getSelectedRows()) {
@@ -445,7 +444,8 @@ public class TemplatesPanel extends JPanel {
                     file.getParentFile().mkdirs();
                 }
                 yaml.dump(selected, new FileWriter(configPath));
-                RunningPanel.ttyConnector.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
+                ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
+                consolePanel.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
                 NucleiFrame.tabbedPane.setSelectedIndex(2);
             }else{
                 JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告",JOptionPane.WARNING_MESSAGE);

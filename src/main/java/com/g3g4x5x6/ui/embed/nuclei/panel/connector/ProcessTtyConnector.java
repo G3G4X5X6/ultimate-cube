@@ -60,8 +60,7 @@ public abstract class ProcessTtyConnector implements TtyConnector {
     public abstract boolean isConnected();
 
     public void write(String string) throws IOException {
-        // History command
-        log.debug(string);
+        // TODO History command
         this.write(string.getBytes(this.myCharset));
     }
 

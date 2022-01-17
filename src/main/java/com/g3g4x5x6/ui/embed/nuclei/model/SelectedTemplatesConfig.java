@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SelectedConfig {
+public class SelectedTemplatesConfig {
     private List<String> target;
     private List<String> templates;
 
-    public SelectedConfig(){
+    public SelectedTemplatesConfig(){
 
     }
 
@@ -42,10 +42,10 @@ public class SelectedConfig {
         target.add("https://www.baidu.com");
         templates.add("C:\\Users\\18224\\nuclei-templates\\misconfiguration\\springboot\\springboot-env.yaml");
         templates.add("C:\\Users\\18224\\nuclei-templates\\misconfiguration\\springboot\\springboot-httptrace.yaml");
-        SelectedConfig selectedConfig = new SelectedConfig();
-        selectedConfig.setTarget(target);
-        selectedConfig.setTemplates(templates);
+        SelectedTemplatesConfig selectedTemplatesConfig = new SelectedTemplatesConfig();
+        selectedTemplatesConfig.setTarget(target);
+        selectedTemplatesConfig.setTemplates(templates);
         Yaml yaml = new Yaml();
-        yaml.dump(selectedConfig, new FileWriter(targetPath));
+        yaml.dump(selectedTemplatesConfig, new FileWriter(targetPath));
     }
 }

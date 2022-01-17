@@ -4,12 +4,14 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.embed.nuclei.panel.*;
 import com.g3g4x5x6.utils.ConfigUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
@@ -128,15 +130,25 @@ public class NucleiFrame extends JFrame {
             iconPath = "com/g3g4x5x6/ui/icons/macOS.svg";
         }
         JButton trailMenuBtn = new JButton(new FlatSVGIcon(iconPath));
-        JMenuItem item = new JMenuItem("代码安全检查");
-        item.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
-        item.addActionListener(new AbstractAction() {
+        JMenuItem secureItem = new JMenuItem("代码安全检查");
+        secureItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
+        secureItem.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(NucleiFrame.this, "敬请期待！", "信息", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-        trailPopupMenu.add(item);
+        JMenuItem reportItem = new JMenuItem("查看扫描报告");
+        reportItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/MarkdownPlugin.svg"));
+        reportItem.addActionListener(new AbstractAction() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Desktop.getDesktop().open(new File(reportDir));
+            }
+        });
+        trailPopupMenu.add(secureItem);
+        trailPopupMenu.add(reportItem);
         trailMenuBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
