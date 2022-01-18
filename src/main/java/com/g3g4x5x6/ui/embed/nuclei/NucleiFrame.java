@@ -38,7 +38,6 @@ public class NucleiFrame extends JFrame {
     private JMenu aboutMenu = new JMenu("关于");
 
     private final JPopupMenu trailPopupMenu = new JPopupMenu();
-    private final TargetPanel targetPanel = new TargetPanel();
 
     public NucleiFrame() {
         this.setLayout(new BorderLayout());
@@ -130,10 +129,11 @@ public class NucleiFrame extends JFrame {
         targetPopupMenu.setBorder(null);
         targetPopupMenu.setSize(new Dimension(600, 200));
         targetPopupMenu.setPreferredSize(new Dimension(600, 200));
-        targetPopupMenu.add(targetPanel);
+        targetPopupMenu.add(new TargetPanel());
         targetBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                log.debug("填写目标");
                 targetPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
