@@ -116,6 +116,17 @@ public class NucleiFrame extends JFrame {
             }
         });
 
+        JMenuItem reportItem = new JMenuItem("查看扫描报告");
+        reportItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/MarkdownPlugin.svg"));
+        reportItem.addActionListener(new AbstractAction() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Desktop.getDesktop().open(new File(reportDir));
+            }
+        });
+        trailPopupMenu.add(reportItem);
+
         // TODO 选项卡面板后置工具栏
         String iconPath = null;
         if (OsUtils.isWin32()) {
@@ -129,31 +140,13 @@ public class NucleiFrame extends JFrame {
             iconPath = "com/g3g4x5x6/ui/icons/macOS.svg";
         }
         JButton trailMenuBtn = new JButton(new FlatSVGIcon(iconPath));
-        JMenuItem secureItem = new JMenuItem("代码安全检查");
-        secureItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
-        secureItem.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(NucleiFrame.this, "敬请期待！", "信息", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-        JMenuItem reportItem = new JMenuItem("查看扫描报告");
-        reportItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/MarkdownPlugin.svg"));
-        reportItem.addActionListener(new AbstractAction() {
-            @SneakyThrows
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Desktop.getDesktop().open(new File(reportDir));
-            }
-        });
-        trailPopupMenu.add(secureItem);
-        trailPopupMenu.add(reportItem);
         trailMenuBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 trailPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
+
         trailing.add(addBtn);
         trailing.add(targetBtn);
         trailing.add(Box.createHorizontalGlue());
