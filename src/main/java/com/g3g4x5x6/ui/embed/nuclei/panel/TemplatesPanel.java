@@ -3,6 +3,7 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
+import com.g3g4x5x6.ui.embed.nuclei.model.SelectedTagsConfig;
 import com.g3g4x5x6.ui.embed.nuclei.model.SelectedTemplatesConfig;
 import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.utils.ConfigUtil;
@@ -81,41 +82,68 @@ public class TemplatesPanel extends JPanel {
         tablePopMenu.addSeparator();
         tablePopMenu.add(generateWithSelectedAction);
         tablePopMenu.add(generateWithTagsAction);
-        JMenu selectedMenu = new JMenu("运行选中的模板");
-        selectedMenu.addMenuListener(new MenuListener() {
+        JMenu selectedTemplatesMenu = new JMenu("运行选中的模板");
+        selectedTemplatesMenu.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
                 log.debug("menuSelected");
-                selectedMenu.removeAll();
+                selectedTemplatesMenu.removeAll();
                 LinkedHashMap<String, ConsolePanel> consolePanels = getConsolePanels();
-                for(String title : consolePanels.keySet()){
+                for (String title : consolePanels.keySet()) {
                     JMenuItem tempItem = new JMenuItem(title);
                     tempItem.addActionListener(new AbstractAction() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             log.debug("Execute in " + title);
-                            runInSelectedConsole(consolePanels.get(title));
+                            runTemplatesInSelectedConsole(consolePanels.get(title));
                         }
                     });
-                    selectedMenu.add(tempItem);
+                    selectedTemplatesMenu.add(tempItem);
+                }
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+                log.debug("menuDeselected");
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+                log.debug("menuCanceled");
+            }
+        });
+        tablePopMenu.add(selectedTemplatesMenu);
+        JMenu selectedTagsMenu = new JMenu("运行包含选中标签的模板");
+        selectedTagsMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                selectedTagsMenu.removeAll();
+                LinkedHashMap<String, ConsolePanel> consolePanels = getConsolePanels();
+                for (String title : consolePanels.keySet()) {
+                    JMenuItem tempItem = new JMenuItem(title);
+                    tempItem.addActionListener(new AbstractAction() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            log.debug("Execute in " + title);
+                            runTagsInSelectedConsole(consolePanels.get(title));
+                        }
+                    });
+                    selectedTagsMenu.add(tempItem);
                 }
             }
 
             @Override
             public void menuDeselected(MenuEvent e) {
 
-                log.debug("menuDeselected");
             }
 
             @Override
             public void menuCanceled(MenuEvent e) {
 
-                log.debug("menuCanceled");
             }
         });
-        tablePopMenu.add(selectedMenu);
-//        tablePopMenu.add(runWithSelectedAction);
-        tablePopMenu.add(runWithTagsAction);
+        tablePopMenu.add(selectedTagsMenu);
+//        tablePopMenu.add(runWithTagsAction);
 
 
         templatesTable = new JTable();
@@ -348,19 +376,19 @@ public class TemplatesPanel extends JPanel {
         return 0;
     }
 
-    private LinkedHashMap<String, ConsolePanel> getConsolePanels(){
-        LinkedHashMap<String, ConsolePanel> consolePanels= new LinkedHashMap<>();
+    private LinkedHashMap<String, ConsolePanel> getConsolePanels() {
+        LinkedHashMap<String, ConsolePanel> consolePanels = new LinkedHashMap<>();
         int count = RunningPanel.tabbedPane.getTabCount();
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             consolePanels.put(RunningPanel.tabbedPane.getTitleAt(i), (ConsolePanel) RunningPanel.tabbedPane.getComponentAt(i));
         }
         return consolePanels;
     }
 
     @SneakyThrows
-    private void runInSelectedConsole(ConsolePanel consolePanel){
+    private void runTemplatesInSelectedConsole(ConsolePanel consolePanel) {
         log.debug("Run command with Selected");
-        if (!TargetPanel.textArea.getText().strip().equals("")){
+        if (!TargetPanel.textArea.getText().strip().equals("")) {
             SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
             ArrayList<String> tempTemplate = new ArrayList<>();
@@ -375,15 +403,43 @@ public class TemplatesPanel extends JPanel {
             String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
             Yaml yaml = new Yaml();
             File file = new File(configPath);
-            if (!file.getParentFile().exists()){
+            if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }
             yaml.dump(selected, new FileWriter(configPath));
             consolePanel.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
             NucleiFrame.frameTabbedPane.setSelectedIndex(2);
             RunningPanel.tabbedPane.setSelectedComponent(consolePanel);
-        }else{
-            JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告",JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    @SneakyThrows
+    private void runTagsInSelectedConsole(ConsolePanel consolePanel){
+        if (!TargetPanel.textArea.getText().strip().equals("")) {
+            // 配置对象
+            SelectedTagsConfig selected = new SelectedTagsConfig();
+            selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+
+            ArrayList<String> tempTags = new ArrayList<>();
+            for (int index : templatesTable.getSelectedRows()) {
+                int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                String tags = templates.get(num).get("tags");
+                tempTags.addAll(Arrays.asList(tags.split(",")));
+            }
+            selected.setTags(tempTags);
+            // 保存配置对象
+            String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/tags_" + UUID.randomUUID() + ".yaml";
+            Yaml yaml = new Yaml();
+            yaml.dump(selected, new FileWriter(configPath));
+            // 执行命令
+            String command = "nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir;
+            consolePanel.write(command + "\r");
+            NucleiFrame.frameTabbedPane.setSelectedIndex(2);
+            RunningPanel.tabbedPane.setSelectedComponent(consolePanel);
+        } else {
+            JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -463,7 +519,7 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Selected");
-            if (!TargetPanel.textArea.getText().strip().equals("")){
+            if (!TargetPanel.textArea.getText().strip().equals("")) {
                 SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
                 ArrayList<String> tempTemplate = new ArrayList<>();
@@ -475,7 +531,7 @@ public class TemplatesPanel extends JPanel {
                 selected.setTemplates(tempTemplate);
                 selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
 
-                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
+                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/templates_" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
                 yaml.dump(selected, new FileWriter(configPath));
                 String command = "nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir;
@@ -487,21 +543,46 @@ public class TemplatesPanel extends JPanel {
                 ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
                 consolePanel.write(command);
                 NucleiFrame.frameTabbedPane.setSelectedIndex(2);
-            }else{
-                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告",JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
             }
         }
     };
 
     private AbstractAction generateWithTagsAction = new AbstractAction("<html>为选中的<font style='color:blue'>标签</font>生成执行命令</html>") {
+        @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Tags");
-//            String command = "nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir;
-            if (clipboard == null)
-                clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); //获得系统剪贴板
-            Transferable transferable = new StringSelection("command");
-            clipboard.setContents(transferable, null);
+            if (!TargetPanel.textArea.getText().strip().equals("")) {
+                // 配置对象
+                SelectedTagsConfig selected = new SelectedTagsConfig();
+                selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+
+                ArrayList<String> tempTags = new ArrayList<>();
+                for (int index : templatesTable.getSelectedRows()) {
+                    int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                    String tags = templates.get(num).get("tags");
+                    tempTags.addAll(Arrays.asList(tags.split(",")));
+                }
+                selected.setTags(tempTags);
+                // 保存配置对象
+                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/tags_" + UUID.randomUUID() + ".yaml";
+                Yaml yaml = new Yaml();
+                yaml.dump(selected, new FileWriter(configPath));
+                // 复制命令到粘贴板
+                String command = "nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir;
+                if (clipboard == null)
+                    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); //获得系统剪贴板
+                Transferable transferable = new StringSelection(command);
+                clipboard.setContents(transferable, null);
+                // 跳转到命令行面板
+                ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
+                consolePanel.write(command);
+                NucleiFrame.frameTabbedPane.setSelectedIndex(2);
+            } else {
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
+            }
         }
     };
 
@@ -510,7 +591,7 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Run command with Selected");
-            if (!TargetPanel.textArea.getText().strip().equals("")){
+            if (!TargetPanel.textArea.getText().strip().equals("")) {
                 SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
                 ArrayList<String> tempTemplate = new ArrayList<>();
@@ -522,18 +603,18 @@ public class TemplatesPanel extends JPanel {
                 selected.setTemplates(tempTemplate);
                 selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
 
-                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
+                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/templates_" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
                 File file = new File(configPath);
-                if (!file.getParentFile().exists()){
+                if (!file.getParentFile().exists()) {
                     file.getParentFile().mkdirs();
                 }
                 yaml.dump(selected, new FileWriter(configPath));
                 ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
                 consolePanel.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
                 NucleiFrame.frameTabbedPane.setSelectedIndex(2);
-            }else{
-                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告",JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
             }
         }
     };
