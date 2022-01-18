@@ -380,15 +380,25 @@ public class MainFrame extends JFrame implements MouseListener {
         waitProgressBar = new JProgressBar();
         waitProgressBar.setIndeterminate(true);
         waitProgressBar.setVisible(false);
+        waitProgressBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 为了异常情况下隐藏等待进度条
+                if (e.getClickCount() == 2){
+                    int count = waitCount.decrementAndGet();
+                    if (count <= 0){
+                        waitProgressBar.setVisible(false);
+                    }
+                }
+            }
+        });
 
         trailing.add(addBtn);
         trailing.add(sessionManagerBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
-//        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
-//        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
-        trailing.add(nucleiBtn);
+        trailing.add(nucleiBtn);    // xpack-tools
         trailing.add(editorBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
@@ -451,16 +461,21 @@ public class MainFrame extends JFrame implements MouseListener {
 
     }
 
+    private void renameTabTitle(){
+        String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题",
+                mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()));
+        if (input != null && !input.strip().equalsIgnoreCase("")) {
+            JLabel newTabTitle = new JLabel(input);
+            newTabTitle.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"));
+            mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), newTabTitle);
+        }
+    }
+
     private void initTabPopupMenu() {
         AbstractAction renameCurrentTabAction = new AbstractAction("命名标签") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题", "");
-                if (input != null && !input.strip().equalsIgnoreCase("")) {
-                    JLabel newTabTitle = new JLabel(input);
-                    newTabTitle.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"));
-                    mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), newTabTitle);
-                }
+                renameTabTitle();
             }
         };
         AbstractAction copyCurrentTabAction = new AbstractAction("复制当前") {
@@ -512,6 +527,9 @@ public class MainFrame extends JFrame implements MouseListener {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            renameTabTitle();
+        }
         if (e.getButton() == 3) {
             popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
@@ -614,7 +632,7 @@ public class MainFrame extends JFrame implements MouseListener {
                 if (embedEditor == null) {
                     embedEditor = new EmbedEditor();
                 }
-                if (embedEditor.getTabbedPane().getTabCount() ==  0){
+                if (embedEditor.getTabbedPane().getTabCount() == 0) {
                     EditorPanel editorPanel = new EditorPanel();
                     embedEditor.getTabbedPane().addTab(editorPanel.getTitle(), editorPanel.getIcon(), editorPanel, editorPanel.getTips());
                     embedEditor.getTabbedPane().setSelectedIndex(embedEditor.getTabbedPane().getTabCount() - 1);

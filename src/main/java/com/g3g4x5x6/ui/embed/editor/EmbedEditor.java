@@ -50,10 +50,10 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JToolBar toolBar = new JToolBar();
     private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/SavedContext.svg"));
-    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
-    private JButton closeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
-    private JButton closeAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
+    private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
+//    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
+//    private JButton closeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
+//    private JButton closeAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
     private JButton cutBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-cut.svg"));
     private JButton copyBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/copy.svg"));
     private JButton pasteBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-paste.svg"));
@@ -118,9 +118,9 @@ public class EmbedEditor extends JFrame implements ActionListener {
         toolBar.add(newBtn);
         toolBar.add(openBtn);
         toolBar.add(saveBtn);
-        toolBar.add(saveAllBtn);
-        toolBar.add(closeBtn);
-        toolBar.add(closeAllBtn);
+//        toolBar.add(saveAllBtn);
+//        toolBar.add(closeBtn);
+//        toolBar.add(closeAllBtn);
         toolBar.addSeparator();
         toolBar.add(cutBtn);
         toolBar.add(copyBtn);
@@ -181,9 +181,9 @@ public class EmbedEditor extends JFrame implements ActionListener {
         saveBtn.setToolTipText("保存(S)");
         saveBtn.addActionListener(saveAction);
         saveBtn.registerKeyboardAction(saveAction, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
-        saveAllBtn.setToolTipText("全部保存(E)");   // Ctrl + E
-        closeBtn.setToolTipText("关闭(C)");
-        closeAllBtn.setToolTipText("全部关闭(E)");  // Ctrl + Alt + E
+//        saveAllBtn.setToolTipText("全部保存(E)");   // Ctrl + E
+//        closeBtn.setToolTipText("关闭(C)");
+//        closeAllBtn.setToolTipText("全部关闭(E)");  // Ctrl + Alt + E
         lineWrapBtn.setToolTipText("自动换行");
         lineWrapBtn.addChangeListener(new ChangeListener() {
             @Override

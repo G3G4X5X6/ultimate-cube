@@ -39,16 +39,13 @@ public class DashboardPane extends JPanel {
 
     private void initStatusBar(){
         statusBar.setFloatable(false);
-        // TODO 添加状态栏组件
-        JButton statusBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/colors.svg"));
-        statusBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                statusPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
-        });
 
-        statusBar.add(statusBtn);
+        /**
+         * <html>Power by <font style='color:blue;'><a href='https://github.com/G3G4X5X6/ultimateshell'>G3G4X5X6</a></font></html>
+         */
+        statusBar.add(new JLabel("<html>Power by <font style='color:blue;'><a href='https://github.com/G3G4X5X6/ultimateshell'>G3G4X5X6</a></font></html>"));
+        statusBar.add(Box.createHorizontalGlue());
+        statusBar.add(new JLabel("Ready"));
     }
 
     private void initPopupMenu(){

@@ -143,8 +143,6 @@ public class TemplatesPanel extends JPanel {
             }
         });
         tablePopMenu.add(selectedTagsMenu);
-//        tablePopMenu.add(runWithTagsAction);
-
 
         templatesTable = new JTable();
         tableModel = new DefaultTableModel() {
@@ -616,13 +614,6 @@ public class TemplatesPanel extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
             }
-        }
-    };
-
-    private AbstractAction runWithTagsAction = new AbstractAction("运行包含选中标签的模板") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            log.debug("Run command with Tags");
         }
     };
 

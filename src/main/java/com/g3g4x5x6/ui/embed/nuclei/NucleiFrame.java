@@ -2,6 +2,8 @@ package com.g3g4x5x6.ui.embed.nuclei;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.components.FlatButton;
+import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.ui.embed.nuclei.panel.*;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.SneakyThrows;
@@ -59,6 +61,26 @@ public class NucleiFrame extends JFrame {
         menuBar.add(pluginMenu);
         menuBar.add(winMenu);
         menuBar.add(aboutMenu);
+        // TODO 置顶图标按钮
+        FlatToggleButton toggleButton = new FlatToggleButton();
+        toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
+        toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        toggleButton.setToolTipText("窗口置顶");
+        toggleButton.setFocusable(false);
+        toggleButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toggleButton.isSelected()) {
+                    setAlwaysOnTop(true);
+                    toggleButton.setToolTipText("取消置顶");
+                } else {
+                    setAlwaysOnTop(false);
+                    toggleButton.setToolTipText("窗口置顶");
+                }
+            }
+        });
+        menuBar.add(Box.createGlue());
+        menuBar.add(toggleButton);
 
         frameTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         initClosableTabs(frameTabbedPane);
@@ -106,8 +128,8 @@ public class NucleiFrame extends JFrame {
         targetBtn.setToolTipText("设置目标URL");
         JPopupMenu targetPopupMenu = new JPopupMenu();
         targetPopupMenu.setBorder(null);
-        targetPopupMenu.setSize(new Dimension(500, 200));
-        targetPopupMenu.setPreferredSize(new Dimension(500, 200));
+        targetPopupMenu.setSize(new Dimension(600, 200));
+        targetPopupMenu.setPreferredSize(new Dimension(600, 200));
         targetPopupMenu.add(targetPanel);
         targetBtn.addMouseListener(new MouseAdapter() {
             @Override
