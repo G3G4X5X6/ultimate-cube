@@ -105,6 +105,7 @@ public class DefaultTtyConnector implements TtyConnector {
 
     @Override
     public boolean isConnected() {
+        log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:::" + channel.isOpen());
         return channel.isOpen();
     }
 

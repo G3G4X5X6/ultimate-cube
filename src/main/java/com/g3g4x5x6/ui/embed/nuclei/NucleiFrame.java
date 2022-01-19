@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
+import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.embed.nuclei.panel.*;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.SneakyThrows;
@@ -24,6 +25,7 @@ public class NucleiFrame extends JFrame {
     public static NucleiFrame nucleiFrame = new NucleiFrame();
     public static JTabbedPane frameTabbedPane;
     public static String reportDir = ConfigUtil.getWorkPath() + "/report/nuclei";
+    public static String templatesDir = System.getProperties().getProperty("user.home") + "/nuclei-templates";
     private JMenu fileMenu = new JMenu("文件");
     private JMenu editMenu = new JMenu("编辑");
     private JMenu searchMenu = new JMenu("搜索");
@@ -138,6 +140,16 @@ public class NucleiFrame extends JFrame {
             }
         });
 
+
+        JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
+        terminalBtn.setToolTipText("返回 UltimateShell");
+        terminalBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                App.mainFrame.setVisible(true);
+            }
+        });
+
         JMenuItem reportItem = new JMenuItem("查看扫描报告");
         reportItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/MarkdownPlugin.svg"));
         reportItem.addActionListener(new AbstractAction() {
@@ -148,6 +160,17 @@ public class NucleiFrame extends JFrame {
             }
         });
         trailPopupMenu.add(reportItem);
+
+        JMenuItem templateItem = new JMenuItem("打开模板目录");
+        templateItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/template.svg"));
+        templateItem.addActionListener(new AbstractAction() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Desktop.getDesktop().open(new File(templatesDir));
+            }
+        });
+        trailPopupMenu.add(templateItem);
 
         // TODO 选项卡面板后置工具栏
         String iconPath = null;
@@ -173,6 +196,7 @@ public class NucleiFrame extends JFrame {
         trailing.add(targetBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(Box.createHorizontalGlue());
+        trailing.add(terminalBtn);
         trailing.add(trailMenuBtn);
         frameTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }

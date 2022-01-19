@@ -129,7 +129,7 @@ public class TargetPanel extends JPanel {
                 Files.write(Path.of(targetPath), textArea.getText().getBytes(StandardCharsets.UTF_8));
                 // TODO 搞个专门存放报告的文件夹
                 ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
-                consolePanel.write("nuclei -l " + targetPath + " -markdown-export " + tempDir + "\r");
+                consolePanel.write("nuclei -l " + targetPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
                 NucleiFrame.frameTabbedPane.setSelectedIndex(2);
             }
         });

@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -151,11 +150,17 @@ public class SshTabbedPane extends JTabbedPane {
 
     public void resetSession() {
         // TODO 重连后终端大小不对，需要拉伸窗口重新触发调整终端大小; 或者从 SFTP 窗口跳转回来也好
+        // 等待进度条
+        MainFrame.addWaitProgressBar();
+
         reset4Session();
         reset4TerminalWidget();
         reset4SftpBrowser();
         reset4EditorPane();
         reset4MonitorPane();
+
+        // 关闭进度条
+        MainFrame.removeWaitProgressBar();
     }
 
     private void reset4Session() {
