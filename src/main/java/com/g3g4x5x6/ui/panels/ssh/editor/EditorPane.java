@@ -251,19 +251,24 @@ public class EditorPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug(titleField.getSelectedItem().toString());
-                if (Files.exists(fs.getPath(titleField.getSelectedItem().toString()))){
-                    String text = "";
-                    try {
-                        for (String line :  Files.readAllLines(fs.getPath(titleField.getSelectedItem().toString()))){
-                            text += line + "\n";
+                if (!Files.isDirectory(fs.getPath(titleField.getSelectedItem().toString()))) {
+                    if (Files.exists(fs.getPath(titleField.getSelectedItem().toString()))) {
+                        String text = "";
+                        try {
+                            for (String line : Files.readAllLines(fs.getPath(titleField.getSelectedItem().toString()))) {
+                                text += line + "\n";
+                            }
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
                         }
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
+                        textArea.setText(text);
+                        addAndSelectItem(titleField.getSelectedItem().toString().strip());
+                    } else if (!titleField.getSelectedItem().toString().strip().equalsIgnoreCase("")) {
+                        DialogUtil.warn("文件不存在：\n" + titleField.getSelectedItem().toString());
                     }
-                    textArea.setText(text);
-                    addAndSelectItem(titleField.getSelectedItem().toString().strip());
-                }else if (!titleField.getSelectedItem().toString().strip().equalsIgnoreCase("")){
-                    DialogUtil.warn("文件不存在：\n" + titleField.getSelectedItem().toString());
+                } else {
+                    // 避免编辑目录导致出现异常
+                    log.debug(String.valueOf(fs.getPath(titleField.getSelectedItem().toString())));
                 }
             }
         });
@@ -578,10 +583,10 @@ public class EditorPane extends JPanel {
         }
     }
 
-    private void addAndSelectItem(String item){
+    private void addAndSelectItem(String item) {
         Boolean flag = false;
         for (int i = 0; i < titleField.getItemCount(); i++) {
-            if (titleField.getItemAt(i).toString().equals(item)){
+            if (titleField.getItemAt(i).toString().equals(item)) {
                 flag = true;
             }
         }
