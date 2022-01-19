@@ -116,21 +116,23 @@ public class TargetPanel extends JPanel {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
+                log.debug("Execute All Templates with Targets");
                 /**
                  * As default, all the templates (except nuclei-ignore list) gets executed from default template installation path.
                  *
                  * nuclei -u http://baidu.com  ->  nuclei -l temp.txt
                  */
-                log.debug("Execute All Templates with Targets");
-                if (!Files.exists(Path.of(tempDir))) {
-                    Files.createDirectories(Path.of(tempDir));
+                if (!textArea.getText().strip().equals("")) {
+                    if (!Files.exists(Path.of(tempDir))) {
+                        Files.createDirectories(Path.of(tempDir));
+                    }
+                    String targetPath = tempDir + "/" + UUID.randomUUID() + ".txt";
+                    Files.write(Path.of(targetPath), textArea.getText().strip().getBytes(StandardCharsets.UTF_8));
+                    // TODO 搞个专门存放报告的文件夹
+                    ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
+                    consolePanel.write("nuclei -l " + targetPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
+                    NucleiFrame.frameTabbedPane.setSelectedIndex(2);
                 }
-                String targetPath = tempDir + "/" + UUID.randomUUID() + ".txt";
-                Files.write(Path.of(targetPath), textArea.getText().getBytes(StandardCharsets.UTF_8));
-                // TODO 搞个专门存放报告的文件夹
-                ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
-                consolePanel.write("nuclei -l " + targetPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
-                NucleiFrame.frameTabbedPane.setSelectedIndex(2);
             }
         });
     }
