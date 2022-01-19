@@ -7,6 +7,7 @@ import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.ui.JediTermWidget;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.session.SessionHeartbeatController;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -23,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT;
 
+
+@Slf4j
 public class SshTabbedPane extends JTabbedPane {
     private JediTermWidget sshPane;
     private SftpBrowser sftpBrowser;
@@ -61,7 +65,7 @@ public class SshTabbedPane extends JTabbedPane {
         MainFrame.removeWaitProgressBar();
     }
 
-    public SshTabbedPane(ClientSession session){
+    public SshTabbedPane(ClientSession session) {
         this.session = session;
         this.sftpFileSystem = getSftpFileSystem(session);
 
@@ -110,14 +114,17 @@ public class SshTabbedPane extends JTabbedPane {
     }
 
     private SftpFileSystem getSftpFileSystem(ClientSession session) {
-        SftpFileSystemProvider provider = new SftpFileSystemProvider();
-        try {
-            SftpFileSystem sftpFileSystem = provider.newFileSystem(session);
+        if (sftpFileSystem == null || !sftpFileSystem.isOpen()) {
+            SftpFileSystemProvider provider = new SftpFileSystemProvider();
+            try {
+                return provider.newFileSystem(session);
+            } catch (IOException e) {
+                e.printStackTrace();
+                DialogUtil.error(e.getMessage());
+                return null;
+            }
+        } else {
             return sftpFileSystem;
-        } catch (IOException e) {
-            e.printStackTrace();
-            DialogUtil.error(e.getMessage());
-            return null;
         }
     }
 
@@ -129,17 +136,8 @@ public class SshTabbedPane extends JTabbedPane {
         return widget;
     }
 
-
     private void customComponents() {
-        JToolBar leading = null;
-        JToolBar trailing = null;
-
-        leading = new JToolBar();
-        leading.setFloatable(false);
-        leading.setBorder(null);
-        leading.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/project.svg")));
-
-        trailing = new JToolBar();
+        JToolBar trailing = new JToolBar();
         trailing.setFloatable(false);
         trailing.setBorder(null);
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/buildLoadChanges.svg")));
@@ -148,7 +146,43 @@ public class SshTabbedPane extends JTabbedPane {
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/listFiles.svg")));
 
-//        this.putClientProperty( TABBED_PANE_LEADING_COMPONENT, leading );
         this.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
+
+    public void resetSession() {
+        // TODO 重连后终端大小不对，需要拉伸窗口重新触发调整终端大小; 或者从 SFTP 窗口跳转回来也好
+        reset4Session();
+        reset4TerminalWidget();
+        reset4SftpBrowser();
+        reset4EditorPane();
+        reset4MonitorPane();
+    }
+
+    private void reset4Session() {
+        this.session = getSession(client);
+    }
+
+    private void reset4TerminalWidget() {
+        this.remove(0);
+        this.sshPane = createTerminalWidget();
+        this.insertTab("SSH", null, this.sshPane, "", 0);
+    }
+
+    private void reset4SftpBrowser() {
+        try {
+            this.sftpBrowser.setFs(getSftpFileSystem(session));
+            this.sftpBrowser.setSftpClient(sftpBrowser.getFs().getClient());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void reset4EditorPane() {
+        this.editorPane.setFs(getSftpFileSystem(session));
+    }
+
+    private void reset4MonitorPane() {
+        this.monitorPane.setSession(session);
+    }
+
 }

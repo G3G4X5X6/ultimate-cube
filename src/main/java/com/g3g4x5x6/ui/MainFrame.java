@@ -44,6 +44,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
@@ -488,6 +489,17 @@ public class MainFrame extends JFrame implements MouseListener {
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };
+        /**
+         * <html><font style='color:green'>重新连接</font></html>
+         */
+        AbstractAction reconnectAction = new AbstractAction("<html><font style='color:green'>重新连接</font></html>") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("重新连接");
+                SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
+                selectedTabbedPane.resetSession();
+            }
+        };
         AbstractAction closeCurrentTabAction = new AbstractAction("关闭当前") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -515,6 +527,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
         popupMenu.add(renameCurrentTabAction);
         popupMenu.add(copyCurrentTabAction);
+        popupMenu.add(reconnectAction);
         popupMenu.addSeparator();
         popupMenu.add(closeCurrentTabAction);
         popupMenu.add(closeLeftAction);

@@ -166,4 +166,12 @@ public class MonitorPane extends JPanel {
             e.printStackTrace();
         }
     }
+
+    public ClientSession getSession() {
+        return session;
+    }
+
+    public void setSession(ClientSession session) {
+        this.session = session;
+    }
 }

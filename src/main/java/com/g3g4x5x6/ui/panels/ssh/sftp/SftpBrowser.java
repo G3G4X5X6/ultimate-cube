@@ -84,6 +84,17 @@ public class SftpBrowser extends JPanel {
         this.fs = fs;
     }
 
+    public SftpFileSystem getFs() {
+        return fs;
+    }
+
+    public SftpClient getSftpClient() {
+        return sftpClient;
+    }
+
+    public void setSftpClient(SftpClient sftpClient) {
+        this.sftpClient = sftpClient;
+    }
 
     private void initPane() {
         //

@@ -70,6 +70,14 @@ public class EditorPane extends JPanel {
         this.add(editorPane, BorderLayout.CENTER);
     }
 
+    public SftpFileSystem getFs() {
+        return fs;
+    }
+
+    public void setFs(SftpFileSystem fs) {
+        this.fs = fs;
+    }
+
     private void initToolBar() {
         FlatButton addBtn = new FlatButton();
         addBtn.setButtonType(FlatButton.ButtonType.toolBarButton);

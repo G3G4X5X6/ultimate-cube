@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultTtyConnector implements TtyConnector {
-    private final ClientSession session;
+    private ClientSession session;
     private ChannelShell channel;
 
     private Dimension myPendingTermSize;
