@@ -46,14 +46,12 @@ public class EditPanel extends JPanel implements SearchListener {
 
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
-    private String uuid = UUID.randomUUID().toString();
     private String savePath = "";
-    private FlatSVGIcon icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-yaml.svg");
-    private RSyntaxTextArea textArea;
-    private RTextScrollPane sp;
+    private final String uuid = UUID.randomUUID().toString();
+    private final FlatSVGIcon icon = new FlatSVGIcon("com/g3g4x5x6/ui/icons/file-yaml.svg");
+    private final RSyntaxTextArea textArea;
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
-    private AutoCompletion ac = null;
     private String syntax = "text/yaml";
 
     public EditPanel() {
@@ -72,8 +70,8 @@ public class EditPanel extends JPanel implements SearchListener {
         initToolBarAction();
 
         this.textArea = createTextArea();
-        this.sp = new RTextScrollPane(textArea);
-        this.sp.setBorder(null);
+        RTextScrollPane sp = new RTextScrollPane(textArea);
+        sp.setBorder(null);
         this.add(sp, BorderLayout.CENTER);
         initSearchDialogs();
     }
@@ -198,7 +196,7 @@ public class EditPanel extends JPanel implements SearchListener {
         // far as light/dark is concerned, this property can be omitted.
         System.setProperty(MatchedBracketPopup.PROPERTY_CONSIDER_TEXTAREA_BACKGROUND, "true");
 
-        ac = new AutoCompletion(new NucleiYamlCompletionProvider());
+        AutoCompletion ac = new AutoCompletion(new NucleiYamlCompletionProvider());
         ac.install(textArea);
         // TODO 快捷键与自动激活作为一个用户设置，二选一
 //        ac.setAutoActivationEnabled(true);  // 找到唯一符合的关键字，将直接自动完成

@@ -32,7 +32,7 @@ public class TargetPanel extends JPanel {
     private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
     private JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
     private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
-    private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
+    private final JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
 
     public static RSyntaxTextArea textArea;
 
@@ -54,7 +54,7 @@ public class TargetPanel extends JPanel {
         toolBar.add(terminalBtn);
         initToolBarAction();
 
-        this.textArea = createTextArea();
+        textArea = createTextArea();
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setBorder(null);
 
@@ -117,11 +117,6 @@ public class TargetPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("Execute All Templates with Targets");
-                /**
-                 * As default, all the templates (except nuclei-ignore list) gets executed from default template installation path.
-                 *
-                 * nuclei -u http://baidu.com  ->  nuclei -l temp.txt
-                 */
                 if (!textArea.getText().strip().equals("")) {
                     if (!Files.exists(Path.of(tempDir))) {
                         Files.createDirectories(Path.of(tempDir));
