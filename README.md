@@ -39,10 +39,11 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 - [x] 支持账户会话管理
 - [x] 支持本地终端(cmd, shell)
 - [x] 支持 `SSH`、 `Sftp`，`SSH` 内置代码编辑器，支持代码高亮、折叠等功能
-- [x] 支持串口调试（自动检测存在的 `COM` 接口）
+- [x] 支持 `COM` 口调试（自动检测存在的 `COM` 接口）
 - [x] 支持 `Telnet`
 - [x] 支持 `RDP` 远程桌面（`FreeRDP`）
 - [x] 支持 `VNC`，基于`TightVNC Viewer` 实现
+- [x] 内置 `简易编辑器`，可编辑本地、远程文件
 - [ ] <del>Support FTP</del>（暂不支持）
 
 ## 构建
@@ -50,7 +51,7 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 1. 构建环境：`JDK11+`, `IDEA`
 1. 安装依赖：
    ```shell
-    # tightvnc-jviewer.jar, jediterm-pty-2.49.jar, terminal-2.54.jar, jediterm-typeahead-2.54.jar
+    # tightvnc-jviewer.jar, jediterm-pty-2.49.jar, terminal-2.66.jar, jediterm-typeahead-2.66.jar
     mvn install:install-file -Dfile=src/main/resources/libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
     mvn install:install-file -Dfile=src/main/resources/libs/jediterm-typeahead-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
     mvn install:install-file -Dfile=src/main/resources/libs/terminal-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
@@ -76,6 +77,7 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 - FlatLaf: [https://github.com/JFormDesigner/FlatLaf](https://github.com/JFormDesigner/FlatLaf)
 - Apache MINA SSHD: [https://github.com/apache/mina-sshd](https://github.com/apache/mina-sshd)
 - RSyntaxTextArea: [https://github.com/bobbylight/RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea)
+- Nuclei: [https://github.com/projectdiscovery/nuclei](https://github.com/projectdiscovery/nuclei)
 - 还有很多...
 
 ## 维护者
