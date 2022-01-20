@@ -21,9 +21,7 @@ import org.fife.ui.rtextarea.SearchResult;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -42,6 +40,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
     private final JButton executeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/execute.svg"));
     private final JButton startDebuggerBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/startDebugger.svg"));
+    private final JButton targetBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/TargetR.svg"));
 
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
@@ -67,6 +66,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         toolBar.addSeparator();
         toolBar.add(executeBtn);
         toolBar.add(startDebuggerBtn);
+        toolBar.add(targetBtn);
         initToolBarAction();
 
         this.textArea = createTextArea();
@@ -108,6 +108,17 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         openBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setCurrentDirectory(new File(NucleiFrame.templatesDir));
+                fileChooser.setMultiSelectionEnabled(false);
+                int result = fileChooser.showOpenDialog(NucleiFrame.nucleiFrame);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    File file = fileChooser.getSelectedFile();
+                    setTitle(file.getName());
+                    savePath = file.getAbsolutePath();
+                    textArea.setText(getTextFromSavePath());
+                }
                 log.debug("打开 Template......");
             }
         });
@@ -157,6 +168,19 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("调试模式执行 Template......");
+            }
+        });
+
+        targetBtn.setToolTipText("设置测试目标URL(高优先级)");
+        JPopupMenu targetPopupMenu = new JPopupMenu();
+        targetPopupMenu.setBorder(null);
+        targetPopupMenu.setSize(new Dimension(600, 200));
+        targetPopupMenu.setPreferredSize(new Dimension(600, 200));
+        targetPopupMenu.add(new TargetPanel());
+        targetBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                targetPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
 
@@ -248,6 +272,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     }
 
     public void setTitle(String title) {
+        NucleiFrame.frameTabbedPane.setTitleAt(NucleiFrame.frameTabbedPane.getSelectedIndex(), title);
         this.title = title;
     }
 
