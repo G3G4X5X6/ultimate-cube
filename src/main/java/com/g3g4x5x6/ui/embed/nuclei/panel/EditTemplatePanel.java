@@ -20,13 +20,12 @@ import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -35,14 +34,14 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 @Slf4j
-public class EditPanel extends JPanel implements SearchListener {
-    private JToolBar toolBar = new JToolBar();
-    private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
-    private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
-    private JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
-    private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
-    private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
+public class EditTemplatePanel extends JPanel implements SearchListener {
+    private final JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
+    private final JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
+    private final JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
+    private final JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
+    private final JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
+    private final JButton executeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/execute.svg"));
+    private final JButton startDebuggerBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/startDebugger.svg"));
 
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
@@ -52,21 +51,22 @@ public class EditPanel extends JPanel implements SearchListener {
     private final RSyntaxTextArea textArea;
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
-    private String syntax = "text/yaml";
 
-    public EditPanel() {
+    public EditTemplatePanel() {
         this.setLayout(new BorderLayout());
+        JToolBar toolBar = new JToolBar();
         this.add(toolBar, BorderLayout.NORTH);
         toolBar.setFloatable(false);
         toolBar.add(openBtn);
-        toolBar.add(saveAllBtn);
+        toolBar.add(saveBtn);
         toolBar.addSeparator();
         toolBar.add(lineWrapBtn);
         toolBar.addSeparator();
         toolBar.add(searchBtn);
         toolBar.add(replaceBtn);
         toolBar.addSeparator();
-        toolBar.add(terminalBtn);
+        toolBar.add(executeBtn);
+        toolBar.add(startDebuggerBtn);
         initToolBarAction();
 
         this.textArea = createTextArea();
@@ -76,12 +76,12 @@ public class EditPanel extends JPanel implements SearchListener {
         initSearchDialogs();
     }
 
-    public EditPanel(String savePath) {
+    public EditTemplatePanel(String savePath) {
         this();
         this.setSavePath(savePath);
-        if (OsInfoUtil.isWindows()){
+        if (OsInfoUtil.isWindows()) {
             this.setTitle(savePath.substring(savePath.lastIndexOf("\\") + 1));
-        }else{
+        } else {
             this.setTitle(savePath.substring(savePath.lastIndexOf("/") + 1));
         }
         this.textArea.setText(getTextFromSavePath());
@@ -105,6 +105,12 @@ public class EditPanel extends JPanel implements SearchListener {
     }
 
     private void initToolBarAction() {
+        openBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("打开 Template......");
+            }
+        });
         searchBtn.setToolTipText("搜索......");
         searchBtn.addActionListener(showFindDialogAction);
         searchBtn.registerKeyboardAction(showFindDialogAction, KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -112,26 +118,45 @@ public class EditPanel extends JPanel implements SearchListener {
         replaceBtn.addActionListener(showReplaceDialogAction);
         replaceBtn.registerKeyboardAction(showReplaceDialogAction, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK), JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-        lineWrapBtn.addChangeListener(new ChangeListener() {
+        lineWrapBtn.addChangeListener(e -> {
+            textArea.setLineWrap(lineWrapBtn.isSelected());
+        });
+
+        saveBtn.addActionListener(new AbstractAction() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if (lineWrapBtn.isSelected()) {
-                    textArea.setLineWrap(true);
-                } else {
-                    textArea.setLineWrap(false);
+            public void actionPerformed(ActionEvent e) {
+                if (savePath.equalsIgnoreCase("")) {
+                    // 新建保存
+                    JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    fileChooser.setMultiSelectionEnabled(false);
+                    fileChooser.setSelectedFile(new File("example.yaml"));
+                    int result = fileChooser.showOpenDialog(NucleiFrame.nucleiFrame);
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        File file = fileChooser.getSelectedFile();
+                        savePath = file.getAbsolutePath();
+                        try {
+                            Files.write(Path.of(savePath), textArea.getText().getBytes(StandardCharsets.UTF_8));
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                    }
                 }
+                log.debug("保存 Template：" + savePath);
             }
         });
 
-        saveAllBtn.addActionListener(new AbstractAction() {
+        executeBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    Files.write(Path.of(savePath), textArea.getText().getBytes(StandardCharsets.UTF_8));
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                log.debug("保存 Template：" + savePath);
+                log.debug("执行 Template......");
+            }
+        });
+
+        startDebuggerBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("调试模式执行 Template......");
             }
         });
 
@@ -165,7 +190,7 @@ public class EditPanel extends JPanel implements SearchListener {
         textArea.setCodeFoldingEnabled(true);
         textArea.setClearWhitespaceLinesEnabled(false);
         textArea.setCodeFoldingEnabled(true);
-        textArea.setSyntaxEditingStyle(syntax);
+        textArea.setSyntaxEditingStyle("text/yaml");
 
         InputMap im = textArea.getInputMap();
         ActionMap am = textArea.getActionMap();

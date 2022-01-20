@@ -449,7 +449,7 @@ public class TemplatesPanel extends JPanel {
                 int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
                 String savePath = templates.get(num).get("path");
                 log.debug(savePath);
-                EditPanel editPanel = new EditPanel(savePath);
+                EditTemplatePanel editPanel = new EditTemplatePanel(savePath);
                 NucleiFrame.frameTabbedPane.addTab(editPanel.getTitle(), editPanel.getIcon(), editPanel);
                 NucleiFrame.frameTabbedPane.setSelectedIndex(NucleiFrame.frameTabbedPane.getTabCount() - 1);
                 log.debug(templates.get(num).toString());

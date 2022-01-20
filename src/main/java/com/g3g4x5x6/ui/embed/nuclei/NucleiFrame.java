@@ -118,7 +118,7 @@ public class NucleiFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 log.debug("Add EditPanel");
                 // TODO 添加 Template
-                EditPanel editPanel = new EditPanel();
+                EditTemplatePanel editPanel = new EditTemplatePanel();
                 frameTabbedPane.addTab(editPanel.getTitle(), editPanel.getIcon(), editPanel);
                 frameTabbedPane.setSelectedIndex(frameTabbedPane.getTabCount() - 1);
             }
