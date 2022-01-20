@@ -40,7 +40,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
     private final JButton executeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/execute.svg"));
     private final JButton startDebuggerBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/startDebugger.svg"));
-    private final JButton targetBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/TargetR.svg"));
+    private final JButton targetBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/targetTest.svg"));
 
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
@@ -116,6 +116,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     setTitle(file.getName());
+                    NucleiFrame.frameTabbedPane.setTitleAt(NucleiFrame.frameTabbedPane.getSelectedIndex(), title);
                     savePath = file.getAbsolutePath();
                     textArea.setText(getTextFromSavePath());
                 }
@@ -151,6 +152,12 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
                         } catch (IOException ioException) {
                             ioException.printStackTrace();
                         }
+                    }
+                }else{
+                    try {
+                        Files.write(Path.of(savePath), textArea.getText().getBytes(StandardCharsets.UTF_8));
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
                     }
                 }
                 log.debug("保存 Template：" + savePath);
@@ -272,7 +279,6 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     }
 
     public void setTitle(String title) {
-        NucleiFrame.frameTabbedPane.setTitleAt(NucleiFrame.frameTabbedPane.getSelectedIndex(), title);
         this.title = title;
     }
 

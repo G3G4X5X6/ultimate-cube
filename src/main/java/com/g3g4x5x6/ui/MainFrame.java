@@ -496,8 +496,14 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("重新连接");
-                SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
-                selectedTabbedPane.resetSession();
+                try{
+                    SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
+                    selectedTabbedPane.resetSession();
+                }catch (ClassCastException classCastException){
+                    if (classCastException.getMessage().contains("be cast to class")){
+                        log.debug("不是远程会话面板无法刷新重连");
+                    }
+                }
             }
         };
         AbstractAction closeCurrentTabAction = new AbstractAction("关闭当前") {
