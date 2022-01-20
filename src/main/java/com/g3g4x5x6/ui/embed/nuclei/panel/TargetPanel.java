@@ -32,7 +32,7 @@ public class TargetPanel extends JPanel {
     private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
     private JButton replaceBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
     private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
-    private final JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
+    private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
 
     public static RSyntaxTextArea textArea;
 
@@ -116,18 +116,19 @@ public class TargetPanel extends JPanel {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("Execute All Templates with Targets");
                 if (!textArea.getText().strip().equals("")) {
+                    log.debug("Execute All Templates with Targets Inline");
                     if (!Files.exists(Path.of(tempDir))) {
                         Files.createDirectories(Path.of(tempDir));
                     }
                     String targetPath = tempDir + "/" + UUID.randomUUID() + ".txt";
                     Files.write(Path.of(targetPath), textArea.getText().strip().getBytes(StandardCharsets.UTF_8));
-                    // TODO 搞个专门存放报告的文件夹
+
                     ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
                     consolePanel.write("nuclei -l " + targetPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
                     NucleiFrame.frameTabbedPane.setSelectedIndex(2);
                 }
+                log.debug("Execute All Templates with Targets");
             }
         });
     }

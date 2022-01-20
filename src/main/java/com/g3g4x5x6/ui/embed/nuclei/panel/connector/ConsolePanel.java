@@ -45,7 +45,7 @@ public class ConsolePanel extends JPanel {
     private JediTermWidget createTerminal() {
         CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
         cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
-        JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
+        JediTermWidget terminalPanel = new JediTermWidget(110, 45, cmdSettingsProvider);
         terminalPanel.setTtyConnector(createTtyConnector());
         terminalPanel.start();
         ttyConnector = (NucleiProcessTtyConnector) terminalPanel.getTtyConnector();
