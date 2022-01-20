@@ -489,9 +489,6 @@ public class MainFrame extends JFrame implements MouseListener {
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };
-        /**
-         * <html><font style='color:green'>重新连接</font></html>
-         */
         AbstractAction reconnectAction = new AbstractAction("<html><font style='color:green'>重新连接</font></html>") {
             @Override
             public void actionPerformed(ActionEvent e) {
