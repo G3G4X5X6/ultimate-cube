@@ -147,6 +147,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
                     if (result == JFileChooser.APPROVE_OPTION) {
                         File file = fileChooser.getSelectedFile();
                         savePath = file.getAbsolutePath();
+                        title = file.getName();
                         try {
                             Files.write(Path.of(savePath), textArea.getText().getBytes(StandardCharsets.UTF_8));
                         } catch (IOException ioException) {
@@ -160,6 +161,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
                         ioException.printStackTrace();
                     }
                 }
+                NucleiFrame.frameTabbedPane.setTitleAt(NucleiFrame.frameTabbedPane.getSelectedIndex(), title);
                 log.debug("保存 Template：" + savePath);
             }
         });
