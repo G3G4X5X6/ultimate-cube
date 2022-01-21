@@ -71,7 +71,7 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 1. `Windows` 用户 `无JDK` 环境的,建议使用 `ultimateshell_setup.exe` 安装包（体积较大）
 1. 关于使用过程中的任何疑问，请于 `Discussions` 中的对应版本进行提问和反馈。
 
-详细使用技巧查看 [项目WIKI](https://github.com/G3G4X5X6/ultimateshell/wiki)
+详细使用技巧查看 [项目WIKI](https://github.com/G3G4X5X6/ultimateshell/wiki) 或者 [项目文档](https://g3g4x5x6.github.io/ultimateshell/)
 
 ## :1st_place_medal: 致谢
 
