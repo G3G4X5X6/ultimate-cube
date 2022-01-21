@@ -385,8 +385,8 @@ public class TemplatesPanel extends JPanel {
 
     @SneakyThrows
     private void runTemplatesInSelectedConsole(ConsolePanel consolePanel) {
-        log.debug("Run command with Selected");
-        if (!TargetPanel.textArea.getText().strip().equals("")) {
+        log.debug("Run command with Selected 666");
+        if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
             SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
             ArrayList<String> tempTemplate = new ArrayList<>();
@@ -396,7 +396,7 @@ public class TemplatesPanel extends JPanel {
                 tempTemplate.add(savePath);
             }
             selected.setTemplates(tempTemplate);
-            selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+            selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
 
             String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
             Yaml yaml = new Yaml();
@@ -415,10 +415,10 @@ public class TemplatesPanel extends JPanel {
 
     @SneakyThrows
     private void runTagsInSelectedConsole(ConsolePanel consolePanel){
-        if (!TargetPanel.textArea.getText().strip().equals("")) {
+        if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
             // 配置对象
             SelectedTagsConfig selected = new SelectedTagsConfig();
-            selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+            selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
 
             ArrayList<String> tempTags = new ArrayList<>();
             for (int index : templatesTable.getSelectedRows()) {
@@ -517,7 +517,7 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Selected");
-            if (!TargetPanel.textArea.getText().strip().equals("")) {
+            if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
                 SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
                 ArrayList<String> tempTemplate = new ArrayList<>();
@@ -527,7 +527,7 @@ public class TemplatesPanel extends JPanel {
                     tempTemplate.add(savePath);
                 }
                 selected.setTemplates(tempTemplate);
-                selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+                selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
 
                 String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/templates_" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
@@ -552,10 +552,10 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Tags");
-            if (!TargetPanel.textArea.getText().strip().equals("")) {
+            if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
                 // 配置对象
                 SelectedTagsConfig selected = new SelectedTagsConfig();
-                selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
+                selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
 
                 ArrayList<String> tempTags = new ArrayList<>();
                 for (int index : templatesTable.getSelectedRows()) {
@@ -583,38 +583,4 @@ public class TemplatesPanel extends JPanel {
             }
         }
     };
-
-    private AbstractAction runWithSelectedAction = new AbstractAction("运行选中的模板") {
-        @SneakyThrows
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            log.debug("Run command with Selected");
-            if (!TargetPanel.textArea.getText().strip().equals("")) {
-                SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
-
-                ArrayList<String> tempTemplate = new ArrayList<>();
-                for (int index : templatesTable.getSelectedRows()) {
-                    int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
-                    String savePath = templates.get(num).get("path");
-                    tempTemplate.add(savePath);
-                }
-                selected.setTemplates(tempTemplate);
-                selected.setTarget(Arrays.asList(TargetPanel.textArea.getText().split("\\s+")));
-
-                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/templates_" + UUID.randomUUID() + ".yaml";
-                Yaml yaml = new Yaml();
-                File file = new File(configPath);
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
-                yaml.dump(selected, new FileWriter(configPath));
-                ConsolePanel consolePanel = (ConsolePanel) RunningPanel.tabbedPane.getSelectedComponent();
-                consolePanel.write("nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir + "\r");
-                NucleiFrame.frameTabbedPane.setSelectedIndex(2);
-            } else {
-                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-    };
-
 }

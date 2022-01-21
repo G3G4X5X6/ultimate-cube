@@ -34,7 +34,7 @@ public class TargetPanel extends JPanel {
     private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/toggleSoftWrap.svg"));
     private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
 
-    public static RSyntaxTextArea textArea;
+    private RSyntaxTextArea textArea;
 
     public TargetPanel() {
         this.setLayout(new BorderLayout());
@@ -131,5 +131,9 @@ public class TargetPanel extends JPanel {
                 log.debug("Execute All Templates with Targets");
             }
         });
+    }
+
+    public RSyntaxTextArea getTextArea() {
+        return textArea;
     }
 }

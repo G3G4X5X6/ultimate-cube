@@ -24,6 +24,7 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 public class NucleiFrame extends JFrame {
     public static NucleiFrame nucleiFrame = new NucleiFrame();
     public static JTabbedPane frameTabbedPane;
+    public static TargetPanel targetPanel;
     public static String reportDir = ConfigUtil.getWorkPath() + "/report/nuclei";
     public static String templatesDir = System.getProperties().getProperty("user.home") + "/nuclei-templates";
     private JMenu fileMenu = new JMenu("文件");
@@ -131,7 +132,8 @@ public class NucleiFrame extends JFrame {
         targetPopupMenu.setBorder(null);
         targetPopupMenu.setSize(new Dimension(600, 200));
         targetPopupMenu.setPreferredSize(new Dimension(600, 200));
-        targetPopupMenu.add(new TargetPanel());
+        targetPanel = new TargetPanel();
+        targetPopupMenu.add(targetPanel);
         targetBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

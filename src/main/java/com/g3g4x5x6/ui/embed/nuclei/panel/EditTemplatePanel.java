@@ -42,6 +42,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final JButton startDebuggerBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/startDebugger.svg"));
     private final JButton targetBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/targetTest.svg"));
 
+    private TargetPanel targetPanel = new TargetPanel();
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
     private String savePath = "";
@@ -185,7 +186,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         targetPopupMenu.setBorder(null);
         targetPopupMenu.setSize(new Dimension(600, 200));
         targetPopupMenu.setPreferredSize(new Dimension(600, 200));
-        targetPopupMenu.add(new TargetPanel());
+        targetPopupMenu.add(targetPanel);
         targetBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
