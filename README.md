@@ -1,4 +1,4 @@
-# UltimateShell
+# :toolbox: UltimateShell
 
 [![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09)](https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade)
@@ -28,11 +28,11 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 - [贡献者](#贡献者)
 - [开源许可](#开源许可)
 
-## :material-security: 安全通告
+## :shamrock: 安全通告
 
 见 [安全文件](SECURITY.md)!
 
-## 功能特性
+## :car: 功能特性
 
 - [x] 支持多操作系统平台，兼容性测试：`Windows` > `Linux` > `MacOS`
 - [x] 支持会话管理
@@ -48,7 +48,7 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 - [x] 支持60多种主题皮肤切换
 - [ ] 支持插件系统
 
-## 构建
+## :hammer_and_wrench: 构建
 
 1. 构建环境：`JDK11+`, `IDEA`
 1. 安装依赖：
@@ -64,7 +64,7 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
     1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
     1. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
 
-## 使用
+## :basketball: 使用
 
 1. 程序依赖运行环境：`JDK11+`
 1. `linux`, `OSX` 用户建议使用自带依赖的通用版本 UltimateShell-x.x.x-beta.1-jar-with-dependencies.jar
@@ -73,7 +73,7 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 
 详细使用技巧查看 [项目WIKI](https://github.com/G3G4X5X6/ultimateshell/wiki)
 
-## 致谢
+## :1st_place_medal: 致谢
 
 - JediTerm: [https://github.com/JetBrains/jediterm](https://github.com/JetBrains/jediterm)
 - FlatLaf: [https://github.com/JFormDesigner/FlatLaf](https://github.com/JFormDesigner/FlatLaf)
@@ -82,17 +82,17 @@ UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗
 - Nuclei: [https://github.com/projectdiscovery/nuclei](https://github.com/projectdiscovery/nuclei)
 - 还有很多...
 
-## 维护者
+## :basketball_man: 维护者
 
 维护者
 [@G3G4X5X6](https://github.com/G3G4X5X6)
 
-## 贡献者
+## :people_holding_hands: 贡献者
 
 贡献者，见 [贡献者列表文件](contributing.md)!
 
 欢迎`PRs`
 
-## 开源许可
+## :label: 开源许可
 
 MIT © 2021 勾三股四弦五小六
