@@ -4,6 +4,8 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiYamlCompletionProvider;
+import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
+import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.os.OsInfoUtil;
 import lombok.SneakyThrows;
@@ -33,6 +35,7 @@ import java.util.UUID;
 
 @Slf4j
 public class EditTemplatePanel extends JPanel implements SearchListener {
+    private static final String tempDir = ConfigUtil.getWorkPath() + "/temp/nuclei";
     private final JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
     private final JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
     private final JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
@@ -41,7 +44,9 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final JButton executeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/execute.svg"));
     private final JButton startDebuggerBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/startDebugger.svg"));
     private final JButton targetBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/targetTest.svg"));
+    private final JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"));
 
+    private RunningDialog runningDialog = new RunningDialog();
     private TargetPanel targetPanel = new TargetPanel();
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
@@ -68,6 +73,8 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         toolBar.add(executeBtn);
         toolBar.add(startDebuggerBtn);
         toolBar.add(targetBtn);
+        toolBar.addSeparator();
+        toolBar.add(terminalBtn);
         initToolBarAction();
 
         this.textArea = createTextArea();
@@ -155,7 +162,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
                             ioException.printStackTrace();
                         }
                     }
-                }else{
+                } else {
                     try {
                         Files.write(Path.of(savePath), textArea.getText().getBytes(StandardCharsets.UTF_8));
                     } catch (IOException ioException) {
@@ -171,6 +178,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("执行 Template......");
+                testTemplate(false);
             }
         });
 
@@ -178,6 +186,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("调试模式执行 Template......");
+                testTemplate(true);
             }
         });
 
@@ -191,6 +200,14 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 targetPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
+        terminalBtn.setToolTipText("正在测试的模板......");
+        terminalBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runningDialog.setVisible(true);
             }
         });
 
@@ -281,6 +298,63 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         replaceDialog.setSearchContext(context);
     }
 
+    private void testTemplate(boolean isDebug){
+        // 获取目标URL
+        String targets = targetPanel.getTextArea().getText().strip();
+        if (targets.equalsIgnoreCase("")) {
+            targets = NucleiFrame.targetPanel.getTextArea().getText().strip();
+            if (targets.equalsIgnoreCase("")) {
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        if (!targets.equalsIgnoreCase("")){
+            String targetFile = tempDir + "/targets_" + UUID.randomUUID() + ".txt";
+            try {
+                Files.write(Path.of(targetFile), targets.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, ioException.getMessage(), "异常", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // 判断是模板还是工作流
+            String text = textArea.getText();
+            boolean isWorkflows = text.contains("workflows:");
+
+            // 保存临时模板用以执行
+            String tempFile;
+            if (isWorkflows) {
+                tempFile = tempDir + "/workflows_" + UUID.randomUUID() + ".yaml";
+            } else {
+                tempFile = tempDir + "/templates_" + UUID.randomUUID() + ".yaml";
+            }
+            try {
+                Files.write(Path.of(tempFile), text.getBytes(StandardCharsets.UTF_8));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+                JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, ioException.getMessage(), "异常", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // 执行命令
+            String command;
+            if (isWorkflows){
+                command = "nuclei -l " + targetFile + " -w " + tempFile;
+            }else{
+                command = "nuclei -l " + targetFile + " -t " + tempFile;
+            }
+
+            // 是否显示调试信息
+            if (isDebug){
+                command = command + " -debug " + " -markdown-export " + NucleiFrame.reportDir + "\r";
+            }else{
+                command = command + " -markdown-export " + NucleiFrame.reportDir + "\r";
+            }
+            runningDialog.runCommand(command);
+
+            // 显示运行
+            runningDialog.setVisible(true);
+        }
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -361,5 +435,24 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             text = "Text not found";
         }
         MainFrame.embedEditor.setSearchStatusLabelStr(text);
+    }
+
+    static class RunningDialog extends JDialog {
+        private ConsolePanel console = new ConsolePanel();
+
+        public RunningDialog() {
+            super(NucleiFrame.nucleiFrame);
+            this.setTitle("测试运行......");
+            this.setLayout(new BorderLayout());
+            this.setSize(new Dimension(1000, 600));
+            this.setPreferredSize(new Dimension(1000, 600));
+            this.setMinimumSize(new Dimension(900, 500));
+            this.setLocationRelativeTo(null);
+            this.add(console, BorderLayout.CENTER);
+        }
+
+        public void runCommand(String command){
+            console.write(command);
+        }
     }
 }
