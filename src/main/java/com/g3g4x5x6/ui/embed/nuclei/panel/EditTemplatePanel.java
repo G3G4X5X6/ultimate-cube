@@ -113,6 +113,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     }
 
     private void initToolBarAction() {
+        openBtn.setToolTipText("打开模板");
         openBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,6 +143,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             textArea.setLineWrap(lineWrapBtn.isSelected());
         });
 
+        saveBtn.setToolTipText("保存模板");
         saveBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -174,6 +176,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             }
         });
 
+        executeBtn.setToolTipText("运行");
         executeBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -182,6 +185,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             }
         });
 
+        startDebuggerBtn.setToolTipText("调试模式运行");
         startDebuggerBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -389,13 +389,15 @@ public class TemplatesPanel extends JPanel {
         if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
             SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
-            ArrayList<String> tempTemplate = new ArrayList<>();
             for (int index : templatesTable.getSelectedRows()) {
                 int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
                 String savePath = templates.get(num).get("path");
-                tempTemplate.add(savePath);
+                if (savePath.contains("workflow")){
+                    selected.addWorkflow(savePath);
+                }else{
+                    selected.addTemplate(savePath);
+                }
             }
-            selected.setTemplates(tempTemplate);
             selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
 
             String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";

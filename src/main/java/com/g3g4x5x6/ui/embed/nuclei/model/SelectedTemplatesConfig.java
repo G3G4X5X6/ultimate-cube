@@ -6,12 +6,14 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 public class SelectedTemplatesConfig {
-    private List<String> target;
-    private List<String> templates;
+    private List<String> target = new LinkedList<>();
+    private List<String> templates = new LinkedList<>();
+    private List<String> workflows = new LinkedList<>();
 
     public SelectedTemplatesConfig(){
 
@@ -31,6 +33,22 @@ public class SelectedTemplatesConfig {
 
     public void setTemplates(List<String> templates) {
         this.templates = templates;
+    }
+
+    public List<String> getWorkflows() {
+        return workflows;
+    }
+
+    public void setWorkflows(List<String> workflows) {
+        this.workflows = workflows;
+    }
+
+    public void addTemplate(String templatesPath){
+        templates.add(templatesPath);
+    }
+
+    public void addWorkflow(String workflowPath){
+        workflows.add(workflowPath);
     }
 
     public static void main(String[] args) throws IOException {
