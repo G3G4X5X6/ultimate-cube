@@ -437,7 +437,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         MainFrame.embedEditor.setSearchStatusLabelStr(text);
     }
 
-    static class RunningDialog extends JDialog {
+    private class RunningDialog extends JDialog {
         private ConsolePanel console = new ConsolePanel();
 
         public RunningDialog() {
