@@ -40,9 +40,9 @@ See [the security file](../SECURITY.md)!
 - [x] Support multi-platform
 - [x] Support 63 theme skins
 - [x] Support sessions manager
-- [x] Support local terminal
+- [x] Support local com.jediterm.terminal
 - [x] Support ssh, sftp
-- [x] Support serial terminal
+- [x] Support serial com.jediterm.terminal
 - [x] Support Telnet
 - [x] Support RDP
 - [x] Support VNC
@@ -52,7 +52,7 @@ See [the security file](../SECURITY.md)!
 
 ```
 # 1. JDK 11+
-# 2. Install dependencies to LocalRepository: jediterm-pty-2.49.jar, jediterm-ssh-2.49.jar, terminal-2.54.jar, jediterm-typeahead-2.54.jar
+# 2. Install dependencies to LocalRepository: jediterm-pty-2.49.jar, jediterm-ssh-2.49.jar, com.jediterm.terminal-2.54.jar, jediterm-typeahead-2.54.jar
 ```
 
 ## Usage

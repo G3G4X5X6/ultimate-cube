@@ -181,11 +181,11 @@
         </dependency>
 
         <!-- 本地仓库-->
-        <dependency>
-            <groupId>com.g3g4x5x6</groupId>
-            <artifactId>terminal</artifactId>
-            <version>2.66</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.g3g4x5x6</groupId>-->
+<!--            <artifactId>terminal</artifactId>-->
+<!--            <version>2.66</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>jediterm-typeahead</artifactId>

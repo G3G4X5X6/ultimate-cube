@@ -28,7 +28,7 @@
 
 
 #### Changed
-- 更新本地依赖库的版本：terminal-2.66.jar、jediterm-pty-2.66.jar、jediterm-typeahead-2.66.jar
+- 更新本地依赖库的版本：com.jediterm.terminal-2.66.jar、jediterm-pty-2.66.jar、jediterm-typeahead-2.66.jar
 - 本地库的libs文件夹移出源码资源目录，想着可以缩小几KB的空间（能省则省）
 
 
