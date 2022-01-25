@@ -32,6 +32,8 @@ public class App {
         CheckUtil.checkEnv();
         // 初始化数据库
         DbUtil.createDatabase();
+        // TODO 转换配置，如：{home}
+
         // 启动主程序
         SwingUtilities.invokeLater(App::createGUI);
     }

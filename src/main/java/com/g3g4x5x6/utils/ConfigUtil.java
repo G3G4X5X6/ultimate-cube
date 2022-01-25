@@ -22,7 +22,7 @@ public class ConfigUtil {
     }
 
     public static String getWorkPath() {
-        String work = Path.of(System.getProperties().getProperty("user.home") + "/.ultimateshell/").toString();
+        String work = Path.of(getHomePath() + "/.ultimateshell/").toString();
         File file = new File(work);
         if (!file.exists()){
             if (!file.mkdir()){
@@ -31,6 +31,10 @@ public class ConfigUtil {
         }
         log.debug(work);
         return work;
+    }
+
+    public static String getHomePath(){
+        return Path.of(System.getProperties().getProperty("user.home")).toString();
     }
 
     public static String getPropertiesPath(){

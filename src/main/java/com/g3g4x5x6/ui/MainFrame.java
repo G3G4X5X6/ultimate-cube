@@ -180,6 +180,7 @@ public class MainFrame extends JFrame implements MouseListener {
                 if (embedEditor == null) {
                     embedEditor = new EmbedEditor();
                 }
+                embedEditor.setTitle(App.properties.getProperty("editor.title"));
                 embedEditor.addAndSelectPanel(new EditorPanel(ExternalToolIntegration.settings_path));
                 embedEditor.setVisible(true);
             }
@@ -352,8 +353,10 @@ public class MainFrame extends JFrame implements MouseListener {
         nucleiBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nucleiFrame == null)
+                if (nucleiFrame == null){
                     nucleiFrame = new NucleiFrame();
+                }
+                nucleiFrame.setTitle(App.properties.getProperty("nuclei.title"));
                 nucleiFrame.setVisible(true);
             }
         });
@@ -659,6 +662,7 @@ public class MainFrame extends JFrame implements MouseListener {
                     embedEditor.getTabbedPane().addTab(editorPanel.getTitle(), editorPanel.getIcon(), editorPanel, editorPanel.getTips());
                     embedEditor.getTabbedPane().setSelectedIndex(embedEditor.getTabbedPane().getTabCount() - 1);
                 }
+                embedEditor.setTitle(App.properties.getProperty("editor.title"));
                 embedEditor.setVisible(true);
             }).start();
         }

@@ -13,44 +13,45 @@ import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TAB_ALIGNMENT
 
 @Slf4j
 public class SettingsDialog extends JDialog {
-    private BorderLayout borderLayout;
-    private JPanel panel;
-    private JTabbedPane tabbedPane;
+    private final BasicPanel basicPanel = new BasicPanel();
 
     public SettingsDialog() {
         super(App.mainFrame);
         this.setTitle("全局配置");
-        borderLayout = new BorderLayout();
-        this.setLayout(borderLayout);
-        this.setPreferredSize(new Dimension(700, 500));
-        this.setSize(new Dimension(700, 500));
+        this.setLayout(new BorderLayout());
+        this.setPreferredSize(new Dimension(800, 500));
+        this.setSize(new Dimension(800, 500));
         this.setModal(true);
         this.setLocationRelativeTo(App.mainFrame);
 
-        panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        this.add(panel, BorderLayout.CENTER);
+        initTabbedPane();
 
-        initPanel();
     }
 
-    private void initPanel() {
+    private void initTabbedPane() {
 
-        tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.setTabPlacement(SwingConstants.LEFT);
-        initTabAlignment(tabbedPane, SwingConstants.TRAILING);
+        initTabAlignment(tabbedPane);
 
         // TODO 保存、取消
         FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.RIGHT);
         JPanel southPane = new JPanel();
+        JButton reloadBtn = new JButton("重新加载");
         JButton saveBtn = new JButton("保存");
         JButton cancelBtn = new JButton("取消");
+        reloadBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("重新加载配置");
+            }
+        });
         saveBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.info("保存全局设置");
+                log.debug("保存全局设置");
             }
         });
 
@@ -63,28 +64,26 @@ public class SettingsDialog extends JDialog {
         });
 
         southPane.add(Box.createGlue());
+        southPane.add(reloadBtn);
         southPane.add(saveBtn);
         southPane.add(cancelBtn);
         southPane.add(Box.createGlue());
         southPane.setLayout(flowLayout);
 
-        panel.add(tabbedPane, BorderLayout.CENTER);
-        panel.add(southPane, BorderLayout.SOUTH);
+        this.add(tabbedPane, BorderLayout.CENTER);
+        this.add(southPane, BorderLayout.SOUTH);
     }
 
-    private void initTabAlignment(JTabbedPane tabbedPane, int tabAlignment) {
+    private void initTabAlignment(JTabbedPane tabbedPane) {
         boolean vertical = (tabbedPane.getTabPlacement() == JTabbedPane.LEFT || tabbedPane.getTabPlacement() == JTabbedPane.RIGHT);
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_ALIGNMENT, tabAlignment);
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_ALIGNMENT, SwingConstants.TRAILING);
         if (!vertical)
             tabbedPane.putClientProperty(TABBED_PANE_MINIMUM_TAB_WIDTH, 80);
-        tabbedPane.addTab("基本设置", null);
+        tabbedPane.addTab("基本设置", basicPanel);
         if (vertical) {
             tabbedPane.addTab("行为设置", null);
             tabbedPane.addTab("终端设置", null);
             tabbedPane.addTab("运行环境", null);
-//            for (int i = 0; i < 20; i++) {
-//                tabbedPane.add("NewTab" + i, null);
-//            }
         }
     }
 }
