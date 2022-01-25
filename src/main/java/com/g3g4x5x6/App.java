@@ -125,9 +125,7 @@ public class App {
                     switch (e.getButton()) {
                         case MouseEvent.BUTTON1: {
                             System.out.println("托盘图标被鼠标左键被点击");
-                            if (e.getClickCount() == 2){
-                                mainFrame.setVisible(true);
-                            }
+                            mainFrame.setVisible(true);
                             break;
                         }
                         case MouseEvent.BUTTON2: {
