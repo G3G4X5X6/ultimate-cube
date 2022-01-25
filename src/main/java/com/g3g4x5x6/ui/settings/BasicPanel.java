@@ -48,7 +48,6 @@ public class BasicPanel extends JPanel implements SettingsInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 themeClass.setEnabled(themeEnableBtn.isSelected());
-                // TODO 立即刷新主题
                 if (!themeEnableBtn.isSelected()){
                     try {
                         UIManager.setLookAndFeel(new FlatLightLaf());
