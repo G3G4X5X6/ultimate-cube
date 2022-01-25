@@ -5,11 +5,14 @@ import com.jediterm.terminal.TextStyle;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
+import java.util.Properties;
 
 
 @Slf4j
@@ -28,6 +31,10 @@ public class ConfigUtil {
         }
         log.debug(work);
         return work;
+    }
+
+    public static String getPropertiesPath(){
+        return getWorkPath() + "/application.properties";
     }
 
     public static Boolean isExistTerminalColor() {
