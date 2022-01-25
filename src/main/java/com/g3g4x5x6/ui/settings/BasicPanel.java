@@ -3,6 +3,7 @@ package com.g3g4x5x6.ui.settings;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
+import com.g3g4x5x6.App;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +45,9 @@ public class BasicPanel extends JPanel implements SettingsInterface {
          * 主题配置
          */
         themeEnableBtn = new JCheckBox("是否启用主题");
+        if (App.properties.getProperty("app.theme.enable").equalsIgnoreCase("false")){
+            themeEnableBtn.setSelected(false);
+        }
         themeEnableBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
