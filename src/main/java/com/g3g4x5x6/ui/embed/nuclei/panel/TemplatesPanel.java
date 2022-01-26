@@ -1,7 +1,9 @@
 package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.alibaba.fastjson.JSONObject;
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.icons.FlatSearchIcon;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
 import com.g3g4x5x6.ui.embed.nuclei.model.SelectedTagsConfig;
 import com.g3g4x5x6.ui.embed.nuclei.model.SelectedTemplatesConfig;
@@ -36,7 +38,6 @@ public class TemplatesPanel extends JPanel {
     private JToolBar toolBar = new JToolBar();
     private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
-    private JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/replace.svg"));
     private JButton severityBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/sortBySeverity.svg"));
     private JButton refreshBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
     private JTextField searchField = new JTextField();
@@ -70,7 +71,6 @@ public class TemplatesPanel extends JPanel {
         toolBar.addSeparator();
         toolBar.add(Box.createGlue());
         toolBar.add(searchField);
-        toolBar.add(searchBtn);
         initToolBarAction();
 
 
@@ -232,21 +232,14 @@ public class TemplatesPanel extends JPanel {
                 }).start();
             }
         });
-
+        searchField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search, Enter");
+        searchField.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSearchIcon());
         searchField.registerKeyboardAction(e -> {
                     String searchKeyWord = searchField.getText().strip();
                     sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
                 },
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
                 JComponent.WHEN_FOCUSED);
-
-        searchBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String searchKeyWord = searchField.getText().strip();
-                sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
-            }
-        });
     }
 
     /**
@@ -392,9 +385,9 @@ public class TemplatesPanel extends JPanel {
             for (int index : templatesTable.getSelectedRows()) {
                 int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
                 String savePath = templates.get(num).get("path");
-                if (savePath.contains("workflow")){
+                if (savePath.contains("workflow")) {
                     selected.addWorkflow(savePath);
-                }else{
+                } else {
                     selected.addTemplate(savePath);
                 }
             }
@@ -416,7 +409,7 @@ public class TemplatesPanel extends JPanel {
     }
 
     @SneakyThrows
-    private void runTagsInSelectedConsole(ConsolePanel consolePanel){
+    private void runTagsInSelectedConsole(ConsolePanel consolePanel) {
         if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
             // 配置对象
             SelectedTagsConfig selected = new SelectedTagsConfig();
