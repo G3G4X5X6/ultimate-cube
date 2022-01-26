@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.panels.telnet;
 
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.formatter.IpAddressFormatter;
 import com.g3g4x5x6.formatter.PortFormatter;
@@ -63,7 +64,6 @@ public class TelnetPane extends JPanel {
         JLabel hostLabel = new JLabel("Remote Host*");
         hostField = new JFormattedTextField(new IpAddressFormatter());
         hostField.setColumns(10);
-//        hostField.setText("172.17.200.12");
         hostPane.add(hostLabel);
         hostPane.add(hostField);
 
@@ -91,8 +91,8 @@ public class TelnetPane extends JPanel {
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
         passField.setColumns(8);
-        passField.setText("12345678");
         passField.setEnabled(false);
+        passField.putClientProperty( FlatClientProperties.STYLE, "showRevealButton: true" );
         passPane.add(passLabel);
         passPane.add(passField);
 
