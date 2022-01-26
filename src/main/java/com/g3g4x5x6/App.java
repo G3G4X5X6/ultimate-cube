@@ -42,8 +42,9 @@ public class App {
         // 配置主题皮肤
         initFlatLaf();
 
-        // 程序主窗口
+        // 程序主窗口 <html><font style='color:green'></font></html>
         mainFrame = new MainFrame();
+//        mainFrame.setTitle("<html><font style='color:green'>" + properties.getProperty("app.title") + "</font></html>");
         mainFrame.setTitle(properties.getProperty("app.title"));
         mainFrame.pack();
         mainFrame.setVisible(true);
