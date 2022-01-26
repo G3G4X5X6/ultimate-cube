@@ -8,13 +8,15 @@ import java.awt.event.ActionEvent;
 
 public class BehaviorPanel extends JPanel implements SettingsInterface {
     private FlowLayout leftFlowLayout = new FlowLayout();
+    private Box vBox = Box.createVerticalBox();
     private JPanel panel = new JPanel();
     private JCheckBox quitToTrayCheckBox;
 
     public BehaviorPanel(){
         leftFlowLayout.setAlignment(FlowLayout.LEFT);
 
-        panel.setLayout(leftFlowLayout);
+        panel.setLayout(new BorderLayout());
+        panel.add(vBox);
         panel.setBorder(null);
 
         JScrollPane scrollPane = new JScrollPane(panel);
@@ -32,9 +34,16 @@ public class BehaviorPanel extends JPanel implements SettingsInterface {
         /**
          * 系统托盘设置
          */
+        JPanel trayPanel = new JPanel();
+        trayPanel.setLayout(leftFlowLayout);
         quitToTrayCheckBox = new JCheckBox("退出时，最小化到托盘");
         quitToTrayCheckBox.setSelected(App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("true"));
-        panel.add(quitToTrayCheckBox);
+        trayPanel.add(quitToTrayCheckBox);
+        vBox.add(trayPanel);
+
+        /**
+         * Other
+         */
     }
 
 
