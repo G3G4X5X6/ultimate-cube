@@ -60,14 +60,14 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>1.5</version>
+            <version>2.0.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.formdev/flatlaf-extras -->
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
-            <version>1.5</version>
+            <version>2.0.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.formdev/flatlaf-intellij-themes -->
