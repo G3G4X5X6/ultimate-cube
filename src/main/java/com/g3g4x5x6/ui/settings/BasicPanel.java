@@ -44,23 +44,26 @@ public class BasicPanel extends JPanel implements SettingsInterface {
          * 主题配置
          */
         themeEnableBtn = new JCheckBox("是否启用主题");
-        if (App.properties.getProperty("app.theme.enable").equalsIgnoreCase("false")){
+        if (App.properties.getProperty("app.theme.enable").equalsIgnoreCase("false")) {
             themeEnableBtn.setSelected(false);
+        } else {
+            themeEnableBtn.setSelected(true);
         }
         themeEnableBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 themeClass.setEnabled(themeEnableBtn.isSelected());
-                if (!themeEnableBtn.isSelected()){
+                if (!themeEnableBtn.isSelected()) {
                     try {
                         UIManager.setLookAndFeel(new FlatLightLaf());
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                         log.error("Failed to initialize LaF");
                     }
                     // update all components
                     FlatLaf.updateUI();
                     FlatAnimatedLafChange.hideSnapshotWithAnimation();
-                }else{
+                } else {
                     refreshTheme();
                 }
             }
@@ -74,7 +77,8 @@ public class BasicPanel extends JPanel implements SettingsInterface {
             public void actionPerformed(ActionEvent e) {
                 log.debug(Objects.requireNonNull(themeClass.getSelectedItem()).toString());
                 // 主题预览效果
-                refreshTheme();
+                if (themeEnableBtn.isSelected())
+                    refreshTheme();
             }
         });
         panel.add(themeClass);
@@ -88,11 +92,14 @@ public class BasicPanel extends JPanel implements SettingsInterface {
             String theme = ((String) line).strip();
             themeClassList.add(theme);
             themeClass.addItem(theme.replace("com.formdev.flatlaf.intellijthemes.", ""));
+            if (App.properties.getProperty("app.theme.class").equalsIgnoreCase(theme)){
+                themeClass.setSelectedIndex(themeClass.getItemCount()-1);
+            }
         }
         log.debug(themeClassList.toString());
     }
 
-    private void refreshTheme(){
+    private void refreshTheme() {
         try {
             UIManager.setLookAndFeel("com.formdev.flatlaf.intellijthemes." + themeClass.getSelectedItem());
         } catch (Exception ex) {
@@ -105,6 +112,7 @@ public class BasicPanel extends JPanel implements SettingsInterface {
 
     @Override
     public void save() {
-
+        App.properties.setProperty("app.theme.enable", String.valueOf(themeEnableBtn.isSelected()));
+        App.properties.setProperty("app.theme.class", "com.formdev.flatlaf.intellijthemes." + String.valueOf(themeClass.getSelectedItem()));
     }
 }

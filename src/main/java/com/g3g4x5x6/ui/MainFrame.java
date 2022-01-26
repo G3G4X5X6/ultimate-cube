@@ -42,15 +42,12 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 import static com.formdev.flatlaf.FlatClientProperties.*;
-import static com.g3g4x5x6.utils.ConfigUtil.getPropertiesPath;
 
 
 /**
@@ -61,11 +58,11 @@ public class MainFrame extends JFrame implements MouseListener {
 
     public MainFrame() throws HeadlessException {
         // 主窗口设置
-        if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("true")){
-            this.setDefaultCloseOperation(this.HIDE_ON_CLOSE);
-        }else{
-            this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
-        }
+//        if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("true")){
+//            this.setDefaultCloseOperation(this.HIDE_ON_CLOSE);
+//        }else{
+//            this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
+//        }
         this.setSize(new Dimension(1000, 600));
         this.setPreferredSize(new Dimension(1000, 600));
         this.setMinimumSize(new Dimension(900, 600));
@@ -86,6 +83,20 @@ public class MainFrame extends JFrame implements MouseListener {
 
         // TODO 初始化 ”状态栏“
 //        initStatusBar();
+
+        WindowListener exitListener = new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                log.debug("Windows");
+                if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("false")){
+                    System.exit(0);
+                }else{
+                    setVisible(false);
+                }
+            }
+        };
+        this.addWindowListener(exitListener);
     }
 
     /**

@@ -1,11 +1,19 @@
 package com.g3g4x5x6.ui.settings;
 
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.utils.ConfigUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_MINIMUM_TAB_WIDTH;
 import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TAB_ALIGNMENT;
@@ -14,6 +22,7 @@ import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TAB_ALIGNMENT
 @Slf4j
 public class SettingsDialog extends JDialog {
     private final BasicPanel basicPanel = new BasicPanel();
+    private final BehaviorPanel behaviorPanel = new BehaviorPanel();
 
     public SettingsDialog() {
         super(App.mainFrame);
@@ -49,9 +58,17 @@ public class SettingsDialog extends JDialog {
             }
         });
         saveBtn.addActionListener(new AbstractAction() {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("保存全局设置");
+                // 保存到列表
+                basicPanel.save();
+                behaviorPanel.save();
+
+                // 保存到文件
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                App.properties.store(new FileOutputStream(ConfigUtil.getPropertiesPath()), "Update on: " + sdf.format(new Date()));
             }
         });
 
@@ -81,7 +98,7 @@ public class SettingsDialog extends JDialog {
             tabbedPane.putClientProperty(TABBED_PANE_MINIMUM_TAB_WIDTH, 80);
         tabbedPane.addTab("基本设置", basicPanel);
         if (vertical) {
-            tabbedPane.addTab("行为设置", null);
+            tabbedPane.addTab("行为设置", behaviorPanel);
             tabbedPane.addTab("终端设置", null);
             tabbedPane.addTab("运行环境", null);
         }
