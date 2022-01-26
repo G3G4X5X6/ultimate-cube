@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
