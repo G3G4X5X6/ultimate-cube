@@ -118,7 +118,7 @@ public class MainFrame extends JFrame implements MouseListener {
         terminalMenu.add(myLocalTerminal);
 
         // 查看菜单
-        viewMenu.add(themeAction);
+//        viewMenu.add(themeAction);
 
         // 选项菜单
         JMenuItem settingsItem = new JMenuItem("全局配置");
@@ -738,6 +738,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
+    @Deprecated
     private final AbstractAction themeAction = new AbstractAction("切换主题") {
         @Override
         public void actionPerformed(ActionEvent e) {

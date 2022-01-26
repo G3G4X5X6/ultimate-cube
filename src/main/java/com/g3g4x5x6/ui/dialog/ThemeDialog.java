@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 
+@Deprecated
 @Slf4j
 public class ThemeDialog extends JDialog {
 
