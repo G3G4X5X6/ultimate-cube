@@ -233,7 +233,7 @@ public class TemplatesPanel extends JPanel {
             }
         });
         searchField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search, Enter");
-        searchField.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSearchIcon());
+        searchField.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, new FlatSearchIcon());
         searchField.registerKeyboardAction(e -> {
                     String searchKeyWord = searchField.getText().strip();
                     sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
