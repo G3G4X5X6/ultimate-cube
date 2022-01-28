@@ -35,6 +35,7 @@ public class SshPane extends JPanel {
     private BorderLayout borderLayout = new BorderLayout();
     private FlowLayout leftFlow = new FlowLayout();
     private FlowLayout rightFlow = new FlowLayout();
+    private FlowLayout centerFlow = new FlowLayout();
 
     private JTabbedPane mainTabbedPane;
 
@@ -70,6 +71,7 @@ public class SshPane extends JPanel {
 
         leftFlow.setAlignment(FlowLayout.LEFT);
         rightFlow.setAlignment(FlowLayout.RIGHT);
+        centerFlow.setAlignment(FlowLayout.CENTER);
         initSettingPane();
 
         createBasicComponent();
@@ -85,7 +87,7 @@ public class SshPane extends JPanel {
         advancedSettingTabbedPane.addTab(advancedSettingPaneTitle, advancedSettingPane);
 
         JPanel btnPane = new JPanel();
-        btnPane.setLayout(rightFlow);
+        btnPane.setLayout(centerFlow);
         JButton saveBtn = new JButton("保存会话");
         saveBtn.addActionListener(new AbstractAction() {
             @Override
