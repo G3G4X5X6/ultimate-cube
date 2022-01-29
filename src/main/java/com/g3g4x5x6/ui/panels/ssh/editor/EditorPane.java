@@ -3,10 +3,12 @@ package com.g3g4x5x6.ui.panels.ssh.editor;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.sshd.common.util.OsUtils;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpPath;
 import org.fife.ui.rsyntaxtextarea.*;
@@ -21,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -34,6 +37,10 @@ public class EditorPane extends JPanel {
     private JToolBar toolBar;
     private JPanel editorPane;
     private JToolBar statusBar;
+
+    private JPopupMenu savePopupMenu;
+    private final ConsolePanel consolePanel = new ConsolePanel();
+    private String shellcheck = ConfigUtil.getWorkPath() + "/tools/xpack_tools/shellcheck/shellcheck";
 
     // default directory
     private String defaultDir = "/tmp/.ultimateshell/";
@@ -61,6 +68,11 @@ public class EditorPane extends JPanel {
         editorPane = new JPanel();
         statusBar = new JToolBar();
         statusBar.setFloatable(false);
+        // shellcheck
+        savePopupMenu = new JPopupMenu();
+        savePopupMenu.setSize(new Dimension(800, 400));
+        savePopupMenu.setPreferredSize(new Dimension(800, 400));
+        savePopupMenu.add(consolePanel);
 
         initToolBar();
         initEditorPane();
@@ -218,7 +230,26 @@ public class EditorPane extends JPanel {
         FlatButton checkBtn = new FlatButton();
         checkBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         checkBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/shield.svg"));
-        checkBtn.setToolTipText("安全检查(shell)");
+        checkBtn.setToolTipText("安全检查(右键执行，点击查看)");
+        checkBtn.addMouseListener(new MouseAdapter() {
+            @SneakyThrows
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                log.debug("Bash 安全检查");
+                if (!textArea.getText().strip().equals("")){
+                    if (e.getButton() == 3){
+                        String tempBash = ConfigUtil.getWorkPath() + "/temp/shellcheck_" + UUID.randomUUID() + ".sh";
+                        Files.write(Path.of(tempBash), textArea.getText().getBytes(StandardCharsets.UTF_8));
+                        // run
+                        consolePanel.write(Path.of(shellcheck) + " " + tempBash + "\r");
+                    }
+                    // show
+                    savePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }else{
+                    DialogUtil.warn("没内容就不要检查了吧");
+                }
+            }
+        });
 
         // 搜索
         JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));

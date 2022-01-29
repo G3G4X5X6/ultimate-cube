@@ -72,7 +72,4 @@ public class RunningPanel extends JPanel {
         tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
-    public ProcessTtyConnector getTtyConnector(String title){
-     return    null;
-    }
 }

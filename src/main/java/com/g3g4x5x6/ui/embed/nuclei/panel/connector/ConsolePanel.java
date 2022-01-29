@@ -23,7 +23,6 @@ import java.util.Map;
 @Slf4j
 public class ConsolePanel extends JPanel {
     private NucleiProcessTtyConnector ttyConnector;
-    private PtyProcess process;
 
     public ConsolePanel(){
         this.setLayout(new BorderLayout());
@@ -49,7 +48,6 @@ public class ConsolePanel extends JPanel {
         terminalPanel.setTtyConnector(createTtyConnector());
         terminalPanel.start();
         ttyConnector = (NucleiProcessTtyConnector) terminalPanel.getTtyConnector();
-        process = ((NucleiProcessTtyConnector) terminalPanel.getTtyConnector()).myProcess;
         return terminalPanel;
     }
 

@@ -58,14 +58,9 @@ public class MainFrame extends JFrame implements MouseListener {
 
     public MainFrame() throws HeadlessException {
         // 主窗口设置
-//        if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("true")){
-//            this.setDefaultCloseOperation(this.HIDE_ON_CLOSE);
-//        }else{
-//            this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
-//        }
         this.setSize(new Dimension(1000, 600));
         this.setPreferredSize(new Dimension(1000, 600));
-        this.setMinimumSize(new Dimension(900, 600));
+        this.setMinimumSize(new Dimension(950, 600));
         this.setLocationRelativeTo(null);
         this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
 
@@ -209,14 +204,14 @@ public class MainFrame extends JFrame implements MouseListener {
     }
 
     private void initFuncIconButton() {
-        // TODO add "Users" button to menubar
+        // add "Users" button to menubar
         FlatButton usersButton = new FlatButton();
         usersButton.setIcon(new FlatSVGIcon("icons/users.svg"));
         usersButton.setButtonType(FlatButton.ButtonType.toolBarButton);
         usersButton.setFocusable(false);
         usersButton.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "Hello User! How are you?", "User", JOptionPane.INFORMATION_MESSAGE));
 
-        // TODO 置顶图标按钮
+        // 置顶图标按钮
         FlatToggleButton toggleButton = new FlatToggleButton();
         toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
         toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
@@ -235,15 +230,27 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        // TODO update button
         FlatButton updateBtn = new FlatButton();
         updateBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ideUpdate.svg"));
         updateBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         updateBtn.setFocusable(false);
 
+        FlatButton closeBtn = new FlatButton();
+        closeBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/closeHover.svg"));
+        closeBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
+        closeBtn.setFocusable(false);
+        closeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
         menuBar.add(Box.createGlue());
         menuBar.add(usersButton);
         menuBar.add(toggleButton);
+        menuBar.add(closeBtn);
+
         // 添加更新按钮
         new Thread(() -> {
             latestVersion = CommonUtil.getLastestVersion();
