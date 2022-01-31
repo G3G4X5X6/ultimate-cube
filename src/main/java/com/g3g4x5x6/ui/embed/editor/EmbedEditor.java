@@ -113,6 +113,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
         });
         menuBar.add(Box.createGlue());
         menuBar.add(toggleButton);
+        initMenuBar();
 
         toolBar.setFloatable(false);
         toolBar.add(newBtn);
@@ -159,6 +160,18 @@ public class EmbedEditor extends JFrame implements ActionListener {
         this.add(toolBar, BorderLayout.NORTH);
         this.add(tabbedPane, BorderLayout.CENTER);
         this.add(statusBar, BorderLayout.SOUTH);
+    }
+
+    private void initMenuBar(){
+        JCheckBox showToolBar = new JCheckBox("显示工具栏   ");
+        showToolBar.setSelected(true);
+        showToolBar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toolBar.setVisible(showToolBar.isSelected());
+            }
+        });
+        viewMenu.add(showToolBar);
     }
 
     private void resetIcon(ChangeEvent e) {
