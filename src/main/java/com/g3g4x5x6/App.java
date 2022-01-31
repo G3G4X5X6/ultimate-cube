@@ -69,6 +69,7 @@ public class App {
             ex.printStackTrace();
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
+        UIManager.put( "TextComponent.arc", 5 );
     }
 
     private static void initSystemTray() {
