@@ -70,6 +70,8 @@ public class App {
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
         UIManager.put( "TextComponent.arc", 5 );
+//        log.debug(String.valueOf(UIManager.getColor("Panel.background")));
+//        log.debug(String.valueOf(UIManager.getColor("Panel.foreground")));
     }
 
     private static void initSystemTray() {

@@ -1,9 +1,11 @@
 package com.g3g4x5x6.ui.panels.console;
 
+import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.ui.UIUtil;
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class CmdSettingsProvider extends DefaultSettingsProvider {
@@ -29,7 +31,15 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public TextStyle getDefaultStyle() {
-        return this.textStyle;
+        return new TextStyle(
+                TerminalColor.rgb(
+                        UIManager.getColor("Panel.foreground").getRed(),
+                        UIManager.getColor("Panel.foreground").getGreen(),
+                        UIManager.getColor("Panel.foreground").getBlue()),
+                TerminalColor.rgb(
+                        UIManager.getColor("Panel.background").getRed(),
+                        UIManager.getColor("Panel.background").getGreen(),
+                        UIManager.getColor("Panel.background").getBlue()));
     }
 
     public void setDefaultStyle(TextStyle textStyle){

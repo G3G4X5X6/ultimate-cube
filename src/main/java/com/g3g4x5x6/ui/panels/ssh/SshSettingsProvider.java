@@ -101,7 +101,16 @@ public class SshSettingsProvider implements SettingsProvider {
 
     @Override
     public TextStyle getDefaultStyle() {
-        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
+//        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
+        return new TextStyle(
+                TerminalColor.rgb(
+                        UIManager.getColor("Panel.foreground").getRed(),
+                        UIManager.getColor("Panel.foreground").getGreen(),
+                        UIManager.getColor("Panel.foreground").getBlue()),
+                TerminalColor.rgb(
+                        UIManager.getColor("Panel.background").getRed(),
+                        UIManager.getColor("Panel.background").getGreen(),
+                        UIManager.getColor("Panel.background").getBlue()));
     }
 
     public TextStyle getSelectionColor() {
