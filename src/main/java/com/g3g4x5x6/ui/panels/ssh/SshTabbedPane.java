@@ -153,12 +153,13 @@ public class SshTabbedPane extends JTabbedPane {
         // 等待进度条
         MainFrame.addWaitProgressBar();
 
-        reset4Session();
-        reset4TerminalWidget();
-        reset4SftpBrowser();
-        reset4EditorPane();
-        reset4MonitorPane();
-
+        new Thread(()->{
+            reset4Session();
+            reset4TerminalWidget();
+            reset4SftpBrowser();
+            reset4EditorPane();
+            reset4MonitorPane();
+        }).start();
         // 关闭进度条
         MainFrame.removeWaitProgressBar();
     }
