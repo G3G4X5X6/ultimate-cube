@@ -74,7 +74,7 @@ public class BasicPanel extends JPanel implements SettingsInterface {
         themePanel.add(themeEnableBtn);
 
         themeClass = new JComboBox<>();
-        themeClass.setEnabled(false);
+        themeClass.setEnabled(Boolean.parseBoolean(App.properties.getProperty("app.theme.enable")));
         themeClass.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

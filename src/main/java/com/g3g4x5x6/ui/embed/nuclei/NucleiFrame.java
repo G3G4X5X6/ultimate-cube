@@ -44,7 +44,7 @@ public class NucleiFrame extends JFrame {
 
     public NucleiFrame() {
         this.setLayout(new BorderLayout());
-        this.setTitle("Nuclei");
+        this.setTitle("PoC-概念验证框架");
         this.setSize(new Dimension(1200, 700));
         this.setPreferredSize(new Dimension(1200, 700));
         this.setLocationRelativeTo(null);
