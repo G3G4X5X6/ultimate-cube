@@ -1,6 +1,8 @@
 package com.g3g4x5x6.ui.panels.ssh.monitor;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.icons.FlatSearchIcon;
 import com.g3g4x5x6.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -9,14 +11,18 @@ import org.apache.sshd.client.session.ClientSession;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 
 @Slf4j
 public class MonitorPane extends JPanel {
 
     private JToolBar toolBar;
+    private JTextField searchField = new JTextField();
+    private TableRowSorter<DefaultTableModel> sorter;
 
     private JScrollPane scrollPane;
     private JTable table;
@@ -61,6 +67,9 @@ public class MonitorPane extends JPanel {
         table.getColumn("STAT").setMaxWidth(70);
         table.getColumn("START").setMaxWidth(70);
         table.getColumn("TIME").setMaxWidth(70);
+        // 搜索功能
+        sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
 
         scrollPane = new JScrollPane(table);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -110,6 +119,16 @@ public class MonitorPane extends JPanel {
     }
 
     private void initToolBarAction() {
+        searchField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search, Enter");
+        searchField.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, new FlatSearchIcon());
+        searchField.registerKeyboardAction(e -> {
+                    String searchKeyWord = searchField.getText().strip();
+                    sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
+                },
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
+                JComponent.WHEN_FOCUSED);
+        toolBar.add(searchField);
+
         JButton freshBtn = new JButton();
         freshBtn.setToolTipText("十分钟自动刷新");
         freshBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
@@ -134,6 +153,7 @@ public class MonitorPane extends JPanel {
             }
         });
 
+        toolBar.addSeparator();
         toolBar.add(freshBtn);
         toolBar.add(unameBtn);
     }
