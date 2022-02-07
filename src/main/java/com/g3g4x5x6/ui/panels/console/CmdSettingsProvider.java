@@ -37,9 +37,10 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
                         UIManager.getColor("Panel.foreground").getGreen(),
                         UIManager.getColor("Panel.foreground").getBlue()),
                 TerminalColor.rgb(
-                        UIManager.getColor("Panel.background").getRed(),
-                        UIManager.getColor("Panel.background").getGreen(),
-                        UIManager.getColor("Panel.background").getBlue()));
+                        UIManager.getColor("Table.background").getRed(),
+                        UIManager.getColor("Table.background").getGreen(),
+                        UIManager.getColor("Table.background").getBlue()));
+//                        UIManager.getColor("Panel.background").getBlue()));
     }
 
     public void setDefaultStyle(TextStyle textStyle){

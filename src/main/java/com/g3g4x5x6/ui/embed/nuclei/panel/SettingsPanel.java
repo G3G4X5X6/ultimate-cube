@@ -24,5 +24,6 @@ public class SettingsPanel extends JPanel {
         toolBar.addSeparator();
         toolBar.add(terminalBtn);
         this.add(toolBar, BorderLayout.NORTH);
+        this.add(new JLabel("待定"), BorderLayout.CENTER);
     }
 }
