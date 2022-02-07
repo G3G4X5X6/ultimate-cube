@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 
 import com.g3g4x5x6.utils.CheckUtil;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -168,5 +169,21 @@ public class App {
 
         }
         return properties;
+    }
+
+    /**
+     * @Description 加载 log4j 配置文件
+     * @author Lvxiaobu
+     * @date 2019年6月27日
+     * @return_type void
+     */
+    private static void initLog4j() {
+        try {
+            // TODO 从主配置文件中判断是否加载用户自定义配置文件
+            PropertyConfigurator.configure("src/main/resources/config/log4j.properties");
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+        }
+
     }
 }
