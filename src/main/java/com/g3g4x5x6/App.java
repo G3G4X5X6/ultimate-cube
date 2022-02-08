@@ -34,8 +34,6 @@ public class App {
         CheckUtil.checkEnv();
         // 初始化数据库
         DbUtil.createDatabase();
-        // TODO 转换配置，如：{home}
-
         // 启动主程序
         SwingUtilities.invokeLater(App::createGUI);
     }
@@ -143,13 +141,22 @@ public class App {
     }
 
     private static Properties loadProperties() {
-        // 初始化配置
+        // 初始化应用配置
         if (!Files.exists(Path.of(ConfigUtil.getPropertiesPath()))){
             try {
-                InputStream inputStream = App.class.getClassLoader().getResourceAsStream("application.properties");
-                assert inputStream != null;
-                Files.copy(inputStream, Path.of(ConfigUtil.getPropertiesPath()));
-                log.debug("复制配置文件");
+                InputStream appIn = App.class.getClassLoader().getResourceAsStream("application.properties");
+                assert appIn != null;
+                Files.copy(appIn, Path.of(ConfigUtil.getPropertiesPath()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        // 初始化日志配置
+        if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "/log4j.properties"))){
+            try {
+                InputStream logIn = App.class.getClassLoader().getResourceAsStream("log4j.properties");
+                assert logIn != null;
+                Files.copy(logIn, Path.of(ConfigUtil.getWorkPath() + "/log4j.properties"));
             } catch (IOException e) {
                 e.printStackTrace();
             }

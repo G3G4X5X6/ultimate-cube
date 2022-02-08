@@ -34,15 +34,11 @@ import java.util.Date;
  */
 @Slf4j
 public class NotePane extends JPanel {
-    private BorderLayout borderLayout;
-    private JToolBar toolBar;
-    private JPanel editorPane;
-    private JPanel statusBar;
+    private final JToolBar toolBar;
+    private final JPanel editorPane;
 
     // 新建 note
-    private String current_note_id = "";
-
-    private FlowLayout flowLayout;
+    private String current_note_id;
 
     // TODO toolBar
     private JTextField titleField;
@@ -50,30 +46,21 @@ public class NotePane extends JPanel {
 
     // TODO editorPane
     private RSyntaxTextArea textArea;
-    private RTextScrollPane sp;
-
-    // TODO statusBar
-    private JTextField searchField;
-    private JCheckBox regexCB;
-    private JCheckBox matchCaseCB;
 
     public NotePane() {
-        borderLayout = new BorderLayout();
+        BorderLayout borderLayout = new BorderLayout();
         toolBar = new JToolBar();
         editorPane = new JPanel();
-        statusBar = new JPanel();
 
-        flowLayout = new FlowLayout();
+        FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.LEADING);
 
         initToolBar();
         initEditorPane();
-//        initStatusBar();
 
         this.setLayout(borderLayout);
         this.add(toolBar, BorderLayout.NORTH);
         this.add(editorPane, BorderLayout.CENTER);
-//        this.add(statusBar, BorderLayout.SOUTH);
     }
 
     private void initToolBar() {
@@ -235,13 +222,10 @@ public class NotePane extends JPanel {
         });
 
         JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
-        searchBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SearchDialog searchDialog = new SearchDialog(textArea);
-                searchDialog.setVisible(true);
-                searchDialog.setLocationRelativeTo(NotePane.this);
-            }
+        searchBtn.addActionListener(e -> {
+            SearchDialog searchDialog = new SearchDialog(textArea);
+            searchDialog.setVisible(true);
+            searchDialog.setLocationRelativeTo(NotePane.this);
         });
 
         toolBar.add(listBtn);
@@ -262,21 +246,8 @@ public class NotePane extends JPanel {
         textArea = createTextArea();
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_MARKDOWN);
         textArea.setCodeFoldingEnabled(true);
-        sp = new RTextScrollPane(textArea);
+        RTextScrollPane sp = new RTextScrollPane(textArea);
         editorPane.add(sp);
-    }
-
-    private void initStatusBar() {
-        statusBar.setLayout(flowLayout);
-        // TODO
-        JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
-        searchBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DialogUtil.info("敬请期待！");
-            }
-        });
-        statusBar.add(searchBtn);
     }
 
     private RSyntaxTextArea createTextArea() {
@@ -326,9 +297,9 @@ public class NotePane extends JPanel {
         return new RSyntaxTextAreaEditorKit.CopyCutAsStyledTextAction(themeName, theme, true);
     }
 
-    private void insertOrUpdate() throws UnsupportedEncodingException {
+    private void insertOrUpdate() {
         String title = titleField.getText();
-        String content = Base64.getEncoder().encodeToString(textArea.getText().getBytes("utf-8"));
+        String content = Base64.getEncoder().encodeToString(textArea.getText().getBytes(StandardCharsets.UTF_8));
         String createTime = String.valueOf(new Date().getTime());
         String modifyTime = createTime;
         String comment = "暂无";
