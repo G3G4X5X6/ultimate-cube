@@ -337,7 +337,7 @@
                             <mainClass>com.g3g4x5x6.App</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <SplashScreen-Image>splashscreen/dragon-red.png</SplashScreen-Image>
+                            <SplashScreen-Image>splashscreen/splashscreen.png</SplashScreen-Image>
                             <Build-Time>${maven.build.timestamp}</Build-Time>
                         </manifestEntries>
                     </archive>
