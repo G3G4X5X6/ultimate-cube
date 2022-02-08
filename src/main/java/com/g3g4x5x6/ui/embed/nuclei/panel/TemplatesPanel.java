@@ -35,8 +35,6 @@ import java.util.*;
 @Slf4j
 public class TemplatesPanel extends JPanel {
     private static final String defaultNucleiTemplatesPath = System.getProperties().getProperty("user.home") + "/nuclei-templates";
-    private JToolBar toolBar = new JToolBar();
-    private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
     private JButton severityBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/sortBySeverity.svg"));
     private JButton refreshBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/refresh.svg"));
@@ -61,8 +59,8 @@ public class TemplatesPanel extends JPanel {
     public TemplatesPanel() {
         this.setLayout(new BorderLayout());
 
+        JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
-        toolBar.add(newBtn);
         toolBar.add(openBtn);
         toolBar.addSeparator();
         toolBar.add(severityBtn);

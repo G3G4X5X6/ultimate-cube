@@ -36,6 +36,7 @@ import java.util.UUID;
 @Slf4j
 public class EditTemplatePanel extends JPanel implements SearchListener {
     private static final String tempDir = ConfigUtil.getWorkPath() + "/temp/nuclei";
+    private final JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private final JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
     private final JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
     private final JButton searchBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/search.svg"));
@@ -62,6 +63,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         JToolBar toolBar = new JToolBar();
         this.add(toolBar, BorderLayout.NORTH);
         toolBar.setFloatable(false);
+        toolBar.add(newBtn);
         toolBar.add(openBtn);
         toolBar.add(saveBtn);
         toolBar.addSeparator();
@@ -113,6 +115,13 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     }
 
     private void initToolBarAction() {
+        newBtn.setToolTipText("从模板新建");
+        newBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("从模板新建");
+            }
+        });
         openBtn.setToolTipText("打开模板");
         openBtn.addActionListener(new AbstractAction() {
             @Override

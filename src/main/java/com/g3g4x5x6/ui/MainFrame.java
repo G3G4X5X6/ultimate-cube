@@ -239,9 +239,9 @@ public class MainFrame extends JFrame implements MouseListener {
         closeBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/closeHover.svg"));
         closeBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         closeBtn.setFocusable(false);
-        closeBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        closeBtn.addActionListener(e -> {
+            int i = JOptionPane.showConfirmDialog(App.mainFrame, "是否确认退出程序？", "退出", JOptionPane.OK_CANCEL_OPTION);
+            if (i == JOptionPane.YES_OPTION){
                 System.exit(0);
             }
         });
