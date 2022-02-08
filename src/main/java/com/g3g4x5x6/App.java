@@ -108,6 +108,7 @@ public class App {
             popupMenu.add(exitItem);
 
             // 创建一个托盘图标
+            assert image != null;
             TrayIcon trayIcon = new TrayIcon(image, "UltimateShell's SystemTray", popupMenu);
             // 托盘图标自适应尺寸
             trayIcon.setImageAutoSize(true);
@@ -155,6 +156,7 @@ public class App {
                 e.printStackTrace();
             }
         }
+
         // 初始化日志配置
         if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "/log4j.properties"))){
             try {
@@ -177,15 +179,8 @@ public class App {
         return properties;
     }
 
-    /**
-     * @Description 加载 log4j 配置文件
-     * @author Lvxiaobu
-     * @date 2019年6月27日
-     * @return_type void
-     */
     private static void initLog4j() {
         try {
-            // TODO 从主配置文件中判断是否加载用户自定义配置文件
             if (App.properties.getProperty("app.log.setting.enable").equalsIgnoreCase("true")){
                 PropertyConfigurator.configure(App.properties.getProperty("app.log.setting.path").replace("{workspace}", ConfigUtil.getWorkPath()));
                 log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<已加载自定义日志配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -193,6 +188,5 @@ public class App {
         } catch (Exception e) {
             log.debug(e.getMessage());
         }
-
     }
 }
