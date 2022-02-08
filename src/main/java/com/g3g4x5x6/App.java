@@ -31,6 +31,8 @@ public class App {
     public static Properties properties = loadProperties();
 
     public static void main(String[] args) {
+        // 加载自定义日志配置
+        initLog4j();
         // 检查程序运行环境
         CheckUtil.checkEnv();
         // 初始化数据库
@@ -163,7 +165,6 @@ public class App {
 
     private static Properties loadProperties() {
         // 初始化配置
-        log.debug(App.class.getClassLoader().getResource("application.properties").getPath());
         if (!Files.exists(Path.of(ConfigUtil.getPropertiesPath()))){
             try {
                 InputStream inputStream = App.class.getClassLoader().getResourceAsStream("application.properties");
@@ -195,7 +196,10 @@ public class App {
     private static void initLog4j() {
         try {
             // TODO 从主配置文件中判断是否加载用户自定义配置文件
-            PropertyConfigurator.configure("src/main/resources/config/log4j.properties");
+            if (App.properties.getProperty("app.log.setting.enable").equalsIgnoreCase("true")){
+                PropertyConfigurator.configure(App.properties.getProperty("app.log.setting.path").replace("{workspace}", ConfigUtil.getWorkPath()));
+                log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<已加载自定义日志配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            }
         } catch (Exception e) {
             log.debug(e.getMessage());
         }
