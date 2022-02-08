@@ -1,12 +1,12 @@
 package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.g3g4x5x6.utils.CheckUtil;
@@ -19,6 +19,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Properties;
 
 
@@ -77,10 +78,13 @@ public class App {
         if (SystemTray.isSupported()) {
             // 获取当前平台的系统托盘
             SystemTray tray = SystemTray.getSystemTray();
-
             // 加载一个图片用于托盘图标的显示
-            Image image = new FlatSVGIcon("com/g3g4x5x6/ui/icons/digitalOceanSpaces.svg").getImage();
-
+            Image image = null;
+            try {
+                image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             // 创建点击图标时的弹出菜单
             PopupMenu popupMenu = new PopupMenu();
 
