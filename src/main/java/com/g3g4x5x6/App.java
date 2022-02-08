@@ -28,10 +28,10 @@ public class App {
     public static Properties properties = loadProperties();
 
     public static void main(String[] args) {
-        // 加载自定义日志配置
-        initLog4j();
         // 检查程序运行环境
         CheckUtil.checkEnv();
+        // 加载自定义日志配置
+        initLog4j();
         // 初始化数据库
         DbUtil.createDatabase();
         // 启动主程序
