@@ -13,15 +13,12 @@ import com.g3g4x5x6.utils.CheckUtil;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Properties;
 
 
@@ -47,9 +44,7 @@ public class App {
         // 配置主题皮肤
         initFlatLaf();
 
-        // 程序主窗口 <html><font style='color:green'></font></html>
         mainFrame = new MainFrame();
-//        mainFrame.setTitle("<html><font style='color:green'>" + properties.getProperty("app.title") + "</font></html>");
         mainFrame.setTitle(properties.getProperty("app.title"));
         mainFrame.pack();
         mainFrame.setVisible(true);
@@ -75,8 +70,6 @@ public class App {
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
         UIManager.put( "TextComponent.arc", 5 );
-//        log.debug(String.valueOf(UIManager.getColor("Panel.background")));
-//        log.debug(String.valueOf(UIManager.getColor("Panel.foreground")));
     }
 
     private static void initSystemTray() {
@@ -98,21 +91,15 @@ public class App {
             MenuItem exitItem = new MenuItem();
             exitItem.setLabel("Quit");
 
-            openItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // 点击打开菜单时显示窗口
-                    if (!mainFrame.isShowing()) {
-                        mainFrame.setVisible(true);
-                    }
+            openItem.addActionListener(e -> {
+                // 点击打开菜单时显示窗口
+                if (!mainFrame.isShowing()) {
+                    mainFrame.setVisible(true);
                 }
             });
-            exitItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // 点击退出菜单时退出程序
-                    System.exit(0);
-                }
+            exitItem.addActionListener(e -> {
+                // 点击退出菜单时退出程序
+                System.exit(0);
             });
 
             popupMenu.add(openItem);
@@ -120,16 +107,8 @@ public class App {
 
             // 创建一个托盘图标
             TrayIcon trayIcon = new TrayIcon(image, "UltimateShell's SystemTray", popupMenu);
-
             // 托盘图标自适应尺寸
             trayIcon.setImageAutoSize(true);
-
-            trayIcon.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("托盘图标被右键点击");
-                }
-            });
             trayIcon.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
