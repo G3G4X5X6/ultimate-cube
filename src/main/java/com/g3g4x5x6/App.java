@@ -17,9 +17,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Properties;
 
 
@@ -160,6 +162,19 @@ public class App {
     }
 
     private static Properties loadProperties() {
+        // 初始化配置
+        log.debug(App.class.getClassLoader().getResource("application.properties").getPath());
+        if (!Files.exists(Path.of(ConfigUtil.getPropertiesPath()))){
+            try {
+                InputStream inputStream = App.class.getClassLoader().getResourceAsStream("application.properties");
+                assert inputStream != null;
+                Files.copy(inputStream, Path.of(ConfigUtil.getPropertiesPath()));
+                log.debug("复制配置文件");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         // 加载配置
         Properties properties = new Properties();
         try {
