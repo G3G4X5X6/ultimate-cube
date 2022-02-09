@@ -110,9 +110,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
   }
 
   protected JScrollBar createScrollBar() {
-    JScrollBar scrollBar = new JScrollBar();
-//    scrollBar.setUI(new FindResultScrollBarUI());
-    return scrollBar;
+    return new JScrollBar();
   }
 
   protected StyleState createDefaultStyle() {
