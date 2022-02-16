@@ -517,7 +517,10 @@ public class MainFrame extends JFrame implements MouseListener {
         AbstractAction renameCurrentTabAction = new AbstractAction("命名标签") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                renameTabTitle();
+                // 判断是否为 SshTabbedPane 实例
+                if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane){
+                    renameTabTitle();
+                }
             }
         };
         AbstractAction copyCurrentTabAction = new AbstractAction("复制当前") {
@@ -585,7 +588,10 @@ public class MainFrame extends JFrame implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
-            renameTabTitle();
+            // 判断是否为 SshTabbedPane 实例
+            if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane){
+                renameTabTitle();
+            }
         }
         if (e.getButton() == 3) {
             popupMenu.show(e.getComponent(), e.getX(), e.getY());

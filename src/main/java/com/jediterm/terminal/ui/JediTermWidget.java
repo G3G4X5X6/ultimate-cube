@@ -10,9 +10,8 @@ import com.jediterm.terminal.model.hyperlinks.TextProcessing;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import com.jediterm.typeahead.TerminalTypeAheadManager;
 import com.jediterm.typeahead.TypeAheadTerminalModel;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -30,8 +29,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * JediTerm com.jediterm.terminal widget with UI implemented in Swing.
  * <p/>
  */
+@Slf4j
 public class JediTermWidget extends JPanel implements TerminalSession, TerminalWidget, TerminalActionProvider {
-  private static final Logger LOG = LoggerFactory.getLogger(com.jediterm.terminal.ui.JediTermWidget.class);
 
   protected final TerminalPanel myTerminalPanel;
   protected final JScrollBar myScrollBar;
@@ -110,9 +109,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
   }
 
   protected JScrollBar createScrollBar() {
-    JScrollBar scrollBar = new JScrollBar();
-//    scrollBar.setUI(new FindResultScrollBarUI());
-    return scrollBar;
+    return new JScrollBar();
   }
 
   protected StyleState createDefaultStyle() {
@@ -185,7 +182,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
       myEmuThread = new Thread(new EmulatorTask());
       myEmuThread.start();
     } else {
-      LOG.error("Should not try to start session again at this point... ");
+      log.error("Should not try to start session again at this point... ");
     }
   }
 
@@ -380,7 +377,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
           myTerminalStarter.start();
         }
       } catch (Exception e) {
-        LOG.error("Exception running com.jediterm.terminal", e);
+        log.error("Exception running com.jediterm.terminal", e);
       } finally {
         try {
           myTtyConnector.close();
