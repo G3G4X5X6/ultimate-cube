@@ -7,6 +7,7 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.Version;
+import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
@@ -17,7 +18,6 @@ import com.g3g4x5x6.ui.panels.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.panels.tools.ColorPicker;
 import com.g3g4x5x6.ui.panels.tools.QRTool;
 import com.g3g4x5x6.ui.settings.SettingsDialog;
-import com.g3g4x5x6.ui.dialog.ThemeDialog;
 import com.g3g4x5x6.ui.panels.dashboard.DashboardPane;
 import com.g3g4x5x6.ui.panels.NewTabbedPane;
 import com.g3g4x5x6.ui.panels.tools.xpack.FreeRdp;
@@ -211,6 +211,19 @@ public class MainFrame extends JFrame implements MouseListener {
         usersButton.setFocusable(false);
         usersButton.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "Hello User! How are you?", "User", JOptionPane.INFORMATION_MESSAGE));
 
+        FlatButton lockBtn = new FlatButton();
+        lockBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/lock.svg"));
+        lockBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
+        lockBtn.setFocusable(false);
+        lockBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("Lock App!");
+                LockDialog lockDialog = new LockDialog();
+                lockDialog.setVisible(true);
+            }
+        });
+
         // 置顶图标按钮
         FlatToggleButton toggleButton = new FlatToggleButton();
         toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
@@ -246,11 +259,6 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        menuBar.add(Box.createGlue());
-        menuBar.add(usersButton);
-        menuBar.add(toggleButton);
-        menuBar.add(closeBtn);
-
         // 添加更新按钮
         new Thread(() -> {
             latestVersion = CommonUtil.getLastestVersion();
@@ -280,6 +288,12 @@ public class MainFrame extends JFrame implements MouseListener {
                 });
             }
         }).start();
+
+        menuBar.add(Box.createGlue());
+        menuBar.add(usersButton);
+        menuBar.add(lockBtn);
+        menuBar.add(toggleButton);
+        menuBar.add(closeBtn);
     }
 
     private void initToolBar() {
@@ -742,16 +756,6 @@ public class MainFrame extends JFrame implements MouseListener {
         public void actionPerformed(ActionEvent e) {
             FreeRdp freeRdp = new FreeRdp();
             freeRdp.setVisible(true);
-        }
-    };
-
-    @Deprecated
-    private final AbstractAction themeAction = new AbstractAction("切换主题") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // TODO 主题切换
-            ThemeDialog themeDialog = new ThemeDialog();
-            themeDialog.setVisible(true);
         }
     };
 
