@@ -49,10 +49,13 @@ public class SessionUtil {
             String port = jsonObject.getString("sessionPort");
             String user = jsonObject.getString("sessionUser");
             String pass = jsonObject.getString("sessionPass");
+            String privateKey = jsonObject.getString("sessionKeyPath");
+            String loginType = jsonObject.getString("sessionLoginType");
             if (SshUtil.testConnection(host, port) == 1) {
                 String defaultTitle = session.equals("") ? "未命名" : session;
                 MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                        new SshTabbedPane(host, port, user, pass )
+                        // TODO 传会话信息: SessionInfo.java
+                        new SshTabbedPane(host, port, user, pass, privateKey)
                 );
                 MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
             }

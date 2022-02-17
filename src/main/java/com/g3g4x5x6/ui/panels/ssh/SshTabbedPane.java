@@ -10,9 +10,6 @@ import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
-import org.apache.sshd.common.NamedResource;
-import org.apache.sshd.common.config.keys.FilePasswordProvider;
-import org.apache.sshd.common.session.SessionContext;
 import org.apache.sshd.common.session.SessionHeartbeatController;
 import org.apache.sshd.putty.PuttyKeyUtils;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -23,6 +20,7 @@ import javax.swing.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
@@ -43,16 +41,18 @@ public class SshTabbedPane extends JTabbedPane {
     private int port;
     private String user;
     private String pass;
+    private String privateKey;
 
     private SshClient client;
     private ClientSession session;
     private SftpFileSystem sftpFileSystem;
 
-    public SshTabbedPane(String hostField, String portField, String userField, String passField) {
+    public SshTabbedPane(String hostField, String portField, String userField, String passField, String privateKey) {
         this.host = hostField;
         this.port = Integer.parseInt(portField);
         this.user = userField;
         this.pass = passField;
+        this.privateKey = privateKey;
         // 等待进度条
         MainFrame.addWaitProgressBar();
 
@@ -107,13 +107,12 @@ public class SshTabbedPane extends JTabbedPane {
         ClientSession session;
         try {
             session = client.connect(this.user, this.host, this.port).verify(5000, TimeUnit.MILLISECONDS).getSession();
-//            session.addPasswordIdentity(this.pass);
-            KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null,
-//                    Path.of("C:\\Users\\G3G4X5X6\\Desktop\\UltimateShell\\ssh-key\\test1\\private.ppk"),
-                    Path.of("C:\\Users\\G3G4X5X6\\Desktop\\UltimateShell\\ssh-key\\test2\\private.ppk"),
-                    FilePasswordProvider.of("123456")
-            ).iterator().next();
-            session.addPublicKeyIdentity(keyPair);
+            if (Files.exists(Path.of(privateKey)) && !privateKey.equalsIgnoreCase("")) {
+                KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, Path.of(privateKey), null).iterator().next();
+                session.addPublicKeyIdentity(keyPair);
+            } else {
+                session.addPasswordIdentity(this.pass);
+            }
             session.auth().verify(15, TimeUnit.SECONDS);
             session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(3));
             session.sendIgnoreMessage("".getBytes(StandardCharsets.UTF_8));

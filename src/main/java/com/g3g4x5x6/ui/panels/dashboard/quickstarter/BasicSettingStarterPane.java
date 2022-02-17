@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.MainFrame;
-import com.g3g4x5x6.formatter.IpAddressFormatter;
 import com.g3g4x5x6.formatter.PortFormatter;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.ConfigUtil;
@@ -16,6 +15,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
@@ -32,14 +32,15 @@ public class BasicSettingStarterPane extends JPanel {
     private FlowLayout flowLayout = new FlowLayout();
     private JTabbedPane mainTabbedPane;
 
-    private JFormattedTextField hostField;
+    private JTextField hostField;
     private JFormattedTextField portField;
 
     private String host;
     private int port;
     private String username;
     private String password;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private String privateKey = "";
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public BasicSettingStarterPane() {
         flowLayout.setAlignment(FlowLayout.LEFT);
@@ -54,7 +55,7 @@ public class BasicSettingStarterPane extends JPanel {
         // TODO host address
         JPanel hostPane = new JPanel();
         JLabel hostLabel = new JLabel("Remote Host*");
-        hostField = new JFormattedTextField(new IpAddressFormatter());
+        hostField = new JTextField();
         hostField.setColumns(10);
         hostPane.add(hostLabel);
         hostPane.add(hostField);
@@ -87,9 +88,60 @@ public class BasicSettingStarterPane extends JPanel {
 
         // TODO Save and open session
         JPanel savePane = new JPanel();
+        JPopupMenu jPopupMenu = new JPopupMenu();
+        JButton privateBtn = new JButton();
+        privateBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/goldKey.svg"));
+        privateBtn.setToolTipText("公钥登录");
+        privateBtn.setComponentPopupMenu(jPopupMenu);
+        privateBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                jPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
+        JMenuItem showItem = new JMenuItem("...");
+
+        JCheckBox enablePrivateKeyCheckBox = new JCheckBox("是否启用公钥登录");
+        enablePrivateKeyCheckBox.setSelected(false);
+        enablePrivateKeyCheckBox.addChangeListener(e -> {
+            if (!enablePrivateKeyCheckBox.isSelected()){
+                privateKey = "";
+            }else{
+                privateKey = showItem.getText();
+            }
+        });
+
+        JMenuItem selectKeyItem = new JMenuItem("选择私钥");
+        selectKeyItem.addActionListener(new AbstractAction("选择私钥") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("选中私钥");
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setMultiSelectionEnabled(false);
+                chooser.setDialogTitle("请选择登录私钥");
+                int value = chooser.showOpenDialog(BasicSettingStarterPane.this);
+                if (value == JFileChooser.APPROVE_OPTION) {
+                    File files = chooser.getSelectedFile();
+                    privateKey = files.getAbsolutePath();
+                    privateBtn.setToolTipText(privateKey);
+                    enablePrivateKeyCheckBox.setSelected(true);
+                    showItem.setText(privateKey);
+                }
+            }
+        });
+        selectKeyItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/goldKey.svg"));
+
+        jPopupMenu.add(showItem);
+        jPopupMenu.add(selectKeyItem);
+        jPopupMenu.add(enablePrivateKeyCheckBox);
+
         JButton openButton = new JButton("快速连接");
-//        openButton.setToolTipText("默认自动保存会话");
+        openButton.setToolTipText("不保存会话");
         JButton testButton = new JButton("测试通信");
+        testButton.setToolTipText("测试主机可达（IP/Port），用户名可用，密码正确");
+        savePane.add(privateBtn);
         savePane.add(openButton);
         savePane.add(testButton);
 
@@ -119,7 +171,8 @@ public class BasicSettingStarterPane extends JPanel {
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
-                                    String.valueOf(passField.getPassword())));
+                                    String.valueOf(passField.getPassword()),
+                                    privateKey));
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
 
                     // TODO 保存最近会话到工作目录
@@ -164,30 +217,4 @@ public class BasicSettingStarterPane extends JPanel {
             }
         });
     }
-
-
-//    private @NotNull JediTermWidget createTerminalWidget() {
-//        JediTermWidget widget = new JediTermWidget(new SshSettingsProvider());
-//        widget.setTtyConnector(createTtyConnector());
-//        widget.start();
-//        return widget;
-//    }
-//
-//    // TODO 创建 sFTP channel
-//    private @NotNull TtyConnector createTtyConnector() {
-//        try {
-//            if (username.equals("")) {
-//                return new MyJSchShellTtyConnector(host, port);
-//            }
-//            if (password.equals("")) {
-//                return new MyJSchShellTtyConnector(host, port, username);
-//            }
-//            return new MyJSchShellTtyConnector(host, port, username, password);
-//        } catch (Exception e) {
-//            throw new IllegalStateException(e);
-//        }
-//    }
-//
-//    // TODO 获取 sFTP channel
-
 }

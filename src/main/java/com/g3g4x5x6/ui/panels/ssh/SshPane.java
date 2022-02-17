@@ -123,7 +123,9 @@ public class SshPane extends JPanel {
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
-                                    String.valueOf(passField.getPassword())), "奥里给", preIndex);
+                                    String.valueOf(passField.getPassword()),
+                                    keyLabel.getText()
+                            ), "奥里给", preIndex);
                     mainTabbedPane.removeTabAt(preIndex + 1);
                     mainTabbedPane.setSelectedIndex(preIndex);
                 } else {
@@ -180,11 +182,8 @@ public class SshPane extends JPanel {
 
             Files.write(Paths.get(fileName), JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
             DialogUtil.info("会话保存成功");
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            DialogUtil.error("会话保存失败");
-        } catch (IOException exception) {
-            exception.printStackTrace();
             DialogUtil.error("会话保存失败");
         }
     }
