@@ -29,8 +29,7 @@ import java.util.LinkedHashMap;
 @Slf4j
 public class BasicSettingStarterPane extends JPanel {
 
-    private FlowLayout flowLayout = new FlowLayout();
-    private JTabbedPane mainTabbedPane;
+    private final JTabbedPane mainTabbedPane;
 
     private JTextField hostField;
     private JFormattedTextField portField;
@@ -43,6 +42,7 @@ public class BasicSettingStarterPane extends JPanel {
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public BasicSettingStarterPane() {
+        FlowLayout flowLayout = new FlowLayout();
         flowLayout.setAlignment(FlowLayout.LEFT);
         this.setLayout(flowLayout);
         this.mainTabbedPane = MainFrame.mainTabbedPane;
