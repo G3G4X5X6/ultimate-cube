@@ -2,6 +2,7 @@ package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.ui.MainFrame;
+import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Slf4j
 public class App {
     public static MainFrame mainFrame;
     public static Properties properties = loadProperties();
+    public static AtomicBoolean lockState = new AtomicBoolean(false);
+    public static String lockPassword = "";
 
     public static void main(String[] args) {
         // 检查程序运行环境
@@ -96,7 +100,12 @@ public class App {
             openItem.addActionListener(e -> {
                 // 点击打开菜单时显示窗口
                 if (!mainFrame.isShowing()) {
-                    mainFrame.setVisible(true);
+                    if (App.lockState.get()){
+                        LockDialog lockDialog = new LockDialog();
+                        lockDialog.setVisible(true);
+                    }else{
+                        mainFrame.setVisible(true);
+                    }
                 }
             });
             exitItem.addActionListener(e -> {
@@ -118,7 +127,12 @@ public class App {
                     switch (e.getButton()) {
                         case MouseEvent.BUTTON1: {
                             System.out.println("托盘图标被鼠标左键被点击");
-                            mainFrame.setVisible(true);
+                            if (App.lockState.get()){
+                                LockDialog lockDialog = new LockDialog();
+                                lockDialog.setVisible(true);
+                            }else{
+                                mainFrame.setVisible(true);
+                            }
                             break;
                         }
                         case MouseEvent.BUTTON2: {

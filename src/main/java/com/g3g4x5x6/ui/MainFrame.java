@@ -44,6 +44,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
