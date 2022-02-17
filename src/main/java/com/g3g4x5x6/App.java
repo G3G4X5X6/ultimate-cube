@@ -99,14 +99,7 @@ public class App {
 
             openItem.addActionListener(e -> {
                 // 点击打开菜单时显示窗口
-                if (!mainFrame.isShowing()) {
-                    if (App.lockState.get()){
-                        LockDialog lockDialog = new LockDialog();
-                        lockDialog.setVisible(true);
-                    }else{
-                        mainFrame.setVisible(true);
-                    }
-                }
+                openApp();
             });
             exitItem.addActionListener(e -> {
                 // 点击退出菜单时退出程序
@@ -127,12 +120,7 @@ public class App {
                     switch (e.getButton()) {
                         case MouseEvent.BUTTON1: {
                             System.out.println("托盘图标被鼠标左键被点击");
-                            if (App.lockState.get()){
-                                LockDialog lockDialog = new LockDialog();
-                                lockDialog.setVisible(true);
-                            }else{
-                                mainFrame.setVisible(true);
-                            }
+                            openApp();
                             break;
                         }
                         case MouseEvent.BUTTON2: {
@@ -155,6 +143,17 @@ public class App {
                 tray.add(trayIcon);
             } catch (AWTException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private static void openApp(){
+        if (!mainFrame.isShowing()) {
+            if (App.lockState.get()){
+                LockDialog lockDialog = new LockDialog();
+                lockDialog.setVisible(true);
+            }else{
+                mainFrame.setVisible(true);
             }
         }
     }
