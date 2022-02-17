@@ -107,18 +107,18 @@ public class SshTabbedPane extends JTabbedPane {
         ClientSession session;
         try {
             session = client.connect(this.user, this.host, this.port).verify(5000, TimeUnit.MILLISECONDS).getSession();
-            session.addPasswordIdentity(this.pass);
-//            KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null,
-////                    Path.of("C:\\Users\\G3G4X5X6\\Desktop\\UltimateShell\\ssh-key\\test1\\private.ppk"),
-//                    Path.of("C:\\Users\\G3G4X5X6\\Desktop\\UltimateShell\\ssh-key\\test2\\private.ppk"),
-//                    FilePasswordProvider.of("123456")
-//            ).iterator().next();
-//            session.addPublicKeyIdentity(keyPair);
+//            session.addPasswordIdentity(this.pass);
+            KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null,
+//                    Path.of("C:\\Users\\G3G4X5X6\\Desktop\\UltimateShell\\ssh-key\\test1\\private.ppk"),
+                    Path.of("C:\\Users\\G3G4X5X6\\Desktop\\UltimateShell\\ssh-key\\test2\\private.ppk"),
+                    FilePasswordProvider.of("123456")
+            ).iterator().next();
+            session.addPublicKeyIdentity(keyPair);
             session.auth().verify(15, TimeUnit.SECONDS);
             session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(3));
             session.sendIgnoreMessage("".getBytes(StandardCharsets.UTF_8));
             return session;
-        } catch (IOException e) {
+        } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
             DialogUtil.error(e.getMessage());
             return null;
