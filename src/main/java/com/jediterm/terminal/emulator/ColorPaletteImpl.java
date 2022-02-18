@@ -33,7 +33,7 @@ public class ColorPaletteImpl extends ColorPalette {
     new Color(0x800000), //Red 
     new Color(0x008000), //Green
     new Color(0x808000), //Yellow
-    new Color(0x000080), //Blue 
+    new Color(0x000080), //Blue
     new Color(0x800080), //Magenta
     new Color(0x008080), //Cyan
     new Color(0xc0c0c0), //White

@@ -114,7 +114,15 @@ public class MainFrame extends JFrame implements MouseListener {
         terminalMenu.add(myLocalTerminal);
 
         // 查看菜单
-//        viewMenu.add(themeAction);
+        JMenuItem focusItem = new JMenuItem("专注模式");
+        focusItem.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fitContent.svg"));
+        focusItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("专注模式");
+            }
+        });
+        viewMenu.add(focusItem);
 
         // 选项菜单
         JMenuItem settingsItem = new JMenuItem("全局配置");
@@ -380,6 +388,15 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
+        JButton fullScreenBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fitContent.svg"));
+        fullScreenBtn.setToolTipText("专注模式");
+        fullScreenBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("专注模式");
+            }
+        });
+
         // Administrator.svg
         JButton nucleiBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/Administrator.svg"));
         nucleiBtn.setToolTipText("Nuclei: 漏洞验证框架GUI");
@@ -441,6 +458,7 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
+        trailing.add(fullScreenBtn);
         trailing.add(nucleiBtn);    // xpack-tools
         trailing.add(editorBtn);
         trailing.add(trailMenuBtn);
