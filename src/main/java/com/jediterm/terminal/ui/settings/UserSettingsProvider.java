@@ -19,7 +19,7 @@ public interface UserSettingsProvider {
    * @return vertical scaling factor
    */
   default float getLineSpacing() {
-    return 1.0f;
+    return 1.1f;
   }
 
   TextStyle getDefaultStyle();
