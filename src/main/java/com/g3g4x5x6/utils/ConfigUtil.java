@@ -1,18 +1,14 @@
 package com.g3g4x5x6.utils;
 
-import com.jediterm.terminal.TerminalColor;
-import com.jediterm.terminal.TextStyle;
+import com.g3g4x5x6.App;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
+import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Objects;
-import java.util.Properties;
 
 
 @Slf4j
@@ -24,8 +20,8 @@ public class ConfigUtil {
     public static String getWorkPath() {
         String work = Path.of(getHomePath() + "/.ultimateshell/").toString();
         File file = new File(work);
-        if (!file.exists()){
-            if (!file.mkdir()){
+        if (!file.exists()) {
+            if (!file.mkdir()) {
                 log.debug("文件夹创建失败：" + work);
             }
         }
@@ -33,233 +29,44 @@ public class ConfigUtil {
         return work;
     }
 
-    public static String getHomePath(){
+    public static String getHomePath() {
         return Path.of(System.getProperties().getProperty("user.home")).toString();
     }
 
-    public static String getPropertiesPath(){
+    public static String getPropertiesPath() {
         return getWorkPath() + "/application.properties";
     }
 
-    public static Boolean isExistTerminalColor() {
-        Boolean flag = false;
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT foreground, background FROM terminal_color WHERE theme = (SELECT value FROM settings WHERE key = 'theme')");
-            while (resultSet.next()) {
-                flag = true;
+    public static String getProperty(String key) {
+        String[] vars = new String[]{
+                "{home}#" + getHomePath(),
+                "{workspace}#" + getWorkPath(),
+        };
+        String value = App.properties.getProperty(key);
+        for (String var : vars){
+            if (value.contains(var.split("#")[0])){
+                value = value.replace(var.split("#")[0], var.split("#")[1]);
             }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return flag;
-    }
-
-    public static TextStyle getTextStyle() {
-        if (!isEnableTheme()) {
-            return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
-        }
-        String foreground = "";
-        String background = "";
-        if (isExistTerminalColor() && boolSettingValue("terminal_color_enable")) {
-            log.debug("=========== 使用自定义配色 ===========");
-            try {
-                Connection connection = DbUtil.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT foreground, background FROM terminal_color WHERE theme = (SELECT value FROM settings WHERE key = 'theme')");
-                while (resultSet.next()) {
-                    foreground = resultSet.getString("foreground");
-                    background = resultSet.getString("background");
-                }
-                DbUtil.close(statement, resultSet);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        } else {
-            log.debug("=========== 使用默认配色 ===========");
-            try {
-                Connection connection = DbUtil.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery("SELECT foreground, background FROM theme WHERE id = (SELECT value FROM settings WHERE key = 'theme')");
-                while (resultSet.next()) {
-                    foreground = resultSet.getString("foreground");
-                    background = resultSet.getString("background");
-                }
-                DbUtil.close(statement, resultSet);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        log.debug("Color: " + foreground + ":" + background);
-        int fr = Integer.parseInt(foreground.split(",")[0]);
-        int fg = Integer.parseInt(foreground.split(",")[1]);
-        int fb = Integer.parseInt(foreground.split(",")[2]);
-        int br = Integer.parseInt(background.split(",")[0]);
-        int bg = Integer.parseInt(background.split(",")[1]);
-        int bb = Integer.parseInt(background.split(",")[2]);
-        return new TextStyle(TerminalColor.rgb(fr, fg, fb), TerminalColor.rgb(br, bg, bb));
-    }
-
-    public static Boolean isEnableTheme() {
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT value FROM settings WHERE key = 'theme_enable'");
-            while (resultSet.next()) {
-                if (resultSet.getString("value").equals("0")) {
-                    return false;
-                }
-            }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return true;
-    }
-
-    public static String getThemeClass() {
-        String themeClass = "";
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT class FROM theme WHERE id = (SELECT value FROM settings WHERE key = 'theme')");
-            while (resultSet.next()) {
-                themeClass = resultSet.getString("class");
-            }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return themeClass;
-    }
-
-    public static String getThemeClass(String themeId) {
-        String themeClass = "";
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT class FROM theme WHERE id = " + themeId);
-            while (resultSet.next()) {
-                themeClass = resultSet.getString("class");
-            }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return themeClass;
-    }
-
-    /**
-     * 插入新的设置项
-     * @param key
-     * @param value
-     * @return
-     */
-    public static Boolean insertSetting(String key, String value) {
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO settings VALUES (null, '" + key +"', '" + value +"', null);");
-            DbUtil.close(statement);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return false;
-        }
-        log.debug("添加设置项 => " + key + "： " + value);
-        return true;
-    }
-
-    /**
-     * 更新存在的设置项
-     * @param key
-     * @param value
-     * @return
-     */
-    public static Boolean updateSetting(String key, String value) {
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("UPDATE settings SET value='" + value + "' WHERE key = '" + key + "'");
-            DbUtil.close(statement);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return false;
-        }
-        log.debug("更新设置项 => " + key + "： " + value);
-        return true;
-    }
-
-
-    /**
-     * 获取设置项的值
-     * @param key
-     * @return
-     */
-    public static String getSettingValue(String key){
-        String value = "";
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT value FROM settings WHERE key = '" + key +"'");
-            while (resultSet.next()) {
-                value = resultSet.getString("value");
-            }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
         return value;
     }
 
-    /**
-     * 获取指定设置项的Boolean值
-     * @param key
-     * @return
-     */
-    public static Boolean boolSettingValue(String key){
+    public static void saveSettingsProperties() {
         try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT value FROM settings WHERE key = '" + key + "'");
-            while (resultSet.next()) {
-                if (resultSet.getString("value").equals("0")) {
-                    return false;
+            StringBuilder settingsText = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new FileReader(getPropertiesPath()));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                if (!line.startsWith("#") && !line.strip().equals("")) {
+                    String key = line.strip().split("=")[0];
+                    line = key + "=" + (App.properties.getProperty(key) != null ? App.properties.getProperty(key) : line.strip().split("=")[1]);
                 }
+                settingsText.append(line).append("\n");
             }
-            DbUtil.close(statement, resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            Files.write(Path.of(getPropertiesPath()), settingsText.toString().getBytes(StandardCharsets.UTF_8));
+            DialogUtil.info("保存配置成功!");
+        } catch (Exception e) {
+            DialogUtil.error("保存配置失败：" + e.getMessage());
         }
-        return true;
-    }
-
-    public static Boolean updateThemeEnableOption(String enable) {
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("UPDATE settings SET value='" + enable + "' WHERE key = 'theme_enable'");
-            DbUtil.close(statement);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return false;
-        }
-        log.debug("updateThemeEnableOption： " + enable);
-        return true;
-    }
-
-    public static Boolean updateThemeOption(String theme) {
-        try {
-            Connection connection = DbUtil.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("UPDATE settings SET value='" + theme + "' WHERE key = 'theme'");
-            DbUtil.close(statement);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return false;
-        }
-        log.debug("updateThemeEnableOption： " + theme);
-        return true;
     }
 }
