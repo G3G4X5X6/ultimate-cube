@@ -152,7 +152,7 @@ public class SftpBrowser extends JPanel {
                         myTree.expandPath(tempPath);
                         log.debug("执行了个寂寞");
                     } else {
-                        DialogUtil.warn("远程路径不存在：\n" + quickPath);
+                        JOptionPane.showMessageDialog(this, "远程路径不存在：\n" + quickPath, "警告",JOptionPane.WARNING_MESSAGE);
                     }
                 },
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
@@ -296,7 +296,7 @@ public class SftpBrowser extends JPanel {
                         }
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
-                        DialogUtil.error(ioException.getMessage());
+                        JOptionPane.showMessageDialog(SftpBrowser.this, ioException.getMessage(), "警告",JOptionPane.WARNING_MESSAGE);
                     }
 
                     EditorPanel editorPanel = new EditorPanel(openFileName, savePath);
@@ -393,7 +393,7 @@ public class SftpBrowser extends JPanel {
                 log.debug("下载文件...");
                 // 至少选中目录，才能开始下载
                 if (myTree.isSelectionEmpty()) {
-                    DialogUtil.warn("请先选择文件目录");
+                    JOptionPane.showMessageDialog(SftpBrowser.this, "请先选择文件目录", "警告",JOptionPane.WARNING_MESSAGE);
                 } else {
                     if (myTable.getSelectedRowCount() < 1) {
                         // TODO 批量下载（单目录、多目录下载）
@@ -488,7 +488,7 @@ public class SftpBrowser extends JPanel {
                 String path = convertTreePathToString(dstPath);
                 if (dir != null) {
                     if (Files.exists(fs.getPath(path + "/" + dir))) {
-                        DialogUtil.warn("已存在目录：" + path + "/" + dir);
+                        JOptionPane.showMessageDialog(SftpBrowser.this, "已存在目录：" + path + "/" + dir, "警告",JOptionPane.WARNING_MESSAGE);
                     } else {
                         Files.createDirectories(fs.getPath(path + "/" + dir));
 
@@ -505,21 +505,21 @@ public class SftpBrowser extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("删除目录");
                 if (myTree.isSelectionEmpty()) {
-                    DialogUtil.warn("请选择删除目录");
+                    JOptionPane.showMessageDialog(SftpBrowser.this, "请选择删除目录", "警告",JOptionPane.WARNING_MESSAGE);
                 } else {
                     TreePath[] dstPath = myTree.getSelectionPaths();
                     for (TreePath treePath : dstPath) {
                         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
                         String path = convertTreePathToString(treePath);
                         if (Files.exists(fs.getPath(path))) {
-                            int yesNo = DialogUtil.yesOrNo(App.mainFrame, "确认删除目录：\n" + path);
+                            int yesNo = DialogUtil.yesOrNo(SftpBrowser.this, "确认删除目录：\n" + path);
                             if (yesNo == 0) {
                                 try {
                                     Files.delete(fs.getPath(path));
                                     myTree.setSelectionPath(myTree.getSelectionPath().getParentPath());
                                     treeModel.removeNodeFromParent(treeNode);
                                 } catch (IOException ioException) {
-                                    DialogUtil.error(ioException.getMessage() + "\n文件夹不为空，无法删除！");
+                                    JOptionPane.showMessageDialog(SftpBrowser.this, ioException.getMessage() + "\n文件夹不为空，无法删除！", "错误",JOptionPane.ERROR_MESSAGE);
                                 }
                             }
                         }
@@ -532,7 +532,7 @@ public class SftpBrowser extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("删除文件");
-                int yesNo = DialogUtil.yesOrNo(App.mainFrame, "确认删除选中文件？");
+                int yesNo = DialogUtil.yesOrNo(SftpBrowser.this, "确认删除选中文件？");
                 if (yesNo == 0) {
                     for (int index : myTable.getSelectedRows()) {
                         String downloadFileName = myTable.getValueAt(index, 0).toString();
@@ -547,9 +547,8 @@ public class SftpBrowser extends JPanel {
                         }
                     }
                     freshTable();
-                } else {
-                    // 取消删除操作
                 }
+
             }
         };
 
@@ -564,7 +563,7 @@ public class SftpBrowser extends JPanel {
                         SshUtil.exec(fs.getClientSession(), "rm -rf " + path);
                     } catch (Exception exception) {
                         exception.printStackTrace();
-                        DialogUtil.error(exception.getMessage());
+                        JOptionPane.showMessageDialog(SftpBrowser.this, exception.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
                     }
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) myTree.getLastSelectedPathComponent();
                     myTree.setSelectionPath(myTree.getSelectionPath().getParentPath());
@@ -803,14 +802,14 @@ public class SftpBrowser extends JPanel {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
-            DialogUtil.error(exception.getMessage());
+            JOptionPane.showMessageDialog(SftpBrowser.this, exception.getMessage(), "错误",JOptionPane.ERROR_MESSAGE);
         }
         myTree.setSelectionPath(path);
         myTree.expandPath(myTree.getSelectionPath());
     }
 
 
-    private class MyTable extends JTable {
+    private static class MyTable extends JTable {
 
     }
 
@@ -859,21 +858,18 @@ public class SftpBrowser extends JPanel {
             /**
              * 节点被选中的监听器
              */
-            this.addTreeSelectionListener(new TreeSelectionListener() {
-                @Override
-                public void valueChanged(TreeSelectionEvent e) {
-                    // 刷新文件列表
-                    if (listFlag.get()) {
-                        listFlag.set(false);
-                        new Thread(() -> {
-                            MainFrame.addWaitProgressBar();
-                            freshTable();
-                            MainFrame.removeWaitProgressBar();
-                            listFlag.set(true);
-                        }).start();
-                    } else {
-                        DialogUtil.warn("已有一个展开任务，请等待！");
-                    }
+            this.addTreeSelectionListener(e -> {
+                // 刷新文件列表
+                if (listFlag.get()) {
+                    listFlag.set(false);
+                    new Thread(() -> {
+                        MainFrame.addWaitProgressBar();
+                        freshTable();
+                        MainFrame.removeWaitProgressBar();
+                        listFlag.set(true);
+                    }).start();
+                } else {
+                    JOptionPane.showMessageDialog(SftpBrowser.this, "已有一个展开任务，请等待！", "警告",JOptionPane.WARNING_MESSAGE);
                 }
             });
 
