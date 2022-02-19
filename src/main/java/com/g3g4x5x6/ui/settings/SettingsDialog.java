@@ -68,7 +68,7 @@ public class SettingsDialog extends JDialog {
 
                 // 保存到文件
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                App.properties.store(new FileOutputStream(ConfigUtil.getPropertiesPath()), "Update on: " + sdf.format(new Date()));
+                ConfigUtil.saveSettingsProperties();
             }
         });
 

@@ -11,6 +11,7 @@ import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.ui.embed.editor.EditorPanel;
 import com.g3g4x5x6.ui.embed.editor.EmbedEditor;
 import com.g3g4x5x6.ui.embed.nuclei.NucleiFrame;
+import com.g3g4x5x6.ui.panels.focus.FocusFrame;
 import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.console.ConsolePane;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
@@ -44,7 +45,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
@@ -373,7 +373,7 @@ public class MainFrame extends JFrame implements MouseListener {
         addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
+                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
@@ -394,6 +394,8 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("专注模式");
+                FocusFrame focusFrame = new FocusFrame();
+                focusFrame.setVisible(true);
             }
         });
 
@@ -458,9 +460,9 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
-        trailing.add(fullScreenBtn);
         trailing.add(nucleiBtn);    // xpack-tools
         trailing.add(editorBtn);
+        trailing.add(fullScreenBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
@@ -494,7 +496,7 @@ public class MainFrame extends JFrame implements MouseListener {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 log.debug(f.getAbsolutePath());
-                                new Thread(() -> SessionUtil.openSshSession(f.getAbsolutePath())).start();
+                                new Thread(() -> SessionUtil.openSshSession(mainTabbedPane, f.getAbsolutePath())).start();
                             }
                         });
                         menuItem.add(tempItem);
@@ -683,7 +685,7 @@ public class MainFrame extends JFrame implements MouseListener {
     // TODO 菜单动作
     private final AbstractAction myNewAction = new AbstractAction("新建会话") {
         public void actionPerformed(final ActionEvent e) {
-            mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(), "新建选项卡", mainTabbedPane.getTabCount());
+            mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
@@ -833,7 +835,8 @@ public class MainFrame extends JFrame implements MouseListener {
                                 "'" + rowStr[10] + "', " + // modified time
                                 "'" + rowStr[11] + "');";  // comment
                         log.debug("sql_session: " + sql_session);
-                        ExcelUtil.importBackup(sql_session);
+                        // TODO
+//                        ExcelUtil.importBackup(sql_session);
                     }
                     for (int i = 0; i <= tagSheet.getLastRowNum(); i++) {
                         String[] rowStr = new String[1];
@@ -844,8 +847,10 @@ public class MainFrame extends JFrame implements MouseListener {
                         String sql_tag = "INSERT INTO tag VALUES (null , " +    // id, 自增
                                 "'" + rowStr[0] + "');";
                         log.debug("sql_tag: " + sql_tag);
-                        if (!rowStr[0].strip().equals("会话标签"))
-                            ExcelUtil.importBackup(sql_tag);
+                        if (!rowStr[0].strip().equals("会话标签")){
+                            // TODO
+//                            ExcelUtil.importBackup(sql_tag);
+                        }
                     }
                     for (int i = 0; i <= relationSheet.getLastRowNum(); i++) {
                         String[] rowStr = new String[2];
@@ -857,7 +862,8 @@ public class MainFrame extends JFrame implements MouseListener {
                                 "'" + rowStr[0] + "', " +
                                 "'" + rowStr[1] + "');";
                         log.debug("sql_relation: " + sql_relation);
-                        ExcelUtil.importBackup(sql_relation);
+                        // TODO
+//                        ExcelUtil.importBackup(sql_relation);
                     }
                 }
             } catch (IOException fileNotFoundException) {
@@ -877,10 +883,10 @@ public class MainFrame extends JFrame implements MouseListener {
             Sheet sessionSheet = workbook.createSheet("session");
             Sheet tagSheet = workbook.createSheet("tag");
             Sheet relationSheet = workbook.createSheet("relation");
-            // 3.写入数据到sheet
-            ExcelUtil.exportSession(sessionSheet);
-            ExcelUtil.exportTag(tagSheet);
-            ExcelUtil.exportRelation(relationSheet);
+            // TODO 3.写入数据到sheet
+//            ExcelUtil.exportSession(sessionSheet);
+//            ExcelUtil.exportTag(tagSheet);
+//            ExcelUtil.exportRelation(relationSheet);
 
             // 4.通过输出流写到文件里去
             FileOutputStream fos = null;
@@ -962,10 +968,3 @@ public class MainFrame extends JFrame implements MouseListener {
     };
 }
 
-/**
- * this.setUndecorated(true);                      //去处边框
- * this.setLayout(null);
- * this.setExtendedState(JFrame.MAXIMIZED_BOTH);   //最大化
- * this.setAlwaysOnTop(true);                      //总在最前面
- * this.setResizable(false);                       //不能改变大小
- */

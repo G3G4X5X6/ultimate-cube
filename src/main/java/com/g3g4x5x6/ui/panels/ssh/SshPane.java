@@ -62,9 +62,9 @@ public class SshPane extends JPanel {
     private String password;
     private String authType = "password";
 
-    public SshPane() {
+    public SshPane(JTabbedPane tabbedPane) {
         this.setLayout(borderLayout);
-        this.mainTabbedPane = MainFrame.mainTabbedPane;
+        this.mainTabbedPane = tabbedPane;
 
         basicSettingPaneTitle = "Basic SSH Settings";
         advancedSettingPaneTitle = "Advanced SSH Settings";
@@ -120,6 +120,7 @@ public class SshPane extends JPanel {
                     // 鸠占鹊巢
                     mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(
+                                    sessionName.getText().equals("")?hostField.getText():sessionName.getText(),
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),

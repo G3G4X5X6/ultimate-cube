@@ -3,6 +3,8 @@ package com.g3g4x5x6.ui.embed.nuclei.panel.connector;
 import com.g3g4x5x6.ui.embed.nuclei.panel.RunningPanel;
 import com.g3g4x5x6.ui.panels.console.CmdSettingsProvider;
 import com.g3g4x5x6.utils.ConfigUtil;
+import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.UIUtil;
@@ -24,16 +26,16 @@ import java.util.Map;
 public class ConsolePanel extends JPanel {
     private NucleiProcessTtyConnector ttyConnector;
 
-    public ConsolePanel(){
+    public ConsolePanel() {
         this.setLayout(new BorderLayout());
         this.add(createTerminal(), BorderLayout.CENTER);
     }
 
-    public void refreshTerminal(){
+    public void refreshTerminal() {
         this.add(createTerminal(), BorderLayout.CENTER);
     }
 
-    public void write(String command){
+    public void write(String command) {
         try {
             ttyConnector.write(command);
         } catch (IOException e) {
@@ -43,7 +45,15 @@ public class ConsolePanel extends JPanel {
 
     private JediTermWidget createTerminal() {
         CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
-        cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
+        cmdSettingsProvider.setDefaultStyle(new TextStyle(
+                TerminalColor.rgb(
+                        UIManager.getColor("Panel.foreground").getRed(),
+                        UIManager.getColor("Panel.foreground").getGreen(),
+                        UIManager.getColor("Panel.foreground").getBlue()),
+                TerminalColor.rgb(
+                        UIManager.getColor("Table.background").getRed(),
+                        UIManager.getColor("Table.background").getGreen(),
+                        UIManager.getColor("Table.background").getBlue())));
         JediTermWidget terminalPanel = new JediTermWidget(110, 45, cmdSettingsProvider);
         terminalPanel.setTtyConnector(createTtyConnector());
         terminalPanel.start();

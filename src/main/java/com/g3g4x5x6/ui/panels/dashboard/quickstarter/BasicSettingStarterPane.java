@@ -169,6 +169,7 @@ public class BasicSettingStarterPane extends JPanel {
                     mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(
                                     hostField.getText(),
+                                    hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
                                     String.valueOf(passField.getPassword()),

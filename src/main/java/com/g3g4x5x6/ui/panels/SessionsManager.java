@@ -6,6 +6,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.ssh.SshPane;
 import com.g3g4x5x6.utils.*;
 import lombok.extern.slf4j.Slf4j;
@@ -51,13 +52,10 @@ public class SessionsManager extends JPanel {
     private String rootPath = ConfigUtil.getWorkPath() + "/sessions/ssh/";
     private String[] columnNames = {"会话名称", "协议", "地址", "端口", "登录用户", "认证类型"}; // 添加<创建时间>
 
-    private Connection connection;
-    private Statement statement;
-
-    public SessionsManager(JTabbedPane mainTabbedPane) {
+    public SessionsManager(JTabbedPane tabbedPane) {
         borderLayout = new BorderLayout();
         this.setLayout(borderLayout);
-        this.mainTabbedPane = mainTabbedPane;
+        this.mainTabbedPane = tabbedPane;
 
         this.splitPane = new JSplitPane();
         this.splitPane.setDividerLocation(200);
@@ -167,7 +165,7 @@ public class SessionsManager extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2){
-                    openSession();
+                    openSession(mainTabbedPane);
                 }
             }
         });
@@ -318,7 +316,7 @@ public class SessionsManager extends JPanel {
                 int index = currentTag.indexOf("/");
                 if (index != -1)
                     category = Path.of(currentTag.substring(index + 1)).toString();
-                SshPane sshPane = new SshPane();
+                SshPane sshPane = new SshPane(MainFrame.mainTabbedPane);
                 sshPane.setCategory(category);
                 mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
@@ -368,7 +366,7 @@ public class SessionsManager extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
-                openSession();
+                openSession(mainTabbedPane);
             }
         };
 
@@ -404,7 +402,7 @@ public class SessionsManager extends JPanel {
 
                         String finalCurrentTag = array[1];
                         new Thread(() -> {
-                            SshPane sshPane = new SshPane();
+                            SshPane sshPane = new SshPane(MainFrame.mainTabbedPane);
                             sshPane.setHostField(jsonObject.getString("sessionAddress"));
                             sshPane.setPortField(jsonObject.getString("sessionPort"));
                             sshPane.setUserField(jsonObject.getString("sessionUser"));
@@ -460,13 +458,13 @@ public class SessionsManager extends JPanel {
         return tempPath.toString();
     }
 
-    private void openSession(){
+    private void openSession(JTabbedPane tabbedPane){
         int[] indexs = sessionTable.getSelectedRows();
         for (int index : indexs) {
             String[] array = getRowFilePath(index);
             File file = new File(array[0]);
             if (file.exists()) {
-                new Thread(() -> SessionUtil.openSshSession(file.getAbsolutePath())).start();
+                new Thread(() -> SessionUtil.openSshSession(tabbedPane, file.getAbsolutePath())).start();
             }
         }
     }

@@ -37,6 +37,7 @@ public class SshTabbedPane extends JTabbedPane {
     private MonitorPane monitorPane;
     private EditorPane editorPane;
 
+    private String title;
     private String host;
     private int port;
     private String user;
@@ -47,7 +48,16 @@ public class SshTabbedPane extends JTabbedPane {
     private ClientSession session;
     private SftpFileSystem sftpFileSystem;
 
-    public SshTabbedPane(String hostField, String portField, String userField, String passField, String privateKey) {
+    public SshTabbedPane(JediTermWidget terminal, SftpBrowser sftp, EditorPane editor, MonitorPane monitor){
+
+        this.addTab("SSH", terminal);
+        this.addTab("SFTP", sftp);
+        this.addTab("Editor", editor);
+        this.addTab("Monitor", monitor);
+    }
+
+    public SshTabbedPane(String title, String hostField, String portField, String userField, String passField, String privateKey) {
+        this.title = title;
         this.host = hostField;
         this.port = Integer.parseInt(portField);
         this.user = userField;
@@ -203,4 +213,23 @@ public class SshTabbedPane extends JTabbedPane {
         this.monitorPane.setSession(session);
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public JediTermWidget getSshPane() {
+        return sshPane;
+    }
+
+    public SftpBrowser getSftpBrowser() {
+        return sftpBrowser;
+    }
+
+    public MonitorPane getMonitorPane() {
+        return monitorPane;
+    }
+
+    public EditorPane getEditorPane() {
+        return editorPane;
+    }
 }

@@ -12,9 +12,9 @@ import java.awt.*;
 public class NewTabbedPane extends JPanel {
     // TODO 新建选项卡面板： 会话列表、新增会话、其他
 
-    public NewTabbedPane() {
+    public NewTabbedPane(JTabbedPane tabbedPane) {
         this.setLayout(new BorderLayout());
 
-        this.add(new CreateSessionTabbedPane(MainFrame.mainTabbedPane), BorderLayout.CENTER);
+        this.add(new CreateSessionTabbedPane(tabbedPane), BorderLayout.CENTER);
     }
 }

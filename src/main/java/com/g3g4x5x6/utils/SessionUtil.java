@@ -8,6 +8,7 @@ import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
+import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +22,7 @@ public class SessionUtil {
 
     }
 
-    public static void openSshSession(String sessionFile){
+    public static void openSshSession(JTabbedPane tabbedPane, String sessionFile){
         try {
             File file = new File(sessionFile);
             if (!sessionFile.contains("recent_ssh_")){
@@ -53,11 +54,11 @@ public class SessionUtil {
             String loginType = jsonObject.getString("sessionLoginType");
             if (SshUtil.testConnection(host, port) == 1) {
                 String defaultTitle = session.equals("") ? "未命名" : session;
-                MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                tabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                         // TODO 传会话信息: SessionInfo.java
-                        new SshTabbedPane(host, port, user, pass, privateKey)
+                        new SshTabbedPane(session, host, port, user, pass, privateKey)
                 );
-                MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
+                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
             }
         } catch (IOException e) {
             e.printStackTrace();

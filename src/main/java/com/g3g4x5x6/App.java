@@ -4,7 +4,6 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.utils.ConfigUtil;
-import com.g3g4x5x6.utils.DbUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
@@ -37,8 +36,6 @@ public class App {
         CheckUtil.checkEnv();
         // 加载自定义日志配置
         initLog4j();
-        // 初始化数据库
-        DbUtil.createDatabase();
         // 启动主程序
         SwingUtilities.invokeLater(App::createGUI);
     }
@@ -195,7 +192,7 @@ public class App {
     private static void initLog4j() {
         try {
             if (App.properties.getProperty("app.log.setting.enable").equalsIgnoreCase("true")){
-                PropertyConfigurator.configure(App.properties.getProperty("app.log.setting.path").replace("{workspace}", ConfigUtil.getWorkPath()));
+                PropertyConfigurator.configureAndWatch(App.properties.getProperty("app.log.setting.path").replace("{workspace}", ConfigUtil.getWorkPath()));
                 log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<已加载自定义日志配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             }
         } catch (Exception e) {

@@ -104,7 +104,15 @@ public class SerialSettingsProvider implements SettingsProvider {
 
     @Override
     public TextStyle getDefaultStyle() {
-        return ConfigUtil.getTextStyle();
+        return new TextStyle(
+                TerminalColor.rgb(
+                        UIManager.getColor("Panel.foreground").getRed(),
+                        UIManager.getColor("Panel.foreground").getGreen(),
+                        UIManager.getColor("Panel.foreground").getBlue()),
+                TerminalColor.rgb(
+                        UIManager.getColor("Table.background").getRed(),
+                        UIManager.getColor("Table.background").getGreen(),
+                        UIManager.getColor("Table.background").getBlue()));
     }
 
 //    public void setDefaultStyle(TextStyle textStyle){

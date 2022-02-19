@@ -2,11 +2,15 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
+import static com.g3g4x5x6.App.properties;
+
+@Slf4j
 public class ShowEditorPane {
     public static void main(String[] args) {
         // 启动主界面
@@ -19,15 +23,17 @@ public class ShowEditorPane {
     public static void createGUI() {
         // 配置主题皮肤
         try {
-            if (ConfigUtil.isEnableTheme()) {
-                Class themeClass = App.class.getClassLoader().loadClass(ConfigUtil.getThemeClass());
-                UIManager.setLookAndFeel((LookAndFeel) themeClass.getConstructor().newInstance());
-            } else {
+            if (properties.getProperty("app.theme.enable").equalsIgnoreCase("false")) {
                 UIManager.setLookAndFeel(new FlatLightLaf());
+            } else {
+                UIManager.setLookAndFeel(properties.getProperty("app.theme.class"));
+                log.debug("加载主题：" + properties.getProperty("app.theme.class"));
             }
         } catch (Exception ex) {
-
+            ex.printStackTrace();
+            log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
+        UIManager.put( "TextComponent.arc", 5 );
 
         // 启动主界面
         JFrame mainFrame = new JFrame();

@@ -6,6 +6,8 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.jediterm.pty.PtyProcessTtyConnector;
+import com.jediterm.terminal.TerminalColor;
+import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.UIUtil;
@@ -66,7 +68,15 @@ public class ConsolePane extends JPanel {
         new Thread(() -> {
             progressBar.setVisible(true);
             CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
-            cmdSettingsProvider.setDefaultStyle(ConfigUtil.getTextStyle());
+            cmdSettingsProvider.setDefaultStyle(new TextStyle(
+                    TerminalColor.rgb(
+                            UIManager.getColor("Panel.foreground").getRed(),
+                            UIManager.getColor("Panel.foreground").getGreen(),
+                            UIManager.getColor("Panel.foreground").getBlue()),
+                    TerminalColor.rgb(
+                            UIManager.getColor("Table.background").getRed(),
+                            UIManager.getColor("Table.background").getGreen(),
+                            UIManager.getColor("Table.background").getBlue())));
             JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
             terminalPanel.setTtyConnector(createTtyConnector());
             terminalPanel.start();

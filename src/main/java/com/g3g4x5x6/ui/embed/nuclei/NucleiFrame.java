@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import static com.formdev.flatlaf.FlatClientProperties.*;
+import static com.g3g4x5x6.App.properties;
 
 @Slf4j
 public class NucleiFrame extends JFrame {
@@ -212,13 +213,16 @@ public class NucleiFrame extends JFrame {
 
     private static void initFlatLaf() {
         try {
-            if (ConfigUtil.isEnableTheme()) {
-                UIManager.setLookAndFeel(ConfigUtil.getThemeClass());
-            } else {
+            if (properties.getProperty("app.theme.enable").equalsIgnoreCase("false")) {
                 UIManager.setLookAndFeel(new FlatLightLaf());
+            } else {
+                UIManager.setLookAndFeel(properties.getProperty("app.theme.class"));
+                log.debug("加载主题：" + properties.getProperty("app.theme.class"));
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
+        UIManager.put( "TextComponent.arc", 5 );
     }
 }
