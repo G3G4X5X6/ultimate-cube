@@ -13,6 +13,7 @@ public class CheckUtil {
         // 检查程序工作目录
         String workspace = ConfigUtil.getWorkPath();
         String[] pathArray = new String[]{
+                workspace + "/config/theme",                // 检查终端配色目录
                 workspace + "/note",                        // 检查备忘笔记目录
                 workspace + "/export",                      // 检查会话导出目录
                 workspace + "/temp",                        // 检查缓存目录

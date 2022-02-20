@@ -12,16 +12,6 @@ public class FileUtil {
 
     }
 
-    public static void delDir(File file) {
-        if (file.isDirectory()) {
-            File zFiles[] = file.listFiles();
-            for (File file2 : zFiles) {
-                delDir(file2);
-            }
-        }
-        file.delete();
-    }
-
     public static void traverseFolder(File file, LinkedList<File> filesList) {
         if (file.exists()) {
             if (file.isDirectory()) {

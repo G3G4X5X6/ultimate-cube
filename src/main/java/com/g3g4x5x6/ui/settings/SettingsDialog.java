@@ -23,6 +23,7 @@ import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TAB_ALIGNMENT
 public class SettingsDialog extends JDialog {
     private final BasicPanel basicPanel = new BasicPanel();
     private final BehaviorPanel behaviorPanel = new BehaviorPanel();
+    private final TerminalPanel terminalPanel = new TerminalPanel();
 
     public SettingsDialog() {
         super(App.mainFrame);
@@ -65,6 +66,7 @@ public class SettingsDialog extends JDialog {
                 // 保存到列表
                 basicPanel.save();
                 behaviorPanel.save();
+                terminalPanel.save();
 
                 // 保存到文件
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -99,7 +101,7 @@ public class SettingsDialog extends JDialog {
         tabbedPane.addTab("基本设置", basicPanel);
         if (vertical) {
             tabbedPane.addTab("行为设置", behaviorPanel);
-            tabbedPane.addTab("终端设置", null);
+            tabbedPane.addTab("终端设置", terminalPanel);
             tabbedPane.addTab("运行环境", null);
         }
     }

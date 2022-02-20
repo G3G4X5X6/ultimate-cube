@@ -29,6 +29,10 @@ public class ConfigUtil {
         return work;
     }
 
+    public static String getThemePath(){
+        return Path.of(getWorkPath() + "/config/theme/").toString();
+    }
+
     public static String getHomePath() {
         return Path.of(System.getProperties().getProperty("user.home")).toString();
     }
