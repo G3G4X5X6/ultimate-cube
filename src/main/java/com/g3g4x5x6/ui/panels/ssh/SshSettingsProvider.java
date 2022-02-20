@@ -78,8 +78,11 @@ public class SshSettingsProvider implements SettingsProvider {
         return new TerminalActionPresentation("Select All", Collections.emptyList());
     }
 
+    private ColorScheme colorScheme = new ColorScheme("Tomorrow");
+
     public ColorPalette getTerminalColorPalette() {
-        return UIUtil.isWindows ? ColorPaletteImpl.WINDOWS_PALETTE : ColorPaletteImpl.XTERM_PALETTE;
+//        return UIUtil.isWindows ? ColorPaletteImpl.WINDOWS_PALETTE : ColorPaletteImpl.XTERM_PALETTE;
+        return new MyColorPaletteImpl(colorScheme);
     }
 
     public Font getTerminalFont() {
@@ -92,7 +95,7 @@ public class SshSettingsProvider implements SettingsProvider {
             fontName = "Monospaced";
         }
 
-        return new Font(fontName, Font.PLAIN, (int)this.getTerminalFontSize());
+        return new Font(fontName, Font.PLAIN, (int) this.getTerminalFontSize());
     }
 
     public float getTerminalFontSize() {
@@ -101,20 +104,29 @@ public class SshSettingsProvider implements SettingsProvider {
 
     @Override
     public TextStyle getDefaultStyle() {
-//        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
         return new TextStyle(
                 TerminalColor.rgb(
-                        UIManager.getColor("Panel.foreground").getRed(),
-                        UIManager.getColor("Panel.foreground").getGreen(),
-                        UIManager.getColor("Panel.foreground").getBlue()),
+                        colorScheme.getForegroundColor().getRed(),
+                        colorScheme.getForegroundColor().getGreen(),
+                        colorScheme.getForegroundColor().getBlue()),
                 TerminalColor.rgb(
-                        UIManager.getColor("Table.background").getRed(),
-                        UIManager.getColor("Table.background").getGreen(),
-                        UIManager.getColor("Table.background").getBlue()));
+                        colorScheme.getBackgroundColor().getRed(),
+                        colorScheme.getBackgroundColor().getGreen(),
+                        colorScheme.getBackgroundColor().getBlue())
+        );
     }
 
     public TextStyle getSelectionColor() {
-        return new TextStyle(TerminalColor.WHITE, TerminalColor.rgb(82, 109, 165));
+        return new TextStyle(
+                TerminalColor.rgb(
+                        colorScheme.getForegroundColor().getRed(),
+                        colorScheme.getForegroundColor().getGreen(),
+                        colorScheme.getForegroundColor().getBlue()),
+                TerminalColor.rgb(
+                        colorScheme.getSelectedColor().getRed(),
+                        colorScheme.getSelectedColor().getGreen(),
+                        colorScheme.getSelectedColor().getBlue())
+        );
     }
 
     public TextStyle getFoundPatternColor() {
