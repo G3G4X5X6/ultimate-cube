@@ -24,6 +24,11 @@ public class SshSettingsProvider implements SettingsProvider {
         return new MyColorPaletteImpl(colorScheme);
     }
 
+    @Override
+    public float getLineSpacing() {
+        return Float.parseFloat(App.properties.getProperty("terminal.line.space"));
+    }
+
     @SneakyThrows
     public Font getTerminalFont() {
         String fontName;
