@@ -27,24 +27,7 @@ public class ColorScheme {
     private Color brightMagenta = new Color(0xff00ff);  //Magenta
     private Color brightCyan = new Color(0x00ffff);     //Cyan
     private Color brightWhite = new Color(0xffffff);    //White
-    private Color[] colors = new Color[]{
-            black,
-            red,
-            green,
-            yellow,
-            blue,
-            magenta,
-            cyan,
-            white,
-            brightBlack,
-            brightRed,
-            brightGreen,
-            brightYellow,
-            brightBlue,
-            brightMagenta,
-            brightCyan,
-            brightWhite
-    };
+    private Color[] colors;
     private Color backgroundColor = new Color(0xffffff);
     private Color foregroundColor = new Color(0x4d4d4c);
     private Color cursorColor = new Color(0x4d4d4c);
@@ -83,15 +66,24 @@ public class ColorScheme {
         brightCyan = new Color(Integer.parseInt(ansiColors.getString(14).replace("#", ""), 16));
         brightWhite = new Color(Integer.parseInt(ansiColors.getString(15).replace("#", ""), 16));
 
-
-        System.out.println(backgroundColor);
-        System.out.println(foregroundColor);
-        System.out.println(cursorColor);
-        System.out.println(selectedColor);
-
-        System.out.println(black);
-        System.out.println(red);
-
+        colors = new Color[]{
+                black,
+                red,
+                green,
+                yellow,
+                blue,
+                magenta,
+                cyan,
+                white,
+                brightBlack,
+                brightRed,
+                brightGreen,
+                brightYellow,
+                brightBlue,
+                brightMagenta,
+                brightCyan,
+                brightWhite
+        };
     }
 
     public static void main(String[] args) {
