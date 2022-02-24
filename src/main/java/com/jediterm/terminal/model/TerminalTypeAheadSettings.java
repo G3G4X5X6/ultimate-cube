@@ -7,31 +7,31 @@ import java.util.concurrent.TimeUnit;
 
 public final class TerminalTypeAheadSettings {
 
-  public static final com.jediterm.terminal.model.TerminalTypeAheadSettings DEFAULT = new com.jediterm.terminal.model.TerminalTypeAheadSettings(
-    true,
-    TimeUnit.MILLISECONDS.toNanos(100),
-    new TextStyle(new TerminalColor(8), null)
-  );
+    public static final com.jediterm.terminal.model.TerminalTypeAheadSettings DEFAULT = new com.jediterm.terminal.model.TerminalTypeAheadSettings(
+            true,
+            TimeUnit.MILLISECONDS.toNanos(100),
+            new TextStyle(new TerminalColor(8), null)
+    );
 
-  private final boolean myEnabled;
-  private final long myLatencyThreshold;
-  private final TextStyle myTypeAheadStyle;
+    private final boolean myEnabled;
+    private final long myLatencyThreshold;
+    private final TextStyle myTypeAheadStyle;
 
-  public TerminalTypeAheadSettings(boolean enabled, long latencyThreshold, TextStyle typeAheadColor) {
-    myEnabled = enabled;
-    myLatencyThreshold = latencyThreshold;
-    myTypeAheadStyle = typeAheadColor;
-  }
+    public TerminalTypeAheadSettings(boolean enabled, long latencyThreshold, TextStyle typeAheadColor) {
+        myEnabled = enabled;
+        myLatencyThreshold = latencyThreshold;
+        myTypeAheadStyle = typeAheadColor;
+    }
 
-  public boolean isEnabled() {
-    return myEnabled;
-  }
+    public boolean isEnabled() {
+        return myEnabled;
+    }
 
-  public long getLatencyThreshold() {
-    return myLatencyThreshold;
-  }
+    public long getLatencyThreshold() {
+        return myLatencyThreshold;
+    }
 
-  public TextStyle getTypeAheadStyle() {
-    return myTypeAheadStyle;
-  }
+    public TextStyle getTypeAheadStyle() {
+        return myTypeAheadStyle;
+    }
 }

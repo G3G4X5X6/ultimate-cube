@@ -1323,7 +1323,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         boolean bold = style.hasOption(Option.BOLD);
         boolean italic = style.hasOption(Option.ITALIC);
 
-        if (isChinese(c) && App.properties.getProperty("terminal.font.zh.enable").equalsIgnoreCase("true")){
+        if (isChinese(c) && App.properties.getProperty("terminal.font.zh.enable").equalsIgnoreCase("true")) {
             Font cnFont = new Font(App.properties.getProperty("terminal.font.zh"), Font.PLAIN, (int) mySettingsProvider.getTerminalFontSize());
             Font cnBoldItalicFont = cnFont.deriveFont(Font.BOLD | Font.ITALIC);
             Font cnBoldFont = cnFont.deriveFont(Font.BOLD);

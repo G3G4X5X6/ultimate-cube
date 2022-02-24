@@ -32,633 +32,633 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Slf4j
 public class JediTermWidget extends JPanel implements TerminalSession, TerminalWidget, TerminalActionProvider {
 
-  protected final TerminalPanel myTerminalPanel;
-  protected final JScrollBar myScrollBar;
-  protected final JediTerminal myTerminal;
-  protected final AtomicBoolean mySessionRunning = new AtomicBoolean();
-  private final JediTermTypeAheadModel myTypeAheadTerminalModel;
-  private final TerminalTypeAheadManager myTypeAheadManager;
-  private SearchComponent myFindComponent;
-  private final PreConnectHandler myPreConnectHandler;
-  private TtyConnector myTtyConnector;
-  private TerminalStarter myTerminalStarter;
-  private Thread myEmuThread;
-  protected final SettingsProvider mySettingsProvider;
-  private TerminalActionProvider myNextActionProvider;
-  private JLayeredPane myInnerPanel;
-  private final TextProcessing myTextProcessing;
-  private final List<TerminalWidgetListener> myListeners = new CopyOnWriteArrayList<>();
+    protected final TerminalPanel myTerminalPanel;
+    protected final JScrollBar myScrollBar;
+    protected final JediTerminal myTerminal;
+    protected final AtomicBoolean mySessionRunning = new AtomicBoolean();
+    private final JediTermTypeAheadModel myTypeAheadTerminalModel;
+    private final TerminalTypeAheadManager myTypeAheadManager;
+    private SearchComponent myFindComponent;
+    private final PreConnectHandler myPreConnectHandler;
+    private TtyConnector myTtyConnector;
+    private TerminalStarter myTerminalStarter;
+    private Thread myEmuThread;
+    protected final SettingsProvider mySettingsProvider;
+    private TerminalActionProvider myNextActionProvider;
+    private JLayeredPane myInnerPanel;
+    private final TextProcessing myTextProcessing;
+    private final List<TerminalWidgetListener> myListeners = new CopyOnWriteArrayList<>();
 
-  public JediTermWidget(@NotNull SettingsProvider settingsProvider) {
-    this(80, 24, settingsProvider);
-  }
-
-  public JediTermWidget(Dimension dimension, SettingsProvider settingsProvider) {
-    this(dimension.width, dimension.height, settingsProvider);
-  }
-
-  public JediTermWidget(int columns, int lines, SettingsProvider settingsProvider) {
-    super(new BorderLayout());
-
-    mySettingsProvider = settingsProvider;
-
-    StyleState styleState = createDefaultStyle();
-
-    myTextProcessing = new TextProcessing(settingsProvider.getHyperlinkColor(),
-      settingsProvider.getHyperlinkHighlightingMode());
-
-    TerminalTextBuffer terminalTextBuffer = new TerminalTextBuffer(columns, lines, styleState, settingsProvider.getBufferMaxLinesCount(), myTextProcessing);
-    myTextProcessing.setTerminalTextBuffer(terminalTextBuffer);
-
-    myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
-    myTerminal = new JediTerminal(myTerminalPanel, terminalTextBuffer, styleState);
-
-    myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
-    myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
-    JediTermDebouncerImpl typeAheadDebouncer =
-      new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY);
-    myTypeAheadManager.setClearPredictionsDebouncer(typeAheadDebouncer);
-    myTerminalPanel.setTypeAheadManager(myTypeAheadManager);
-
-    myTerminal.setModeEnabled(TerminalMode.AltSendsEscape, mySettingsProvider.altSendsEscape());
-
-    myTerminalPanel.addTerminalMouseListener(myTerminal);
-    myTerminalPanel.setNextProvider(this);
-    myTerminalPanel.setCoordAccessor(myTerminal);
-
-    myPreConnectHandler = createPreConnectHandler(myTerminal);
-    myTerminalPanel.addCustomKeyListener(myPreConnectHandler);
-    myScrollBar = createScrollBar();
-
-    myInnerPanel = new JLayeredPane();
-    myInnerPanel.setFocusable(false);
-    setFocusable(false);
-
-    myInnerPanel.setLayout(new TerminalLayout());
-    myInnerPanel.add(myTerminalPanel, TerminalLayout.TERMINAL);
-    myInnerPanel.add(myScrollBar, TerminalLayout.SCROLL);
-
-    add(myInnerPanel, BorderLayout.CENTER);
-
-    myScrollBar.setModel(myTerminalPanel.getVerticalScrollModel());
-    mySessionRunning.set(false);
-
-    myTerminalPanel.init(myScrollBar);
-
-    myTerminalPanel.setVisible(true);
-  }
-
-  protected JScrollBar createScrollBar() {
-    return new JScrollBar();
-  }
-
-  protected StyleState createDefaultStyle() {
-    StyleState styleState = new StyleState();
-    styleState.setDefaultStyle(mySettingsProvider.getDefaultStyle());
-    return styleState;
-  }
-
-  protected TerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
-    return new TerminalPanel(settingsProvider, terminalTextBuffer, styleState);
-  }
-
-  protected PreConnectHandler createPreConnectHandler(JediTerminal terminal) {
-    return new PreConnectHandler(terminal);
-  }
-
-  public TerminalDisplay getTerminalDisplay() {
-    return getTerminalPanel();
-  }
-
-  public TerminalPanel getTerminalPanel() {
-    return myTerminalPanel;
-  }
-
-  public TerminalTypeAheadManager getTypeAheadManager() {
-    return myTypeAheadManager;
-  }
-
-  public void setTtyConnector(@NotNull TtyConnector ttyConnector) {
-    myTtyConnector = ttyConnector;
-
-    TypeAheadTerminalModel.ShellType shellType;
-    if (ttyConnector instanceof ProcessTtyConnector) {
-      List<String> commandLine = ((ProcessTtyConnector) myTtyConnector).getCommandLine();
-      shellType = TypeAheadTerminalModel.commandLineToShellType(commandLine);
-    } else {
-      shellType = TypeAheadTerminalModel.ShellType.Unknown;
+    public JediTermWidget(@NotNull SettingsProvider settingsProvider) {
+        this(80, 24, settingsProvider);
     }
-    myTypeAheadTerminalModel.setShellType(shellType);
-    myTerminalStarter = createTerminalStarter(myTerminal, myTtyConnector);
-    myTerminalPanel.setTerminalStarter(myTerminalStarter);
-  }
 
-  protected TerminalStarter createTerminalStarter(@NotNull JediTerminal terminal, @NotNull TtyConnector connector) {
-    return new TerminalStarter(terminal, connector,
-      new TtyBasedArrayDataStream(connector, myTypeAheadManager::onTerminalStateChanged), myTypeAheadManager);
-  }
-
-  @Override
-  public TtyConnector getTtyConnector() {
-    return myTtyConnector;
-  }
-
-  @Override
-  public Terminal getTerminal() {
-    return myTerminal;
-  }
-
-  @Override
-  public String getSessionName() {
-    if (myTtyConnector != null) {
-      return myTtyConnector.getName();
-    } else {
-      return "Session";
+    public JediTermWidget(Dimension dimension, SettingsProvider settingsProvider) {
+        this(dimension.width, dimension.height, settingsProvider);
     }
-  }
 
-  public void start() {
-    if (!mySessionRunning.get()) {
-      myEmuThread = new Thread(new EmulatorTask());
-      myEmuThread.start();
-    } else {
-      log.error("Should not try to start session again at this point... ");
-    }
-  }
+    public JediTermWidget(int columns, int lines, SettingsProvider settingsProvider) {
+        super(new BorderLayout());
 
-  public void stop() {
-    if (mySessionRunning.get() && myEmuThread != null) {
-      myEmuThread.interrupt();
-    }
-  }
+        mySettingsProvider = settingsProvider;
 
-  public boolean isSessionRunning() {
-    return mySessionRunning.get();
-  }
+        StyleState styleState = createDefaultStyle();
 
-  public String getBufferText(DebugBufferType type, int stateIndex) {
-    return type.getValue(this, stateIndex);
-  }
+        myTextProcessing = new TextProcessing(settingsProvider.getHyperlinkColor(),
+                settingsProvider.getHyperlinkHighlightingMode());
 
-  @Override
-  public TerminalTextBuffer getTerminalTextBuffer() {
-    return myTerminalPanel.getTerminalTextBuffer();
-  }
+        TerminalTextBuffer terminalTextBuffer = new TerminalTextBuffer(columns, lines, styleState, settingsProvider.getBufferMaxLinesCount(), myTextProcessing);
+        myTextProcessing.setTerminalTextBuffer(terminalTextBuffer);
 
-  @Override
-  public boolean requestFocusInWindow() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        myTerminalPanel.requestFocusInWindow();
-      }
-    });
-    return super.requestFocusInWindow();
-  }
+        myTerminalPanel = createTerminalPanel(mySettingsProvider, styleState, terminalTextBuffer);
+        myTerminal = new JediTerminal(myTerminalPanel, terminalTextBuffer, styleState);
 
-  @Override
-  public void requestFocus() {
-    myTerminalPanel.requestFocus();
-  }
+        myTypeAheadTerminalModel = new JediTermTypeAheadModel(myTerminal, terminalTextBuffer, settingsProvider);
+        myTypeAheadManager = new TerminalTypeAheadManager(myTypeAheadTerminalModel);
+        JediTermDebouncerImpl typeAheadDebouncer =
+                new JediTermDebouncerImpl(myTypeAheadManager::debounce, TerminalTypeAheadManager.MAX_TERMINAL_DELAY);
+        myTypeAheadManager.setClearPredictionsDebouncer(typeAheadDebouncer);
+        myTerminalPanel.setTypeAheadManager(myTypeAheadManager);
 
-  public boolean canOpenSession() {
-    return !isSessionRunning();
-  }
+        myTerminal.setModeEnabled(TerminalMode.AltSendsEscape, mySettingsProvider.altSendsEscape());
 
-  @Override
-  public void setTerminalPanelListener(TerminalPanelListener terminalPanelListener) {
-    myTerminalPanel.setTerminalPanelListener(terminalPanelListener);
-  }
+        myTerminalPanel.addTerminalMouseListener(myTerminal);
+        myTerminalPanel.setNextProvider(this);
+        myTerminalPanel.setCoordAccessor(myTerminal);
 
-  @Override
-  public TerminalSession getCurrentSession() {
-    return this;
-  }
-
-  @Override
-  public com.jediterm.terminal.ui.JediTermWidget createTerminalSession(TtyConnector ttyConnector) {
-    setTtyConnector(ttyConnector);
-    return this;
-  }
-
-  @Override
-  public JComponent getComponent() {
-    return this;
-  }
-
-  @Override
-  public void close() {
-    stop();
-    if (myTerminalStarter != null) {
-      myTerminalStarter.close();
-    }
-    myTerminalPanel.dispose();
-  }
-
-  @Override
-  public List<TerminalAction> getActions() {
-    return List.of(new TerminalAction(mySettingsProvider.getFindActionPresentation(),
-      keyEvent -> {
-        showFindText();
-        return true;
-      }).withMnemonicKey(KeyEvent.VK_F));
-  }
-
-  private void showFindText() {
-    if (myFindComponent == null) {
-      myFindComponent = createSearchComponent();
-
-      final JComponent component = myFindComponent.getComponent();
-      myInnerPanel.add(component, TerminalLayout.FIND);
-      myInnerPanel.moveToFront(component);
-      myInnerPanel.revalidate();
-      myInnerPanel.repaint();
-      component.requestFocus();
-
-      myFindComponent.addDocumentChangeListener(new DocumentListener() {
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-          textUpdated();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-          textUpdated();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-          textUpdated();
-        }
-
-        private void textUpdated() {
-          findText(myFindComponent.getText(), myFindComponent.ignoreCase());
-        }
-      });
-
-      myFindComponent.addIgnoreCaseListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          findText(myFindComponent.getText(), myFindComponent.ignoreCase());
-        }
-      });
-
-      myFindComponent.addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyPressed(KeyEvent keyEvent) {
-          if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            myInnerPanel.remove(component);
-            myInnerPanel.revalidate();
-            myInnerPanel.repaint();
-            myFindComponent = null;
-            myTerminalPanel.setFindResult(null);
-            myTerminalPanel.requestFocusInWindow();
-          } else if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER || keyEvent.getKeyCode() == KeyEvent.VK_UP) {
-            myFindComponent.nextFindResultItem(myTerminalPanel.selectNextFindResultItem());
-          } else if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
-            myFindComponent.prevFindResultItem(myTerminalPanel.selectPrevFindResultItem());
-          } else {
-            super.keyPressed(keyEvent);
-          }
-        }
-      });
-    } else {
-      myFindComponent.getComponent().requestFocusInWindow();
-    }
-  }
-
-  protected SearchComponent createSearchComponent() {
-    return new SearchPanel();
-  }
-
-  protected interface SearchComponent {
-    String getText();
-
-    boolean ignoreCase();
-
-    JComponent getComponent();
-
-    void addDocumentChangeListener(DocumentListener listener);
-
-    void addKeyListener(KeyListener listener);
-
-    void addIgnoreCaseListener(ItemListener listener);
-
-    void onResultUpdated(FindResult results);
-
-    void nextFindResultItem(FindItem selectedItem);
-
-    void prevFindResultItem(FindItem selectedItem);
-  }
-
-  private void findText(String text, boolean ignoreCase) {
-    FindResult results = myTerminal.searchInTerminalTextBuffer(text, ignoreCase);
-    myTerminalPanel.setFindResult(results);
-    myFindComponent.onResultUpdated(results);
-    myScrollBar.repaint();
-  }
-
-  @Override
-  public TerminalActionProvider getNextProvider() {
-    return myNextActionProvider;
-  }
-
-  public void setNextProvider(TerminalActionProvider actionProvider) {
-    this.myNextActionProvider = actionProvider;
-  }
-
-  class EmulatorTask implements Runnable {
-    public void run() {
-      try {
-        mySessionRunning.set(true);
-        Thread.currentThread().setName("Connector-" + myTtyConnector.getName());
-        if (myTtyConnector.init(myPreConnectHandler)) {
-          myTerminalPanel.addCustomKeyListener(myTerminalPanel.getTerminalKeyListener());
-          myTerminalPanel.removeCustomKeyListener(myPreConnectHandler);
-          myTerminalStarter.start();
-        }
-      } catch (Exception e) {
-        log.error("Exception running com.jediterm.terminal", e);
-      } finally {
-        try {
-          myTtyConnector.close();
-        } catch (Exception e) {
-        }
-        mySessionRunning.set(false);
-        for (TerminalWidgetListener listener : myListeners) {
-          listener.allSessionsClosed(com.jediterm.terminal.ui.JediTermWidget.this);
-        }
+        myPreConnectHandler = createPreConnectHandler(myTerminal);
         myTerminalPanel.addCustomKeyListener(myPreConnectHandler);
-        myTerminalPanel.removeCustomKeyListener(myTerminalPanel.getTerminalKeyListener());
-      }
+        myScrollBar = createScrollBar();
+
+        myInnerPanel = new JLayeredPane();
+        myInnerPanel.setFocusable(false);
+        setFocusable(false);
+
+        myInnerPanel.setLayout(new TerminalLayout());
+        myInnerPanel.add(myTerminalPanel, TerminalLayout.TERMINAL);
+        myInnerPanel.add(myScrollBar, TerminalLayout.SCROLL);
+
+        add(myInnerPanel, BorderLayout.CENTER);
+
+        myScrollBar.setModel(myTerminalPanel.getVerticalScrollModel());
+        mySessionRunning.set(false);
+
+        myTerminalPanel.init(myScrollBar);
+
+        myTerminalPanel.setVisible(true);
     }
-  }
 
-  public TerminalStarter getTerminalStarter() {
-    return myTerminalStarter;
-  }
+    protected JScrollBar createScrollBar() {
+        return new JScrollBar();
+    }
 
-  public class SearchPanel extends JPanel implements SearchComponent {
+    protected StyleState createDefaultStyle() {
+        StyleState styleState = new StyleState();
+        styleState.setDefaultStyle(mySettingsProvider.getDefaultStyle());
+        return styleState;
+    }
 
-    private final JTextField myTextField = new JTextField();
-    private final JLabel label = new JLabel();
-    private final JButton prev;
-    private final JButton next;
-    private final JCheckBox ignoreCaseCheckBox = new JCheckBox("Ignore Case", true);
+    protected TerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider, @NotNull StyleState styleState, @NotNull TerminalTextBuffer terminalTextBuffer) {
+        return new TerminalPanel(settingsProvider, terminalTextBuffer, styleState);
+    }
 
-    public SearchPanel() {
-      next = createNextButton();
-      next.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          nextFindResultItem(myTerminalPanel.selectNextFindResultItem());
+    protected PreConnectHandler createPreConnectHandler(JediTerminal terminal) {
+        return new PreConnectHandler(terminal);
+    }
+
+    public TerminalDisplay getTerminalDisplay() {
+        return getTerminalPanel();
+    }
+
+    public TerminalPanel getTerminalPanel() {
+        return myTerminalPanel;
+    }
+
+    public TerminalTypeAheadManager getTypeAheadManager() {
+        return myTypeAheadManager;
+    }
+
+    public void setTtyConnector(@NotNull TtyConnector ttyConnector) {
+        myTtyConnector = ttyConnector;
+
+        TypeAheadTerminalModel.ShellType shellType;
+        if (ttyConnector instanceof ProcessTtyConnector) {
+            List<String> commandLine = ((ProcessTtyConnector) myTtyConnector).getCommandLine();
+            shellType = TypeAheadTerminalModel.commandLineToShellType(commandLine);
+        } else {
+            shellType = TypeAheadTerminalModel.ShellType.Unknown;
         }
-      });
+        myTypeAheadTerminalModel.setShellType(shellType);
+        myTerminalStarter = createTerminalStarter(myTerminal, myTtyConnector);
+        myTerminalPanel.setTerminalStarter(myTerminalStarter);
+    }
 
-      prev = createPrevButton();
-      prev.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          prevFindResultItem(myTerminalPanel.selectPrevFindResultItem());
+    protected TerminalStarter createTerminalStarter(@NotNull JediTerminal terminal, @NotNull TtyConnector connector) {
+        return new TerminalStarter(terminal, connector,
+                new TtyBasedArrayDataStream(connector, myTypeAheadManager::onTerminalStateChanged), myTypeAheadManager);
+    }
+
+    @Override
+    public TtyConnector getTtyConnector() {
+        return myTtyConnector;
+    }
+
+    @Override
+    public Terminal getTerminal() {
+        return myTerminal;
+    }
+
+    @Override
+    public String getSessionName() {
+        if (myTtyConnector != null) {
+            return myTtyConnector.getName();
+        } else {
+            return "Session";
         }
-      });
-
-      myTextField.setPreferredSize(new Dimension(
-        myTerminalPanel.myCharSize.width * 30,
-        myTerminalPanel.myCharSize.height + 3));
-      myTextField.setEditable(true);
-
-      updateLabel(null);
-
-      add(myTextField);
-      add(ignoreCaseCheckBox);
-      add(label);
-      add(next);
-      add(prev);
-
-      setOpaque(true);
     }
 
-    protected JButton createNextButton() {
-      return new BasicArrowButton(SwingConstants.NORTH);
+    public void start() {
+        if (!mySessionRunning.get()) {
+            myEmuThread = new Thread(new EmulatorTask());
+            myEmuThread.start();
+        } else {
+            log.error("Should not try to start session again at this point... ");
+        }
     }
 
-    protected JButton createPrevButton() {
-      return new BasicArrowButton(SwingConstants.SOUTH);
+    public void stop() {
+        if (mySessionRunning.get() && myEmuThread != null) {
+            myEmuThread.interrupt();
+        }
     }
 
-    @Override
-    public void nextFindResultItem(FindItem selectedItem) {
-      updateLabel(selectedItem);
+    public boolean isSessionRunning() {
+        return mySessionRunning.get();
+    }
+
+    public String getBufferText(DebugBufferType type, int stateIndex) {
+        return type.getValue(this, stateIndex);
     }
 
     @Override
-    public void prevFindResultItem(FindItem selectedItem) {
-      updateLabel(selectedItem);
-    }
-
-    private void updateLabel(FindItem selectedItem) {
-      FindResult result = myTerminalPanel.getFindResult();
-      label.setText(((selectedItem != null) ? selectedItem.getIndex() : 0)
-        + " of " + ((result != null) ? result.getItems().size() : 0));
+    public TerminalTextBuffer getTerminalTextBuffer() {
+        return myTerminalPanel.getTerminalTextBuffer();
     }
 
     @Override
-    public void onResultUpdated(FindResult results) {
-      updateLabel(null);
+    public boolean requestFocusInWindow() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                myTerminalPanel.requestFocusInWindow();
+            }
+        });
+        return super.requestFocusInWindow();
     }
 
     @Override
-    public String getText() {
-      return myTextField.getText();
+    public void requestFocus() {
+        myTerminalPanel.requestFocus();
+    }
+
+    public boolean canOpenSession() {
+        return !isSessionRunning();
     }
 
     @Override
-    public boolean ignoreCase() {
-      return ignoreCaseCheckBox.isSelected();
+    public void setTerminalPanelListener(TerminalPanelListener terminalPanelListener) {
+        myTerminalPanel.setTerminalPanelListener(terminalPanelListener);
+    }
+
+    @Override
+    public TerminalSession getCurrentSession() {
+        return this;
+    }
+
+    @Override
+    public com.jediterm.terminal.ui.JediTermWidget createTerminalSession(TtyConnector ttyConnector) {
+        setTtyConnector(ttyConnector);
+        return this;
     }
 
     @Override
     public JComponent getComponent() {
-      return this;
-    }
-
-    public void requestFocus() {
-      myTextField.requestFocus();
+        return this;
     }
 
     @Override
-    public void addDocumentChangeListener(DocumentListener listener) {
-      myTextField.getDocument().addDocumentListener(listener);
+    public void close() {
+        stop();
+        if (myTerminalStarter != null) {
+            myTerminalStarter.close();
+        }
+        myTerminalPanel.dispose();
     }
 
     @Override
-    public void addKeyListener(KeyListener listener) {
-      myTextField.addKeyListener(listener);
+    public List<TerminalAction> getActions() {
+        return List.of(new TerminalAction(mySettingsProvider.getFindActionPresentation(),
+                keyEvent -> {
+                    showFindText();
+                    return true;
+                }).withMnemonicKey(KeyEvent.VK_F));
+    }
+
+    private void showFindText() {
+        if (myFindComponent == null) {
+            myFindComponent = createSearchComponent();
+
+            final JComponent component = myFindComponent.getComponent();
+            myInnerPanel.add(component, TerminalLayout.FIND);
+            myInnerPanel.moveToFront(component);
+            myInnerPanel.revalidate();
+            myInnerPanel.repaint();
+            component.requestFocus();
+
+            myFindComponent.addDocumentChangeListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    textUpdated();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    textUpdated();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    textUpdated();
+                }
+
+                private void textUpdated() {
+                    findText(myFindComponent.getText(), myFindComponent.ignoreCase());
+                }
+            });
+
+            myFindComponent.addIgnoreCaseListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    findText(myFindComponent.getText(), myFindComponent.ignoreCase());
+                }
+            });
+
+            myFindComponent.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent keyEvent) {
+                    if (keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        myInnerPanel.remove(component);
+                        myInnerPanel.revalidate();
+                        myInnerPanel.repaint();
+                        myFindComponent = null;
+                        myTerminalPanel.setFindResult(null);
+                        myTerminalPanel.requestFocusInWindow();
+                    } else if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER || keyEvent.getKeyCode() == KeyEvent.VK_UP) {
+                        myFindComponent.nextFindResultItem(myTerminalPanel.selectNextFindResultItem());
+                    } else if (keyEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+                        myFindComponent.prevFindResultItem(myTerminalPanel.selectPrevFindResultItem());
+                    } else {
+                        super.keyPressed(keyEvent);
+                    }
+                }
+            });
+        } else {
+            myFindComponent.getComponent().requestFocusInWindow();
+        }
+    }
+
+    protected SearchComponent createSearchComponent() {
+        return new SearchPanel();
+    }
+
+    protected interface SearchComponent {
+        String getText();
+
+        boolean ignoreCase();
+
+        JComponent getComponent();
+
+        void addDocumentChangeListener(DocumentListener listener);
+
+        void addKeyListener(KeyListener listener);
+
+        void addIgnoreCaseListener(ItemListener listener);
+
+        void onResultUpdated(FindResult results);
+
+        void nextFindResultItem(FindItem selectedItem);
+
+        void prevFindResultItem(FindItem selectedItem);
+    }
+
+    private void findText(String text, boolean ignoreCase) {
+        FindResult results = myTerminal.searchInTerminalTextBuffer(text, ignoreCase);
+        myTerminalPanel.setFindResult(results);
+        myFindComponent.onResultUpdated(results);
+        myScrollBar.repaint();
     }
 
     @Override
-    public void addIgnoreCaseListener(ItemListener listener) {
-      ignoreCaseCheckBox.addItemListener(listener);
+    public TerminalActionProvider getNextProvider() {
+        return myNextActionProvider;
     }
 
-  }
+    public void setNextProvider(TerminalActionProvider actionProvider) {
+        this.myNextActionProvider = actionProvider;
+    }
 
-  private class FindResultScrollBarUI extends BasicScrollBarUI {
-
-    protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
-      super.paintTrack(g, c, trackBounds);
-
-      FindResult result = myTerminalPanel.getFindResult();
-      if (result != null) {
-        int modelHeight = scrollbar.getModel().getMaximum() - scrollbar.getModel().getMinimum();
-        int anchorHeight = Math.max(2, trackBounds.height / modelHeight);
-
-        Color color = mySettingsProvider.getTerminalColorPalette()
-          .getBackground(Objects.requireNonNull(mySettingsProvider.getFoundPatternColor().getBackground()));
-        g.setColor(color);
-        for (FindItem r : result.getItems()) {
-          int where = trackBounds.height * r.getStart().y / modelHeight;
-          g.fillRect(trackBounds.x, trackBounds.y + where, trackBounds.width, anchorHeight);
+    class EmulatorTask implements Runnable {
+        public void run() {
+            try {
+                mySessionRunning.set(true);
+                Thread.currentThread().setName("Connector-" + myTtyConnector.getName());
+                if (myTtyConnector.init(myPreConnectHandler)) {
+                    myTerminalPanel.addCustomKeyListener(myTerminalPanel.getTerminalKeyListener());
+                    myTerminalPanel.removeCustomKeyListener(myPreConnectHandler);
+                    myTerminalStarter.start();
+                }
+            } catch (Exception e) {
+                log.error("Exception running com.jediterm.terminal", e);
+            } finally {
+                try {
+                    myTtyConnector.close();
+                } catch (Exception e) {
+                }
+                mySessionRunning.set(false);
+                for (TerminalWidgetListener listener : myListeners) {
+                    listener.allSessionsClosed(com.jediterm.terminal.ui.JediTermWidget.this);
+                }
+                myTerminalPanel.addCustomKeyListener(myPreConnectHandler);
+                myTerminalPanel.removeCustomKeyListener(myTerminalPanel.getTerminalKeyListener());
+            }
         }
-      }
     }
 
-  }
+    public TerminalStarter getTerminalStarter() {
+        return myTerminalStarter;
+    }
 
-  private static class TerminalLayout implements LayoutManager {
-    public static final String TERMINAL = "TERMINAL";
-    public static final String SCROLL = "SCROLL";
-    public static final String FIND = "FIND";
+    public class SearchPanel extends JPanel implements SearchComponent {
 
-    private Component terminal;
-    private Component scroll;
-    private Component find;
+        private final JTextField myTextField = new JTextField();
+        private final JLabel label = new JLabel();
+        private final JButton prev;
+        private final JButton next;
+        private final JCheckBox ignoreCaseCheckBox = new JCheckBox("Ignore Case", true);
+
+        public SearchPanel() {
+            next = createNextButton();
+            next.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    nextFindResultItem(myTerminalPanel.selectNextFindResultItem());
+                }
+            });
+
+            prev = createPrevButton();
+            prev.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    prevFindResultItem(myTerminalPanel.selectPrevFindResultItem());
+                }
+            });
+
+            myTextField.setPreferredSize(new Dimension(
+                    myTerminalPanel.myCharSize.width * 30,
+                    myTerminalPanel.myCharSize.height + 3));
+            myTextField.setEditable(true);
+
+            updateLabel(null);
+
+            add(myTextField);
+            add(ignoreCaseCheckBox);
+            add(label);
+            add(next);
+            add(prev);
+
+            setOpaque(true);
+        }
+
+        protected JButton createNextButton() {
+            return new BasicArrowButton(SwingConstants.NORTH);
+        }
+
+        protected JButton createPrevButton() {
+            return new BasicArrowButton(SwingConstants.SOUTH);
+        }
+
+        @Override
+        public void nextFindResultItem(FindItem selectedItem) {
+            updateLabel(selectedItem);
+        }
+
+        @Override
+        public void prevFindResultItem(FindItem selectedItem) {
+            updateLabel(selectedItem);
+        }
+
+        private void updateLabel(FindItem selectedItem) {
+            FindResult result = myTerminalPanel.getFindResult();
+            label.setText(((selectedItem != null) ? selectedItem.getIndex() : 0)
+                    + " of " + ((result != null) ? result.getItems().size() : 0));
+        }
+
+        @Override
+        public void onResultUpdated(FindResult results) {
+            updateLabel(null);
+        }
+
+        @Override
+        public String getText() {
+            return myTextField.getText();
+        }
+
+        @Override
+        public boolean ignoreCase() {
+            return ignoreCaseCheckBox.isSelected();
+        }
+
+        @Override
+        public JComponent getComponent() {
+            return this;
+        }
+
+        public void requestFocus() {
+            myTextField.requestFocus();
+        }
+
+        @Override
+        public void addDocumentChangeListener(DocumentListener listener) {
+            myTextField.getDocument().addDocumentListener(listener);
+        }
+
+        @Override
+        public void addKeyListener(KeyListener listener) {
+            myTextField.addKeyListener(listener);
+        }
+
+        @Override
+        public void addIgnoreCaseListener(ItemListener listener) {
+            ignoreCaseCheckBox.addItemListener(listener);
+        }
+
+    }
+
+    private class FindResultScrollBarUI extends BasicScrollBarUI {
+
+        protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
+            super.paintTrack(g, c, trackBounds);
+
+            FindResult result = myTerminalPanel.getFindResult();
+            if (result != null) {
+                int modelHeight = scrollbar.getModel().getMaximum() - scrollbar.getModel().getMinimum();
+                int anchorHeight = Math.max(2, trackBounds.height / modelHeight);
+
+                Color color = mySettingsProvider.getTerminalColorPalette()
+                        .getBackground(Objects.requireNonNull(mySettingsProvider.getFoundPatternColor().getBackground()));
+                g.setColor(color);
+                for (FindItem r : result.getItems()) {
+                    int where = trackBounds.height * r.getStart().y / modelHeight;
+                    g.fillRect(trackBounds.x, trackBounds.y + where, trackBounds.width, anchorHeight);
+                }
+            }
+        }
+
+    }
+
+    private static class TerminalLayout implements LayoutManager {
+        public static final String TERMINAL = "TERMINAL";
+        public static final String SCROLL = "SCROLL";
+        public static final String FIND = "FIND";
+
+        private Component terminal;
+        private Component scroll;
+        private Component find;
+
+        @Override
+        public void addLayoutComponent(String name, Component comp) {
+            if (TERMINAL.equals(name)) {
+                terminal = comp;
+            } else if (FIND.equals(name)) {
+                find = comp;
+            } else if (SCROLL.equals(name)) {
+                scroll = comp;
+            } else throw new IllegalArgumentException("unknown component name " + name);
+        }
+
+        @Override
+        public void removeLayoutComponent(Component comp) {
+            if (comp == terminal) {
+                terminal = null;
+            }
+            if (comp == scroll) {
+                scroll = null;
+            }
+            if (comp == find) {
+                find = comp;
+            }
+        }
+
+        @Override
+        public Dimension preferredLayoutSize(Container target) {
+            synchronized (target.getTreeLock()) {
+                Dimension dim = new Dimension(0, 0);
+
+                if (terminal != null) {
+                    Dimension d = terminal.getPreferredSize();
+                    dim.width = Math.max(d.width, dim.width);
+                    dim.height = Math.max(d.height, dim.height);
+                }
+
+                if (scroll != null) {
+                    Dimension d = scroll.getPreferredSize();
+                    dim.width += d.width;
+                    dim.height = Math.max(d.height, dim.height);
+                }
+
+                if (find != null) {
+                    Dimension d = find.getPreferredSize();
+                    dim.width = Math.max(d.width, dim.width);
+                    dim.height = Math.max(d.height, dim.height);
+                }
+
+                Insets insets = target.getInsets();
+                dim.width += insets.left + insets.right;
+                dim.height += insets.top + insets.bottom;
+
+                return dim;
+            }
+        }
+
+        @Override
+        public Dimension minimumLayoutSize(Container target) {
+            synchronized (target.getTreeLock()) {
+                Dimension dim = new Dimension(0, 0);
+
+                if (terminal != null) {
+                    Dimension d = terminal.getMinimumSize();
+                    dim.width = Math.max(d.width, dim.width);
+                    dim.height = Math.max(d.height, dim.height);
+                }
+
+                if (scroll != null) {
+                    Dimension d = scroll.getPreferredSize();
+                    dim.width += d.width;
+                    dim.height = Math.max(d.height, dim.height);
+                }
+
+                if (find != null) {
+                    Dimension d = find.getMinimumSize();
+                    dim.width = Math.max(d.width, dim.width);
+                    dim.height = Math.max(d.height, dim.height);
+                }
+
+                Insets insets = target.getInsets();
+                dim.width += insets.left + insets.right;
+                dim.height += insets.top + insets.bottom;
+
+                return dim;
+            }
+        }
+
+        @Override
+        public void layoutContainer(Container target) {
+            synchronized (target.getTreeLock()) {
+                Insets insets = target.getInsets();
+                int top = insets.top;
+                int bottom = target.getHeight() - insets.bottom;
+                int left = insets.left;
+                int right = target.getWidth() - insets.right;
+
+                Dimension scrollDim = new Dimension(0, 0);
+                if (scroll != null) {
+                    scrollDim = scroll.getPreferredSize();
+                    scroll.setBounds(right - scrollDim.width, top, scrollDim.width, bottom - top);
+                }
+
+                if (terminal != null) {
+                    terminal.setBounds(left, top, right - left - scrollDim.width, bottom - top);
+                }
+
+                if (find != null) {
+                    Dimension d = find.getPreferredSize();
+                    find.setBounds(right - d.width - scrollDim.width, top, d.width, d.height);
+                }
+            }
+
+        }
+    }
+
+    public void addHyperlinkFilter(HyperlinkFilter filter) {
+        myTextProcessing.addHyperlinkFilter(filter);
+    }
 
     @Override
-    public void addLayoutComponent(String name, Component comp) {
-      if (TERMINAL.equals(name)) {
-        terminal = comp;
-      } else if (FIND.equals(name)) {
-        find = comp;
-      } else if (SCROLL.equals(name)) {
-        scroll = comp;
-      } else throw new IllegalArgumentException("unknown component name " + name);
+    public void addListener(TerminalWidgetListener listener) {
+        myListeners.add(listener);
     }
 
     @Override
-    public void removeLayoutComponent(Component comp) {
-      if (comp == terminal) {
-        terminal = null;
-      }
-      if (comp == scroll) {
-        scroll = null;
-      }
-      if (comp == find) {
-        find = comp;
-      }
+    public void removeListener(TerminalWidgetListener listener) {
+        myListeners.remove(listener);
     }
-
-    @Override
-    public Dimension preferredLayoutSize(Container target) {
-      synchronized (target.getTreeLock()) {
-        Dimension dim = new Dimension(0, 0);
-
-        if (terminal != null) {
-          Dimension d = terminal.getPreferredSize();
-          dim.width = Math.max(d.width, dim.width);
-          dim.height = Math.max(d.height, dim.height);
-        }
-
-        if (scroll != null) {
-          Dimension d = scroll.getPreferredSize();
-          dim.width += d.width;
-          dim.height = Math.max(d.height, dim.height);
-        }
-
-        if (find != null) {
-          Dimension d = find.getPreferredSize();
-          dim.width = Math.max(d.width, dim.width);
-          dim.height = Math.max(d.height, dim.height);
-        }
-
-        Insets insets = target.getInsets();
-        dim.width += insets.left + insets.right;
-        dim.height += insets.top + insets.bottom;
-
-        return dim;
-      }
-    }
-
-    @Override
-    public Dimension minimumLayoutSize(Container target) {
-      synchronized (target.getTreeLock()) {
-        Dimension dim = new Dimension(0, 0);
-
-        if (terminal != null) {
-          Dimension d = terminal.getMinimumSize();
-          dim.width = Math.max(d.width, dim.width);
-          dim.height = Math.max(d.height, dim.height);
-        }
-
-        if (scroll != null) {
-          Dimension d = scroll.getPreferredSize();
-          dim.width += d.width;
-          dim.height = Math.max(d.height, dim.height);
-        }
-
-        if (find != null) {
-          Dimension d = find.getMinimumSize();
-          dim.width = Math.max(d.width, dim.width);
-          dim.height = Math.max(d.height, dim.height);
-        }
-
-        Insets insets = target.getInsets();
-        dim.width += insets.left + insets.right;
-        dim.height += insets.top + insets.bottom;
-
-        return dim;
-      }
-    }
-
-    @Override
-    public void layoutContainer(Container target) {
-      synchronized (target.getTreeLock()) {
-        Insets insets = target.getInsets();
-        int top = insets.top;
-        int bottom = target.getHeight() - insets.bottom;
-        int left = insets.left;
-        int right = target.getWidth() - insets.right;
-
-        Dimension scrollDim = new Dimension(0, 0);
-        if (scroll != null) {
-          scrollDim = scroll.getPreferredSize();
-          scroll.setBounds(right - scrollDim.width, top, scrollDim.width, bottom - top);
-        }
-
-        if (terminal != null) {
-          terminal.setBounds(left, top, right - left - scrollDim.width, bottom - top);
-        }
-
-        if (find != null) {
-          Dimension d = find.getPreferredSize();
-          find.setBounds(right - d.width - scrollDim.width, top, d.width, d.height);
-        }
-      }
-
-    }
-  }
-
-  public void addHyperlinkFilter(HyperlinkFilter filter) {
-    myTextProcessing.addHyperlinkFilter(filter);
-  }
-
-  @Override
-  public void addListener(TerminalWidgetListener listener) {
-    myListeners.add(listener);
-  }
-
-  @Override
-  public void removeListener(TerminalWidgetListener listener) {
-    myListeners.remove(listener);
-  }
 }

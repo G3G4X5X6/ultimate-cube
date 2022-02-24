@@ -5,69 +5,69 @@ import com.jediterm.terminal.TextStyle;
 import org.jetbrains.annotations.NotNull;
 
 public class StyleState {
-  private TextStyle myCurrentStyle = TextStyle.EMPTY;
-  private TextStyle myDefaultStyle = TextStyle.EMPTY;
-  
-  private TextStyle myMergedStyle = null;
+    private TextStyle myCurrentStyle = TextStyle.EMPTY;
+    private TextStyle myDefaultStyle = TextStyle.EMPTY;
 
-  public StyleState() {
-  }
+    private TextStyle myMergedStyle = null;
 
-  public TextStyle getCurrent() {
-    return TextStyle.getCanonicalStyle(getMergedStyle());
-  }
-
-  @NotNull
-  private static TextStyle merge(@NotNull TextStyle style, @NotNull TextStyle defaultStyle) {
-    TextStyle.Builder builder = style.toBuilder();
-    if (style.getBackground() == null && defaultStyle.getBackground() != null) {
-      builder.setBackground(defaultStyle.getBackground());
+    public StyleState() {
     }
-    if (style.getForeground() == null && defaultStyle.getForeground() != null) {
-      builder.setForeground(defaultStyle.getForeground());
+
+    public TextStyle getCurrent() {
+        return TextStyle.getCanonicalStyle(getMergedStyle());
     }
-    return builder.build();
-  }
 
-  public void reset() {
-    myCurrentStyle = myDefaultStyle;
-    myMergedStyle = null;
-  }
-
-  public void set(com.jediterm.terminal.model.StyleState styleState) {
-    setCurrent(styleState.getCurrent());
-  }
-
-  public void setDefaultStyle(TextStyle defaultStyle) {
-    myDefaultStyle = defaultStyle;
-    myMergedStyle = null;
-  }
-
-  public TerminalColor getBackground() {
-    return getBackground(null);
-  }
-
-  public TerminalColor getBackground(TerminalColor color) {
-    return color != null ? color : myDefaultStyle.getBackground();
-  }
-
-  public TerminalColor getForeground() {
-    return getForeground(null);
-  }
-
-  public TerminalColor getForeground(TerminalColor color) {
-    return color != null ? color : myDefaultStyle.getForeground();
-  }
-
-  public void setCurrent(TextStyle current) {
-    myCurrentStyle = current;
-    myMergedStyle = null;
-  }
-
-  private TextStyle getMergedStyle() {
-    if (myMergedStyle == null) {
-      myMergedStyle = merge(myCurrentStyle, myDefaultStyle);
+    @NotNull
+    private static TextStyle merge(@NotNull TextStyle style, @NotNull TextStyle defaultStyle) {
+        TextStyle.Builder builder = style.toBuilder();
+        if (style.getBackground() == null && defaultStyle.getBackground() != null) {
+            builder.setBackground(defaultStyle.getBackground());
+        }
+        if (style.getForeground() == null && defaultStyle.getForeground() != null) {
+            builder.setForeground(defaultStyle.getForeground());
+        }
+        return builder.build();
     }
-    return myMergedStyle;
-  }
+
+    public void reset() {
+        myCurrentStyle = myDefaultStyle;
+        myMergedStyle = null;
+    }
+
+    public void set(com.jediterm.terminal.model.StyleState styleState) {
+        setCurrent(styleState.getCurrent());
+    }
+
+    public void setDefaultStyle(TextStyle defaultStyle) {
+        myDefaultStyle = defaultStyle;
+        myMergedStyle = null;
+    }
+
+    public TerminalColor getBackground() {
+        return getBackground(null);
+    }
+
+    public TerminalColor getBackground(TerminalColor color) {
+        return color != null ? color : myDefaultStyle.getBackground();
+    }
+
+    public TerminalColor getForeground() {
+        return getForeground(null);
+    }
+
+    public TerminalColor getForeground(TerminalColor color) {
+        return color != null ? color : myDefaultStyle.getForeground();
+    }
+
+    public void setCurrent(TextStyle current) {
+        myCurrentStyle = current;
+        myMergedStyle = null;
+    }
+
+    private TextStyle getMergedStyle() {
+        if (myMergedStyle == null) {
+            myMergedStyle = merge(myCurrentStyle, myDefaultStyle);
+        }
+        return myMergedStyle;
+    }
 }

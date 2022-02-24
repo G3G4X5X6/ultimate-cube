@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 public interface TerminalPanelListener {
-  void onPanelResize(@NotNull RequestOrigin origin);
+    void onPanelResize(@NotNull RequestOrigin origin);
 
-  void onTitleChanged(String title);
+    void onTitleChanged(String title);
 }

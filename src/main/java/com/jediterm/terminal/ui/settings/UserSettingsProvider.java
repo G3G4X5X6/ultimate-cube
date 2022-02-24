@@ -9,58 +9,58 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 
 public interface UserSettingsProvider {
-  ColorPalette getTerminalColorPalette();
+    ColorPalette getTerminalColorPalette();
 
-  Font getTerminalFont();
+    Font getTerminalFont();
 
-  float getTerminalFontSize();
+    float getTerminalFontSize();
 
-  /**
-   * @return vertical scaling factor
-   */
-  default float getLineSpacing() {
-    return 1.0f;
-  }
+    /**
+     * @return vertical scaling factor
+     */
+    default float getLineSpacing() {
+        return 1.0f;
+    }
 
-  TextStyle getDefaultStyle();
+    TextStyle getDefaultStyle();
 
-  TextStyle getSelectionColor();
+    TextStyle getSelectionColor();
 
-  TextStyle getFoundPatternColor();
+    TextStyle getFoundPatternColor();
 
-  TextStyle getHyperlinkColor();
+    TextStyle getHyperlinkColor();
 
-  HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode();
+    HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode();
 
-  boolean useInverseSelectionColor();
+    boolean useInverseSelectionColor();
 
-  boolean copyOnSelect();
+    boolean copyOnSelect();
 
-  boolean pasteOnMiddleMouseClick();
+    boolean pasteOnMiddleMouseClick();
 
-  boolean emulateX11CopyPaste();
+    boolean emulateX11CopyPaste();
 
-  boolean useAntialiasing();
+    boolean useAntialiasing();
 
-  int maxRefreshRate();
+    int maxRefreshRate();
 
-  boolean audibleBell();
+    boolean audibleBell();
 
-  boolean enableMouseReporting();
+    boolean enableMouseReporting();
 
-  int caretBlinkingMs();
+    int caretBlinkingMs();
 
-  boolean scrollToBottomOnTyping();
+    boolean scrollToBottomOnTyping();
 
-  boolean DECCompatibilityMode();
+    boolean DECCompatibilityMode();
 
-  boolean forceActionOnMouseReporting();
+    boolean forceActionOnMouseReporting();
 
-  int getBufferMaxLinesCount();
-  
-  boolean altSendsEscape();
+    int getBufferMaxLinesCount();
 
-  boolean ambiguousCharsAreDoubleWidth();
+    boolean altSendsEscape();
 
-  @NotNull TerminalTypeAheadSettings getTypeAheadSettings();
+    boolean ambiguousCharsAreDoubleWidth();
+
+    @NotNull TerminalTypeAheadSettings getTypeAheadSettings();
 }

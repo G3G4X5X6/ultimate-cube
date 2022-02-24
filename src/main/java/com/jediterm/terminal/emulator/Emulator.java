@@ -6,9 +6,9 @@ import java.io.IOException;
  * @author traff
  */
 public interface Emulator {
-  boolean hasNext();
+    boolean hasNext();
 
-  void next() throws IOException;
+    void next() throws IOException;
 
-  void resetEof();
+    void resetEof();
 }

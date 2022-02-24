@@ -9,19 +9,18 @@ import org.jetbrains.annotations.NotNull;
  * @author traff
  */
 public interface StyledTextConsumer {
-  /**
-   *
-   * @param x indicates starting column of the characters
-   * @param y indicates row of the characters
-   * @param style style of characters
-   * @param characters text characters
-   * @param startRow number of the first row.
-   *                 It can be different for different buffers, e.g. backBuffer starts from 0, textBuffer and scrollBuffer from -count
-   */
-  void consume(int x, int y, @NotNull TextStyle style, @NotNull CharBuffer characters, int startRow);
+    /**
+     * @param x          indicates starting column of the characters
+     * @param y          indicates row of the characters
+     * @param style      style of characters
+     * @param characters text characters
+     * @param startRow   number of the first row.
+     *                   It can be different for different buffers, e.g. backBuffer starts from 0, textBuffer and scrollBuffer from -count
+     */
+    void consume(int x, int y, @NotNull TextStyle style, @NotNull CharBuffer characters, int startRow);
 
-  void consumeNul(int x, int y, int nulIndex, @NotNull TextStyle style, @NotNull CharBuffer characters, int startRow);
+    void consumeNul(int x, int y, int nulIndex, @NotNull TextStyle style, @NotNull CharBuffer characters, int startRow);
 
-  void consumeQueue(int x, int y, int nulIndex, int startRow);
+    void consumeQueue(int x, int y, int nulIndex, int startRow);
 
 }

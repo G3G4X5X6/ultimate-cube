@@ -18,63 +18,63 @@ package com.jediterm.terminal.util;
 import org.jetbrains.annotations.NotNull;
 
 public class Pair<A, B> {
-  public final A first;
-  public final B second;
+    public final A first;
+    public final B second;
 
-  @NotNull
-  public static <A, B> com.jediterm.terminal.util.Pair<A, B> create(A first, B second) {
-    return new com.jediterm.terminal.util.Pair<A, B>(first, second);
-  }
+    @NotNull
+    public static <A, B> com.jediterm.terminal.util.Pair<A, B> create(A first, B second) {
+        return new com.jediterm.terminal.util.Pair<A, B>(first, second);
+    }
 
-  public static <T> T getFirst(com.jediterm.terminal.util.Pair<T, ?> pair) {
-    return pair != null ? pair.first : null;
-  }
+    public static <T> T getFirst(com.jediterm.terminal.util.Pair<T, ?> pair) {
+        return pair != null ? pair.first : null;
+    }
 
-  public static <T> T getSecond(com.jediterm.terminal.util.Pair<?, T> pair) {
-    return pair != null ? pair.second : null;
-  }
+    public static <T> T getSecond(com.jediterm.terminal.util.Pair<?, T> pair) {
+        return pair != null ? pair.second : null;
+    }
 
-  @SuppressWarnings("unchecked")
-  private static final com.jediterm.terminal.util.Pair EMPTY = create(null, null);
+    @SuppressWarnings("unchecked")
+    private static final com.jediterm.terminal.util.Pair EMPTY = create(null, null);
 
-  @SuppressWarnings("unchecked")
-  public static <A, B> com.jediterm.terminal.util.Pair<A, B> empty() {
-    return EMPTY;
-  }
+    @SuppressWarnings("unchecked")
+    public static <A, B> com.jediterm.terminal.util.Pair<A, B> empty() {
+        return EMPTY;
+    }
 
-  public Pair(A first, B second) {
-    this.first = first;
-    this.second = second;
-  }
+    public Pair(A first, B second) {
+        this.first = first;
+        this.second = second;
+    }
 
-  public final A getFirst() {
-    return first;
-  }
+    public final A getFirst() {
+        return first;
+    }
 
-  public final B getSecond() {
-    return second;
-  }
+    public final B getSecond() {
+        return second;
+    }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    com.jediterm.terminal.util.Pair pair = (com.jediterm.terminal.util.Pair)o;
+        com.jediterm.terminal.util.Pair pair = (com.jediterm.terminal.util.Pair) o;
 
-    if (first != null ? !first.equals(pair.first) : pair.first != null) return false;
-    if (second != null ? !second.equals(pair.second) : pair.second != null) return false;
+        if (first != null ? !first.equals(pair.first) : pair.first != null) return false;
+        if (second != null ? !second.equals(pair.second) : pair.second != null) return false;
 
-    return true;
-  }
+        return true;
+    }
 
-  public int hashCode() {
-    int result = first != null ? first.hashCode() : 0;
-    result = 31 * result + (second != null ? second.hashCode() : 0);
-    return result;
-  }
+    public int hashCode() {
+        int result = first != null ? first.hashCode() : 0;
+        result = 31 * result + (second != null ? second.hashCode() : 0);
+        return result;
+    }
 
-  public String toString() {
-    return "<" + first + "," + second + ">";
-  }
+    public String toString() {
+        return "<" + first + "," + second + ">";
+    }
 }

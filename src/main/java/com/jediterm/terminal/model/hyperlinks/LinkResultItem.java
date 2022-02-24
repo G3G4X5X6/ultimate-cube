@@ -6,26 +6,26 @@ import org.jetbrains.annotations.NotNull;
  * @author traff
  */
 public class LinkResultItem {
-  private int myStartOffset;
-  private int myEndOffset;
+    private int myStartOffset;
+    private int myEndOffset;
 
-  private LinkInfo myLinkInfo;
+    private LinkInfo myLinkInfo;
 
-  public LinkResultItem(int startOffset, int endOffset, @NotNull LinkInfo linkInfo) {
-    myStartOffset = startOffset;
-    myEndOffset = endOffset;
-    myLinkInfo = linkInfo;
-  }
+    public LinkResultItem(int startOffset, int endOffset, @NotNull LinkInfo linkInfo) {
+        myStartOffset = startOffset;
+        myEndOffset = endOffset;
+        myLinkInfo = linkInfo;
+    }
 
-  public int getStartOffset() {
-    return myStartOffset;
-  }
+    public int getStartOffset() {
+        return myStartOffset;
+    }
 
-  public int getEndOffset() {
-    return myEndOffset;
-  }
+    public int getEndOffset() {
+        return myEndOffset;
+    }
 
-  public LinkInfo getLinkInfo() {
-    return myLinkInfo;
-  }
+    public LinkInfo getLinkInfo() {
+        return myLinkInfo;
+    }
 }

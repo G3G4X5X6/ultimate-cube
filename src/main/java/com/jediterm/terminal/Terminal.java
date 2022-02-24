@@ -16,153 +16,153 @@ import java.util.concurrent.CompletableFuture;
  * @author traff
  */
 public interface Terminal {
-  void resize(@NotNull Dimension newTermSize, @NotNull RequestOrigin origin);
+    void resize(@NotNull Dimension newTermSize, @NotNull RequestOrigin origin);
 
-  void resize(@NotNull Dimension newTermSize, @NotNull RequestOrigin origin, @NotNull CompletableFuture<?> promptUpdated);
+    void resize(@NotNull Dimension newTermSize, @NotNull RequestOrigin origin, @NotNull CompletableFuture<?> promptUpdated);
 
-  void beep();
+    void beep();
 
-  void backspace();
+    void backspace();
 
-  void horizontalTab();
+    void horizontalTab();
 
-  void carriageReturn();
+    void carriageReturn();
 
-  void newLine();
+    void newLine();
 
-  void mapCharsetToGL(int num);
+    void mapCharsetToGL(int num);
 
-  void mapCharsetToGR(int num);
+    void mapCharsetToGR(int num);
 
-  void designateCharacterSet(int tableNumber, char ch);
+    void designateCharacterSet(int tableNumber, char ch);
 
-  void setAnsiConformanceLevel(int level);
+    void setAnsiConformanceLevel(int level);
 
-  void writeDoubleByte(char[] bytes) throws UnsupportedEncodingException;
+    void writeDoubleByte(char[] bytes) throws UnsupportedEncodingException;
 
-  void writeCharacters(String string);
+    void writeCharacters(String string);
 
-  int distanceToLineEnd();
+    int distanceToLineEnd();
 
-  void reverseIndex();
+    void reverseIndex();
 
-  void index();
+    void index();
 
-  void nextLine();
+    void nextLine();
 
-  void fillScreen(char c);
+    void fillScreen(char c);
 
-  void saveCursor();
+    void saveCursor();
 
-  void restoreCursor();
+    void restoreCursor();
 
-  void reset();
+    void reset();
 
-  void characterAttributes(TextStyle textStyle);
+    void characterAttributes(TextStyle textStyle);
 
-  void setScrollingRegion(int top, int bottom);
+    void setScrollingRegion(int top, int bottom);
 
-  void scrollUp(int count);
+    void scrollUp(int count);
 
-  void scrollDown(int count);
+    void scrollDown(int count);
 
-  void resetScrollRegions();
+    void resetScrollRegions();
 
-  void cursorHorizontalAbsolute(int x);
+    void cursorHorizontalAbsolute(int x);
 
-  void linePositionAbsolute(int y);
+    void linePositionAbsolute(int y);
 
-  void cursorPosition(int x, int y);
+    void cursorPosition(int x, int y);
 
-  void cursorUp(int countY);
+    void cursorUp(int countY);
 
-  void cursorDown(int dY);
+    void cursorDown(int dY);
 
-  void cursorForward(int dX);
+    void cursorForward(int dX);
 
-  void cursorBackward(int dX);
+    void cursorBackward(int dX);
 
-  void cursorShape(CursorShape shape);
+    void cursorShape(CursorShape shape);
 
-  void eraseInLine(int arg);
+    void eraseInLine(int arg);
 
-  void deleteCharacters(int count);
+    void deleteCharacters(int count);
 
-  int getTerminalWidth();
+    int getTerminalWidth();
 
-  int getTerminalHeight();
+    int getTerminalHeight();
 
-  void eraseInDisplay(int arg);
+    void eraseInDisplay(int arg);
 
-  void setModeEnabled(TerminalMode mode, boolean enabled);
+    void setModeEnabled(TerminalMode mode, boolean enabled);
 
-  void disconnected();
+    void disconnected();
 
-  int getCursorX();
+    int getCursorX();
 
-  int getCursorY();
+    int getCursorY();
 
-  void singleShiftSelect(int num);
+    void singleShiftSelect(int num);
 
-  void setWindowTitle(String name);
+    void setWindowTitle(String name);
 
-  void saveWindowTitleOnStack();
+    void saveWindowTitleOnStack();
 
-  void restoreWindowTitleFromStack();
+    void restoreWindowTitleFromStack();
 
-  void clearScreen();
+    void clearScreen();
 
-  void setCursorVisible(boolean visible);
+    void setCursorVisible(boolean visible);
 
-  void useAlternateBuffer(boolean enabled);
+    void useAlternateBuffer(boolean enabled);
 
-  byte[] getCodeForKey(int key, int modifiers);
+    byte[] getCodeForKey(int key, int modifiers);
 
-  void setApplicationArrowKeys(boolean enabled);
+    void setApplicationArrowKeys(boolean enabled);
 
-  void setApplicationKeypad(boolean enabled);
+    void setApplicationKeypad(boolean enabled);
 
-  void setAutoNewLine(boolean enabled);
+    void setAutoNewLine(boolean enabled);
 
-  StyleState getStyleState();
+    StyleState getStyleState();
 
-  void insertLines(int count);
+    void insertLines(int count);
 
-  void deleteLines(int count);
+    void deleteLines(int count);
 
-  void setBlinkingCursor(boolean enabled);
+    void setBlinkingCursor(boolean enabled);
 
-  void eraseCharacters(int count);
+    void eraseCharacters(int count);
 
-  void insertBlankCharacters(int count);
+    void insertBlankCharacters(int count);
 
-  void clearTabStopAtCursor();
+    void clearTabStopAtCursor();
 
-  void clearAllTabStops();
+    void clearAllTabStops();
 
-  void setTabStopAtCursor();
+    void setTabStopAtCursor();
 
-  void writeUnwrappedString(String string);
+    void writeUnwrappedString(String string);
 
-  void setTerminalOutput(@Nullable TerminalOutputStream terminalOutput);
+    void setTerminalOutput(@Nullable TerminalOutputStream terminalOutput);
 
-  void setMouseMode(@NotNull MouseMode mode);
+    void setMouseMode(@NotNull MouseMode mode);
 
-  void setMouseFormat(MouseFormat mouseFormat);
+    void setMouseFormat(MouseFormat mouseFormat);
 
-  void setAltSendsEscape(boolean enabled);
+    void setAltSendsEscape(boolean enabled);
 
-  void deviceStatusReport(String str);
+    void deviceStatusReport(String str);
 
-  void deviceAttributes(byte[] response);
+    void deviceAttributes(byte[] response);
 
-  void setLinkUriStarted(@NotNull String uri);
+    void setLinkUriStarted(@NotNull String uri);
 
-  void setLinkUriFinished();
+    void setLinkUriFinished();
 
-  void setBracketedPasteMode(boolean enabled);
+    void setBracketedPasteMode(boolean enabled);
 
-  @Nullable TerminalColor getWindowForeground();
+    @Nullable TerminalColor getWindowForeground();
 
-  @Nullable TerminalColor getWindowBackground();
+    @Nullable TerminalColor getWindowBackground();
 }

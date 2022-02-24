@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
  * @author traff
  */
 public interface TabbedSettingsProvider extends SettingsProvider {
-  boolean shouldCloseTabOnLogout(TtyConnector ttyConnector);
+    boolean shouldCloseTabOnLogout(TtyConnector ttyConnector);
 
-  String tabName(TtyConnector ttyConnector, String sessionName);
+    String tabName(TtyConnector ttyConnector, String sessionName);
 
-  @NotNull TerminalActionPresentation getPreviousTabActionPresentation();
+    @NotNull TerminalActionPresentation getPreviousTabActionPresentation();
 
-  @NotNull TerminalActionPresentation getNextTabActionPresentation();
+    @NotNull TerminalActionPresentation getNextTabActionPresentation();
 }

@@ -8,17 +8,17 @@ import java.util.List;
  * @author traff
  */
 public class LinkResult {
-  private final List<LinkResultItem> myItemList;
+    private final List<LinkResultItem> myItemList;
 
-  public LinkResult(@NotNull LinkResultItem item) {
-    this(List.of(item));
-  }
+    public LinkResult(@NotNull LinkResultItem item) {
+        this(List.of(item));
+    }
 
-  public LinkResult(@NotNull List<LinkResultItem> itemList) {
-    myItemList = itemList;
-  }
+    public LinkResult(@NotNull List<LinkResultItem> itemList) {
+        myItemList = itemList;
+    }
 
-  public List<LinkResultItem> getItems() {
-    return myItemList;
-  }
+    public List<LinkResultItem> getItems() {
+        return myItemList;
+    }
 }

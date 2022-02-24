@@ -9,45 +9,46 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public interface TerminalDisplay {
-  // Size information
-  int getRowCount();
+    // Size information
+    int getRowCount();
 
-  int getColumnCount();
+    int getColumnCount();
 
-  void setCursor(int x, int y);
+    void setCursor(int x, int y);
 
-  void setCursorShape(CursorShape shape);
+    void setCursorShape(CursorShape shape);
 
-  void beep();
+    void beep();
 
-  void requestResize(@NotNull Dimension newWinSize, RequestOrigin origin, int cursorX, int cursorY,
-                     JediTerminal.ResizeHandler resizeHandler);
+    void requestResize(@NotNull Dimension newWinSize, RequestOrigin origin, int cursorX, int cursorY,
+                       JediTerminal.ResizeHandler resizeHandler);
 
-  void scrollArea(final int scrollRegionTop, final int scrollRegionSize, int dy);
+    void scrollArea(final int scrollRegionTop, final int scrollRegionSize, int dy);
 
-  void setCursorVisible(boolean shouldDrawCursor);
+    void setCursorVisible(boolean shouldDrawCursor);
 
-  void setScrollingEnabled(boolean enabled);
+    void setScrollingEnabled(boolean enabled);
 
-  void setBlinkingCursor(boolean enabled);
+    void setBlinkingCursor(boolean enabled);
 
-  String getWindowTitle();
+    String getWindowTitle();
 
-  void setWindowTitle(String name);
+    void setWindowTitle(String name);
 
-  void terminalMouseModeSet(MouseMode mode);
+    void terminalMouseModeSet(MouseMode mode);
 
-  TerminalSelection getSelection();
-  
-  boolean ambiguousCharsAreDoubleWidth();
+    TerminalSelection getSelection();
 
-  default void setBracketedPasteMode(boolean enabled) {}
+    boolean ambiguousCharsAreDoubleWidth();
 
-  default @Nullable TerminalColor getWindowForeground() {
-    return null;
-  }
+    default void setBracketedPasteMode(boolean enabled) {
+    }
 
-  default @Nullable TerminalColor getWindowBackground() {
-    return null;
-  }
+    default @Nullable TerminalColor getWindowForeground() {
+        return null;
+    }
+
+    default @Nullable TerminalColor getWindowBackground() {
+        return null;
+    }
 }
