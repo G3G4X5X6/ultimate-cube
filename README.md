@@ -17,6 +17,8 @@ UltimateShell 是一个完全开源的远程管理服务器终极工具箱。
 <br><br>
 UltimateShell 是您远程管理服务器的终极工具箱。其目标是为渗透测试工程师、程序员、网站管理员、IT 管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
 
+> <font style='color:red'>注意：程序更新后，若无法正常连接SSH，请备份删除原配置文件 `application.properties`</font>
+
 <br>
 
 [comment]: <> (> 来都来了，点颗星再走咯 :star:)
