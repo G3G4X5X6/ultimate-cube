@@ -20,7 +20,6 @@ public class SearchDialog extends JDialog implements ActionListener {
     private RSyntaxTextArea textArea;
 
     public SearchDialog(RSyntaxTextArea textArea){
-        super(App.mainFrame);
         this.setTitle("查找替换");
         this.setLayout(new BorderLayout());
         this.textArea = textArea;
@@ -114,7 +113,7 @@ public class SearchDialog extends JDialog implements ActionListener {
         context.setSearchForward(forward);
         boolean found = SearchEngine.find(textArea, context).wasFound();
         if (!found) {
-            JOptionPane.showMessageDialog(App.mainFrame, "未找到，换个方向试试吧");
+            JOptionPane.showMessageDialog(this, "未找到，换个方向试试吧");
         }
     }
 }

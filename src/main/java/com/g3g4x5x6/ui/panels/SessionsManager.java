@@ -244,7 +244,7 @@ public class SessionsManager extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 TreePath treePath = sessionTree.getSelectionPath();
                 String currentTag = convertPathToTag(treePath);
-                String newTag = JOptionPane.showInputDialog(App.mainFrame, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
+                String newTag = JOptionPane.showInputDialog(SessionsManager.this, "目录名称：\n", "新建目录", JOptionPane.PLAIN_MESSAGE);
 
                 if (newTag != null) {
                     String newPath = "";
@@ -283,7 +283,7 @@ public class SessionsManager extends JPanel {
                     DialogUtil.warn("不为空、包含子目录，无法删除");
                 } else {
                     // TODO 删除目录
-                    int bool = JOptionPane.showConfirmDialog(App.mainFrame, "是否确认删除目录", "删除目录", JOptionPane.YES_NO_OPTION);
+                    int bool = JOptionPane.showConfirmDialog(SessionsManager.this, "是否确认删除目录", "删除目录", JOptionPane.YES_NO_OPTION);
                     if (bool == 0) {
                         log.debug("确认删除目录");
                         TreePath treePath = sessionTree.getSelectionPath();
@@ -328,7 +328,7 @@ public class SessionsManager extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 // TODO 支持批量删除(多选)
                 int[] indexs = sessionTable.getSelectedRows();
-                int bool = JOptionPane.showConfirmDialog(App.mainFrame, "是否确认删除会话", "删除会话", JOptionPane.YES_NO_OPTION);
+                int bool = JOptionPane.showConfirmDialog(SessionsManager.this, "是否确认删除会话", "删除会话", JOptionPane.YES_NO_OPTION);
                 if (bool == 0) {
                     for (int index : indexs) {
                         String session = (String) tableModel.getValueAt(sessionTable.getSelectedRow(), 0);
