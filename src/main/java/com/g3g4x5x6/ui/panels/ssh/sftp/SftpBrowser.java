@@ -483,7 +483,7 @@ public class SftpBrowser extends JPanel {
             @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                String dir = JOptionPane.showInputDialog(App.mainFrame, "新建目录名");
+                String dir = JOptionPane.showInputDialog(SftpBrowser.this, "新建目录名");
                 TreePath dstPath = myTree.getSelectionPath();
                 String path = convertTreePathToString(dstPath);
                 if (dir != null) {

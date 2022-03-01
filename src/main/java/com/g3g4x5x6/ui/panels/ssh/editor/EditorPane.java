@@ -102,7 +102,7 @@ public class EditorPane extends JPanel {
                 log.debug("新建文件");
                 // TODO 1. 判断是否为空，不为空则提示是否保存现有内容，否则清空
                 if (!textArea.getText().strip().equals("") && !titleField.getSelectedItem().toString().strip().equals("")) {
-                    int ret = JOptionPane.showConfirmDialog(App.mainFrame, "是否保存现有文件内容？", "提示", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int ret = JOptionPane.showConfirmDialog(EditorPane.this, "是否保存现有文件内容？", "提示", JOptionPane.YES_NO_CANCEL_OPTION);
                     log.debug(">>>>>>>>>>>>>>>>" + ret);
                     if (ret == 0) {
                         log.debug("保存现有文件内容");
@@ -175,13 +175,13 @@ public class EditorPane extends JPanel {
                     } else {
                         // 询问是否保存现有备忘笔记
                         log.debug("Tips");
-                        if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有文件？") == 0) {
+                        if (DialogUtil.yesOrNo(EditorPane.this, "是否保存已有文件？") == 0) {
                             insertOrUpdate();
                             importFile();
                         }
                     }
                 } else {
-                    if (DialogUtil.yesOrNo(App.mainFrame, "是否保存已有文件？") == 0) {
+                    if (DialogUtil.yesOrNo(EditorPane.this, "是否保存已有文件？") == 0) {
                         insertOrUpdate();
                     }
                     importFile();
@@ -204,7 +204,7 @@ public class EditorPane extends JPanel {
                 // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
-                int result = fileChooser.showOpenDialog(App.mainFrame);
+                int result = fileChooser.showOpenDialog(EditorPane.this);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     // 如果点击了"确定", 则获取选择的文件路径
                     File file = fileChooser.getSelectedFile();
@@ -516,7 +516,7 @@ public class EditorPane extends JPanel {
         // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
-        int result = fileChooser.showOpenDialog(App.mainFrame);
+        int result = fileChooser.showOpenDialog(EditorPane.this);
         if (result == JFileChooser.APPROVE_OPTION) {
             // 如果点击了"确定", 则获取选择的文件路径
             File file = fileChooser.getSelectedFile();
