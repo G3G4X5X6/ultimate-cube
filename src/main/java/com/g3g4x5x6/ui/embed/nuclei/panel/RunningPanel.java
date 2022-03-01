@@ -2,7 +2,6 @@ package com.g3g4x5x6.ui.embed.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ProcessTtyConnector;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 

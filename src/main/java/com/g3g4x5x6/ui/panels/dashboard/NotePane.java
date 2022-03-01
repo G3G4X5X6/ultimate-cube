@@ -16,14 +16,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -89,7 +88,7 @@ public class NotePane extends JPanel {
                     log.debug(">>>>>>>>>>>>>>>>" + ret);
                     if (ret == 0) {
                         log.debug("保存现有备忘内容");
-                        if (titleField.getText().strip().equalsIgnoreCase("")){
+                        if (titleField.getText().strip().equalsIgnoreCase("")) {
                             titleField.setText(String.valueOf(UUID.randomUUID()));
                         }
                         insertOrUpdate();
@@ -104,7 +103,7 @@ public class NotePane extends JPanel {
                         textArea.setText("");
                     }
                     // 取消
-                }else{
+                } else {
                     current_note_title = "";
                     titleField.setText("");
                     textArea.setText("");
@@ -132,7 +131,7 @@ public class NotePane extends JPanel {
         themeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/eye.svg"));
         String[] theme_list = new String[]{"default", "dark", "default-alt", "druid", "eclipse", "idea", "monokai", "vs"};
         JPopupMenu lanuageMenu = new JPopupMenu();
-        for (String item : theme_list){
+        for (String item : theme_list) {
             JMenuItem temp = new JMenuItem(item);
             temp.addActionListener(new ActionListener() {
                 @SneakyThrows
@@ -235,7 +234,7 @@ public class NotePane extends JPanel {
             current_note_title = title;
             Files.write(Path.of(savePath + "/" + title + ".md"), content.getBytes(StandardCharsets.UTF_8));
         } else {
-            if (!current_note_title.equalsIgnoreCase(titleField.getText())){
+            if (!current_note_title.equalsIgnoreCase(titleField.getText())) {
                 Files.move(Path.of(savePath + "/" + current_note_title + ".md"), Path.of(savePath + "/" + current_note_title + ".backup.md"));
                 current_note_title = title;
                 log.debug("备份旧笔记");
@@ -366,8 +365,8 @@ public class NotePane extends JPanel {
         private void initTable() {
             int row = 1;
             File noteDir = new File(savePath);
-            for (File file : Objects.requireNonNull(noteDir.listFiles())){
-                tableModel.addRow(new String[]{ String.valueOf(row), file.getAbsolutePath() });
+            for (File file : Objects.requireNonNull(noteDir.listFiles())) {
+                tableModel.addRow(new String[]{String.valueOf(row), file.getAbsolutePath()});
                 row += 1;
             }
             noteTable.setModel(tableModel);
@@ -394,13 +393,13 @@ public class NotePane extends JPanel {
                                 String filePath = (String) tableModel.getValueAt(row, 1);
                                 File delFile = new File(filePath);
                                 log.debug("Selected note: " + filePath);
-                                if (delFile.delete()){
+                                if (delFile.delete()) {
                                     log.info("删除备忘记录成功");
-                                }else{
+                                } else {
                                     log.info("删除备忘记录失败");
                                 }
                                 // 删除的笔记如果正在编辑，需重置 current_note_title = ""
-                                if (delFile.getName().equals(current_note_title + ".md")){
+                                if (delFile.getName().equals(current_note_title + ".md")) {
                                     current_note_title = "";
                                 }
                             }

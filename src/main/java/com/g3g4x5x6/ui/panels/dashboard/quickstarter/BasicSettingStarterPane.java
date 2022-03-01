@@ -4,8 +4,8 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.formatter.PortFormatter;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -81,7 +81,7 @@ public class BasicSettingStarterPane extends JPanel {
         JPanel passPane = new JPanel();
         JLabel passLabel = new JLabel("Password");
         JPasswordField passField = new JPasswordField();
-        passField.putClientProperty( FlatClientProperties.STYLE, "showRevealButton: true" );
+        passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
         passField.setColumns(8);
         passPane.add(passLabel);
         passPane.add(passField);
@@ -105,9 +105,9 @@ public class BasicSettingStarterPane extends JPanel {
         JCheckBox enablePrivateKeyCheckBox = new JCheckBox("是否启用公钥登录");
         enablePrivateKeyCheckBox.setSelected(false);
         enablePrivateKeyCheckBox.addChangeListener(e -> {
-            if (!enablePrivateKeyCheckBox.isSelected()){
+            if (!enablePrivateKeyCheckBox.isSelected()) {
                 privateKey = "";
-            }else{
+            } else {
                 privateKey = showItem.getText();
             }
         });
@@ -174,7 +174,7 @@ public class BasicSettingStarterPane extends JPanel {
                                     userField.getText(),
                                     String.valueOf(passField.getPassword()),
                                     privateKey));
-                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount()-1);
+                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
 
                     // TODO 保存最近会话到工作目录
                     LinkedHashMap<String, String> session = new LinkedHashMap<>();
@@ -188,7 +188,7 @@ public class BasicSettingStarterPane extends JPanel {
                     // TODO Change
                     String fileName = "recent_" + DigestUtils.md5Hex(JSON.toJSONString(sessionJson)) + ".json";
                     // 判断是否已存在该会话，存在则删除会话先
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(ConfigUtil.getWorkPath() + "/sessions/" + new File(fileName)))){
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(ConfigUtil.getWorkPath() + "/sessions/" + new File(fileName)))) {
                         writer.write(sessionJson);
                         writer.flush();
                     } catch (IOException ioException) {

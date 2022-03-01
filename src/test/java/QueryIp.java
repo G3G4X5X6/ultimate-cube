@@ -2,8 +2,6 @@ import com.github.jarod.qqwry.IPZone;
 import com.github.jarod.qqwry.QQWry;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class QueryIp {
     public static void main(String[] args) throws IOException {

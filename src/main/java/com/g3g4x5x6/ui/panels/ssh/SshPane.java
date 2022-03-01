@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
-import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.formatter.IpAddressFormatter;
 import com.g3g4x5x6.formatter.PortFormatter;
 import com.g3g4x5x6.utils.ConfigUtil;
@@ -20,7 +19,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -120,7 +120,7 @@ public class SshPane extends JPanel {
                     // 鸠占鹊巢
                     mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(
-                                    sessionName.getText().equals("")?hostField.getText():sessionName.getText(),
+                                    sessionName.getText().equals("") ? hostField.getText() : sessionName.getText(),
                                     hostField.getText(),
                                     portField.getText(),
                                     userField.getText(),
@@ -222,7 +222,7 @@ public class SshPane extends JPanel {
         JPanel passPane = new JPanel();
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
-        passField.putClientProperty( FlatClientProperties.STYLE, "showRevealButton: true" );
+        passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
         passField.setColumns(12);
         passPane.add(passLabel);
         passPane.add(passField);
@@ -398,35 +398,35 @@ public class SshPane extends JPanel {
         return 0;
     }
 
-    public void setHostField(String host){
+    public void setHostField(String host) {
         hostField.setText(host);
     }
 
-    public void setPortField(String port){
+    public void setPortField(String port) {
         portField.setText(port);
     }
 
-    public void setUserField(String user){
+    public void setUserField(String user) {
         userField.setText(user);
     }
 
-    public void setPassField(String pass){
+    public void setPassField(String pass) {
         passField.setText(pass);
     }
 
-    public void setSessionName(String session){
+    public void setSessionName(String session) {
         sessionName.setText(session);
     }
 
-    public void setCategory(String category){
+    public void setCategory(String category) {
         categoryCombo.setSelectedItem(category);
     }
 
-    public void setKeyLabel(String key){
+    public void setKeyLabel(String key) {
         keyLabel.setText(key);
     }
 
-    public void setCommentText(String text){
+    public void setCommentText(String text) {
         commentText.setText(text);
     }
 

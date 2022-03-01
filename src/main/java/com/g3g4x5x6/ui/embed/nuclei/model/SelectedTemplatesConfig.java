@@ -15,7 +15,7 @@ public class SelectedTemplatesConfig {
     private List<String> templates = new LinkedList<>();
     private List<String> workflows = new LinkedList<>();
 
-    public SelectedTemplatesConfig(){
+    public SelectedTemplatesConfig() {
 
     }
 
@@ -43,11 +43,11 @@ public class SelectedTemplatesConfig {
         this.workflows = workflows;
     }
 
-    public void addTemplate(String templatesPath){
+    public void addTemplate(String templatesPath) {
         templates.add(templatesPath);
     }
 
-    public void addWorkflow(String workflowPath){
+    public void addWorkflow(String workflowPath) {
         workflows.add(workflowPath);
     }
 

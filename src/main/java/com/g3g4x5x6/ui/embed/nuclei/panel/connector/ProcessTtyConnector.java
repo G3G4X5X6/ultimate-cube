@@ -7,7 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 @Slf4j
@@ -36,12 +39,14 @@ public abstract class ProcessTtyConnector implements TtyConnector {
         this.setPendingTermSize(termWinSize);
         if (this.isConnected()) {
             this.resizeImmediately();
-            this.setPendingTermSize((Dimension)null);
+            this.setPendingTermSize((Dimension) null);
         }
 
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected void resizeImmediately() {
     }
@@ -64,20 +69,26 @@ public abstract class ProcessTtyConnector implements TtyConnector {
         this.write(string.getBytes(this.myCharset));
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected void setPendingTermSize(@Nullable Dimension pendingTermSize) {
         this.myPendingTermSize = pendingTermSize;
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     @Nullable
     protected Dimension getPendingTermSize() {
         return this.myPendingTermSize;
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     protected Dimension getPendingPixelSize() {
         return new Dimension(0, 0);

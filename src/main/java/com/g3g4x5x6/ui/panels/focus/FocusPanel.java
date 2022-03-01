@@ -18,26 +18,26 @@ public class FocusPanel extends JPanel {
     private int screenWidth;
     private int screenHeight;
 
-    public FocusPanel(){
+    public FocusPanel() {
         this.setLayout(new BorderLayout());
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         screenWidth = (int) screenSize.getWidth();//获得屏幕得宽
         screenHeight = (int) screenSize.getHeight();//获得屏幕得高
     }
 
-    public FocusPanel(JPanel terminal){
+    public FocusPanel(JPanel terminal) {
 
     }
 
-    public FocusPanel(JPanel terminal, JPanel sftp){
+    public FocusPanel(JPanel terminal, JPanel sftp) {
 
     }
 
-    public FocusPanel(JPanel terminal, JPanel sftp, JPanel monitor){
+    public FocusPanel(JPanel terminal, JPanel sftp, JPanel monitor) {
 
     }
 
-    public FocusPanel(String title, JediTermWidget terminal, SftpBrowser sftp, MonitorPane monitor, EditorPane editor){
+    public FocusPanel(String title, JediTermWidget terminal, SftpBrowser sftp, MonitorPane monitor, EditorPane editor) {
         this();
         this.title = title;
         this.terminal = terminal;
@@ -49,9 +49,9 @@ public class FocusPanel extends JPanel {
         JSplitPane vSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         JSplitPane vSplitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
-        hSplitPane.setDividerLocation(screenWidth/2);
-        vSplitPane1.setDividerLocation(screenHeight/2);
-        vSplitPane2.setDividerLocation(screenHeight/2);
+        hSplitPane.setDividerLocation(screenWidth / 2);
+        vSplitPane1.setDividerLocation(screenHeight / 2);
+        vSplitPane2.setDividerLocation(screenHeight / 2);
 
         hSplitPane.setLeftComponent(vSplitPane1);
         hSplitPane.setRightComponent(vSplitPane2);

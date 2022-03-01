@@ -89,7 +89,7 @@ public class FtpPane extends JPanel {
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
         passField.setColumns(8);
-        passField.putClientProperty( FlatClientProperties.STYLE, "showRevealButton: true" );
+        passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
         passPane.add(passLabel);
         passPane.add(passField);
 

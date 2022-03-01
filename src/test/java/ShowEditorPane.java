@@ -1,7 +1,4 @@
 import com.formdev.flatlaf.FlatLightLaf;
-import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.MainFrame;
-import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -33,7 +30,7 @@ public class ShowEditorPane {
             ex.printStackTrace();
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
-        UIManager.put( "TextComponent.arc", 5 );
+        UIManager.put("TextComponent.arc", 5);
 
         // 启动主界面
         JFrame mainFrame = new JFrame();
@@ -54,10 +51,10 @@ public class ShowEditorPane {
         mainFrame.setVisible(true);
     }
 
-    static class ShowPane extends JDialog{
+    static class ShowPane extends JDialog {
         private JEditorPane editorPane;
 
-        public ShowPane(){
+        public ShowPane() {
             this.setLayout(new BorderLayout());
             editorPane = new JEditorPane();
             editorPane.setEditable(false);
@@ -68,11 +65,11 @@ public class ShowEditorPane {
             this.add(scrollPane, BorderLayout.CENTER);
         }
 
-        public void setText(String text){
+        public void setText(String text) {
             editorPane.setText(text);
         }
 
-        public void cleanText(){
+        public void cleanText() {
             editorPane.setText("");
         }
     }

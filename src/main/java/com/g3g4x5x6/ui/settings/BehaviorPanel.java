@@ -4,7 +4,6 @@ import com.g3g4x5x6.App;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class BehaviorPanel extends JPanel implements SettingsInterface {
     private FlowLayout leftFlowLayout = new FlowLayout();
@@ -12,7 +11,7 @@ public class BehaviorPanel extends JPanel implements SettingsInterface {
     private JPanel panel = new JPanel();
     private JCheckBox quitToTrayCheckBox;
 
-    public BehaviorPanel(){
+    public BehaviorPanel() {
         leftFlowLayout.setAlignment(FlowLayout.LEFT);
 
         panel.setLayout(new BorderLayout());

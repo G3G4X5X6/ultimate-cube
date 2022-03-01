@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Slf4j
-public class SerialTtyConnector implements TtyConnector{
+public class SerialTtyConnector implements TtyConnector {
 
     public static final int DEFAULT_PORT = 23;
     private InputStream myInputStream;

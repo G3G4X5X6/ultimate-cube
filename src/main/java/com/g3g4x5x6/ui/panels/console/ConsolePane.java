@@ -3,7 +3,6 @@ package com.g3g4x5x6.ui.panels.console;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TerminalColor;

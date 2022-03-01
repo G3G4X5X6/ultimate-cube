@@ -21,7 +21,7 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
         } else {
             fontName = "Monospaced";
         }
-        return new Font(fontName, Font.PLAIN, (int)getTerminalFontSize());
+        return new Font(fontName, Font.PLAIN, (int) getTerminalFontSize());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
 //                        UIManager.getColor("Panel.background").getBlue()));
     }
 
-    public void setDefaultStyle(TextStyle textStyle){
+    public void setDefaultStyle(TextStyle textStyle) {
         this.textStyle = textStyle;
     }
 }

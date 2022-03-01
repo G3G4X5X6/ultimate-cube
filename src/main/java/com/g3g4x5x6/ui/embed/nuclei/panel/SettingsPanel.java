@@ -13,7 +13,7 @@ public class SettingsPanel extends JPanel {
     private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
     private JButton terminalBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/changeView.svg"));
 
-    public SettingsPanel(){
+    public SettingsPanel() {
         this.setLayout(new BorderLayout());
 
         JToolBar toolBar = new JToolBar();

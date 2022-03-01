@@ -10,7 +10,7 @@ public class TaskProgressPanel extends JPanel {
     private JToolBar statusBar;
     private JButton fileCount;
 
-    public TaskProgressPanel(String title, int min, int max, String path){
+    public TaskProgressPanel(String title, int min, int max, String path) {
         this.setLayout(new BorderLayout());
         TitledBorder titledBorder = new TitledBorder(title);
 
@@ -37,26 +37,27 @@ public class TaskProgressPanel extends JPanel {
 
     }
 
-    public void setMax(int max){
+    public void setMax(int max) {
         progressBar.setMaximum(max);
     }
 
-    public void setMin(int min){
+    public void setMin(int min) {
         progressBar.setMinimum(min);
     }
 
-    public void setProgressBarValue(int value){
+    public void setProgressBarValue(int value) {
         progressBar.setValue(value);
     }
 
-    public void setTaskLabel(String path){
+    public void setTaskLabel(String path) {
         taskLabel.setText(path);
     }
 
-    public void setFileCount(int count){
+    public void setFileCount(int count) {
         fileCount.setText("文件数：" + count);
     }
-    public void setFileCount(String countLabel){
+
+    public void setFileCount(String countLabel) {
         fileCount.setText(countLabel);
     }
 }

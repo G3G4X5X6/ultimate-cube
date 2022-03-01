@@ -28,8 +28,8 @@ public class CheckUtil {
         };
         for (String path : pathArray) {
             File temp = new File(path);
-            if (!temp.exists()){
-                if (!temp.mkdirs()){
+            if (!temp.exists()) {
+                if (!temp.mkdirs()) {
                     log.debug("目录创建失败：" + path);
                 }
             }

@@ -1,7 +1,5 @@
 package com.g3g4x5x6.ui.panels;
 
-import com.g3g4x5x6.ui.MainFrame;
-
 import javax.swing.*;
 import java.awt.*;
 

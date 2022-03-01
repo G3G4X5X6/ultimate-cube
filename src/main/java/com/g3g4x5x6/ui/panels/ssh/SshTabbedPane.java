@@ -17,7 +17,6 @@ import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -48,7 +47,7 @@ public class SshTabbedPane extends JTabbedPane {
     private ClientSession session;
     private SftpFileSystem sftpFileSystem;
 
-    public SshTabbedPane(JediTermWidget terminal, SftpBrowser sftp, EditorPane editor, MonitorPane monitor){
+    public SshTabbedPane(JediTermWidget terminal, SftpBrowser sftp, EditorPane editor, MonitorPane monitor) {
 
         this.addTab("SSH", terminal);
         this.addTab("SFTP", sftp);

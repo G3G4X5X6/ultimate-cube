@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
 
 
 @Slf4j
@@ -200,7 +200,7 @@ public class SerialPane extends JPanel {
         Boolean flag = false;
         for (SerialPort comPort : CommonUtil.getCommPorts()) {
             if (comPort.getDescriptivePortName().strip().equals(comComboBox.getSelectedItem().toString().strip())) {
-                if (comPort.isOpen()){
+                if (comPort.isOpen()) {
                     return true;
                 }
                 comPort.setBaudRate(Integer.valueOf(rateComboBox.getSelectedItem().toString()));
@@ -220,7 +220,7 @@ public class SerialPane extends JPanel {
         SerialPort port = null;
         for (SerialPort comPort : CommonUtil.getCommPorts()) {
             if (comPort.getDescriptivePortName().strip().equals(comComboBox.getSelectedItem().toString().strip())) {
-                if (comPort.isOpen()){
+                if (comPort.isOpen()) {
                     return comPort;
                 }
                 comPort.setBaudRate(Integer.valueOf(rateComboBox.getSelectedItem().toString()));

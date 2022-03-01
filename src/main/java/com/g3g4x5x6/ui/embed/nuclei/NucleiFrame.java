@@ -13,7 +13,9 @@ import org.apache.sshd.common.util.OsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -223,6 +225,6 @@ public class NucleiFrame extends JFrame {
             ex.printStackTrace();
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
-        UIManager.put( "TextComponent.arc", 5 );
+        UIManager.put("TextComponent.arc", 5);
     }
 }

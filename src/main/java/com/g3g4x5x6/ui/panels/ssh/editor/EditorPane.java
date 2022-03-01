@@ -2,13 +2,11 @@ package com.g3g4x5x6.ui.panels.ssh.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.embed.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.sshd.common.util.OsUtils;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpPath;
 import org.fife.ui.rsyntaxtextarea.*;
@@ -236,8 +234,8 @@ public class EditorPane extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 log.debug("Bash 安全检查");
-                if (!textArea.getText().strip().equals("")){
-                    if (e.getButton() == 3){
+                if (!textArea.getText().strip().equals("")) {
+                    if (e.getButton() == 3) {
                         String tempBash = ConfigUtil.getWorkPath() + "/temp/shellcheck_" + UUID.randomUUID() + ".sh";
                         Files.write(Path.of(tempBash), textArea.getText().getBytes(StandardCharsets.UTF_8));
                         // run
@@ -245,7 +243,7 @@ public class EditorPane extends JPanel {
                     }
                     // show
                     savePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }else{
+                } else {
                     DialogUtil.warn("没内容就不要检查了吧");
                 }
             }

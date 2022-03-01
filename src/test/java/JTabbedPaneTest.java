@@ -1,27 +1,17 @@
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JTabbedPane;
 
 public class JTabbedPaneTest {
     JFrame jf = new JFrame("测试Tab页面");
     // 创建一个Tab页面的标签放在左边，采用换行布局策略的JTabbedPane
     JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
     ImageIcon icon = new ImageIcon("ico/close.gif");
-    String[] layouts = { "换行布局", "滚动条布局" };
-    String[] positions = { "左边", "顶部", "右边", "底部" };
+    String[] layouts = {"换行布局", "滚动条布局"};
+    String[] positions = {"左边", "顶部", "右边", "底部"};
     Map<String, String> books = new LinkedHashMap<>();
 
     public void init() {

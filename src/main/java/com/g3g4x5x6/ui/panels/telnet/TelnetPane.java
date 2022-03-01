@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 
@@ -92,7 +92,7 @@ public class TelnetPane extends JPanel {
         passField = new JPasswordField();
         passField.setColumns(8);
         passField.setEnabled(false);
-        passField.putClientProperty( FlatClientProperties.STYLE, "showRevealButton: true" );
+        passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
         passPane.add(passLabel);
         passPane.add(passField);
 

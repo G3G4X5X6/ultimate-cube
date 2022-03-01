@@ -1,21 +1,16 @@
-import java.awt.BorderLayout;
-
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
 
 public class Main {
     public static void main(String args[]) {
-        Object rows[][] = { { "one", "ichi" }, { "two", "ni" },
-                { "three", "san" }, { "four", "shi" }, { "five", "go" },
-                { "six", "roku" }, { "seven", "shichi" }, { "eight", "hachi" },
-                { "nine", "kyu" }, { "ten", "ju" } };
-        Object headers[] = { "English", "Japanese" };
+        Object rows[][] = {{"one", "ichi"}, {"two", "ni"},
+                {"three", "san"}, {"four", "shi"}, {"five", "go"},
+                {"six", "roku"}, {"seven", "shichi"}, {"eight", "hachi"},
+                {"nine", "kyu"}, {"ten", "ju"}};
+        Object headers[] = {"English", "Japanese"};
         String title = (args.length == 0 ? "JTable Sample" : args[0]);
         JFrame frame = new JFrame(title);
 

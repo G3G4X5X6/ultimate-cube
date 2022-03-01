@@ -3,19 +3,20 @@ package com.g3g4x5x6;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.dialog.LockDialog;
+import com.g3g4x5x6.utils.CheckUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.PropertyConfigurator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
-import com.g3g4x5x6.utils.CheckUtil;
-import org.apache.log4j.PropertyConfigurator;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -69,7 +70,7 @@ public class App {
             ex.printStackTrace();
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
-        UIManager.put( "TextComponent.arc", 5 );
+        UIManager.put("TextComponent.arc", 5);
     }
 
     private static void initSystemTray() {
@@ -144,12 +145,12 @@ public class App {
         }
     }
 
-    private static void openApp(){
+    private static void openApp() {
         if (!mainFrame.isShowing()) {
-            if (App.lockState.get()){
+            if (App.lockState.get()) {
                 LockDialog lockDialog = new LockDialog();
                 lockDialog.setVisible(true);
-            }else{
+            } else {
                 mainFrame.setVisible(true);
             }
         }
@@ -157,7 +158,7 @@ public class App {
 
     private static Properties loadProperties() {
         // 初始化应用配置
-        if (!Files.exists(Path.of(ConfigUtil.getPropertiesPath()))){
+        if (!Files.exists(Path.of(ConfigUtil.getPropertiesPath()))) {
             try {
                 InputStream appIn = App.class.getClassLoader().getResourceAsStream("application.properties");
                 assert appIn != null;
@@ -168,7 +169,7 @@ public class App {
         }
 
         // 初始化日志配置
-        if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "/log4j.properties"))){
+        if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "/log4j.properties"))) {
             try {
                 InputStream logIn = App.class.getClassLoader().getResourceAsStream("log4j.properties");
                 assert logIn != null;
@@ -191,7 +192,7 @@ public class App {
 
     private static void initLog4j() {
         try {
-            if (App.properties.getProperty("app.log.setting.enable").equalsIgnoreCase("true")){
+            if (App.properties.getProperty("app.log.setting.enable").equalsIgnoreCase("true")) {
                 PropertyConfigurator.configureAndWatch(App.properties.getProperty("app.log.setting.path").replace("{workspace}", ConfigUtil.getWorkPath()));
                 log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<已加载自定义日志配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             }

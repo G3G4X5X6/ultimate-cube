@@ -29,7 +29,7 @@ public class ConfigUtil {
         return work;
     }
 
-    public static String getThemePath(){
+    public static String getThemePath() {
         return Path.of(getWorkPath() + "/config/theme/").toString();
     }
 
@@ -47,8 +47,8 @@ public class ConfigUtil {
                 "{workspace}#" + getWorkPath(),
         };
         String value = App.properties.getProperty(key);
-        for (String var : vars){
-            if (value.contains(var.split("#")[0])){
+        for (String var : vars) {
+            if (value.contains(var.split("#")[0])) {
                 value = value.replace(var.split("#")[0], var.split("#")[1]);
             }
         }

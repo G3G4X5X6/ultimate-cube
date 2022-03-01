@@ -3,6 +3,9 @@ package com.g3g4x5x6.ui.panels.telnet;
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.telnet.InvalidTelnetOptionException;
+import org.apache.commons.net.telnet.TelnetClient;
+import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -11,8 +14,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.net.telnet.*;
 
 @Slf4j
 public class TelnetTtyConnector implements TtyConnector {
@@ -24,7 +25,7 @@ public class TelnetTtyConnector implements TtyConnector {
 
     private TelnetClient telnet;
 
-    public TelnetTtyConnector(String host, int port){
+    public TelnetTtyConnector(String host, int port) {
         log.debug("TelnetTtyConnector Constructor");
         this.host = host;
         this.port = port;
@@ -45,7 +46,7 @@ public class TelnetTtyConnector implements TtyConnector {
         this.inputStreamReader = new InputStreamReader(this.inputStream);
     }
 
-    public TelnetTtyConnector(String host, int port, String user, String Pass){
+    public TelnetTtyConnector(String host, int port, String user, String Pass) {
         // TODO 密码自动登录
     }
 

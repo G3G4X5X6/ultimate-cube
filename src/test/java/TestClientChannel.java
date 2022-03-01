@@ -1,6 +1,5 @@
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ClientChannel;
-import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.Channel;
 import org.apache.sshd.common.session.SessionHeartbeatController;
@@ -9,7 +8,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
-import java.util.EnumSet;
 import java.util.concurrent.TimeUnit;
 
 public class TestClientChannel {

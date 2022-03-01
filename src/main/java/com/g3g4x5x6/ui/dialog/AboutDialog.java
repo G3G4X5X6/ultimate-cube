@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.util.Properties;
 
 
 /**
@@ -23,7 +21,6 @@ public class AboutDialog extends JDialog {
     private String source;
 
     // TODO thanks label
-
 
 
     public AboutDialog() {

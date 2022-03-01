@@ -1,6 +1,8 @@
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
-import org.apache.commons.net.telnet.*;
+import org.apache.commons.net.telnet.InvalidTelnetOptionException;
+import org.apache.commons.net.telnet.TelnetClient;
+import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -19,7 +21,7 @@ public class TelnetTtyConnector implements TtyConnector {
 
     private TelnetClient telnet;
 
-    public TelnetTtyConnector(String host, int port){
+    public TelnetTtyConnector(String host, int port) {
         this.host = host;
         this.port = port;
         this.telnet = new TelnetClient();

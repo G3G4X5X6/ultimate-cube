@@ -26,20 +26,20 @@ public class CommonUtil {
     }
 
     static {
-        for (SerialPort port : SerialPort.getCommPorts()){
+        for (SerialPort port : SerialPort.getCommPorts()) {
             ports.add(port);
         }
     }
 
-    public static HashSet<SerialPort> getCommPorts(){
+    public static HashSet<SerialPort> getCommPorts() {
         return ports;
     }
 
     /**
      * 未测试
      */
-    public static void updateCommPorts(){
-        for (SerialPort port : SerialPort.getCommPorts()){
+    public static void updateCommPorts() {
+        for (SerialPort port : SerialPort.getCommPorts()) {
             ports.add(port);
         }
     }
@@ -107,7 +107,7 @@ public class CommonUtil {
         return tagName;
     }
 
-    public static void getLatestJar(){
+    public static void getLatestJar() {
         StringBuffer result = new StringBuffer();
         try {
             URL url = new URL("https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest");
@@ -140,14 +140,14 @@ public class CommonUtil {
         JSONArray upload = object.getJSONArray("assets");
         ListIterator<Object> iterator = upload.listIterator();
         String browser_download_url = "https://github.com/G3G4X5X6/ultimateshell/releases/";
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             JSONObject obj = (JSONObject) iterator.next();
-            if (OsInfoUtil.isLinux() || OsInfoUtil.isMacOS()){
-                if (obj.getString("name").contains("jar-with-dependencies.jar")){
+            if (OsInfoUtil.isLinux() || OsInfoUtil.isMacOS()) {
+                if (obj.getString("name").contains("jar-with-dependencies.jar")) {
                     browser_download_url = obj.getString("browser_download_url");
                 }
-            }else if (OsInfoUtil.isWindows()){
-                if (obj.getString("name").contains("setup.exe")){
+            } else if (OsInfoUtil.isWindows()) {
+                if (obj.getString("name").contains("setup.exe")) {
                     browser_download_url = obj.getString("browser_download_url");
                 }
             }
@@ -251,7 +251,7 @@ public class CommonUtil {
         return b.toString();
     }
 
-    public static String queryIp(String ip){
+    public static String queryIp(String ip) {
         QQWry qqwry = null; // load qqwry.dat from classpath
         try {
             qqwry = new QQWry();
@@ -263,15 +263,15 @@ public class CommonUtil {
         return String.format("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
     }
 
-    public static Boolean isWin(){
+    public static Boolean isWin() {
         return true;
     }
 
-    public static Boolean isLinux(){
+    public static Boolean isLinux() {
         return true;
     }
 
-    public static Boolean isMac(){
+    public static Boolean isMac() {
         return true;
     }
 

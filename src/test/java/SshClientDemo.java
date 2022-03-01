@@ -1,15 +1,14 @@
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.security.KeyPair;
-import java.util.EnumSet;
-import java.util.concurrent.TimeUnit;
-
 import com.g3g4x5x6.utils.SshUtil;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ClientChannel;
 import org.apache.sshd.client.channel.ClientChannelEvent;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.common.channel.Channel;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 // https://stackoverflow.com/questions/63075107/how-to-execute-remote-commands-using-//apache-mina-sshd
 public class SshClientDemo {
@@ -51,7 +50,8 @@ public class SshClientDemo {
 
     public static void main(String[] args) {
         try {
-            System.out.println(SshUtil.exec("172.17.200.104", "security", "123456", 22, 3000, "ps axu"));;
+            System.out.println(SshUtil.exec("172.17.200.104", "security", "123456", 22, 3000, "ps axu"));
+            ;
         } catch (Exception e) {
             e.printStackTrace();
         }

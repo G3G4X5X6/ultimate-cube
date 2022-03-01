@@ -51,7 +51,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
     private JButton newBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-open.svg"));
     private JButton saveBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
-//    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
+    //    private JButton saveAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-saveall.svg"));
 //    private JButton closeBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
 //    private JButton closeAllBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/ignore_file.svg"));
     private JButton cutBtn = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/menu-cut.svg"));
@@ -162,7 +162,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
         this.add(statusBar, BorderLayout.SOUTH);
     }
 
-    private void initMenuBar(){
+    private void initMenuBar() {
         JCheckBox showToolBar = new JCheckBox("显示工具栏   ");
         showToolBar.setSelected(true);
         showToolBar.addActionListener(new ActionListener() {
@@ -218,7 +218,6 @@ public class EmbedEditor extends JFrame implements ActionListener {
         terminalBtn.setToolTipText("返回 UltimateShell");
         terminalBtn.addActionListener(retTerminalAction);
     }
-
 
 
     private void initStatusBar() {
@@ -376,6 +375,7 @@ public class EmbedEditor extends JFrame implements ActionListener {
 
     /**
      * 获取当前选中的Tab面板
+     *
      * @return EditorPanel
      */
     private EditorPanel getCurrentEditorPanel() {

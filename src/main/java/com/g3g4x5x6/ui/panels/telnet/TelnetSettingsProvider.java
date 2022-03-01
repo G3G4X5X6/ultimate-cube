@@ -1,6 +1,5 @@
 package com.g3g4x5x6.ui.panels.telnet;
 
-import com.g3g4x5x6.utils.ConfigUtil;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
@@ -95,7 +94,7 @@ public class TelnetSettingsProvider implements SettingsProvider {
             fontName = "Monospaced";
         }
 
-        return new Font(fontName, 0, (int)this.getTerminalFontSize());
+        return new Font(fontName, 0, (int) this.getTerminalFontSize());
     }
 
     public float getTerminalFontSize() {

@@ -1,6 +1,7 @@
 package com.g3g4x5x6.ui.settings;
 
-import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
 import com.g3g4x5x6.App;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Objects;
 

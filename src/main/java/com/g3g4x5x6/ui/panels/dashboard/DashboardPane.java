@@ -7,8 +7,6 @@ import com.g3g4x5x6.ui.panels.dashboard.quickstarter.QuickStarterPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 
 /**
@@ -26,7 +24,7 @@ public class DashboardPane extends JPanel {
         this.add(statusBar, BorderLayout.SOUTH);
         tabbedPane.addTab("快速启动", new QuickStarterPane());
         tabbedPane.addTab("本地终端", new ConsolePane());
-        tabbedPane.addTab("网络连接", null,  new ConnectionPane(), "手动刷新");
+        tabbedPane.addTab("网络连接", null, new ConnectionPane(), "手动刷新");
         tabbedPane.addTab("系统信息", null, new SysinfoPane(), "默认10分钟刷新一次");
         tabbedPane.addTab("备忘笔记", new NotePane());
 //        tabbedPane.addTab("日志记录", new LogPane());
@@ -37,7 +35,7 @@ public class DashboardPane extends JPanel {
 
     }
 
-    private void initStatusBar(){
+    private void initStatusBar() {
         statusBar.setFloatable(false);
 
         /**
@@ -48,7 +46,7 @@ public class DashboardPane extends JPanel {
         statusBar.add(new JLabel("Ready"));
     }
 
-    private void initPopupMenu(){
+    private void initPopupMenu() {
         // TODO statusPopupMenu Items
         // 生成随机密码
         JMenuItem passwdItem = new JMenuItem("生成随机密码");

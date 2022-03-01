@@ -2,15 +2,18 @@ package com.g3g4x5x6.ui.panels.tools.external;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.g3g4x5x6.utils.os.OsInfoUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.os.OsInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 
 @Slf4j
@@ -58,7 +61,7 @@ public class ExternalToolIntegration {
         return array;
     }
 
-    private void initAllMenuItem(){
+    private void initAllMenuItem() {
         for (Object obj : array) {
             JSONObject tool = (JSONObject) obj;
             // Windows
@@ -76,15 +79,16 @@ public class ExternalToolIntegration {
 
         }
     }
-    private void initMenuItem(JSONObject tool){
+
+    private void initMenuItem(JSONObject tool) {
         JMenuItem tempItem = new JMenuItem(tool.get("name").toString());
         tempItem.addActionListener(e -> {
             log.debug("执行：" + tool.get("start"));
             new Thread(() -> exec(replaceBasePath((String) tool.get("start")), replaceBasePath((String) tool.get("workdir")))).start();
         });
-        if (items.containsKey(tool.get("category").toString())){
+        if (items.containsKey(tool.get("category").toString())) {
             items.get(tool.get("category").toString()).add(tempItem);
-        }else{
+        } else {
             LinkedList<JMenuItem> tempList = new LinkedList<>();
             tempList.add(tempItem);
             items.put(tool.get("category").toString(), tempList);

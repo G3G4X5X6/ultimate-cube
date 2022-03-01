@@ -7,7 +7,10 @@ import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.ssh.SshPane;
-import com.g3g4x5x6.utils.*;
+import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.SessionUtil;
+import com.g3g4x5x6.utils.SshUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
@@ -27,8 +30,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.HashSet;
 
 
@@ -163,15 +164,15 @@ public class SessionsManager extends JPanel {
         sessionTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     openSession(mainTabbedPane);
                 }
             }
         });
-        tableModel = new DefaultTableModel(){
+        tableModel = new DefaultTableModel() {
             // 不可编辑
             @Override
-            public boolean isCellEditable(int row,int column){
+            public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
@@ -458,7 +459,7 @@ public class SessionsManager extends JPanel {
         return tempPath.toString();
     }
 
-    private void openSession(JTabbedPane tabbedPane){
+    private void openSession(JTabbedPane tabbedPane) {
         int[] indexs = sessionTable.getSelectedRows();
         for (int index : indexs) {
             String[] array = getRowFilePath(index);

@@ -10,7 +10,7 @@ import java.awt.*;
 @Slf4j
 public class QRTool extends JDialog {
 
-    public QRTool(){
+    public QRTool() {
         super(App.mainFrame);
         this.setTitle("QR Code");
         this.setLayout(new BorderLayout());

@@ -1,10 +1,6 @@
-import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.ui.UIUtil;
-import com.pty4j.PtyProcess;
-import com.pty4j.PtyProcessBuilder;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,7 +33,7 @@ public class CmdProcess {
             String res = null;
             StringBuilder sb = new StringBuilder();
             while ((res = br.readLine()) != null) {//循环读取缓冲区中的数据
-                sb.append(res+"\n");
+                sb.append(res + "\n");
             }
             br.close();
             process.waitFor();

@@ -122,35 +122,35 @@ public class ConnectionPane extends JPanel {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-        for (String line : output.split("\n")){
+        for (String line : output.split("\n")) {
 //            log.debug(line);
-            if (line.strip().startsWith("TCP")){
+            if (line.strip().startsWith("TCP")) {
                 // TCP
                 String[] row = line.strip().split("\\s+");
                 String ip = row[2].split(":")[0];
-                if (!ip.strip().equals("0.0.0.0") && !ip.strip().equals("*") && !ip.strip().startsWith("[") && !ip.strip().equals("127.0.0.1")){
+                if (!ip.strip().equals("0.0.0.0") && !ip.strip().equals("*") && !ip.strip().startsWith("[") && !ip.strip().equals("127.0.0.1")) {
                     String ipAndInfo = ip + "(" + CommonUtil.queryIp(ip) + ")";
                     row[2] = ipAndInfo;
-                } else if (netBtn.isSelected()){
+                } else if (netBtn.isSelected()) {
                     log.debug("TCP ALL: continue");
                     continue;
                 }
-                if (ip.strip().equals("127.0.0.1")){
+                if (ip.strip().equals("127.0.0.1")) {
                     String ipAndInfo = ip + "(本机地址,  CZ88.NET)";
                     row[2] = ipAndInfo;
                 }
                 tableModel.addRow(row);
             }
-            if (line.strip().startsWith("UDP")){
+            if (line.strip().startsWith("UDP")) {
                 // UDP
                 String[] tmpRow = line.strip().split("\\s+");
                 String[] row = new String[]{tmpRow[0], tmpRow[1], tmpRow[2], "", tmpRow[3]};
                 String ip = row[2].split(":")[0];
-                if (!ip.strip().equals("0.0.0.0") && !ip.strip().equals("*") && !ip.strip().startsWith("[") && netBtn.isSelected()){
+                if (!ip.strip().equals("0.0.0.0") && !ip.strip().equals("*") && !ip.strip().startsWith("[") && netBtn.isSelected()) {
                     String ipAndInfo = ip + "(" + CommonUtil.queryIp(ip) + ")";
                     row[2] = ipAndInfo;
                     log.debug("UDP: " + ipAndInfo);
-                }else {
+                } else {
                     continue;
                 }
                 tableModel.addRow(row);

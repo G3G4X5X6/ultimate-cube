@@ -24,7 +24,7 @@ public class SysinfoPane extends JPanel {
     private JScrollPane scrollPane;
     private JTable table;
     private DefaultTableModel tableModel;
-    private String[] columnNames = { "Key", "Value"};
+    private String[] columnNames = {"Key", "Value"};
 
     public SysinfoPane() {
         this.setLayout(borderLayout);
@@ -50,11 +50,11 @@ public class SysinfoPane extends JPanel {
         toolBar.add(flushBtn);
 
         table = new JTable();
-        tableModel = new DefaultTableModel(){
+        tableModel = new DefaultTableModel() {
             // 不可编辑
             @Override
-            public boolean isCellEditable(int row,int column){
-                if (column == 0){
+            public boolean isCellEditable(int row, int column) {
+                if (column == 0) {
                     return false;
                 }
                 return true;
@@ -78,26 +78,26 @@ public class SysinfoPane extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        DefaultTableCellRenderer rightRenderer  =  new DefaultTableCellRenderer();
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
         rightRenderer.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/intersystemCache.svg"));
-        table.getColumn("Key").setCellRenderer(rightRenderer );
+        table.getColumn("Key").setCellRenderer(rightRenderer);
 
-        DefaultTableCellRenderer leftRenderer  =  new DefaultTableCellRenderer();
+        DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
         leftRenderer.setHorizontalAlignment(JTextField.LEFT);
-        table.getColumn("Value").setCellRenderer(leftRenderer );
+        table.getColumn("Value").setCellRenderer(leftRenderer);
 
         this.add(toolBar, BorderLayout.NORTH);
         this.add(scrollPane, BorderLayout.CENTER);
     }
 
-    private void flushWinTable(){
+    private void flushWinTable() {
         tableModel.setRowCount(0);
         CommonUtil.generateSystemInfo();
         String info = CommonUtil.getSystemInfo();
-        for (String line : info.split("\n")){
-            if (!line.strip().equals("")){
+        for (String line : info.split("\n")) {
+            if (!line.strip().equals("")) {
                 String[] row = line.split(":");
-                if (row[0].strip().startsWith("[") || row.length != 2){
+                if (row[0].strip().startsWith("[") || row.length != 2) {
                     continue;
                 }
                 String tmpKey = "<html><strong>" + row[0].strip() + "</strong</html>";

@@ -3,7 +3,8 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.g3g4x5x6.utils.*;
+import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
@@ -30,7 +31,7 @@ public class RecentSessionsPane extends JPanel {
     private JScrollPane tableScroll;
     private JTable recentTable;
     private DefaultTableModel tableModel;
-    private String[] columnNames = { "访问时间", "会话名称", "协议", "地址", "端口","登录用户", "认证类型"};
+    private String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
 
     public RecentSessionsPane(JTabbedPane mainTabbedPane) {
         this.borderLayout = new BorderLayout();
@@ -46,14 +47,14 @@ public class RecentSessionsPane extends JPanel {
         recentTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     openSession(recentTable.getSelectedRow());
                 }
             }
         });
     }
 
-    private void initTable(){
+    private void initTable() {
         recentTable = new JTable();
         recentTable.addFocusListener(new FocusAdapter() {
             @Override
@@ -61,10 +62,10 @@ public class RecentSessionsPane extends JPanel {
                 initData();
             }
         });
-        tableModel = new DefaultTableModel(){
+        tableModel = new DefaultTableModel() {
             // 不可编辑
             @Override
-            public boolean isCellEditable(int row,int column){
+            public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
@@ -76,28 +77,28 @@ public class RecentSessionsPane extends JPanel {
         tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        DefaultTableCellRenderer  centerRenderer  =  new DefaultTableCellRenderer();
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JTextField.CENTER);
-        recentTable.getColumn("访问时间").setCellRenderer(centerRenderer );
-        recentTable.getColumn("会话名称").setCellRenderer(centerRenderer );
-        recentTable.getColumn("协议").setCellRenderer(centerRenderer );
-        recentTable.getColumn("地址").setCellRenderer(centerRenderer );
-        recentTable.getColumn("端口").setCellRenderer(centerRenderer );
-        recentTable.getColumn("登录用户").setCellRenderer(centerRenderer );
-        recentTable.getColumn("认证类型").setCellRenderer(centerRenderer );
+        recentTable.getColumn("访问时间").setCellRenderer(centerRenderer);
+        recentTable.getColumn("会话名称").setCellRenderer(centerRenderer);
+        recentTable.getColumn("协议").setCellRenderer(centerRenderer);
+        recentTable.getColumn("地址").setCellRenderer(centerRenderer);
+        recentTable.getColumn("端口").setCellRenderer(centerRenderer);
+        recentTable.getColumn("登录用户").setCellRenderer(centerRenderer);
+        recentTable.getColumn("认证类型").setCellRenderer(centerRenderer);
 
         this.add(tableScroll, BorderLayout.CENTER);
     }
 
-    private void initData(){
+    private void initData() {
         tableModel.setRowCount(0);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         File file = new File(ConfigUtil.getWorkPath() + "/sessions");
-        if (file.exists()){
-            for (File f : file.listFiles()){
-                if (f.isFile()){
-                    if (f.getName().startsWith("recent_ssh")){
+        if (file.exists()) {
+            for (File f : file.listFiles()) {
+                if (f.isFile()) {
+                    if (f.getName().startsWith("recent_ssh")) {
                         Long lastModified = f.lastModified();
                         Date date = new Date(lastModified);
                         try {
@@ -118,16 +119,16 @@ public class RecentSessionsPane extends JPanel {
                     }
                 }
             }
-            if (tableModel.getRowCount() == 0){
+            if (tableModel.getRowCount() == 0) {
                 tableModel.addRow(
-                        new String[]{"空", "空", "空", "空", "空", "空", "空", }
+                        new String[]{"空", "空", "空", "空", "空", "空", "空",}
                 );
             }
         }
         recentTable.setModel(tableModel);
     }
 
-    private void initPopupMenu(){
+    private void initPopupMenu() {
         AbstractAction reopenAction = new AbstractAction("打开会话") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -145,8 +146,8 @@ public class RecentSessionsPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String path = ConfigUtil.getWorkPath() + "/sessions";
                 File file = new File(path);
-                for (File f : file.listFiles()){
-                    if (f.isFile()){
+                for (File f : file.listFiles()) {
+                    if (f.isFile()) {
                         if (f.getName().startsWith("recent_ssh"))
                             f.delete();
                     }
@@ -159,8 +160,8 @@ public class RecentSessionsPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String path = ConfigUtil.getWorkPath() + "/sessions";
                 File file = new File(path);
-                for (File f : file.listFiles()){
-                    if (f.isFile()){
+                for (File f : file.listFiles()) {
+                    if (f.isFile()) {
                         int[] indexs = recentTable.getSelectedRows();
                         for (int index : indexs) {
                             String protocol = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 2);
@@ -171,7 +172,7 @@ public class RecentSessionsPane extends JPanel {
                                     && f.getAbsolutePath().contains(address.strip())
                                     && f.getAbsolutePath().contains(port.strip())
                                     && f.getAbsolutePath().contains(user.strip())
-                            ){
+                            ) {
                                 f.delete();
                             }
                         }
@@ -189,15 +190,15 @@ public class RecentSessionsPane extends JPanel {
         recentTable.setComponentPopupMenu(recentPopupMenu);
     }
 
-    private void openSession(int index){
+    private void openSession(int index) {
         String address = (String) tableModel.getValueAt(index, 3);
         String port = (String) tableModel.getValueAt(index, 4);
         String user = (String) tableModel.getValueAt(index, 5);
 
         File dir = new File(ConfigUtil.getWorkPath() + "/sessions/");
-        if (dir.exists()){
-            for (File file : dir.listFiles()){
-                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)){
+        if (dir.exists()) {
+            for (File file : dir.listFiles()) {
+                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)) {
                     new Thread(() -> SessionUtil.openSshSession(mainTabbedPane, file.getAbsolutePath())).start();
                 }
             }

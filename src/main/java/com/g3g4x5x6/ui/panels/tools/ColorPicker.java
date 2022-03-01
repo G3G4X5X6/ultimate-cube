@@ -2,9 +2,8 @@ package com.g3g4x5x6.ui.panels.tools;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.awt.*;
 import javax.swing.*;
-
+import java.awt.*;
 import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,7 +61,7 @@ public class ColorPicker extends JDialog {
         });
     }
 
-    private void initColorPanel(){
+    private void initColorPanel() {
         colorPanel = new JPanel(new BorderLayout());
         colorPanel.setSize(new Dimension(150, 150));
         colorPanel.setPreferredSize(new Dimension(150, 150));
@@ -90,7 +89,7 @@ public class ColorPicker extends JDialog {
         this.add(colorPanel, BorderLayout.WEST);
     }
 
-    private void initMainPanel(){
+    private void initMainPanel() {
         mainPanel = new JPanel(new BorderLayout());
 
         JPanel northPane = new JPanel(flowLayout);
@@ -103,7 +102,7 @@ public class ColorPicker extends JDialog {
         this.add(mainPanel, BorderLayout.CENTER);
     }
 
-    private void initAction(){
+    private void initAction() {
         openAction = new AbstractAction("打开") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,9 +130,9 @@ public class ColorPicker extends JDialog {
         checkBox.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (checkBox.isSelected()){
+                if (checkBox.isSelected()) {
                     setAlwaysOnTop(true);
-                }else {
+                } else {
                     setAlwaysOnTop(false);
                 }
             }

@@ -2,7 +2,6 @@ package com.g3g4x5x6.ui.dialog;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.ui.MainFrame;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -27,7 +26,7 @@ public class LockDialog extends JDialog {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                if (App.mainFrame.isShowing() && App.lockState.get()){
+                if (App.mainFrame.isShowing() && App.lockState.get()) {
                     App.mainFrame.setVisible(false);
                 }
             }
@@ -43,11 +42,11 @@ public class LockDialog extends JDialog {
                     log.debug(String.valueOf(passwordField.getPassword()));
                     if (App.lockState.get()) {
                         // TODO unlock
-                        if (App.lockPassword.equals(String.valueOf(passwordField.getPassword()))){
+                        if (App.lockPassword.equals(String.valueOf(passwordField.getPassword()))) {
                             App.mainFrame.setVisible(true);
                             App.lockState.set(false);
                             dispose();
-                        }else{
+                        } else {
                             JOptionPane.showMessageDialog(App.mainFrame, "密码不正确", "Warning", JOptionPane.WARNING_MESSAGE);
                         }
                     } else {

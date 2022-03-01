@@ -30,6 +30,6 @@ public final class DefaultTerminalTypeAheadSettings {
     }
 
     static {
-        DEFAULT = new com.jediterm.terminal.model.TerminalTypeAheadSettings(true, TimeUnit.MILLISECONDS.toNanos(100L), new TextStyle(new TerminalColor(8), (TerminalColor)null));
+        DEFAULT = new com.jediterm.terminal.model.TerminalTypeAheadSettings(true, TimeUnit.MILLISECONDS.toNanos(100L), new TextStyle(new TerminalColor(8), (TerminalColor) null));
     }
 }

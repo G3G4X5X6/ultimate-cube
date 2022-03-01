@@ -15,7 +15,10 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.autocomplete.AutoCompletion;
-import org.fife.ui.rsyntaxtextarea.*;
+import org.fife.ui.rsyntaxtextarea.MatchedBracketPopup;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
@@ -311,7 +314,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         replaceDialog.setSearchContext(context);
     }
 
-    private void testTemplate(boolean isDebug){
+    private void testTemplate(boolean isDebug) {
         // 获取目标URL
         String targets = targetPanel.getTextArea().getText().strip();
         if (targets.equalsIgnoreCase("")) {
@@ -320,7 +323,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
                 JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
             }
         }
-        if (!targets.equalsIgnoreCase("")){
+        if (!targets.equalsIgnoreCase("")) {
             String targetFile = tempDir + "/targets_" + UUID.randomUUID() + ".txt";
             try {
                 Files.write(Path.of(targetFile), targets.getBytes(StandardCharsets.UTF_8));
@@ -349,16 +352,16 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
 
             // 执行命令
             String command;
-            if (isWorkflows){
+            if (isWorkflows) {
                 command = "nuclei -l " + targetFile + " -w " + tempFile;
-            }else{
+            } else {
                 command = "nuclei -l " + targetFile + " -t " + tempFile;
             }
 
             // 是否显示调试信息
-            if (isDebug){
+            if (isDebug) {
                 command = command + " -debug " + " -markdown-export " + NucleiFrame.reportDir + "\r";
-            }else{
+            } else {
                 command = command + " -markdown-export " + NucleiFrame.reportDir + "\r";
             }
             runningDialog.runCommand(command);
@@ -464,7 +467,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
             this.add(console, BorderLayout.CENTER);
         }
 
-        public void runCommand(String command){
+        public void runCommand(String command) {
             console.write(command);
         }
     }

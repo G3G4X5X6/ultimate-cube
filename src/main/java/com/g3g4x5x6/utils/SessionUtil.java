@@ -3,7 +3,6 @@ package com.g3g4x5x6.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -18,19 +17,19 @@ import java.nio.file.Path;
 
 @Slf4j
 public class SessionUtil {
-    private SessionUtil(){
+    private SessionUtil() {
 
     }
 
-    public static void openSshSession(JTabbedPane tabbedPane, String sessionFile){
+    public static void openSshSession(JTabbedPane tabbedPane, String sessionFile) {
         try {
             File file = new File(sessionFile);
-            if (!sessionFile.contains("recent_ssh_")){
+            if (!sessionFile.contains("recent_ssh_")) {
                 String recentPath = ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName();
-                if (!Files.exists(Path.of(recentPath))){
+                if (!Files.exists(Path.of(recentPath))) {
                     Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(recentPath));
                 } else {
-                    try{
+                    try {
                         BufferedWriter fileWriter = new BufferedWriter(new FileWriter(recentPath));
                         BufferedReader fileReader = new BufferedReader(new FileReader(file));
                         fileWriter.write(fileReader.readLine());

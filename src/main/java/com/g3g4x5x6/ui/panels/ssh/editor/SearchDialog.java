@@ -1,7 +1,6 @@
 package com.g3g4x5x6.ui.panels.ssh.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.App;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
@@ -19,7 +18,7 @@ public class SearchDialog extends JDialog implements ActionListener {
     private JToggleButton wholeWord;
     private RSyntaxTextArea textArea;
 
-    public SearchDialog(RSyntaxTextArea textArea){
+    public SearchDialog(RSyntaxTextArea textArea) {
         this.setTitle("查找替换");
         this.setLayout(new BorderLayout());
         this.textArea = textArea;
@@ -53,9 +52,9 @@ public class SearchDialog extends JDialog implements ActionListener {
         regexCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (regexCB.isSelected()){
+                if (regexCB.isSelected()) {
                     regexCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/regexSelected.svg"));
-                }else{
+                } else {
                     regexCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/regex.svg"));
                 }
             }
@@ -67,9 +66,9 @@ public class SearchDialog extends JDialog implements ActionListener {
         matchCaseCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (matchCaseCB.isSelected()){
+                if (matchCaseCB.isSelected()) {
                     matchCaseCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/matchCaseSelected.svg"));
-                }else{
+                } else {
                     matchCaseCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/matchCase.svg"));
                 }
             }
@@ -81,9 +80,9 @@ public class SearchDialog extends JDialog implements ActionListener {
         wholeWord.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (wholeWord.isSelected()){
+                if (wholeWord.isSelected()) {
                     wholeWord.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/wordsSelected.svg"));
-                }else{
+                } else {
                     wholeWord.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/words.svg"));
                 }
             }

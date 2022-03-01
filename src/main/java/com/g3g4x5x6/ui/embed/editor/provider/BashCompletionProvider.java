@@ -8,14 +8,14 @@ import org.fife.ui.autocomplete.ShorthandCompletion;
 @Slf4j
 public class BashCompletionProvider extends DefaultCompletionProvider {
 
-    public BashCompletionProvider(){
+    public BashCompletionProvider() {
         this.setAutoActivationRules(true, "abcdefghijklmnopqrstuvwxyz.");
         initKeyWord();
         initShortHand();
         log.debug("Load BashCompletionProvider");
     }
 
-    private void initKeyWord(){
+    private void initKeyWord() {
         // Add completions for all Bash keywords. A BasicCompletion is just
         // a straightforward word completion.
         this.addCompletion(new BasicCompletion(this, "alias "));
@@ -30,7 +30,7 @@ public class BashCompletionProvider extends DefaultCompletionProvider {
         this.addCompletion(new BasicCompletion(this, "read "));
     }
 
-    private void initShortHand(){
+    private void initShortHand() {
         // Add a couple of "shorthand" completions. These completions don't
         // require the input text to be the same thing as the replacement text.
         this.addCompletion(new ShorthandCompletion(this, "if",
