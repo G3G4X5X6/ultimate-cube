@@ -3,8 +3,10 @@ package com.g3g4x5x6;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.dialog.LockDialog;
+import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
 import com.g3g4x5x6.utils.CheckUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.PropertyConfigurator;
 
@@ -20,6 +22,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,6 +34,7 @@ public class App {
     public static MainFrame mainFrame;
     public static Properties properties = loadProperties();
     public static AtomicBoolean lockState = new AtomicBoolean(false);
+    public static LinkedHashMap<String, SessionInfo> sessionInfos = new LinkedHashMap<>();
     public static String lockPassword = "";
 
     public static void main(String[] args) {

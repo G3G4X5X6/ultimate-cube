@@ -1,9 +1,13 @@
 package com.g3g4x5x6.ui.panels.focus;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.components.FlatButton;
+import com.formdev.flatlaf.extras.components.FlatToggleButton;
+import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.NewTabbedPane;
 import com.g3g4x5x6.ui.panels.SessionsManager;
+import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +30,6 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 @Slf4j
 public class FocusFrame extends JFrame {
     private final JTabbedPane tabbedPane = new JTabbedPane();
-    private final LinkedList<SshTabbedPane> sshTabbedPanes = new LinkedList<>();
 
     public FocusFrame() {
         this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
@@ -37,9 +40,18 @@ public class FocusFrame extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(tabbedPane, BorderLayout.CENTER);
 
+        removeOld();
         initClosableTabs();
         customComponents();
         initTabbedPane();
+    }
+
+    private void removeOld() {
+        for (int i = MainFrame.mainTabbedPane.getTabCount() - 1; i >= 0; i--) {
+            if (MainFrame.mainTabbedPane.getComponentAt(i) instanceof SshTabbedPane) {
+                MainFrame.mainTabbedPane.removeTabAt(i);
+            }
+        }
     }
 
     private void initClosableTabs() {
@@ -81,8 +93,36 @@ public class FocusFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 log.debug("退出专注模式");
                 // TODO 还原会话
-
+                for (String key : App.sessionInfos.keySet()) {
+                    SessionInfo sessionInfo = App.sessionInfos.get(key);
+                    MainFrame.mainTabbedPane.addTab(
+                            sessionInfo.getSessionName().equals("") ? sessionInfo.getSessionAddress() : sessionInfo.getSessionName(),
+                            new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                            new SshTabbedPane(sessionInfo)
+                    );
+                }
+                MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - tabbedPane.getSelectedIndex());
                 dispose();
+            }
+        });
+
+        // 置顶图标按钮
+        FlatToggleButton toggleButton = new FlatToggleButton();
+        toggleButton.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/pinTab.svg"));
+        toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
+        toggleButton.setToolTipText("窗口置顶");
+        toggleButton.setFocusable(false);
+        toggleButton.setSelected(true);
+        toggleButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toggleButton.isSelected()) {
+                    setAlwaysOnTop(true);
+                    toggleButton.setToolTipText("取消置顶");
+                } else {
+                    setAlwaysOnTop(false);
+                    toggleButton.setToolTipText("窗口置顶");
+                }
             }
         });
 
@@ -90,33 +130,20 @@ public class FocusFrame extends JFrame {
         trailing.add(sessionManagerBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(fullScreenBtn);
+        trailing.add(toggleButton);
         tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
 
     private void initTabbedPane() {
-        getSshTabbedPanes();
-        for (SshTabbedPane sshTabbedPane : sshTabbedPanes) {
-            tabbedPane.addTab(sshTabbedPane.getTitle(),
+        for (String key : App.sessionInfos.keySet()) {
+            SessionInfo sessionInfo = App.sessionInfos.get(key);
+            tabbedPane.addTab(
+                    sessionInfo.getSessionName().equals("") ? sessionInfo.getSessionAddress() : sessionInfo.getSessionName(),
                     new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                    new FocusPanel(
-                            sshTabbedPane.getTitle(),
-                            sshTabbedPane.getSshPane(),
-                            sshTabbedPane.getSftpBrowser(),
-                            sshTabbedPane.getMonitorPane(),
-                            sshTabbedPane.getEditorPane()
-                    ));
+                    new FocusPanel(sessionInfo)
+            );
         }
-    }
-
-    private void getSshTabbedPanes() {
-        for (Component component : MainFrame.mainTabbedPane.getComponents()) {
-            if (component instanceof SshTabbedPane) {
-                sshTabbedPanes.add((SshTabbedPane) component);
-                MainFrame.mainTabbedPane.remove(component);
-            }
-        }
-        log.debug("sshTabbedPanes.size(): " + sshTabbedPanes.size());
     }
 
 }

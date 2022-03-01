@@ -1,5 +1,6 @@
 package com.g3g4x5x6.ui.panels.focus;
 
+import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
 import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
@@ -9,11 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FocusPanel extends JPanel {
-    private String title;
-    private JediTermWidget terminal;
-    private SftpBrowser sftp;
-    private MonitorPane monitor;
-    private EditorPane editor;
+    private SessionInfo sessionInfo;
 
     private int screenWidth;
     private int screenHeight;
@@ -25,25 +22,8 @@ public class FocusPanel extends JPanel {
         screenHeight = (int) screenSize.getHeight();//获得屏幕得高
     }
 
-    public FocusPanel(JPanel terminal) {
-
-    }
-
-    public FocusPanel(JPanel terminal, JPanel sftp) {
-
-    }
-
-    public FocusPanel(JPanel terminal, JPanel sftp, JPanel monitor) {
-
-    }
-
-    public FocusPanel(String title, JediTermWidget terminal, SftpBrowser sftp, MonitorPane monitor, EditorPane editor) {
+    public FocusPanel(SessionInfo sessionInfo){
         this();
-        this.title = title;
-        this.terminal = terminal;
-        this.sftp = sftp;
-        this.monitor = monitor;
-        this.editor = editor;
 
         JSplitPane hSplitPane = new JSplitPane();
         JSplitPane vSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -56,31 +36,11 @@ public class FocusPanel extends JPanel {
         hSplitPane.setLeftComponent(vSplitPane1);
         hSplitPane.setRightComponent(vSplitPane2);
 
-        vSplitPane1.setTopComponent(terminal);
-        vSplitPane1.setBottomComponent(editor);
+        vSplitPane1.setTopComponent(sessionInfo.getSshPane());
+        vSplitPane1.setBottomComponent(sessionInfo.getEditorPane());
 
-        vSplitPane2.setTopComponent(sftp);
-        vSplitPane2.setBottomComponent(monitor);
+        vSplitPane2.setTopComponent(sessionInfo.getSftpBrowser());
+        vSplitPane2.setBottomComponent(sessionInfo.getMonitorPane());
         this.add(hSplitPane, BorderLayout.CENTER);
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public JediTermWidget getTerminal() {
-        return terminal;
-    }
-
-    public SftpBrowser getSftp() {
-        return sftp;
-    }
-
-    public MonitorPane getMonitor() {
-        return monitor;
-    }
-
-    public EditorPane getEditor() {
-        return editor;
     }
 }

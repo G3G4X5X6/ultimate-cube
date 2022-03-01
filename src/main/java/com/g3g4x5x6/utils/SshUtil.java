@@ -56,31 +56,6 @@ public class SshUtil {
         return 0;
     }
 
-
-//    @NotNull
-//    public static JediTermWidget createTerminalWidget(String host, String port, String username, String password) {
-//        JediTermWidget widget = new JediTermWidget(new SshSettingsProvider());
-//        widget.setTtyConnector(createTtyConnector(host, port, username, password));
-//        widget.start();
-//        return widget;
-//    }
-//
-//    // TODO 创建 sFTP channel
-//    private @NotNull
-//    static TtyConnector createTtyConnector(String host, String port, String username, String password) {
-//        try {
-//            if (username.equals("")) {
-//                return new MyJSchShellTtyConnector(host, Integer.parseInt(port));
-//            }
-//            if (password.equals("")) {
-//                return new MyJSchShellTtyConnector(host, port, username);
-//            }
-//            return new MyJSchShellTtyConnector(host, Integer.parseInt(port), username, password);
-//        } catch (Exception e) {
-//            throw new IllegalStateException(e);
-//        }
-//    }
-
     public static String exec(String host, String username, String password, int port, long defaultTimeout, String command) throws Exception {
         SshClient client = SshClient.setUpDefaultClient();
         client.start();
@@ -106,10 +81,6 @@ public class SshUtil {
     /**
      * Test
      *
-     * @param session
-     * @param command
-     * @return
-     * @throws Exception
      */
     public static String execCmd(ClientSession session, String command) throws Exception {
         try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();

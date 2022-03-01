@@ -150,6 +150,7 @@ public class MonitorPane extends JPanel {
                 showPane.setTitle("uname -a");
                 showPane.setSize(new Dimension(600, 100));
                 showPane.setText(text);
+                showPane.setLocationRelativeTo(MonitorPane.this);
             }
         });
 

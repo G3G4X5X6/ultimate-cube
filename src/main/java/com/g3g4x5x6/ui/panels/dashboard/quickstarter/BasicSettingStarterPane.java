@@ -6,6 +6,7 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.formatter.PortFormatter;
 import com.g3g4x5x6.ui.MainFrame;
+import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -158,22 +159,21 @@ public class BasicSettingStarterPane extends JPanel {
 
                 // TODO 测试连接
                 if (SshUtil.testConnection(hostField.getText(), portField.getText()) == 1) {
-                    host = hostField.getText();
-                    port = Integer.parseInt(portField.getText());
-                    username = userField.getText();
-                    password = String.valueOf(passField.getPassword());
-                    // TODO 删除密码日志输出
                     log.info("快速连接，密码：" + password);
 
                     String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
-                    mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                            new SshTabbedPane(
-                                    hostField.getText(),
-                                    hostField.getText(),
-                                    portField.getText(),
-                                    userField.getText(),
-                                    String.valueOf(passField.getPassword()),
-                                    privateKey));
+                    SessionInfo sessionInfo = new SessionInfo();
+                    sessionInfo.setSessionAddress(hostField.getText());
+                    sessionInfo.setSessionPort(portField.getText());
+                    sessionInfo.setSessionUser(userField.getText());
+                    sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
+                    sessionInfo.setSessionKeyPath(privateKey);
+
+                    mainTabbedPane.addTab(
+                            defaultTitle,
+                            new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                            new SshTabbedPane(sessionInfo)
+                    );
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
 
                     // TODO 保存最近会话到工作目录

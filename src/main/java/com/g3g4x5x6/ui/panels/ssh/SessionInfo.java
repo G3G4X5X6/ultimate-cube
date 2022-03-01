@@ -3,27 +3,40 @@ package com.g3g4x5x6.ui.panels.ssh;
 import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
 import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
 import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
+import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.SneakyThrows;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.session.SessionHeartbeatController;
+import org.apache.sshd.putty.PuttyKeyUtils;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
+import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class SessionInfo {
     // SessionInfo 实例唯一ID
     private String sessionId = UUID.randomUUID().toString();
     // 会话保存信息
-    private String sessionName;
-    private String sessionProtocol;
-    private String sessionAddress;
-    private String sessionPort;
-    private String sessionUser;
-    private String sessionPass;
-    private String sessionKeyPath;
-    private String sessionLoginType;
-    private String sessionComment;
+    private String sessionName = "";
+    private String sessionProtocol = "SSH";
+    private String sessionAddress = "";
+    private String sessionPort = "";
+    private String sessionUser = "";
+    private String sessionPass = "";
+    private String sessionKeyPath = "";
+    private String sessionLoginType = "";
+    private String sessionComment = "";
     // SSH 会话组件
     private JediTermWidget sshPane;
     private SftpBrowser sftpBrowser;
@@ -35,7 +48,76 @@ public class SessionInfo {
     private SftpFileSystem sftpFileSystem;
 
     public SessionInfo() {
+        // pass
+    }
 
+    public void initComponent(){
+        init();
+        this.sshPane = createTerminalWidget();
+        this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
+        this.editorPane = new EditorPane(this.sftpFileSystem);
+        this.monitorPane = new MonitorPane(this.session);
+    }
+
+    private @NotNull JediTermWidget createTerminalWidget() {
+        SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
+        JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
+        widget.setTtyConnector(new DefaultTtyConnector(session));
+        widget.start();
+        return widget;
+    }
+
+    private void init() {
+        this.client = SshClient.setUpDefaultClient();
+        this.client.start();
+        this.session = getSession(client);
+        this.sftpFileSystem = getSftpFileSystem(session);
+    }
+
+    private ClientSession getSession(SshClient client) {
+        ClientSession session;
+        try {
+            session = client.connect(this.sessionUser, this.sessionAddress, Integer.parseInt(this.sessionPort)).verify(5000, TimeUnit.MILLISECONDS).getSession();
+            if (Files.exists(Path.of(sessionKeyPath)) && !sessionKeyPath.equalsIgnoreCase("")) {
+                KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, Path.of(sessionKeyPath), null).iterator().next();
+                session.addPublicKeyIdentity(keyPair);
+            } else {
+                session.addPasswordIdentity(this.sessionPass);
+            }
+            session.auth().verify(15, TimeUnit.SECONDS);
+            session.setSessionHeartbeat(SessionHeartbeatController.HeartbeatType.IGNORE, Duration.ofMinutes(3));
+            session.sendIgnoreMessage("".getBytes(StandardCharsets.UTF_8));
+            return session;
+        } catch (IOException | GeneralSecurityException e) {
+            e.printStackTrace();
+            DialogUtil.error(e.getMessage());
+            return null;
+        }
+    }
+
+    private SftpFileSystem getSftpFileSystem(ClientSession session) {
+        if (sftpFileSystem == null || !sftpFileSystem.isOpen()) {
+            SftpFileSystemProvider provider = new SftpFileSystemProvider();
+            try {
+                return provider.newFileSystem(session);
+            } catch (IOException e) {
+                e.printStackTrace();
+                DialogUtil.error(e.getMessage());
+                return null;
+            }
+        } else {
+            return sftpFileSystem;
+        }
+    }
+
+    @SneakyThrows
+    public void close() {
+        if (sftpFileSystem.isOpen())
+            sftpFileSystem.close();
+        if (session.isOpen())
+            session.close();
+        if (client.isOpen())
+            client.close();
     }
 
     public SessionInfo copy() {
@@ -50,16 +132,6 @@ public class SessionInfo {
         sessionInfo.setSessionLoginType(sessionLoginType);
         sessionInfo.setSessionComment(sessionComment);
         return sessionInfo;
-    }
-
-    @SneakyThrows
-    private void close() {
-        if (sftpFileSystem.isOpen())
-            sftpFileSystem.close();
-        if (session.isOpen())
-            session.close();
-        if (client.isOpen())
-            client.close();
     }
 
     public String getSessionId() {

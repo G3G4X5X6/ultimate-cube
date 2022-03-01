@@ -123,6 +123,8 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("专注模式");
+                FocusFrame focusFrame = new FocusFrame();
+                focusFrame.setVisible(true);
             }
         });
         viewMenu.add(focusItem);
@@ -506,16 +508,15 @@ public class MainFrame extends JFrame implements MouseListener {
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
                 (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
                     if (tabIndex != 0) {
-                        /**
-                         * TODO 会话清理
-                         * security pts/2        192.168.106.21   Mon Jan 17 06:50   still logged in
-                         * security pts/1        192.168.106.21   Mon Jan 17 06:50   still logged in
-                         * security pts/0        192.168.106.21   Mon Jan 17 06:50   still logged in
-                         */
+                        if (mainTabbedPane.getComponentAt(tabIndex) instanceof SshTabbedPane) {
+                            SshTabbedPane sshTabbedPane = (SshTabbedPane) mainTabbedPane.getComponentAt(tabIndex);
+                            sshTabbedPane.getSessionInfo().close();
+                            App.sessionInfos.remove(sshTabbedPane.getSessionInfo().getSessionId());
+                            log.debug(String.valueOf(App.sessionInfos.size()));
+                        }
                         mainTabbedPane.removeTabAt(tabIndex);
                     }
                 });
-
     }
 
     private void renameTabTitle() {
@@ -542,9 +543,11 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
-                SshTabbedPane newTabbedPane = new SshTabbedPane(selectedTabbedPane.getSession());
-                mainTabbedPane.addTab("复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()),
-                        new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"), newTabbedPane);
+                mainTabbedPane.addTab(
+                        "复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()),
+                        new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                        new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy())
+                );
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };

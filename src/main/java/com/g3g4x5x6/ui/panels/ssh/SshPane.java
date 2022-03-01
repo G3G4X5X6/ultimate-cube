@@ -109,24 +109,23 @@ public class SshPane extends JPanel {
 
                 // TODO 测试连接
                 if (testConnection() == 1) {
-                    host = hostField.getText();
-                    port = Integer.parseInt(portField.getText());
-                    username = userField.getText();
-                    password = String.valueOf(passField.getPassword());
-                    log.debug(password);
-
-                    String defaultTitle = hostField.getText().equals("") ? "未命名" : hostField.getText();
                     int preIndex = mainTabbedPane.getSelectedIndex();
+
+                    String defaultTitle = sessionName.getText().equals("") ? "未命名" : sessionName.getText();
+                    SessionInfo sessionInfo = new SessionInfo();
+                    sessionInfo.setSessionName(sessionName.getText());
+                    sessionInfo.setSessionAddress(hostField.getText());
+                    sessionInfo.setSessionPort(portField.getText());
+                    sessionInfo.setSessionUser(userField.getText());
+                    sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
+                    sessionInfo.setSessionKeyPath(keyLabel.getText());
+                    sessionInfo.setSessionLoginType(authType);
+                    sessionInfo.setSessionComment(commentText.getText());
+
                     // 鸠占鹊巢
-                    mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                            new SshTabbedPane(
-                                    sessionName.getText().equals("") ? hostField.getText() : sessionName.getText(),
-                                    hostField.getText(),
-                                    portField.getText(),
-                                    userField.getText(),
-                                    String.valueOf(passField.getPassword()),
-                                    keyLabel.getText()
-                            ), "奥里给", preIndex);
+                    mainTabbedPane.insertTab(defaultTitle,
+                            new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                            new SshTabbedPane(sessionInfo), "奥里给", preIndex);
                     mainTabbedPane.removeTabAt(preIndex + 1);
                     mainTabbedPane.setSelectedIndex(preIndex);
                 } else {
