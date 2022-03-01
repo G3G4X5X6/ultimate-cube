@@ -174,7 +174,7 @@ public class SshPane extends JPanel {
         log.debug("Comment: " + commentText.getText());
 
         String path = ConfigUtil.getWorkPath() + "/sessions/ssh/" + categoryCombo.getSelectedItem().toString();
-        String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + ".json";
+        String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType + ".json";
         log.info("会话保存路径：" + fileName);
         try {
             File dirFile = new File(path);
@@ -302,6 +302,7 @@ public class SshPane extends JPanel {
                     // 如果点击了"确定", 则获取选择的文件路径
                     File file = fileChooser.getSelectedFile();
                     keyLabel.setText(file.getAbsolutePath());
+                    authType = "public";
                 }
             }
         });
@@ -429,4 +430,7 @@ public class SshPane extends JPanel {
         commentText.setText(text);
     }
 
+    public void setAuthType(String authType) {
+        this.authType = authType;
+    }
 }

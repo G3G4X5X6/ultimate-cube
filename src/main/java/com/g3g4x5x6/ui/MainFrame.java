@@ -569,7 +569,7 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int currentIndex = mainTabbedPane.getSelectedIndex();
-                for (int i = 1; i < currentIndex; i++) {
+                for (int i = currentIndex - 1; i > 0; i--) {
                     SshTabbedPane tmp = (SshTabbedPane) mainTabbedPane.getComponentAt(i);
                     if (tmp != null) {
                         mainTabbedPane.removeTabAt(i);

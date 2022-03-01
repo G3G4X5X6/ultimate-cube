@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
-import com.g3g4x5x6.App;
 import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.ui.panels.ssh.SshPane;
 import com.g3g4x5x6.utils.*;
@@ -410,6 +409,7 @@ public class SessionsManager extends JPanel {
                             sshPane.setKeyLabel(jsonObject.getString("sessionKeyPath"));
                             sshPane.setSessionName(jsonObject.getString("sessionName"));
                             sshPane.setCommentText(jsonObject.getString("sessionComment"));
+                            sshPane.setAuthType(jsonObject.getString("sessionLoginType"));
                             sshPane.setCategory(finalCurrentTag.substring(finalCurrentTag.indexOf("/") + 1));
                             mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
                             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
@@ -473,6 +473,7 @@ public class SessionsManager extends JPanel {
         String address = (String) tableModel.getValueAt(index, 2);
         String port = (String) tableModel.getValueAt(index, 3);
         String user = (String) tableModel.getValueAt(index, 4);
+        String authType = (String) tableModel.getValueAt(index, 5);
 
         TreePath treePath = sessionTree.getSelectionPath();
         String currentTag = convertPathToTag(treePath);
@@ -482,7 +483,7 @@ public class SessionsManager extends JPanel {
         } else {
             currentTag = "/";
         }
-        String fileName = "ssh_" + address + "_" + port + "_" + user + ".json";
+        String fileName = "ssh_" + address + "_" + port + "_" + user + "_" + authType + ".json";
         log.debug(path + fileName);
         return new String[]{path + "/" + fileName, currentTag};
     }
