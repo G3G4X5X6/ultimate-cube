@@ -85,9 +85,9 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void windowClosing(WindowEvent e) {
                 log.debug("Windows");
-                if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("false")){
+                if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("false")) {
                     System.exit(0);
-                }else{
+                } else {
                     setVisible(false);
                 }
             }
@@ -263,7 +263,7 @@ public class MainFrame extends JFrame implements MouseListener {
         closeBtn.setFocusable(false);
         closeBtn.addActionListener(e -> {
             int i = JOptionPane.showConfirmDialog(App.mainFrame, "是否确认退出程序？", "退出", JOptionPane.OK_CANCEL_OPTION);
-            if (i == JOptionPane.YES_OPTION){
+            if (i == JOptionPane.YES_OPTION) {
                 System.exit(0);
             }
         });
@@ -328,15 +328,6 @@ public class MainFrame extends JFrame implements MouseListener {
                 new DashboardPane());
 
         this.add(mainTabbedPane);
-    }
-
-    private void initStatusBar() {
-        FlowLayout flowLayout = new FlowLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
-        statusBar = new JPanel();
-        statusBar.setLayout(flowLayout);
-        statusBar.add(new JLabel("状态栏"));
-        this.add(statusBar, BorderLayout.SOUTH);
     }
 
     private void initTrailPopupMenu() {
@@ -405,7 +396,7 @@ public class MainFrame extends JFrame implements MouseListener {
         nucleiBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (nucleiFrame == null){
+                if (nucleiFrame == null) {
                     nucleiFrame = new NucleiFrame();
                 }
                 nucleiFrame.setTitle(App.properties.getProperty("nuclei.title"));
@@ -446,9 +437,9 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // 为了异常情况下隐藏等待进度条
-                if (e.getClickCount() == 2){
+                if (e.getClickCount() == 2) {
                     int count = waitCount.decrementAndGet();
-                    if (count <= 0){
+                    if (count <= 0) {
                         waitProgressBar.setVisible(false);
                     }
                 }
@@ -524,7 +515,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
     }
 
-    private void renameTabTitle(){
+    private void renameTabTitle() {
         String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题",
                 mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()));
         if (input != null && !input.strip().equalsIgnoreCase("")) {
@@ -539,7 +530,7 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 判断是否为 SshTabbedPane 实例
-                if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane){
+                if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane) {
                     renameTabTitle();
                 }
             }
@@ -558,11 +549,11 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("重新连接");
-                try{
+                try {
                     SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
                     selectedTabbedPane.resetSession();
-                }catch (ClassCastException classCastException){
-                    if (classCastException.getMessage().contains("be cast to class")){
+                } catch (ClassCastException classCastException) {
+                    if (classCastException.getMessage().contains("be cast to class")) {
                         log.debug("不是远程会话面板无法刷新重连");
                     }
                 }
@@ -571,25 +562,42 @@ public class MainFrame extends JFrame implements MouseListener {
         AbstractAction closeCurrentTabAction = new AbstractAction("关闭当前") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
             }
         };
         AbstractAction closeLeftAction = new AbstractAction("关闭左边") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                int currentIndex = mainTabbedPane.getSelectedIndex();
+                for (int i = 1; i < currentIndex; i++) {
+                    SshTabbedPane tmp = (SshTabbedPane) mainTabbedPane.getComponentAt(i);
+                    if (tmp != null) {
+                        mainTabbedPane.removeTabAt(i);
+                    }
+                }
             }
         };
         AbstractAction closeRightAction = new AbstractAction("关闭右边") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                int currentIndex = mainTabbedPane.getSelectedIndex();
+                for (int i = currentIndex + 1; i < mainTabbedPane.getTabCount(); i++) {
+                    SshTabbedPane tmp = (SshTabbedPane) mainTabbedPane.getComponentAt(i);
+                    if (tmp != null) {
+                        mainTabbedPane.removeTabAt(i);
+                    }
+                }
             }
         };
         AbstractAction closeAllTabAction = new AbstractAction("关闭所有") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                for (int i = mainTabbedPane.getTabCount() - 1; i > 0; i--) {
+                    SshTabbedPane tmp = (SshTabbedPane) mainTabbedPane.getComponentAt(i);
+                    if (tmp != null) {
+                        mainTabbedPane.removeTabAt(i);
+                    }
+                }
             }
         };
 
@@ -610,7 +618,7 @@ public class MainFrame extends JFrame implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
             // 判断是否为 SshTabbedPane 实例
-            if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane){
+            if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane) {
                 renameTabTitle();
             }
         }
@@ -847,7 +855,7 @@ public class MainFrame extends JFrame implements MouseListener {
                         String sql_tag = "INSERT INTO tag VALUES (null , " +    // id, 自增
                                 "'" + rowStr[0] + "');";
                         log.debug("sql_tag: " + sql_tag);
-                        if (!rowStr[0].strip().equals("会话标签")){
+                        if (!rowStr[0].strip().equals("会话标签")) {
                             // TODO
 //                            ExcelUtil.importBackup(sql_tag);
                         }
