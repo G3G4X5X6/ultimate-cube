@@ -31,6 +31,7 @@ import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMP
 
 @Slf4j
 public class SshTabbedPane extends JTabbedPane {
+    private SessionInfo sessionInfo;
     private JediTermWidget sshPane;
     private SftpBrowser sftpBrowser;
     private MonitorPane monitorPane;
@@ -46,6 +47,10 @@ public class SshTabbedPane extends JTabbedPane {
     private SshClient client;
     private ClientSession session;
     private SftpFileSystem sftpFileSystem;
+
+    public SshTabbedPane(SessionInfo sessionInfo){
+        this.sessionInfo = sessionInfo;
+    }
 
     public SshTabbedPane(JediTermWidget terminal, SftpBrowser sftp, EditorPane editor, MonitorPane monitor) {
 
