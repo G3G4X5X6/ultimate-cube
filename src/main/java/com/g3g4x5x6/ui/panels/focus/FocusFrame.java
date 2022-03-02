@@ -94,15 +94,15 @@ public class FocusFrame extends JFrame {
                 log.debug("退出专注模式");
                 // TODO 还原会话
                 for (String key : App.sessionInfos.keySet()) {
-                    SessionInfo sessionInfo = App.sessionInfos.get(key);
                     MainFrame.mainTabbedPane.addTab(
-                            sessionInfo.getSessionName().equals("") ? sessionInfo.getSessionAddress() : sessionInfo.getSessionName(),
+                            App.sessionInfos.get(key).getSessionName().equals("") ? App.sessionInfos.get(key).getSessionAddress() : App.sessionInfos.get(key).getSessionName(),
                             new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
-                            new SshTabbedPane(sessionInfo)
+                            new SshTabbedPane(App.sessionInfos.get(key))
                     );
                 }
-                MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - tabbedPane.getSelectedIndex());
+                MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - (tabbedPane.getTabCount() - tabbedPane.getSelectedIndex()));
                 dispose();
+                log.debug("退出专注模式, over!");
             }
         });
 
