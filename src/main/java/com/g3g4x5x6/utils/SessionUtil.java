@@ -25,23 +25,6 @@ public class SessionUtil {
     public static void openSshSession(JTabbedPane tabbedPane, String sessionFile) {
         try {
             File file = new File(sessionFile);
-            if (!sessionFile.contains("recent_ssh_")) {
-                String recentPath = ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName();
-                if (!Files.exists(Path.of(recentPath))) {
-                    Files.copy(new BufferedInputStream(new FileInputStream(file)), Path.of(recentPath));
-                } else {
-                    try {
-                        BufferedWriter fileWriter = new BufferedWriter(new FileWriter(recentPath));
-                        BufferedReader fileReader = new BufferedReader(new FileReader(file));
-                        fileWriter.write(fileReader.readLine());
-                        fileWriter.flush();
-                        fileWriter.close();
-                        fileReader.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
 
             String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             JSONObject jsonObject = JSON.parseObject(json);
@@ -73,6 +56,16 @@ public class SessionUtil {
                 );
                 tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
             }
+
+            // 更新最近会话
+            String recentPath = "";
+            if (sessionFile.contains("recent_ssh_")) {
+                recentPath = file.getAbsolutePath();
+                boolean isDel = file.delete();
+            }else{
+                recentPath = ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName();
+            }
+            Files.write(Path.of(recentPath), json.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -262,6 +262,7 @@ public class RecentSessionsPane extends JPanel {
                         @Override
                         protected void done() {
                             // 此方法将在后台任务完成后在事件调度线程中被回调
+
                             initData();
                         }
                     };
