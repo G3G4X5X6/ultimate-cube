@@ -52,7 +52,6 @@ public class SshTabbedPane extends JTabbedPane {
             MainFrame.addWaitProgressBar();
 
             sessionInfo.initComponent();
-
             this.removeAll();
             this.addTab("SSH", this.sessionInfo.getSshPane());
             this.addTab("SFTP", this.sessionInfo.getSftpBrowser());

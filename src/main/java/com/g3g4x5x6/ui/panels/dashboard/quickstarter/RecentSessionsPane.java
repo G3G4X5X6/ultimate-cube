@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -102,29 +103,28 @@ public class RecentSessionsPane extends JPanel {
         File file = new File(ConfigUtil.getWorkPath() + "/sessions");
         if (file.exists()) {
             for (File f : file.listFiles()) {
-                if (f.isFile()) {
-                    if (f.getName().startsWith("recent_ssh")) {
-                        BasicFileAttributes attrs = Files.readAttributes(Paths.get(f.getPath()), BasicFileAttributes.class);
-                        FileTime time = attrs.lastModifiedTime();
-                        LocalDateTime localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                        DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                if (f.isFile() && f.getName().startsWith("recent_ssh")) {
+                    BasicFileAttributes attrs = Files.readAttributes(Paths.get(f.getPath()), BasicFileAttributes.class);
+                    FileTime time = attrs.lastModifiedTime();
 
-                        log.debug("time: " + localDateTime.format(DATE_FORMATTER));
-                        try {
-                            String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
-                            JSONObject jsonObject = JSON.parseObject(json);
-                            tableModel.addRow(new String[]{
-                                    localDateTime.format(DATE_FORMATTER),
-                                    jsonObject.getString("sessionName"),
-                                    jsonObject.getString("sessionProtocol"),
-                                    jsonObject.getString("sessionAddress"),
-                                    jsonObject.getString("sessionPort"),
-                                    jsonObject.getString("sessionUser"),
-                                    jsonObject.getString("sessionLoginType"),
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    LocalDateTime localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+                    log.debug("time: " + localDateTime.format(DATE_FORMATTER));
+                    try {
+                        String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+                        JSONObject jsonObject = JSON.parseObject(json);
+                        tableModel.addRow(new String[]{
+                                localDateTime.format(DATE_FORMATTER),
+                                jsonObject.getString("sessionName"),
+                                jsonObject.getString("sessionProtocol"),
+                                jsonObject.getString("sessionAddress"),
+                                jsonObject.getString("sessionPort"),
+                                jsonObject.getString("sessionUser"),
+                                jsonObject.getString("sessionLoginType"),
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
