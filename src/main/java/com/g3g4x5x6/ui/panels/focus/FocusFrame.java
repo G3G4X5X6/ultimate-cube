@@ -40,7 +40,7 @@ public class FocusFrame extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(tabbedPane, BorderLayout.CENTER);
 
-        removeOld();
+        removeOld(); // Remove old tab pane from MainFrame
         initClosableTabs();
         customComponents();
         initTabbedPane();
@@ -58,8 +58,15 @@ public class FocusFrame extends JFrame {
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
-                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> tabbedPane.removeTabAt(tabIndex));
-
+                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
+                    if (tabbedPane.getComponentAt(tabIndex) instanceof FocusPanel) {
+                        FocusPanel focusPanel = (FocusPanel) tabbedPane.getComponentAt(tabIndex);
+                        focusPanel.getSessionInfo().close();
+                        App.sessionInfos.remove(focusPanel.getSessionInfo().getSessionId());
+                        log.debug(String.valueOf(App.sessionInfos.size()));
+                    }
+                    tabbedPane.removeTabAt(tabIndex);
+                });
     }
 
     private void customComponents() {

@@ -24,7 +24,7 @@ public class FocusPanel extends JPanel {
 
     public FocusPanel(SessionInfo sessionInfo){
         this();
-
+        this.sessionInfo = sessionInfo;
         JSplitPane hSplitPane = new JSplitPane();
         JSplitPane vSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
         JSplitPane vSplitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -42,5 +42,13 @@ public class FocusPanel extends JPanel {
         vSplitPane2.setTopComponent(sessionInfo.getSftpBrowser());
         vSplitPane2.setBottomComponent(sessionInfo.getMonitorPane());
         this.add(hSplitPane, BorderLayout.CENTER);
+    }
+
+    public SessionInfo getSessionInfo() {
+        return sessionInfo;
+    }
+
+    public void setSessionInfo(SessionInfo sessionInfo) {
+        this.sessionInfo = sessionInfo;
     }
 }
