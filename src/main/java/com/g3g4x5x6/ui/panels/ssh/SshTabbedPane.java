@@ -38,7 +38,6 @@ public class SshTabbedPane extends JTabbedPane {
         JToolBar trailing = new JToolBar();
         trailing.setFloatable(false);
         trailing.setBorder(null);
-        trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/buildLoadChanges.svg")));
         trailing.add(Box.createHorizontalGlue());
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/commit.svg")));
         trailing.add(new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/diff.svg")));
@@ -48,15 +47,20 @@ public class SshTabbedPane extends JTabbedPane {
     }
 
     public void resetSession() {
-        // TODO 重连后终端大小不对，需要拉伸窗口重新触发调整终端大小; 或者从 SFTP 窗口跳转回来也好
-        // 等待进度条
-        MainFrame.addWaitProgressBar();
-
         new Thread(() -> {
+            // 等待进度条
+            MainFrame.addWaitProgressBar();
+
             sessionInfo.initComponent();
+
+            this.removeAll();
+            this.addTab("SSH", this.sessionInfo.getSshPane());
+            this.addTab("SFTP", this.sessionInfo.getSftpBrowser());
+            this.addTab("Editor", this.sessionInfo.getEditorPane());
+            this.addTab("Monitor", this.sessionInfo.getMonitorPane());
+            // 关闭进度条
+            MainFrame.removeWaitProgressBar();
         }).start();
-        // 关闭进度条
-        MainFrame.removeWaitProgressBar();
     }
 
     public SessionInfo getSessionInfo() {
