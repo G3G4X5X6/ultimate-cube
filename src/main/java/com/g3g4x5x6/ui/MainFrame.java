@@ -390,6 +390,7 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("专注模式");
+                setFocusIndex();
                 FocusFrame focusFrame = new FocusFrame();
                 focusFrame.setVisible(true);
             }
@@ -461,6 +462,15 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(fullScreenBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    private void setFocusIndex() {
+        int selectIndex = mainTabbedPane.getSelectedIndex();
+        for (int i = 0; i < selectIndex; i++) {
+            if (mainTabbedPane.getComponentAt(i) instanceof SshTabbedPane) {
+                focusIndex += 1;
+            }
+        }
     }
 
     public void initOpenSessionMenu(File directory, JMenuItem menuItem) throws IOException {
@@ -673,11 +683,11 @@ public class MainFrame extends JFrame implements MouseListener {
      * 定义
      */
     public static JTabbedPane mainTabbedPane;
-    public static JPanel statusBar;
     public static EmbedEditor embedEditor = new EmbedEditor();
     public static NucleiFrame nucleiFrame = new NucleiFrame();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
+    public static int focusIndex = 0;
 
     private final ExternalToolIntegration integration = new ExternalToolIntegration();
 
@@ -692,7 +702,6 @@ public class MainFrame extends JFrame implements MouseListener {
     private JMenu externalSubMenu = new JMenu("外部集成工具");
     private JPopupMenu popupMenu = new JPopupMenu();
     private JPopupMenu trailPopupMenu = new JPopupMenu();
-
 
     private String latestVersion;
 

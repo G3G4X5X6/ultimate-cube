@@ -10,6 +10,7 @@ import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.log4j.chainsaw.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -151,6 +152,8 @@ public class FocusFrame extends JFrame {
                     new FocusPanel(sessionInfo)
             );
         }
+        tabbedPane.setSelectedIndex(MainFrame.focusIndex);
+        MainFrame.focusIndex = 0;
     }
 
 }
