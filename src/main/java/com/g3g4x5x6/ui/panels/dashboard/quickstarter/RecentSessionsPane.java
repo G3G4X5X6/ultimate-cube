@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 
@@ -102,7 +103,7 @@ public class RecentSessionsPane extends JPanel {
 
         File file = new File(ConfigUtil.getWorkPath() + "/sessions");
         if (file.exists()) {
-            for (File f : file.listFiles()) {
+            for (File f : Objects.requireNonNull(file.listFiles())) {
                 if (f.isFile() && f.getName().startsWith("recent_ssh")) {
                     BasicFileAttributes attrs = Files.readAttributes(Paths.get(f.getPath()), BasicFileAttributes.class);
                     FileTime time = attrs.lastModifiedTime();
