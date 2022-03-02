@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.SessionUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
@@ -12,12 +13,19 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 /**
@@ -41,6 +49,9 @@ public class RecentSessionsPane extends JPanel {
         // 初始化表格
         initTable();
 
+        // 启动会话访问变动监听
+        monitorSessions();
+
         // 初始化右键菜单
         initPopupMenu();
 
@@ -56,12 +67,6 @@ public class RecentSessionsPane extends JPanel {
 
     private void initTable() {
         recentTable = new JTable();
-        recentTable.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                initData();
-            }
-        });
         tableModel = new DefaultTableModel() {
             // 不可编辑
             @Override
@@ -90,22 +95,26 @@ public class RecentSessionsPane extends JPanel {
         this.add(tableScroll, BorderLayout.CENTER);
     }
 
+    @SneakyThrows
     private void initData() {
         tableModel.setRowCount(0);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         File file = new File(ConfigUtil.getWorkPath() + "/sessions");
         if (file.exists()) {
             for (File f : file.listFiles()) {
                 if (f.isFile()) {
                     if (f.getName().startsWith("recent_ssh")) {
-                        Long lastModified = f.lastModified();
-                        Date date = new Date(lastModified);
+                        BasicFileAttributes attrs = Files.readAttributes(Paths.get(f.getPath()), BasicFileAttributes.class);
+                        FileTime time = attrs.lastModifiedTime();
+                        LocalDateTime localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                        DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+                        log.debug("time: " + localDateTime.format(DATE_FORMATTER));
                         try {
                             String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
                             JSONObject jsonObject = JSON.parseObject(json);
                             tableModel.addRow(new String[]{
-                                    simpleDateFormat.format(date),
+                                    localDateTime.format(DATE_FORMATTER),
                                     jsonObject.getString("sessionName"),
                                     jsonObject.getString("sessionProtocol"),
                                     jsonObject.getString("sessionAddress"),
@@ -126,6 +135,47 @@ public class RecentSessionsPane extends JPanel {
             }
         }
         recentTable.setModel(tableModel);
+    }
+
+    @SneakyThrows
+    private void monitorSessions() {
+        // 需要监听的文件目录（只能监听目录）
+        String path = Path.of(ConfigUtil.getWorkPath(), "/sessions").toString();
+
+        WatchService watchService = FileSystems.getDefault().newWatchService();
+        Path p = Paths.get(path);
+        p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY,
+                StandardWatchEventKinds.ENTRY_DELETE,
+                StandardWatchEventKinds.ENTRY_CREATE
+        );
+
+        Thread thread = new Thread(() -> {
+            try {
+                while (true) {
+                    WatchKey watchKey = watchService.take();
+                    List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
+                    for (WatchEvent<?> event : watchEvents) {
+                        log.debug("[" + path + "/" + event.context() + "]文件发生了[" + event.kind() + "]事件");
+                        // 刷新最近会话
+                        initData();
+                    }
+                    watchKey.reset();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.setDaemon(false);
+        thread.start();
+
+        // 增加jvm关闭的钩子来关闭监听
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                watchService.close();
+            } catch (Exception e) {
+                // pass
+            }
+        }));
     }
 
     private void initPopupMenu() {
@@ -200,7 +250,25 @@ public class RecentSessionsPane extends JPanel {
         if (dir.exists()) {
             for (File file : dir.listFiles()) {
                 if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user) && file.getName().contains(auth)) {
-                    new Thread(() -> SessionUtil.openSshSession(mainTabbedPane, file.getAbsolutePath())).start();
+                    // 创建后台任务
+                    SwingWorker<String, Object> task = new SwingWorker<String, Object>() {
+                        @Override
+                        protected String doInBackground() throws Exception {
+                            // 此处处于 SwingWorker 线程池中
+                            SessionUtil.openSshSession(mainTabbedPane, file.getAbsolutePath());
+                            return "Done";
+                        }
+
+                        @Override
+                        protected void done() {
+                            // 此方法将在后台任务完成后在事件调度线程中被回调
+                            initData();
+                        }
+                    };
+
+                    // 启动任务
+                    task.execute();
+//                    new Thread(() -> SessionUtil.openSshSession(mainTabbedPane, file.getAbsolutePath())).start();
                 }
             }
         }

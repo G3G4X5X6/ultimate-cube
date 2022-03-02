@@ -175,26 +175,6 @@ public class BasicSettingStarterPane extends JPanel {
                             new SshTabbedPane(sessionInfo)
                     );
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
-
-                    // TODO 保存最近会话到工作目录
-                    LinkedHashMap<String, String> session = new LinkedHashMap<>();
-                    session.put("host", host);
-                    session.put("port", String.valueOf(port));
-                    session.put("username", username);
-                    session.put("password", password);
-//                    session.put("accessTime", simpleDateFormat.format(new Date().getTime()));
-                    String sessionJson = JSON.toJSONString(session);
-                    // Filename: recent_md5_accessTime
-                    // TODO Change
-                    String fileName = "recent_" + DigestUtils.md5Hex(JSON.toJSONString(sessionJson)) + ".json";
-                    // 判断是否已存在该会话，存在则删除会话先
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(ConfigUtil.getWorkPath() + "/sessions/" + new File(fileName)))) {
-                        writer.write(sessionJson);
-                        writer.flush();
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
-                    log.debug("\nFileName: " + fileName + "\nJson: " + sessionJson);
                 } else {
                     DialogUtil.warn("连接失败");
                 }
