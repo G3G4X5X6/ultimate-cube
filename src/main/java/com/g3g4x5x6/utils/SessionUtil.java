@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.tree.TreePath;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -58,10 +57,11 @@ public class SessionUtil {
             }
 
             // 更新最近会话
-            String recentPath = "";
+            String recentPath;
             if (sessionFile.contains("recent_ssh_")) {
                 recentPath = file.getAbsolutePath();
-                boolean isDel = file.delete();
+                //noinspection ResultOfMethodCallIgnored
+                file.delete();
             }else{
                 recentPath = ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName();
             }
@@ -69,24 +69,5 @@ public class SessionUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static String convertPathToTag(TreePath treePath) {
-        StringBuilder tempPath = new StringBuilder("");
-        if (treePath == null) {
-            return "";
-        }
-
-        String path = treePath.toString();
-        String[] paths = path.substring(1, path.length() - 1).split(",");
-        for (String temp : paths) {
-            temp = temp.strip();
-            tempPath.append(temp);
-            tempPath.append("/");
-        }
-        tempPath.deleteCharAt(tempPath.length() - 1);
-
-        log.debug(String.valueOf(tempPath));
-        return tempPath.toString();
     }
 }
