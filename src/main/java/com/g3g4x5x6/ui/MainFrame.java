@@ -122,9 +122,7 @@ public class MainFrame extends JFrame implements MouseListener {
         focusItem.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("专注模式");
-                FocusFrame focusFrame = new FocusFrame();
-                focusFrame.setVisible(true);
+                focusAction();
             }
         });
         viewMenu.add(focusItem);
@@ -389,10 +387,7 @@ public class MainFrame extends JFrame implements MouseListener {
         fullScreenBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("专注模式");
-                setFocusIndex();
-                FocusFrame focusFrame = new FocusFrame();
-                focusFrame.setVisible(true);
+                focusAction();
             }
         });
 
@@ -462,6 +457,13 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(fullScreenBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    private void focusAction(){
+        log.debug("专注模式");
+        setFocusIndex();
+        FocusFrame focusFrame = new FocusFrame();
+        focusFrame.setVisible(true);
     }
 
     private void setFocusIndex() {

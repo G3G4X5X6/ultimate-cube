@@ -194,11 +194,12 @@ public class RecentSessionsPane extends JPanel {
         String address = (String) tableModel.getValueAt(index, 3);
         String port = (String) tableModel.getValueAt(index, 4);
         String user = (String) tableModel.getValueAt(index, 5);
+        String auth = (String) tableModel.getValueAt(index, 6);
 
         File dir = new File(ConfigUtil.getWorkPath() + "/sessions/");
         if (dir.exists()) {
             for (File file : dir.listFiles()) {
-                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user)) {
+                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user) && file.getName().contains(auth)) {
                     new Thread(() -> SessionUtil.openSshSession(mainTabbedPane, file.getAbsolutePath())).start();
                 }
             }
