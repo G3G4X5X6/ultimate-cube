@@ -23,6 +23,7 @@ import java.security.KeyPair;
 import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SessionInfo {
     // SessionInfo 实例唯一ID
@@ -38,23 +39,26 @@ public class SessionInfo {
     private String sessionLoginType = "";
     private String sessionComment = "";
     // SSH 会话组件
-    private JediTermWidget sshPane;
-    private SftpBrowser sftpBrowser;
-    private MonitorPane monitorPane;
-    private EditorPane editorPane;
+    private JediTermWidget sshPane = null;
+    private SftpBrowser sftpBrowser = null;
+    private MonitorPane monitorPane = null;
+    private EditorPane editorPane = null;
     // SSH 连接信息
     private SshClient client;
     private ClientSession session;
     private SftpFileSystem sftpFileSystem;
+    // flag
+    private boolean sftpFlag = true;
 
     public SessionInfo() {
         // pass
     }
 
-    public void initComponent(){
+    public void initComponent() {
         init();
         this.sshPane = createTerminalWidget();
-        this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
+        if (sftpFlag)
+            this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
         this.editorPane = new EditorPane(this.sftpFileSystem);
         this.monitorPane = new MonitorPane(this.session);
     }
@@ -103,6 +107,7 @@ public class SessionInfo {
             } catch (IOException e) {
                 e.printStackTrace();
                 DialogUtil.error(e.getMessage());
+                sftpFlag = false;
                 return null;
             }
         } else {
@@ -112,11 +117,11 @@ public class SessionInfo {
 
     @SneakyThrows
     public void close() {
-        if (sftpFileSystem.isOpen())
+        if (sftpFileSystem != null && sftpFileSystem.isOpen())
             sftpFileSystem.close();
-        if (session.isOpen())
+        if (session != null && session.isOpen())
             session.close();
-        if (client.isOpen())
+        if (client != null && client.isOpen())
             client.close();
     }
 

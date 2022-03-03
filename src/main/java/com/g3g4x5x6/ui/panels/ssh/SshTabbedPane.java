@@ -21,12 +21,16 @@ public class SshTabbedPane extends JTabbedPane {
         // 等待进度条
         MainFrame.addWaitProgressBar();
 
-        if (this.sessionInfo.getSshPane() == null)
-            this.sessionInfo.initComponent();
-        this.addTab("SSH", this.sessionInfo.getSshPane());
-        this.addTab("SFTP", this.sessionInfo.getSftpBrowser());
-        this.addTab("Editor", this.sessionInfo.getEditorPane());
-        this.addTab("Monitor", this.sessionInfo.getMonitorPane());
+        this.sessionInfo.initComponent();
+        if (sessionInfo.getSshPane() != null)
+            this.addTab("SSH", this.sessionInfo.getSshPane());
+        if (sessionInfo.getSftpBrowser() != null)
+            this.addTab("SFTP", this.sessionInfo.getSftpBrowser());
+        if (sessionInfo.getEditorPane() != null)
+            this.addTab("Editor", this.sessionInfo.getEditorPane());
+        if (sessionInfo.getMonitorPane() != null)
+            this.addTab("Monitor", this.sessionInfo.getMonitorPane());
+        // TabbedPane
         customComponents();
 
         // 关闭进度条
@@ -54,7 +58,8 @@ public class SshTabbedPane extends JTabbedPane {
             sessionInfo.initComponent();
             this.removeAll();
             this.addTab("SSH", this.sessionInfo.getSshPane());
-            this.addTab("SFTP", this.sessionInfo.getSftpBrowser());
+            if (sessionInfo.getSftpBrowser() != null)
+                this.addTab("SFTP", this.sessionInfo.getSftpBrowser());
             this.addTab("Editor", this.sessionInfo.getEditorPane());
             this.addTab("Monitor", this.sessionInfo.getMonitorPane());
             // 关闭进度条
