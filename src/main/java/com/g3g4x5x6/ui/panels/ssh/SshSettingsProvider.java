@@ -40,7 +40,7 @@ public class SshSettingsProvider implements SettingsProvider {
             fontName = "Monospaced";
         }
         return new Font(fontName, Font.PLAIN, (int) this.getTerminalFontSize());
-//        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("font/" + "Arial Monospaced.ttf")));
+//        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("font/" + "evermono.ttf")));
 //        return myFont.deriveFont(Font.PLAIN, (int) this.getTerminalFontSize());
     }
 
