@@ -11,8 +11,6 @@
 
 </p>
 
-<!-- ![gg](https://user-images.githubusercontent.com/87740076/156927413-741f8725-91ba-44ea-9586-df4716caf162.png) -->
-
 [comment]: <> (---)
 
 [comment]: <> (# :toolbox: UltimateShell)
