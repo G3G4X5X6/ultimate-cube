@@ -11,12 +11,11 @@ import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.SessionUtil;
 import com.g3g4x5x6.utils.SshUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -28,9 +27,9 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.HashSet;
+import java.util.List;
 
 
 @Slf4j
@@ -93,7 +92,7 @@ public class SessionsManager extends JPanel {
         sessionTree.setSelectionPath(new TreePath(root.getPath()));
         // 设置树显示根节点句柄
         sessionTree.setShowsRootHandles(false);
-        // 设置树节点可编辑
+        // 设置树节点可编辑 TODO 重命名分类目录
 //        sessionTree.setEditable(true);
 
         treeScroll = new JScrollPane(sessionTree);
@@ -105,35 +104,37 @@ public class SessionsManager extends JPanel {
         sessionTree.setCellRenderer(render);
         splitPane.setLeftComponent(treeScroll);
 
-        sessionTree.addTreeSelectionListener(new TreeSelectionListener() {
-
+        sessionTree.addMouseListener(new MouseAdapter() {
             @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                // 1. 获取被选中的相关节点信息
-                TreePath path = e.getPath();
-                log.debug("选中分类目录: " + path.toString());
-
-                // 2. 获取当前目录
-                String currentTag = convertPathToTag(path);
-
-                // 3. 获取子目录
-                HashSet<String> children = getChildrenTag(currentTag);
-                // 避免 currentTreeNode 为 null 的问题
-                if (!sessionTree.isSelectionEmpty()) {
-                    DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
-                    currentTreeNode.removeAllChildren();
-                    DefaultMutableTreeNode temp = null;
-                    for (String tag : children) {
-                        temp = new DefaultMutableTreeNode(tag);
-                        currentTreeNode.add(temp);
-                    }
-                    sessionTree.expandPath(new TreePath(currentTreeNode.getPath()));
-                    sessionTree.setExpandsSelectedPaths(true);
-                }
+            public void mouseClicked(MouseEvent e) {
+                expand();
             }
         });
     }
 
+    private void expand() {
+        // 1. 获取被选中的相关节点信息
+        TreePath path = sessionTree.getSelectionPath();
+        log.debug("选中分类目录: " + path.toString());
+
+        // 2. 获取当前目录
+        String currentTag = convertPathToTag(path);
+
+        // 3. 获取子目录
+        HashSet<String> children = getChildrenTag(currentTag);
+        // 避免 currentTreeNode 为 null 的问题
+        if (!sessionTree.isSelectionEmpty()) {
+            DefaultMutableTreeNode currentTreeNode = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
+            currentTreeNode.removeAllChildren();
+            DefaultMutableTreeNode temp;
+            for (String tag : children) {
+                temp = new DefaultMutableTreeNode(tag);
+                currentTreeNode.add(temp);
+            }
+            sessionTree.expandPath(new TreePath(currentTreeNode.getPath()));
+            sessionTree.setExpandsSelectedPaths(true);
+        }
+    }
 
     private HashSet<String> getChildrenTag(String tag) {
         tableModel.setRowCount(0);
@@ -412,6 +413,7 @@ public class SessionsManager extends JPanel {
                             sshPane.setCommentText(jsonObject.getString("sessionComment"));
                             sshPane.setAuthType(jsonObject.getString("sessionLoginType"));
                             sshPane.setCategory(finalCurrentTag.substring(finalCurrentTag.indexOf("/") + 1));
+                            sshPane.setEditPath(file.getAbsolutePath());
                             mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("com/g3g4x5x6/ui/icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
                             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
                         }).start();
@@ -488,4 +490,46 @@ public class SessionsManager extends JPanel {
         log.debug(path + fileName);
         return new String[]{path + "/" + fileName, currentTag};
     }
+
+
+    @SneakyThrows
+    private void monitorSessions() {
+        // 需要监听的文件目录（只能监听目录）
+        String path = Path.of(ConfigUtil.getWorkPath(), "/sessions/ssh").toString();
+
+        WatchService watchService = FileSystems.getDefault().newWatchService();
+        Path p = Paths.get(path);
+        p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY,
+                StandardWatchEventKinds.ENTRY_DELETE,
+                StandardWatchEventKinds.ENTRY_CREATE
+        );
+
+        Thread thread = new Thread(() -> {
+            try {
+                while (true) {
+                    WatchKey watchKey = watchService.take();
+                    List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
+                    for (WatchEvent<?> event : watchEvents) {
+                        log.debug("[" + path + "/" + event.context() + "]会话文件发生了[" + event.kind() + "]事件");
+                        // TODO　刷新会话列表
+                    }
+                    watchKey.reset();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        thread.setDaemon(false);
+        thread.start();
+
+        // 增加jvm关闭的钩子来关闭监听
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                watchService.close();
+            } catch (Exception e) {
+                // pass
+            }
+        }));
+    }
+
 }
