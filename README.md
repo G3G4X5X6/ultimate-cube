@@ -1,3 +1,10 @@
+<p align="center">
+  <img src="docs/readme.png" alt="G3G4X5X6"/>
+</p>
+
+<!-- ![gg](https://user-images.githubusercontent.com/87740076/156927413-741f8725-91ba-44ea-9586-df4716caf162.png) -->
+
+---
 # :toolbox: UltimateShell
 
 [![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
