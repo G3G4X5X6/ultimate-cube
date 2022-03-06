@@ -1,12 +1,5 @@
 <p align="center">
   <img src="docs/readme.png" alt="G3G4X5X6"/>
-</p>
-
-<!-- ![gg](https://user-images.githubusercontent.com/87740076/156927413-741f8725-91ba-44ea-9586-df4716caf162.png) -->
-
-[comment]: <> (---)
-
-[comment]: <> (# :toolbox: UltimateShell)
 
 [![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09)](https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade)
@@ -15,6 +8,14 @@
 ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/g3g4x5x6/ultimateshell?include_prereleases)
 ![GitHub](https://img.shields.io/github/license/g3g4x5x6/ultimateshell)
 ![GitHub all releases download](https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/total)
+
+</p>
+
+<!-- ![gg](https://user-images.githubusercontent.com/87740076/156927413-741f8725-91ba-44ea-9586-df4716caf162.png) -->
+
+[comment]: <> (---)
+
+[comment]: <> (# :toolbox: UltimateShell)
 
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 <br>
