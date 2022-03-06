@@ -49,7 +49,7 @@ public class QuickStarterPane extends JPanel {
 
         // 会话管理
         recentSessionTabbedPane = new JTabbedPane();
-        recentSessionPane = new RecentSessionsPane(mainTabbedPane);
+        recentSessionPane = new RecentSessionsPane();
         sessionsManager = new SessionsManager(mainTabbedPane);
         recentSessionTabbedPane.addTab(recentSessionPaneTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/ShowRecentTabStripItems(Color).svg"), recentSessionPane);
         recentSessionTabbedPane.addTab(sessionsManagerTitle, new FlatSVGIcon("com/g3g4x5x6/ui/icons/addList.svg"), sessionsManager);

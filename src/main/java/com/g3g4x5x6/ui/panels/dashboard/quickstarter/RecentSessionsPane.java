@@ -3,6 +3,7 @@ package com.g3g4x5x6.ui.panels.dashboard.quickstarter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.g3g4x5x6.ui.MainFrame;
 import com.g3g4x5x6.utils.ConfigUtil;
 import com.g3g4x5x6.utils.SessionUtil;
 import lombok.SneakyThrows;
@@ -12,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -27,7 +29,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -35,18 +36,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class RecentSessionsPane extends JPanel {
-    private BorderLayout borderLayout;
-    private JTabbedPane mainTabbedPane;
-
-    private JScrollPane tableScroll;
+    private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
     private JTable recentTable;
     private DefaultTableModel tableModel;
-    private String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
 
-    public RecentSessionsPane(JTabbedPane mainTabbedPane) {
-        this.borderLayout = new BorderLayout();
-        this.setLayout(borderLayout);
-        this.mainTabbedPane = mainTabbedPane;
+    public RecentSessionsPane() {
+        this.setLayout(new BorderLayout());
 
         // 初始化表格
         initTable();
@@ -77,10 +72,14 @@ public class RecentSessionsPane extends JPanel {
             }
         };
         tableModel.setColumnIdentifiers(columnNames);
+        recentTable.setAutoCreateRowSorter(true);
+        recentTable.setUpdateSelectionOnSort(true);
+//        RowSorter sorter = new TableRowSorter(tableModel);
+//        recentTable.setRowSorter(sorter);
 
         initData();
 
-        tableScroll = new JScrollPane(recentTable);
+        JScrollPane tableScroll = new JScrollPane(recentTable);
         tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
@@ -256,7 +255,7 @@ public class RecentSessionsPane extends JPanel {
                         @Override
                         protected String doInBackground() throws Exception {
                             // 此处处于 SwingWorker 线程池中
-                            SessionUtil.openSshSession(mainTabbedPane, file.getAbsolutePath());
+                            SessionUtil.openSshSession(MainFrame.mainTabbedPane, file.getAbsolutePath());
                             return "Done";
                         }
 
