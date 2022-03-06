@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -74,8 +73,6 @@ public class RecentSessionsPane extends JPanel {
         tableModel.setColumnIdentifiers(columnNames);
         recentTable.setAutoCreateRowSorter(true);
         recentTable.setUpdateSelectionOnSort(true);
-//        RowSorter sorter = new TableRowSorter(tableModel);
-//        recentTable.setRowSorter(sorter);
 
         initData();
 
@@ -196,7 +193,7 @@ public class RecentSessionsPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String path = ConfigUtil.getWorkPath() + "/sessions";
                 File file = new File(path);
-                for (File f : file.listFiles()) {
+                for (File f : Objects.requireNonNull(file.listFiles())) {
                     if (f.isFile()) {
                         if (f.getName().startsWith("recent_ssh"))
                             f.delete();
@@ -210,10 +207,10 @@ public class RecentSessionsPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String path = ConfigUtil.getWorkPath() + "/sessions";
                 File file = new File(path);
-                for (File f : file.listFiles()) {
+                for (File f : Objects.requireNonNull(file.listFiles())) {
                     if (f.isFile()) {
                         int[] indexs = recentTable.getSelectedRows();
-                        for (int index : indexs) {
+                        for (int ignored : indexs) {
                             String protocol = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 2);
                             String address = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 3);
                             String port = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 4);
@@ -248,12 +245,12 @@ public class RecentSessionsPane extends JPanel {
 
         File dir = new File(ConfigUtil.getWorkPath() + "/sessions/");
         if (dir.exists()) {
-            for (File file : dir.listFiles()) {
+            for (File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user) && file.getName().contains(auth)) {
                     // 创建后台任务
-                    SwingWorker<String, Object> task = new SwingWorker<String, Object>() {
+                    SwingWorker<String, Object> task = new SwingWorker<>() {
                         @Override
-                        protected String doInBackground() throws Exception {
+                        protected String doInBackground() {
                             // 此处处于 SwingWorker 线程池中
                             SessionUtil.openSshSession(MainFrame.mainTabbedPane, file.getAbsolutePath());
                             return "Done";
@@ -262,14 +259,11 @@ public class RecentSessionsPane extends JPanel {
                         @Override
                         protected void done() {
                             // 此方法将在后台任务完成后在事件调度线程中被回调
-
                             initData();
                         }
                     };
-
                     // 启动任务
                     task.execute();
-//                    new Thread(() -> SessionUtil.openSshSession(mainTabbedPane, file.getAbsolutePath())).start();
                 }
             }
         }

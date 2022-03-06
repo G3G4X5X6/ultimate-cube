@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 
 @Slf4j
@@ -56,6 +57,7 @@ public class SshPane extends JPanel {
     private JLabel keyLabel;
     private JComboBox<String> categoryCombo;
 
+    private String editPath;
     private String host;
     private int port;
     private String username;
@@ -172,8 +174,15 @@ public class SshPane extends JPanel {
         session.put("sessionComment", commentText.getText());
         log.debug("Comment: " + commentText.getText());
 
-        String path = ConfigUtil.getWorkPath() + "/sessions/ssh/" + categoryCombo.getSelectedItem().toString();
+        String path = ConfigUtil.getWorkPath() + "/sessions/ssh/" + Objects.requireNonNull(categoryCombo.getSelectedItem());
         String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType + ".json";
+        if (editPath != null && !Path.of(fileName).toString().equalsIgnoreCase(editPath)){
+            try {
+                Files.delete(Path.of(editPath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         log.info("会话保存路径：" + fileName);
         try {
             File dirFile = new File(path);
@@ -431,5 +440,9 @@ public class SshPane extends JPanel {
 
     public void setAuthType(String authType) {
         this.authType = authType;
+    }
+
+    public void setEditPath(String editPath) {
+        this.editPath = editPath;
     }
 }
