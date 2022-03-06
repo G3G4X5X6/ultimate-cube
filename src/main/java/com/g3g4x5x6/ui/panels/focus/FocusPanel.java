@@ -1,10 +1,6 @@
 package com.g3g4x5x6.ui.panels.focus;
 
 import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
-import com.g3g4x5x6.ui.panels.ssh.editor.EditorPane;
-import com.g3g4x5x6.ui.panels.ssh.monitor.MonitorPane;
-import com.g3g4x5x6.ui.panels.ssh.sftp.SftpBrowser;
-import com.jediterm.terminal.ui.JediTermWidget;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +18,7 @@ public class FocusPanel extends JPanel {
         screenHeight = (int) screenSize.getHeight();//获得屏幕得高
     }
 
-    public FocusPanel(SessionInfo sessionInfo){
+    public FocusPanel(SessionInfo sessionInfo) {
         this();
         this.sessionInfo = sessionInfo;
         JSplitPane hSplitPane = new JSplitPane();

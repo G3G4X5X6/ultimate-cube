@@ -459,7 +459,7 @@ public class MainFrame extends JFrame implements MouseListener {
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
-    private void focusAction(){
+    private void focusAction() {
         log.debug("专注模式");
         setFocusIndex();
         FocusFrame focusFrame = new FocusFrame();

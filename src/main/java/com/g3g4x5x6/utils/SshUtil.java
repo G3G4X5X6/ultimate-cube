@@ -80,7 +80,6 @@ public class SshUtil {
 
     /**
      * Test
-     *
      */
     public static String execCmd(ClientSession session, String command) throws Exception {
         try (ByteArrayOutputStream responseStream = new ByteArrayOutputStream();

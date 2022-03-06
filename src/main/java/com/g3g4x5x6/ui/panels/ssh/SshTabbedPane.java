@@ -15,13 +15,15 @@ public class SshTabbedPane extends JTabbedPane {
     private final String id;
     private final SessionInfo sessionInfo;
 
-    public SshTabbedPane(SessionInfo sessionInfo){
+    public SshTabbedPane(SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
         this.id = sessionInfo.getSessionId();
         // 等待进度条
         MainFrame.addWaitProgressBar();
 
-        this.sessionInfo.initComponent();
+
+        if (this.sessionInfo.getSshPane() == null)
+            this.sessionInfo.initComponent();
         if (sessionInfo.getSshPane() != null)
             this.addTab("SSH", this.sessionInfo.getSshPane());
         if (sessionInfo.getSftpBrowser() != null)

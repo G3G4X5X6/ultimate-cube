@@ -6,7 +6,6 @@ import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
 import com.g3g4x5x6.utils.CheckUtil;
 import com.g3g4x5x6.utils.ConfigUtil;
-import com.g3g4x5x6.utils.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.PropertyConfigurator;
 

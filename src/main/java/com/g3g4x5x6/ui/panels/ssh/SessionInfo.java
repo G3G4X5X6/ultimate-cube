@@ -23,7 +23,6 @@ import java.security.KeyPair;
 import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SessionInfo {
     // SessionInfo 实例唯一ID

@@ -176,7 +176,7 @@ public class SshPane extends JPanel {
 
         String path = ConfigUtil.getWorkPath() + "/sessions/ssh/" + Objects.requireNonNull(categoryCombo.getSelectedItem());
         String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType + ".json";
-        if (editPath != null && !Path.of(fileName).toString().equalsIgnoreCase(editPath)){
+        if (editPath != null && !Path.of(fileName).toString().equalsIgnoreCase(editPath)) {
             try {
                 Files.delete(Path.of(editPath));
             } catch (IOException e) {

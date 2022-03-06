@@ -10,12 +10,10 @@ import com.g3g4x5x6.ui.panels.SessionsManager;
 import com.g3g4x5x6.ui.panels.ssh.SessionInfo;
 import com.g3g4x5x6.ui.panels.ssh.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.log4j.chainsaw.Main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 

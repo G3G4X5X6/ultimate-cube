@@ -9,7 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,7 +63,7 @@ public class SessionUtil {
                 recentPath = file.getAbsolutePath();
                 //noinspection ResultOfMethodCallIgnored
                 file.delete();
-            }else{
+            } else {
                 recentPath = ConfigUtil.getWorkPath() + "/sessions/recent_" + file.getName();
             }
             Files.write(Path.of(recentPath), json.getBytes(StandardCharsets.UTF_8));
