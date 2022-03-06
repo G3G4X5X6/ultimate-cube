@@ -1,13 +1,27 @@
 <p align="center">
-  <img src="docs/readme.png" alt="G3G4X5X6"/>
 
-[![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09)](https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade)
-![OpenJDK](https://img.shields.io/badge/openjdk-11%2B-blue)
-![GitHub top language](https://img.shields.io/github/languages/top/g3g4x5x6/ultimateshell)
-![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/g3g4x5x6/ultimateshell?include_prereleases)
-![GitHub](https://img.shields.io/github/license/g3g4x5x6/ultimateshell)
-![GitHub all releases download](https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/total)
+  <img src="docs/readme.png" alt="G3G4X5X6"/><br>
+  <img src="https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main" alt="G3G4X5X6"/>
+  <img src="https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09" alt="G3G4X5X6"/>
+  <img src="https://img.shields.io/badge/openjdk-11%2B-blue" alt="G3G4X5X6"/>
+  <img src="https://img.shields.io/github/languages/top/g3g4x5x6/ultimateshell" alt="G3G4X5X6"/>
+  <img src="https://img.shields.io/github/v/release/g3g4x5x6/ultimateshell?include_prereleases" alt="G3G4X5X6"/>
+  <img src="https://img.shields.io/github/license/g3g4x5x6/ultimateshell" alt="G3G4X5X6"/>
+  <img src="https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/total" alt="G3G4X5X6"/>
+
+[comment]: <> ([![Build Status]&#40;https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main&#41;]&#40;https://app.travis-ci.com/G3G4X5X6/ultimateshell&#41;)
+
+[comment]: <> ([![Codacy Badge]&#40;https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09&#41;]&#40;https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade&#41;)
+
+[comment]: <> (![OpenJDK]&#40;https://img.shields.io/badge/openjdk-11%2B-blue&#41;)
+
+[comment]: <> (![GitHub top language]&#40;https://img.shields.io/github/languages/top/g3g4x5x6/ultimateshell&#41;)
+
+[comment]: <> (![GitHub release &#40;latest SemVer including pre-releases&#41;]&#40;https://img.shields.io/github/v/release/g3g4x5x6/ultimateshell?include_prereleases&#41;)
+
+[comment]: <> (![GitHub]&#40;https://img.shields.io/github/license/g3g4x5x6/ultimateshell&#41;)
+
+[comment]: <> (![GitHub all releases download]&#40;https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/total&#41;)
 
 </p>
 
