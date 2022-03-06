@@ -10,7 +10,7 @@
 
     <properties>
         <!-- $ mvn -Dversion=1.28.17-beta clean package -->
-        <version>3.55.28</version>
+        <version>3.58.33</version>
 
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
