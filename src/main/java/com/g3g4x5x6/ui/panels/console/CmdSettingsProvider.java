@@ -1,7 +1,11 @@
 package com.g3g4x5x6.ui.panels.console;
 
+import com.g3g4x5x6.App;
+import com.g3g4x5x6.ui.panels.ssh.ColorScheme;
+import com.g3g4x5x6.ui.panels.ssh.MyColorPaletteImpl;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
+import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.ui.UIUtil;
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 
@@ -9,7 +13,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CmdSettingsProvider extends DefaultSettingsProvider {
-    private TextStyle textStyle;
+    private final ColorScheme colorScheme = new ColorScheme(App.properties.getProperty("terminal.color.scheme"));
+
+    public ColorPalette getTerminalColorPalette() {
+        return new MyColorPaletteImpl(colorScheme);
+    }
 
     @Override
     public Font getTerminalFont() {
@@ -43,7 +51,4 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
 //                        UIManager.getColor("Panel.background").getBlue()));
     }
 
-    public void setDefaultStyle(TextStyle textStyle) {
-        this.textStyle = textStyle;
-    }
 }

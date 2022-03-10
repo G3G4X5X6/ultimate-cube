@@ -67,15 +67,6 @@ public class ConsolePane extends JPanel {
         new Thread(() -> {
             progressBar.setVisible(true);
             CmdSettingsProvider cmdSettingsProvider = new CmdSettingsProvider();
-            cmdSettingsProvider.setDefaultStyle(new TextStyle(
-                    TerminalColor.rgb(
-                            UIManager.getColor("Panel.foreground").getRed(),
-                            UIManager.getColor("Panel.foreground").getGreen(),
-                            UIManager.getColor("Panel.foreground").getBlue()),
-                    TerminalColor.rgb(
-                            UIManager.getColor("Table.background").getRed(),
-                            UIManager.getColor("Table.background").getGreen(),
-                            UIManager.getColor("Table.background").getBlue())));
             JediTermWidget terminalPanel = new JediTermWidget(cmdSettingsProvider);
             terminalPanel.setTtyConnector(createTtyConnector());
             terminalPanel.start();
