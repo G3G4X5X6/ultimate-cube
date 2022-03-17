@@ -17,7 +17,6 @@ import org.apache.sshd.sftp.common.SftpConstants;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
@@ -46,7 +45,7 @@ import static com.g3g4x5x6.ui.MainFrame.embedEditor;
 
 @Slf4j
 public class SftpBrowser extends JPanel {
-    private FileSystemView fsv = FileSystemView.getFileSystemView();
+
     private MyTree myTree;
     private DefaultTreeModel treeModel;
     private DefaultMutableTreeNode root;
@@ -256,9 +255,8 @@ public class SftpBrowser extends JPanel {
         myTable.setModel(tableModel);
 
         // TODO 单元格渲染
-        Icon icon = fsv.getSystemIcon(new File("C:\\Users\\18224\\Desktop\\ultimateshell.md"));
         DefaultTableCellRenderer filenameRenderer = new DefaultTableCellRenderer();
-        filenameRenderer.setIcon(icon);
+        filenameRenderer.setIcon(new FlatTreeLeafIcon());
         myTable.getColumn("文件名").setCellRenderer(filenameRenderer);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
