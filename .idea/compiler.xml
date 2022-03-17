@@ -11,5 +11,10 @@
         <module name="ultimateshell" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ultimate-editor" target="11" />
+      <module name="ultimate-nuclei" target="11" />
+      <module name="ultimate-terminal" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
