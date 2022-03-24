@@ -7,7 +7,7 @@
 
 [comment]: <> (---)
 
-[comment]: <> (# :toolbox: UltimateShell)
+[comment]: <> (# :toolbox: ultimate-cube)
 
 [![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09)](https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade)
@@ -21,7 +21,7 @@
 <br>
 简体中文 [English](docs/README_en.md)
 
-UltimateShell 是开源的远程服务器管理工具箱，目标是为渗透测试工程师、程序员、网站管理员、IT 管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
+ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测试工程师、程序员、网站管理员、IT 管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
 
 > 注意：程序更新后，若无法正常连接SSH，请备份删除原配置文件 `application.properties`
 
