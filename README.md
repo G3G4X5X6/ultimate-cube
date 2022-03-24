@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="docs/readme.png" alt="G3G4X5X6"/>
+<!--   <img src="docs/readme.png" alt="G3G4X5X6"/> -->
+  <img src="docs/cube.jpg" alt="G3G4X5X6"/>
 </p>
 
 <!-- ![gg](https://user-images.githubusercontent.com/87740076/156927413-741f8725-91ba-44ea-9586-df4716caf162.png) -->
