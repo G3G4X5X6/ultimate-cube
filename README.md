@@ -3,6 +3,12 @@
   <img src="docs/cube.jpg" alt="G3G4X5X6"/>
 </p>
 
+> *不知道为啥，我现在都 `push` 不了代码了，所以此仓库以后仅作为 `程序版本更新` 、 `下载` 以及提 `issue` 。<br>*
+> *最新源码仓库转到：[gitee:ultimate-cube](https://gitee.com/dengzhongheng/ultimate-cube)*
+
+
+<hr>
+  
 <!-- ![gg](https://user-images.githubusercontent.com/87740076/156927413-741f8725-91ba-44ea-9586-df4716caf162.png) -->
 
 [comment]: <> (---)
