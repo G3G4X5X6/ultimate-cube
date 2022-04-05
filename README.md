@@ -1,57 +1,19 @@
-<p align="center">
-<!--   <img src="docs/readme.png" alt="G3G4X5X6"/> -->
-  <img src="docs/cube.jpg" alt="G3G4X5X6"/>
+<p>
+  <img src="doc/img/cube.jpg" alt="G3G4X5X6"/>
 </p>
 
-> *不知道为啥，我现在都 `push` 不了代码了，所以此仓库以后仅作为 `程序版本更新` 、 `下载` 以及提 `issue` 。<br>*
-> *最新源码仓库转到：[gitee:ultimate-cube](https://gitee.com/dengzhongheng/ultimate-cube)*
+# ultimate-cube
 
+简体中文 [English](README.en.md)
 
-<hr>
-  
-<!-- ![gg](https://user-images.githubusercontent.com/87740076/156927413-741f8725-91ba-44ea-9586-df4716caf162.png) -->
-
-[comment]: <> (---)
-
-[comment]: <> (# :toolbox: ultimate-cube)
-
-[![Build Status](https://app.travis-ci.com/G3G4X5X6/ultimateshell.svg?branch=main)](https://app.travis-ci.com/G3G4X5X6/ultimateshell)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/66e9eb826f5c422c9077bfa05074ab09)](https://www.codacy.com/gh/G3G4X5X6/ultimateshell/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=G3G4X5X6/ultimateshell&amp;utm_campaign=Badge_Grade)
-![OpenJDK](https://img.shields.io/badge/openjdk-11%2B-blue)
-![GitHub top language](https://img.shields.io/github/languages/top/g3g4x5x6/ultimateshell)
-![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/g3g4x5x6/ultimateshell?include_prereleases)
-![GitHub](https://img.shields.io/github/license/g3g4x5x6/ultimateshell)
-![GitHub all releases download](https://img.shields.io/github/downloads/g3g4x5x6/ultimateshell/total)
-
-[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-<br>
-简体中文 [English](docs/README_en.md)
-
+#### 介绍
 ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测试工程师、程序员、网站管理员、IT 管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
 
-> 注意：程序更新后，若无法正常连接SSH，请备份删除原配置文件 `application.properties`
+#### 软件架构
+软件架构说明
 
-<br>
 
-[comment]: <> (> 来都来了，点颗星再走咯 :star:)
-
-## :books: 目录
-
-- [安全通告](#安全通告)
-- [功能特性](#功能特性)
-- [项目构建](#构建)
-- [使用](#使用)
-- [致谢](#致谢)
-- [维护者](#维护者)
-- [贡献者](#贡献者)
-- [开源许可](#开源许可)
-
-## :shamrock: 安全通告
-
-见 [安全文件](SECURITY.md)!
-
-## :car: 功能特性
-
+#### 功能特性
 - [x] 支持多操作系统平台，兼容性测试：`Windows` > `Linux` > `MacOS`
 - [x] 支持会话管理
 - [x] 支持本地终端(cmd, bash)
@@ -66,50 +28,39 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 - [x] 支持60多种主题皮肤切换
 - [ ] 支持插件系统
 
-## :hammer_and_wrench: 构建
+#### 安装教程
+
+1. 程序依赖运行环境：`JDK11+`
+1. `linux`, `OSX` 用户建议使用自带依赖的通用版本 ultimate-cube-x.x.x-jar-with-dependencies.jar
+1. `Windows` 用户 `无JDK` 环境的,建议使用 `ultimate-cube_setup.exe` 安装包（体积较大）
+
+#### 使用说明
+
+#### 构建
 
 1. 构建环境：`JDK11+`, `IDEA`
-1. 安装依赖：
+2. 安装依赖：
    ```shell
     # tightvnc-jviewer.jar, jediterm-pty-2.66.jar, com.jediterm.terminal-2.66.jar, jediterm-typeahead-2.66.jar
     mvn install:install-file -Dfile=libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
     mvn install:install-file -Dfile=libs/jediterm-typeahead-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.66 -Dpackaging=jar
     mvn install:install-file -Dfile=libs/jediterm-pty-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.66 -Dpackaging=jar
    ```
-1. 编译运行：
-    1. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
-    1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
-    1. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
+3. 编译运行：
+   1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.6`
+   2. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
+   3. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
+   4. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
 
-## :basketball: 使用
 
-1. 程序依赖运行环境：`JDK11+`
-1. `linux`, `OSX` 用户建议使用自带依赖的通用版本 UltimateShell-x.x.x-beta.1-jar-with-dependencies.jar
-1. `Windows` 用户 `无JDK` 环境的,建议使用 `ultimateshell_setup.exe` 安装包（体积较大）
-1. 关于使用过程中的任何疑问，请于 `Discussions` 中的对应版本进行提问和反馈。
+1. 程序更新后，若无法正常连接SSH，请备份删除原配置文件 `application.properties`。
+2. 关于使用过程中的任何疑问，请于 GitHub 中的 `Discussions` 中的对应版本进行提问和反馈。
+3. 任何 `Issues` 请到 github 项目仓库中提出，此仓库仅作为源码存储仓库。
 
-详细使用技巧查看 [项目WIKI](https://github.com/G3G4X5X6/ultimateshell/wiki) 或者 [项目文档](https://g3g4x5x6.github.io/ultimateshell/)
+#### 参与贡献
 
-## :1st_place_medal: 致谢
+1.  Fork 本仓库
+2.  新建 Feat_xxx 分支
+3.  提交代码
+4.  新建 Pull Request
 
-- JediTerm: [https://github.com/JetBrains/jediterm](https://github.com/JetBrains/jediterm)
-- FlatLaf: [https://github.com/JFormDesigner/FlatLaf](https://github.com/JFormDesigner/FlatLaf)
-- Apache MINA SSHD: [https://github.com/apache/mina-sshd](https://github.com/apache/mina-sshd)
-- RSyntaxTextArea: [https://github.com/bobbylight/RSyntaxTextArea](https://github.com/bobbylight/RSyntaxTextArea)
-- Nuclei: [https://github.com/projectdiscovery/nuclei](https://github.com/projectdiscovery/nuclei)
-- 还有很多...
-
-## :basketball_man: 维护者
-
-维护者
-[@G3G4X5X6](https://github.com/G3G4X5X6)
-
-## :people_holding_hands: 贡献者
-
-贡献者，见 [贡献者列表文件](contributing.md)!
-
-欢迎`PRs`
-
-## :label: 开源许可
-
-MIT © 2021 勾三股四弦五小六
