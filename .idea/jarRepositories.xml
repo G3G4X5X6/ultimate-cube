@@ -17,11 +17,6 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="local-maven-repository" />
-      <option name="name" value="local-maven-repository" />
-      <option name="url" value="file://C:\Users\Security\IdeaProjects\UltimateShell/lib/" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="jetbrains-intellij-dependencies" />
       <option name="name" value="jetbrains-intellij-dependencies" />
       <option name="url" value="https://packages.jetbrains.team/maven/p/ij/intellij-dependencies" />

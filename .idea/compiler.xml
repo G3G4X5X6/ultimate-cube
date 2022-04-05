@@ -7,14 +7,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="UltimateShell" />
-        <module name="ultimateshell" />
+        <module name="ultimate-shell" />
+        <module name="ultimate-typeahead" />
+        <module name="ultimate-terminal" />
+        <module name="ultimate-editor" />
+        <module name="typeahead" />
+        <module name="ultimate-app" />
+        <module name="ultimate-nuclei" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ultimate-editor" target="11" />
-      <module name="ultimate-nuclei" target="11" />
-      <module name="ultimate-terminal" target="11" />
+      <module name="pty" target="11" />
+      <module name="ultimate-typeahead" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

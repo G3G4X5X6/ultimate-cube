@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
-    <file url="file://$PROJECT_DIR$/src/main/java/com/g3g4x5x6/ui/icons/buildLoadChanges.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/g3g4x5x6/ui/icons/commit.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/g3g4x5x6/ui/icons/diff.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/g3g4x5x6/ui/icons/listFiles.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/src/main/java/com/g3g4x5x6/ui/icons/project.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/target/classes/icons/buildLoadChanges.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/target/classes/icons/commit.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/target/classes/icons/diff.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/target/classes/icons/listFiles.svg" charset="ISO-8859-1" />
-    <file url="file://$PROJECT_DIR$/target/classes/icons/project.svg" charset="ISO-8859-1" />
-    <file url="PROJECT" charset="UTF-8" />
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/ultimate-terminal/pty/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ultimate-terminal/src/main/java" charset="UTF-8" />
   </component>
 </project>
