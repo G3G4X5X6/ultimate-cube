@@ -100,6 +100,7 @@ public class JediTermWidget extends JPanel implements TerminalSession, TerminalW
         myInnerPanel.add(myScrollBar, TerminalLayout.SCROLL);
 
         add(myInnerPanel, BorderLayout.CENTER);
+//        add(new JTextField(), BorderLayout.SOUTH);
 
         myScrollBar.setModel(myTerminalPanel.getVerticalScrollModel());
         mySessionRunning.set(false);

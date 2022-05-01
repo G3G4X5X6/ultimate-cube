@@ -1,7 +1,7 @@
 package com.g3g4x5x6.nuclei.panel.connector;
 
 import com.g3g4x5x6.nuclei.panel.RunningPanel;
-import com.g3g4x5x6.ultils.ConfigUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
@@ -17,6 +17,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class ConsolePanel extends JPanel {
             log.debug(envs.toString());
             String[] command;
             if (UIUtil.isWindows) {
-                String path = envs.get("Path") + ";" + RunningPanel.nucleiPath;
+                String path = envs.get("Path") + ";" + Path.of(RunningPanel.nucleiPath);
                 envs = new HashMap<>(System.getenv());
                 envs.put("Path", path);
                 command = new String[]{"cmd.exe"};
@@ -65,7 +66,7 @@ public class ConsolePanel extends JPanel {
                 envs = new HashMap<>(System.getenv());
                 envs.put("TERM", "xterm-256color");
             }
-            PtyProcess process = new PtyProcessBuilder().setDirectory(ConfigUtil.getWorkPath()).setCommand(command).setEnvironment(envs).start();
+            PtyProcess process = new PtyProcessBuilder().setDirectory(NucleiConfig.getWorkPath()).setCommand(command).setEnvironment(envs).start();
 
             return new NucleiProcessTtyConnector(process, StandardCharsets.UTF_8);
         } catch (Exception e) {

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ultimate-cube</artifactId>
         <groupId>com.g3g4x5x6</groupId>
-        <version>3.58.33</version>
+        <version>6.6.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

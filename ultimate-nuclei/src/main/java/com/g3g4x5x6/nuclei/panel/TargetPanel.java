@@ -3,7 +3,7 @@ package com.g3g4x5x6.nuclei.panel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.ultils.ConfigUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.rsyntaxtextarea.MatchedBracketPopup;
@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Slf4j
 public class TargetPanel extends JPanel {
-    private static final String tempDir = ConfigUtil.getWorkPath() + "/temp/nuclei";
+    private static final String tempDir = NucleiConfig.getProperty("nuclei.temp.path");
     private JButton newBtn = new JButton(new FlatSVGIcon("icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
     private JButton saveBtn = new JButton(new FlatSVGIcon("icons/menu-saveall.svg"));

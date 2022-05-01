@@ -1,7 +1,7 @@
 package com.g3g4x5x6.settings;
 
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.AppConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,7 +65,7 @@ public class SettingsDialog extends JDialog {
 
                 // 保存到文件
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                ConfigUtil.saveSettingsProperties();
+                AppConfig.saveSettingsProperties();
             }
         });
 

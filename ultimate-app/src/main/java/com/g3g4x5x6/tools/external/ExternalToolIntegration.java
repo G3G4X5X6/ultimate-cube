@@ -2,7 +2,7 @@ package com.g3g4x5x6.tools.external;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.os.OsInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +18,7 @@ import java.util.LinkedList;
 
 @Slf4j
 public class ExternalToolIntegration {
-    public static final String settings_path = ConfigUtil.getWorkPath() + "/tools/external_tools/settings.json";
+    public static final String settings_path = AppConfig.getWorkPath() + "/tools/external_tools/settings.json";
     private final LinkedHashMap<String, LinkedList<JMenuItem>> items = new LinkedHashMap<>();
     private final JSONArray array;
 
@@ -101,7 +101,7 @@ public class ExternalToolIntegration {
     private String replaceBasePath(String path) {
         return path.replaceAll(
                 "%BasePath%",
-                Path.of(ConfigUtil.getWorkPath() + "/tools/external_tools").toString().replaceAll("\\\\", "/")
+                Path.of(AppConfig.getWorkPath() + "/tools/external_tools").toString().replaceAll("\\\\", "/")
         );
     }
 

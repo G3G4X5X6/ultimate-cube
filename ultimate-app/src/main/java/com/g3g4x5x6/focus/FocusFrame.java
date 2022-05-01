@@ -5,10 +5,10 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.MainFrame;
-import com.g3g4x5x6.panels.ssh.SessionInfo;
-import com.g3g4x5x6.panels.ssh.panel.NewTabbedPane;
+import com.g3g4x5x6.NewTabbedPane;
 import com.g3g4x5x6.panels.ssh.panel.SessionManagerPanel;
-import com.g3g4x5x6.panels.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.ssh.SessionInfo;
+import com.g3g4x5x6.ssh.panel.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -144,6 +144,8 @@ public class FocusFrame extends JFrame {
     private void initTabbedPane() {
         for (String key : App.sessionInfos.keySet()) {
             SessionInfo sessionInfo = App.sessionInfos.get(key);
+            log.debug("sessionInfos.size(): " + App.sessionInfos.size() + " : " + sessionInfo.toString());
+
             tabbedPane.addTab(
                     sessionInfo.getSessionName().equals("") ? sessionInfo.getSessionAddress() : sessionInfo.getSessionName(),
                     new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),

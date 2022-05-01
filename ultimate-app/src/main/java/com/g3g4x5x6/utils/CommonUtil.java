@@ -73,7 +73,7 @@ public class CommonUtil {
      * https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest  // 获取下载地址: r.assets[0].browser_download_url
      */
     public static String getLastestVersion() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         try {
             URL url = new URL("https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -195,7 +195,7 @@ public class CommonUtil {
     }
 
     public static void generateSystemInfo() {
-        File temp = new File(ConfigUtil.getWorkPath() + "/temp");
+        File temp = new File(AppConfig.getWorkPath() + "/temp");
         if (!temp.exists()) {
             temp.mkdir();
         }
@@ -212,7 +212,7 @@ public class CommonUtil {
     }
 
     public static String getSystemInfo() {
-        File temp = new File(ConfigUtil.getWorkPath() + "/temp");
+        File temp = new File(AppConfig.getWorkPath() + "/temp");
         if (!temp.exists()) {
             temp.mkdir();
         }

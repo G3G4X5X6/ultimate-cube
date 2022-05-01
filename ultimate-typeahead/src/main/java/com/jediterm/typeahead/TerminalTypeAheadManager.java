@@ -1,15 +1,15 @@
 package com.jediterm.typeahead;
 
 
-import java.util.*;
-import java.util.concurrent.*;
-
 import com.jediterm.typeahead.TypeAheadTerminalModel.LineWithCursorX;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class TerminalTypeAheadManager {
   public static final long MAX_TERMINAL_DELAY = TimeUnit.MILLISECONDS.toNanos(1500);

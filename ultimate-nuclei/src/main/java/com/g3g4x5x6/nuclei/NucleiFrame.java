@@ -5,7 +5,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.nuclei.panel.*;
-import com.g3g4x5x6.ultils.ConfigUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
@@ -26,8 +26,10 @@ public class NucleiFrame extends JFrame {
     public static NucleiFrame nucleiFrame = new NucleiFrame();
     public static JTabbedPane frameTabbedPane;
     public static TargetPanel targetPanel;
-    public static String reportDir = ConfigUtil.getWorkPath() + "/report/nuclei";
-    public static String templatesDir = System.getProperties().getProperty("user.home") + "/nuclei-templates";
+
+    public static String reportDir = NucleiConfig.getProperty("nuclei.report.path");
+    public static String templatesDir = NucleiConfig.getProperty("nuclei.templates.path");
+
     private JMenu fileMenu = new JMenu("文件");
     private JMenu editMenu = new JMenu("编辑");
     private JMenu searchMenu = new JMenu("搜索");
@@ -196,6 +198,7 @@ public class NucleiFrame extends JFrame {
     public static void main(String[] args) {
         initFlatLaf();
         NucleiFrame nuclei = new NucleiFrame();
+        nuclei.setTitle(NucleiConfig.getProperty("nuclei.title"));
         nuclei.setDefaultCloseOperation(NucleiFrame.EXIT_ON_CLOSE);
         nuclei.setVisible(true);
     }

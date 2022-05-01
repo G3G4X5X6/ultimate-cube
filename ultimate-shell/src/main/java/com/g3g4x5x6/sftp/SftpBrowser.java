@@ -1,6 +1,5 @@
 package com.g3g4x5x6.sftp;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.editor.EditorFrame;
@@ -10,7 +9,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
-import org.apache.sshd.sftp.common.SftpConstants;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -32,10 +30,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.g3g4x5x6.utils.TableUtil.convertFileLongNameToStringArray;
 
 
 @Slf4j
@@ -67,8 +66,6 @@ public class SftpBrowser extends JPanel {
     private JMenuItem newDirItem;
     private JMenuItem delDirItem;
     private JMenuItem forceDelItem;
-
-    private JPopupMenu transferPopMenu;
 
     private SftpClient sftpClient;
     private SftpFileSystem fs;
@@ -266,7 +263,7 @@ public class SftpBrowser extends JPanel {
         splitPane.setRightComponent(tableScroll);
 
 
-         sftpTabbedPanel= new SftpTabbedPanel();
+        sftpTabbedPanel = new SftpTabbedPanel();
 
         JSplitPane vSplitPane = new JSplitPane();
         vSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
@@ -317,21 +314,9 @@ public class SftpBrowser extends JPanel {
                 KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
                 JComponent.WHEN_FOCUSED);
 
-        // fileTransfer.svg
-        transferPopMenu = new JPopupMenu();
-        JButton fileTransfer = new JButton();
-        fileTransfer.setIcon(new FlatSVGIcon("icons/fileTransfer.svg"));
-        fileTransfer.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                transferPopMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
-        });
         // 添加工具栏菜单
         toolBar.add(pathField);
         toolBar.add(waitBar);
-        toolBar.addSeparator();
-        toolBar.add(fileTransfer);
         this.add(toolBar, BorderLayout.NORTH);
     }
 
@@ -387,7 +372,7 @@ public class SftpBrowser extends JPanel {
                     child = new DefaultMutableTreeNode(entry.getFilename());
                     root.add(child);
                 } else {
-                    tableModel.addRow(convertFileLongNameToStringArray(entry));
+                    tableModel.addRow(convertFileLongNameToStringArray(entry, false));
                     myTable.setModel(tableModel);
                 }
             }
@@ -494,7 +479,7 @@ public class SftpBrowser extends JPanel {
                     FileUtil.traverseFolder(file, fileList);
                 }
                 TaskProgressPanel taskPanel = new TaskProgressPanel("上传", 0, 100, "");
-                transferPopMenu.add(taskPanel);
+                sftpTabbedPanel.addTask(taskPanel);
                 String tmpPath = path;
                 new Thread(() -> {
                     int fileCount = fileList.size();
@@ -531,7 +516,6 @@ public class SftpBrowser extends JPanel {
                             fileNotFoundException.printStackTrace();
                         }
                     }
-                    transferPopMenu.remove(taskPanel);
                 }).start();
             }
         }
@@ -579,7 +563,7 @@ public class SftpBrowser extends JPanel {
                         log.debug(outputFile.getAbsolutePath());
 
                         TaskProgressPanel taskPanel = new TaskProgressPanel("下载", 0, 100, "");
-                        transferPopMenu.add(taskPanel);
+                        sftpTabbedPanel.addTask(taskPanel);
                         AtomicInteger fileCount = new AtomicInteger(myTable.getSelectedRows().length);
                         taskPanel.setFileCount(fileCount.get());
                         // TODO 下载, 进度, 下载5M分段
@@ -622,7 +606,6 @@ public class SftpBrowser extends JPanel {
                                     fileNotFoundException.printStackTrace();
                                 }
                             }
-                            transferPopMenu.remove(taskPanel);
                         }).start();
                     }
                 }
@@ -633,7 +616,7 @@ public class SftpBrowser extends JPanel {
     private void downloadRemoteDir(String path, File outputFile) {
         new Thread(() -> {
             TaskProgressPanel taskPanel = new TaskProgressPanel("下载", 0, 100, "");
-            transferPopMenu.add(taskPanel);
+            sftpTabbedPanel.addTask(taskPanel);
             AtomicInteger fileCount = new AtomicInteger(0);
             taskPanel.setFileCount("下载完成：" + fileCount.get());
             try {
@@ -676,7 +659,6 @@ public class SftpBrowser extends JPanel {
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-            transferPopMenu.remove(taskPanel);
         }).start();
     }
 
@@ -708,74 +690,6 @@ public class SftpBrowser extends JPanel {
         if (tempPath.toString().startsWith("//"))
             return tempPath.substring(1);
         return tempPath.toString();
-    }
-
-    private String[] convertFileLongNameToStringArray(SftpClient.DirEntry entry) {
-        // 文件名, 权限, 大小, 类型, 属组, 修改时间
-        String[] temp = new String[6];
-        temp[0] = entry.getFilename();
-        temp[1] = entry.getLongFilename().split("\\s+")[0];
-        log.debug(Arrays.toString(entry.getLongFilename().split("\\s+")));
-
-        // 大小单位转换
-        String humanSize = "";
-        long size = entry.getAttributes().getSize();
-        if (size >= 1024 && size < 1024 * 1024) { // KB
-            double d = size / 1024.0;
-            humanSize = String.format("%.2f", d) + " KB";
-        } else if (size >= 1024 * 1024 && size < 1024 * 1024 * 1024) {   // MB
-            double d = size / 1024.0 / 1024.0;
-            humanSize = String.format("%.2f", d) + " MB";
-        } else if (size >= 1024 * 1024 * 1024) {  // GB
-            double d = size / 1024.0 / 1024.0 / 1024.0;
-            humanSize = String.format("%.2f", d) + " GB";
-        }
-        temp[2] = humanSize;
-
-        /**
-         *     public static final int SSH_FILEXFER_TYPE_REGULAR = 1;
-         *     public static final int SSH_FILEXFER_TYPE_DIRECTORY = 2;
-         *     public static final int SSH_FILEXFER_TYPE_SYMLINK = 3;
-         *     public static final int SSH_FILEXFER_TYPE_SPECIAL = 4;
-         *     public static final int SSH_FILEXFER_TYPE_UNKNOWN = 5;
-         *     public static final int SSH_FILEXFER_TYPE_SOCKET = 6; // v5
-         *     public static final int SSH_FILEXFER_TYPE_CHAR_DEVICE = 7; // v5
-         *     public static final int SSH_FILEXFER_TYPE_BLOCK_DEVICE = 8; // v5
-         *     public static final int SSH_FILEXFER_TYPE_FIFO = 9; // v5
-         */
-        switch (entry.getAttributes().getType()) {
-            case SftpConstants.SSH_FILEXFER_TYPE_REGULAR:
-                temp[3] = "Regular";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_DIRECTORY:
-                temp[3] = "Directory";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_SYMLINK:
-                temp[3] = "Symlink";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_SPECIAL:
-                temp[3] = "Special";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_UNKNOWN:
-                temp[3] = "Unknown";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_SOCKET:
-                temp[3] = "Socket";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_CHAR_DEVICE:
-                temp[3] = "Char_Device";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_BLOCK_DEVICE:
-                temp[3] = "Block_Device";
-                break;
-            case SftpConstants.SSH_FILEXFER_TYPE_FIFO:
-                temp[3] = "FIFO";
-                break;
-        }
-        temp[4] = entry.getLongFilename().split("\\s+")[2] + "/" + entry.getLongFilename().split("\\s+")[3];
-        temp[5] = entry.getAttributes().getModifyTime().toString();
-
-        return temp;
     }
 
     public void freshTable() {
@@ -815,7 +729,7 @@ public class SftpBrowser extends JPanel {
                     }
                 } else {
                     // TODO 显示目录下的文件
-                    tableModel.addRow(convertFileLongNameToStringArray(entry));
+                    tableModel.addRow(convertFileLongNameToStringArray(entry, false));
                 }
             }
         } catch (Exception exception) {

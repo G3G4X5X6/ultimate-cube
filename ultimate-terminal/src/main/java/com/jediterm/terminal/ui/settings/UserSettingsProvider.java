@@ -13,6 +13,8 @@ public interface UserSettingsProvider {
 
     Font getTerminalFont();
 
+    Font getTerminalChineseFont();
+
     float getTerminalFontSize();
 
     /**

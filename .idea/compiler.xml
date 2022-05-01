@@ -7,18 +7,29 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ultimate-vault" />
         <module name="ultimate-shell" />
         <module name="ultimate-typeahead" />
         <module name="ultimate-terminal" />
         <module name="ultimate-editor" />
-        <module name="typeahead" />
         <module name="ultimate-app" />
         <module name="ultimate-nuclei" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="pty" target="11" />
+      <module name="ultimate-app" target="11" />
+      <module name="ultimate-cube" target="11" />
+      <module name="ultimate-editor" target="11" />
+      <module name="ultimate-nuclei" target="11" />
+      <module name="ultimate-shell" target="11" />
+      <module name="ultimate-terminal" target="11" />
       <module name="ultimate-typeahead" target="11" />
+      <module name="ultimate-vault" target="11" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ultimate-shell" options="" />
+    </option>
   </component>
 </project>

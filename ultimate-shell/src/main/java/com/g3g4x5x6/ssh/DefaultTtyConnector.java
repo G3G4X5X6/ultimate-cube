@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultTtyConnector implements TtyConnector {
-    private ClientSession session;
+    private final ClientSession session;
     private ChannelShell channel;
 
     private Dimension myPendingTermSize;
@@ -45,6 +45,7 @@ public class DefaultTtyConnector implements TtyConnector {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return true;
     }
 
@@ -68,7 +69,8 @@ public class DefaultTtyConnector implements TtyConnector {
     private Map<String, ?> getEnv() {
         Map<String, String> env = new LinkedHashMap<>();
         String lang = System.getenv().get("LANG");
-        env.put("LANG", lang != null ? lang : "zh_CN.UTF-8");
+//        env.put("LANG", lang != null ? lang : "zh_CN.UTF-8");
+        env.put("LANG", lang != null ? lang : "en_US.UTF-8");
         env.put("compression.s2c", "zlib,none");
         env.put("compression.c2s", "zlib,none");
         env.put("StrictHostKeyChecking", "no");
@@ -90,7 +92,7 @@ public class DefaultTtyConnector implements TtyConnector {
     }
 
     /**
-     * TODO 本地保存会话记录：String.valueOf(chars )
+     * TODO 本地保存会话记录：String.valueOf(chars)
      */
     @Override
     public int read(char[] chars, int i, int i1) throws IOException {
@@ -105,7 +107,6 @@ public class DefaultTtyConnector implements TtyConnector {
 
     @Override
     public boolean isConnected() {
-        log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>:::" + channel.isOpen());
         return channel.isOpen();
     }
 
@@ -114,12 +115,12 @@ public class DefaultTtyConnector implements TtyConnector {
      */
     @Override
     public void write(String string) throws IOException {
-        log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>" + string);
+        log.debug("session history: " + string);
         this.write(string.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
-    public int waitFor() throws InterruptedException {
+    public int waitFor() {
         return channel.getExitStatus();
     }
 
@@ -150,5 +151,9 @@ public class DefaultTtyConnector implements TtyConnector {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public ClientSession getSession() {
+        return session;
     }
 }

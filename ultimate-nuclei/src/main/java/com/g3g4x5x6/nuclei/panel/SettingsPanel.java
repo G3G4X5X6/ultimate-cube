@@ -1,13 +1,11 @@
 package com.g3g4x5x6.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.ultils.ConfigUtil;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SettingsPanel extends JPanel {
-    private static final String defaultNucleiSettingsPath = ConfigUtil.getWorkPath() + "/tools/xpack_tools/nuclei/nuclei.yaml";
     private JButton newBtn = new JButton(new FlatSVGIcon("icons/addFile.svg"));
     private JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
     private JButton saveBtn = new JButton(new FlatSVGIcon("icons/menu-saveall.svg"));

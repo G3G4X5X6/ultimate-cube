@@ -2,7 +2,7 @@ package com.g3g4x5x6.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.ultils.ConfigUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 
 @Slf4j
 public class RunningPanel extends JPanel {
-    public static String nucleiPath = ConfigUtil.getWorkPath() + "/tools/xpack_tools/nuclei/";
+    public static String nucleiPath = NucleiConfig.getProperty("nuclei.bin.path");
     public static JTabbedPane tabbedPane;
     private int count = 0;
 

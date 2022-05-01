@@ -36,8 +36,7 @@ public class DownloadAction extends DefaultAction {
                     String path = sftpBrowser.convertTreePathToString(dstPath) + "/" + downloadFileName;
                     log.info("下载的文件：" + path);
 
-                    // 开始创建任务
-                    taskPanel.addTask(path, outputFile.getAbsolutePath());
+                    // TODO 开始创建任务
                 }
             }
 
@@ -52,8 +51,7 @@ public class DownloadAction extends DefaultAction {
                 if (value == JFileChooser.APPROVE_OPTION) {
                     File outputFile = chooser.getSelectedFile();
 
-                    // 开始创建任务
-                    taskPanel.addTask(path, outputFile.getAbsolutePath());
+                    // TODO 开始创建任务
                 }
             }
         } else {

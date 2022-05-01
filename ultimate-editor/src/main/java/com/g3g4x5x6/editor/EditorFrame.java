@@ -1,8 +1,10 @@
 package com.g3g4x5x6.editor;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
+import com.g3g4x5x6.editor.util.EditorConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
@@ -344,7 +346,6 @@ public class EditorFrame extends JFrame implements ActionListener {
     }
 
     private boolean exist(EditorPanel editorPanel) {
-
         return false;
     }
 
@@ -492,4 +493,24 @@ public class EditorFrame extends JFrame implements ActionListener {
             editorPanel.getReplaceDialog().setVisible(true);
         }
     };
+
+    public static void main(String[] args) {
+        initFlatLaf();
+        EditorFrame editor = new EditorFrame();
+        editor.setTitle(EditorConfig.getProperty("editor.title"));
+        editor.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        editor.addAndSelectPanel(new EditorPanel());
+
+        editor.setVisible(true);
+    }
+
+    private static void initFlatLaf() {
+        try {
+            UIManager.setLookAndFeel( new FlatLightLaf() );
+        } catch( Exception ex ) {
+            System.err.println( "Failed to initialize LaF" );
+        }
+        UIManager.put("TextComponent.arc", 5);
+    }
 }

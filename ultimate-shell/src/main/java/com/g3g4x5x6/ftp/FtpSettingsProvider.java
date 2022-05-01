@@ -97,6 +97,11 @@ public class FtpSettingsProvider implements SettingsProvider {
         return new Font(fontName, 0, (int) this.getTerminalFontSize());
     }
 
+    @Override
+    public Font getTerminalChineseFont() {
+        return null;
+    }
+
     public float getTerminalFontSize() {
         return 14.0F;
     }

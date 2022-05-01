@@ -9,6 +9,7 @@ import com.jediterm.terminal.model.LinesBuffer;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Collections;
+import java.util.Objects;
 
 public class DefaultSettingsProvider implements SettingsProvider {
     @Override
@@ -116,6 +118,12 @@ public class DefaultSettingsProvider implements SettingsProvider {
             fontName = "Monospaced";
         }
         return new Font(fontName, Font.PLAIN, (int) getTerminalFontSize());
+    }
+
+    @SneakyThrows
+    public Font getTerminalChineseFont(){
+        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/" + "NotoSansSC-Regular.otf")));
+        return myFont.deriveFont(Font.PLAIN, (int) this.getTerminalFontSize());
     }
 
     @Override

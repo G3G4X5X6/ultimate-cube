@@ -2,15 +2,17 @@ package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.dialog.LockDialog;
-import com.g3g4x5x6.panels.ssh.SessionInfo;
+import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.utils.CheckUtil;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.PropertyConfigurator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
@@ -20,6 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Properties;
@@ -44,6 +47,9 @@ public class App {
     }
 
     private static void createGUI() {
+        // 设置GUI全局字体
+//        initGlobalFont(new Font("sans", Font.PLAIN, 14));
+
         // 配置主题皮肤
         initFlatLaf();
 
@@ -75,6 +81,18 @@ public class App {
         UIManager.put("TextComponent.arc", 5);
     }
 
+    public static void initGlobalFont(Font font) {
+        FontUIResource fontResource = new FontUIResource(font);
+        for(Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements();) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if(value instanceof FontUIResource) {
+                System.out.println(key);
+                UIManager.put(key, fontResource);
+            }
+        }
+    }
+
     private static void initSystemTray() {
         /*
          * 添加系统托盘
@@ -89,29 +107,53 @@ public class App {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            // 创建点击图标时的弹出菜单
-            PopupMenu popupMenu = new PopupMenu();
+//            // 创建点击图标时的弹出菜单
+//            PopupMenu popupMenu = new PopupMenu();
+//
+//            MenuItem openItem = new MenuItem();
+//            openItem.setLabel("Open");
+//            MenuItem exitItem = new MenuItem();
+//            exitItem.setLabel("Quit");
+//
+//            openItem.addActionListener(e -> {
+//                // 点击打开菜单时显示窗口
+//                openApp();
+//            });
+//            exitItem.addActionListener(e -> {
+//                // 点击退出菜单时退出程序
+//                System.exit(0);
+//            });
+//
+//            popupMenu.add(openItem);
+//            popupMenu.add(exitItem);
 
-            MenuItem openItem = new MenuItem();
-            openItem.setLabel("Open");
-            MenuItem exitItem = new MenuItem();
-            exitItem.setLabel("Quit");
 
-            openItem.addActionListener(e -> {
-                // 点击打开菜单时显示窗口
-                openApp();
+            // 创建右键图标时的弹出菜单：JPopupMenu
+            JPopupMenu popupMenu = new JPopupMenu();
+
+            JMenuItem openMenuItem = new JMenuItem("打开");
+            JMenuItem exitMenuItem = new JMenuItem("退出");
+
+            openMenuItem.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    openApp();
+                }
             });
-            exitItem.addActionListener(e -> {
-                // 点击退出菜单时退出程序
-                System.exit(0);
+
+            exitMenuItem.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
             });
 
-            popupMenu.add(openItem);
-            popupMenu.add(exitItem);
+            popupMenu.add(openMenuItem);
+            popupMenu.add(exitMenuItem);
 
             // 创建一个托盘图标
             assert image != null;
-            TrayIcon trayIcon = new TrayIcon(image, "UltimateShell's SystemTray", popupMenu);
+            DefaultTrayIcon trayIcon = new DefaultTrayIcon(image, "ultimatecube's SystemTray", popupMenu);
             // 托盘图标自适应尺寸
             trayIcon.setImageAutoSize(true);
             trayIcon.addMouseListener(new MouseAdapter() {
@@ -128,7 +170,7 @@ public class App {
                             break;
                         }
                         case MouseEvent.BUTTON3: {
-                            System.out.println("托盘图标被鼠标右键被点击");
+                            System.out.println("托盘图标被鼠标右键被点击，X:" + e.getX() + " <=> Y:" + e.getY());
                             break;
                         }
                         default: {
@@ -160,22 +202,22 @@ public class App {
 
     private static Properties loadProperties() {
         // 初始化应用配置
-        if (!Files.exists(Path.of(ConfigUtil.getPropertiesPath()))) {
+        if (!Files.exists(Path.of(AppConfig.getPropertiesPath()))) {
             try {
                 InputStream appIn = App.class.getClassLoader().getResourceAsStream("application.properties");
                 assert appIn != null;
-                Files.copy(appIn, Path.of(ConfigUtil.getPropertiesPath()));
+                Files.copy(appIn, Path.of(AppConfig.getPropertiesPath()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         // 初始化日志配置
-        if (!Files.exists(Path.of(ConfigUtil.getWorkPath() + "/log4j.properties"))) {
+        if (!Files.exists(Path.of(AppConfig.getWorkPath() + "/log4j.properties"))) {
             try {
                 InputStream logIn = App.class.getClassLoader().getResourceAsStream("log4j.properties");
                 assert logIn != null;
-                Files.copy(logIn, Path.of(ConfigUtil.getWorkPath() + "/log4j.properties"));
+                Files.copy(logIn, Path.of(AppConfig.getWorkPath() + "/log4j.properties"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -184,18 +226,19 @@ public class App {
         // 加载配置
         Properties properties = new Properties();
         try {
-            InputStreamReader inputStream = new InputStreamReader(new FileInputStream(ConfigUtil.getPropertiesPath()), StandardCharsets.UTF_8);
+            InputStreamReader inputStream = new InputStreamReader(new FileInputStream(AppConfig.getPropertiesPath()), StandardCharsets.UTF_8);
             properties.load(inputStream);
         } catch (Exception ignored) {
 
         }
+        log.debug(properties.toString());
         return properties;
     }
 
     private static void initLog4j() {
         try {
             if (App.properties.getProperty("app.log.setting.enable").equalsIgnoreCase("true")) {
-                PropertyConfigurator.configureAndWatch(App.properties.getProperty("app.log.setting.path").replace("{workspace}", ConfigUtil.getWorkPath()));
+                PropertyConfigurator.configureAndWatch(App.properties.getProperty("app.log.setting.path").replace("{workspace}", AppConfig.getWorkPath()));
                 log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<已加载自定义日志配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             }
         } catch (Exception e) {

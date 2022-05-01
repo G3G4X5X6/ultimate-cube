@@ -5,8 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
+import com.g3g4x5x6.App;
 import com.g3g4x5x6.MainFrame;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.ssh.SessionInfo;
+import com.g3g4x5x6.ssh.panel.NewSshPane;
+import com.g3g4x5x6.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.SessionUtil;
 import com.g3g4x5x6.utils.SshUtil;
@@ -16,13 +20,19 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Objects;
 
@@ -39,7 +49,7 @@ public class SessionManagerPanel extends JPanel {
 
     private JTable sessionTable;
     private DefaultTableModel tableModel;
-    private final String rootPath = ConfigUtil.getWorkPath() + "/sessions/ssh/";
+    private final String rootPath = AppConfig.getWorkPath() + "/sessions/ssh/";
     private final String[] columnNames = {"会话名称", "协议", "地址", "端口", "登录用户", "认证类型"}; // 添加<创建时间>
 
     private final JMenuItem refreshItem = new JMenuItem("刷新");
@@ -353,7 +363,7 @@ public class SessionManagerPanel extends JPanel {
                 int index = currentTag.indexOf("/");
                 if (index != -1)
                     category = Path.of(currentTag.substring(index + 1)).toString();
-                SshPane sshPane = new SshPane(MainFrame.mainTabbedPane);
+                NewSshPane sshPane = new NewSshPane(MainFrame.mainTabbedPane);
                 sshPane.setCategory(category);
                 mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
@@ -439,7 +449,7 @@ public class SessionManagerPanel extends JPanel {
 
                         String finalCurrentTag = array[1];
                         new Thread(() -> {
-                            SshPane sshPane = new SshPane(MainFrame.mainTabbedPane);
+                            NewSshPane sshPane = new NewSshPane(MainFrame.mainTabbedPane);
                             sshPane.setHostField(jsonObject.getString("sessionAddress"));
                             sshPane.setPortField(jsonObject.getString("sessionPort"));
                             sshPane.setUserField(jsonObject.getString("sessionUser"));
@@ -564,7 +574,23 @@ public class SessionManagerPanel extends JPanel {
             String[] array = getRowFilePath(index);
             File file = new File(array[0]);
             if (file.exists()) {
-                new Thread(() -> SessionUtil.openSshSession(tabbedPane, file.getAbsolutePath())).start();
+                new Thread(() -> {
+                    // 等待进度条
+                    MainFrame.addWaitProgressBar();
+
+                    SessionInfo sessionInfo = SessionUtil.openSshSession(file.getAbsolutePath());
+                    if (SshUtil.testConnection(sessionInfo.getSessionAddress(), sessionInfo.getSessionPort()) == 1) {
+                        String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
+                        MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                                new SshTabbedPane(sessionInfo)
+                        );
+                        MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
+                    }
+                    App.sessionInfos.put(sessionInfo.getSessionId(), sessionInfo);
+
+                    // 移除等待进度条
+                    MainFrame.removeWaitProgressBar();
+                }).start();
             }
         }
     }

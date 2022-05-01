@@ -3,7 +3,7 @@ package com.g3g4x5x6.panels.ssh.editor;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +45,7 @@ public class EditorPane extends JPanel {
 
     private JPopupMenu savePopupMenu;
     private final ConsolePanel consolePanel = new ConsolePanel();
-    private String shellcheck = ConfigUtil.getWorkPath() + "/tools/xpack_tools/shellcheck/shellcheck";
+    private String shellcheck = AppConfig.getWorkPath() + "/tools/xpack_tools/shellcheck/shellcheck";
 
     // default directory
     private String defaultDir = "/tmp/.ultimate-cube/";
@@ -205,7 +205,7 @@ public class EditorPane extends JPanel {
                 // 创建一个默认的文件选取器
                 JFileChooser fileChooser = new JFileChooser();
                 // 设置默认显示的文件夹为当前文件夹
-                fileChooser.setCurrentDirectory(new File(ConfigUtil.getWorkPath() + "/editor"));
+                fileChooser.setCurrentDirectory(new File(AppConfig.getWorkPath() + "/editor"));
                 // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
@@ -243,7 +243,7 @@ public class EditorPane extends JPanel {
                 log.debug("Bash 安全检查");
                 if (!textArea.getText().strip().equals("")) {
                     if (e.getButton() == 3) {
-                        String tempBash = ConfigUtil.getWorkPath() + "/temp/shellcheck_" + UUID.randomUUID() + ".sh";
+                        String tempBash = AppConfig.getWorkPath() + "/temp/shellcheck_" + UUID.randomUUID() + ".sh";
                         Files.write(Path.of(tempBash), textArea.getText().getBytes(StandardCharsets.UTF_8));
                         // run
                         consolePanel.write(Path.of(shellcheck) + " " + tempBash + "\r");
@@ -412,7 +412,7 @@ public class EditorPane extends JPanel {
     }
 
     private void insertOrUpdate() {
-        File editor = new File(ConfigUtil.getWorkPath() + "/editor");
+        File editor = new File(AppConfig.getWorkPath() + "/editor");
         if (!editor.exists()) {
             editor.mkdir();
         }
@@ -471,7 +471,7 @@ public class EditorPane extends JPanel {
         // 创建一个默认的文件选取器
         JFileChooser fileChooser = new JFileChooser();
         // 设置默认显示的文件夹为当前文件夹
-        fileChooser.setCurrentDirectory(new File(ConfigUtil.getWorkPath() + "/editor"));
+        fileChooser.setCurrentDirectory(new File(AppConfig.getWorkPath() + "/editor"));
         // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
@@ -527,7 +527,7 @@ public class EditorPane extends JPanel {
     }
 
     private void setMark() {
-        File editor = new File(ConfigUtil.getWorkPath() + "/editor");
+        File editor = new File(AppConfig.getWorkPath() + "/editor");
         if (!editor.exists()) {
             editor.mkdir();
         }

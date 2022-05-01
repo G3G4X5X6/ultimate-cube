@@ -12,18 +12,15 @@ import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.focus.FocusFrame;
 import com.g3g4x5x6.nuclei.NucleiFrame;
-import com.g3g4x5x6.panels.ssh.panel.NewTabbedPane;
 import com.g3g4x5x6.panels.ssh.panel.SessionManagerPanel;
-import com.g3g4x5x6.panels.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.settings.SettingsDialog;
+import com.g3g4x5x6.ssh.SessionInfo;
+import com.g3g4x5x6.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.tools.ColorPicker;
 import com.g3g4x5x6.tools.QRTool;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.tools.xpack.FreeRdp;
-import com.g3g4x5x6.utils.CommonUtil;
-import com.g3g4x5x6.utils.ConfigUtil;
-import com.g3g4x5x6.utils.DialogUtil;
-import com.g3g4x5x6.utils.SessionUtil;
+import com.g3g4x5x6.utils.*;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
 import com.glavsoft.viewer.Viewer;
@@ -102,7 +99,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private void initMenuBar() {
         // 终端菜单
         JMenu openSessionMenu = new JMenu("打开会话");
-        String rootPath = ConfigUtil.getWorkPath() + "/sessions/ssh/";
+        String rootPath = AppConfig.getWorkPath() + "/sessions/ssh/";
         File dir = new File(rootPath);
         try {
             initOpenSessionMenu(dir, openSessionMenu);
@@ -501,7 +498,17 @@ public class MainFrame extends JFrame implements MouseListener {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 log.debug(f.getAbsolutePath());
-                                new Thread(() -> SessionUtil.openSshSession(mainTabbedPane, f.getAbsolutePath())).start();
+                                new Thread(() -> {
+                                    SessionInfo sessionInfo = SessionUtil.openSshSession(f.getAbsolutePath());
+                                    if (SshUtil.testConnection(sessionInfo.getSessionAddress(), sessionInfo.getSessionPort()) == 1) {
+                                        String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
+                                        MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                                                new SshTabbedPane(sessionInfo)
+                                        );
+                                        MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
+                                    }
+                                    App.sessionInfos.put(sessionInfo.getSessionId(), sessionInfo);
+                                }).start();
                             }
                         });
                         menuItem.add(tempItem);
@@ -521,7 +528,7 @@ public class MainFrame extends JFrame implements MouseListener {
                             SshTabbedPane sshTabbedPane = (SshTabbedPane) mainTabbedPane.getComponentAt(tabIndex);
                             sshTabbedPane.getSessionInfo().close();
                             App.sessionInfos.remove(sshTabbedPane.getSessionInfo().getSessionId());
-                            log.debug(String.valueOf(App.sessionInfos.size()));
+                            log.debug("Close: " + App.sessionInfos.size());
                         }
                         mainTabbedPane.removeTabAt(tabIndex);
                     }
@@ -548,16 +555,24 @@ public class MainFrame extends JFrame implements MouseListener {
                 }
             }
         };
-        AbstractAction copyCurrentTabAction = new AbstractAction("复制当前") {
+        AbstractAction copyCurrentTabAction = new AbstractAction("复制会话") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
-                mainTabbedPane.addTab(
-                        "复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()),
-                        new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
-                        new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy())
-                );
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+                new Thread(()->{
+                    // 等待进度条
+                    MainFrame.addWaitProgressBar();
+
+                    SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
+                    mainTabbedPane.addTab(
+                            "复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()),
+                            new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                            new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy())
+                    );
+                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+
+                    // 移除等待进度条
+                    MainFrame.removeWaitProgressBar();
+                }).start();
             }
         };
         AbstractAction reconnectAction = new AbstractAction("<html><font style='color:green'>重新连接</font></html>") {
@@ -825,7 +840,7 @@ public class MainFrame extends JFrame implements MouseListener {
                 // 创建一个默认的文件选取器
                 JFileChooser fileChooser = new JFileChooser();
                 // 设置默认显示的文件夹为当前文件夹
-                fileChooser.setCurrentDirectory(new File(ConfigUtil.getWorkPath() + "/export"));
+                fileChooser.setCurrentDirectory(new File(AppConfig.getWorkPath() + "/export"));
                 // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
@@ -898,7 +913,7 @@ public class MainFrame extends JFrame implements MouseListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             // 导出文件
-            String file = ConfigUtil.getWorkPath() + "/export/backup_" + String.valueOf(new Date().getTime()) + ".xls";
+            String file = AppConfig.getWorkPath() + "/export/backup_" + String.valueOf(new Date().getTime()) + ".xls";
             // 1.创建workbook
             Workbook workbook = new HSSFWorkbook();
             // 2.根据workbook创建sheet
@@ -971,7 +986,7 @@ public class MainFrame extends JFrame implements MouseListener {
         public void actionPerformed(ActionEvent e) {
             new Thread(() -> {
                 try {
-                    Desktop.getDesktop().open(new File(ConfigUtil.getWorkPath()));
+                    Desktop.getDesktop().open(new File(AppConfig.getWorkPath()));
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }

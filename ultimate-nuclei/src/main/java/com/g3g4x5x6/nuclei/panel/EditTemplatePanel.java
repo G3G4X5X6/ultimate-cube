@@ -4,7 +4,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.nuclei.NucleiYamlCompletionProvider;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.ultils.ConfigUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import com.g3g4x5x6.ultils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ import static com.formdev.flatlaf.util.SystemInfo.isWindows;
 
 @Slf4j
 public class EditTemplatePanel extends JPanel implements SearchListener {
-    private static final String tempDir = ConfigUtil.getWorkPath() + "/temp/nuclei";
+    private static final String tempDir = NucleiConfig.getProperty("nuclei.temp.path");
     private final JButton newBtn = new JButton(new FlatSVGIcon("icons/addFile.svg"));
     private final JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
     private final JButton saveBtn = new JButton(new FlatSVGIcon("icons/menu-saveall.svg"));

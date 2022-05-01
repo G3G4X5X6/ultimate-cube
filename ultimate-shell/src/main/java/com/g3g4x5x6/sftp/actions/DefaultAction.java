@@ -3,7 +3,6 @@ package com.g3g4x5x6.sftp.actions;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.sftp.SftpBrowser;
 import com.g3g4x5x6.sftp.SftpLogPanel;
-import com.g3g4x5x6.sftp.SftpTaskPanel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -19,7 +18,7 @@ import java.util.Date;
 public class DefaultAction extends AbstractAction {
     protected SftpBrowser sftpBrowser;
 
-    protected SftpTaskPanel taskPanel;
+    protected JScrollPane taskPanel;
     protected SftpLogPanel logPanel;
 
     protected SftpClient sftpClient;

@@ -6,7 +6,7 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.formatter.IpAddressFormatter;
 import com.g3g4x5x6.formatter.PortFormatter;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.os.OsInfoUtil;
 import lombok.SneakyThrows;
@@ -56,8 +56,8 @@ public class FreeRdp extends JDialog {
     private JTextField height;
 
     private boolean openFlag = false;
-    private String freeRdpSessionsDirPath = ConfigUtil.getWorkPath() + "/sessions/freeRdp";
-    private String exePath = ConfigUtil.getWorkPath() + "/tools/xpack_tools/freerdp/wfreerdp.exe";
+    private String freeRdpSessionsDirPath = AppConfig.getWorkPath() + "/sessions/freeRdp";
+    private String exePath = AppConfig.getWorkPath() + "/tools/xpack_tools/freerdp/wfreerdp.exe";
 
     public FreeRdp() {
         super(App.mainFrame);

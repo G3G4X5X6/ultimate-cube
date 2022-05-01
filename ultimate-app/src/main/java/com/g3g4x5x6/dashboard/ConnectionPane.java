@@ -4,7 +4,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.utils.CommonUtil;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.utils.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -59,12 +59,7 @@ public class ConnectionPane extends JPanel {
         freshBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        flushWinTable();
-                    }
-                }).start();
+                new Thread(() -> flushWinTable()).start();
             }
         });
 
@@ -84,12 +79,7 @@ public class ConnectionPane extends JPanel {
             }
         };
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                flushWinTable();
-            }
-        }).start();
+        new Thread(this::flushWinTable).start();
 
         table.setModel(tableModel);
         tableModel.setColumnIdentifiers(columnNames);
@@ -108,17 +98,15 @@ public class ConnectionPane extends JPanel {
 
     private void flushWinTable() {
         tableModel.setRowCount(0);
-        File temp = new File(ConfigUtil.getWorkPath() + "/temp");
+        File temp = new File(AppConfig.getWorkPath() + "/temp");
         if (!temp.exists()) {
             temp.mkdir();
         }
         String fileName = temp.getAbsolutePath() + "/netstat.txt";
         String output = CommonUtil.exec("netstat -ano");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))){
             writer.write(output);
             writer.flush();
-            writer.close();
         } catch (IOException exception) {
             exception.printStackTrace();
         }

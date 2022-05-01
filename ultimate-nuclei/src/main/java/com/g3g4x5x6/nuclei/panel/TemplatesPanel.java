@@ -8,7 +8,7 @@ import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.nuclei.model.SelectedTagsConfig;
 import com.g3g4x5x6.nuclei.model.SelectedTemplatesConfig;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.ultils.ConfigUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
@@ -34,7 +34,7 @@ import java.util.*;
 
 @Slf4j
 public class TemplatesPanel extends JPanel {
-    private static final String defaultNucleiTemplatesPath = System.getProperties().getProperty("user.home") + "/nuclei-templates";
+    private static final String defaultNucleiTemplatesPath = NucleiConfig.getProperty("nuclei.templates.path");
     private JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
     private JButton severityBtn = new JButton(new FlatSVGIcon("icons/sortBySeverity.svg"));
     private JButton refreshBtn = new JButton(new FlatSVGIcon("icons/refresh.svg"));
@@ -391,7 +391,7 @@ public class TemplatesPanel extends JPanel {
             }
             selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
 
-            String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
+            String configPath = NucleiConfig.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
             Yaml yaml = new Yaml();
             File file = new File(configPath);
             if (!file.getParentFile().exists()) {
@@ -421,7 +421,7 @@ public class TemplatesPanel extends JPanel {
             }
             selected.setTags(tempTags);
             // 保存配置对象
-            String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/tags_" + UUID.randomUUID() + ".yaml";
+            String configPath = NucleiConfig.getWorkPath() + "/temp/nuclei/tags_" + UUID.randomUUID() + ".yaml";
             Yaml yaml = new Yaml();
             yaml.dump(selected, new FileWriter(configPath));
             // 执行命令
@@ -522,7 +522,7 @@ public class TemplatesPanel extends JPanel {
                 selected.setTemplates(tempTemplate);
                 selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
 
-                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/templates_" + UUID.randomUUID() + ".yaml";
+                String configPath = NucleiConfig.getWorkPath() + "/temp/nuclei/templates_" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
                 yaml.dump(selected, new FileWriter(configPath));
                 String command = "nuclei -config " + configPath + " -markdown-export " + NucleiFrame.reportDir;
@@ -558,7 +558,7 @@ public class TemplatesPanel extends JPanel {
                 }
                 selected.setTags(tempTags);
                 // 保存配置对象
-                String configPath = ConfigUtil.getWorkPath() + "/temp/nuclei/tags_" + UUID.randomUUID() + ".yaml";
+                String configPath = NucleiConfig.getWorkPath() + "/temp/nuclei/tags_" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
                 yaml.dump(selected, new FileWriter(configPath));
                 // 复制命令到粘贴板

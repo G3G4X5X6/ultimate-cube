@@ -1,6 +1,7 @@
 package com.g3g4x5x6.focus;
 
-import com.g3g4x5x6.panels.ssh.SessionInfo;
+
+import com.g3g4x5x6.ssh.SessionInfo;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,8 +9,8 @@ import java.awt.*;
 public class FocusPanel extends JPanel {
     private SessionInfo sessionInfo;
 
-    private int screenWidth;
-    private int screenHeight;
+    private final int screenWidth;
+    private final int screenHeight;
 
     public FocusPanel() {
         this.setLayout(new BorderLayout());
@@ -33,10 +34,8 @@ public class FocusPanel extends JPanel {
         hSplitPane.setRightComponent(vSplitPane2);
 
         vSplitPane1.setTopComponent(sessionInfo.getSshPane());
-        vSplitPane1.setBottomComponent(sessionInfo.getEditorPane());
 
         vSplitPane2.setTopComponent(sessionInfo.getSftpBrowser());
-        vSplitPane2.setBottomComponent(sessionInfo.getMonitorPane());
         this.add(hSplitPane, BorderLayout.CENTER);
     }
 

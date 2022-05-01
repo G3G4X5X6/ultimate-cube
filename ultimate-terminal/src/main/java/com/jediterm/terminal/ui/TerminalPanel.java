@@ -14,6 +14,7 @@ import com.jediterm.terminal.util.CharUtils;
 import com.jediterm.terminal.util.Pair;
 import com.jediterm.typeahead.Ascii;
 import com.jediterm.typeahead.TerminalTypeAheadManager;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import java.net.URI;
 import java.text.AttributedCharacterIterator;
 import java.text.CharacterIterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,6 +44,9 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
     private static final long serialVersionUID = -1048763516632093014L;
 
     public static final double SCROLL_SPEED = 0.05;
+
+    // 中文字体
+    private Font chineseFont;
 
     /*font related*/
     private Font myNormalFont;
@@ -150,11 +155,17 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         sizeTerminalFromComponent();
     }
 
+    @SneakyThrows
     protected void initFont() {
         myNormalFont = createFont();
         myBoldFont = myNormalFont.deriveFont(Font.BOLD);
         myItalicFont = myNormalFont.deriveFont(Font.ITALIC);
         myBoldItalicFont = myNormalFont.deriveFont(Font.BOLD | Font.ITALIC);
+
+        // 中文字体
+        LOG.debug("加载自定义中文字体");
+        chineseFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(
+                this.getClass().getClassLoader().getResourceAsStream("fonts/" + "NotoSansSC-Regular.otf")));
 
         establishFontMetrics();
     }
@@ -1243,6 +1254,7 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
      * Draw every char in separate com.jediterm.terminal cell to guaranty equal width for different lines.
      * Nevertheless to improve kerning we draw word characters as one block for monospaced fonts.
      */
+    @SneakyThrows
     private void drawChars(int x, int y, CharBuffer buf, TextStyle style, Graphics2D gfx) {
         int blockLen = 1;
         int offset = 0;
@@ -1274,8 +1286,12 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
                 blockLen = 2;
             }
 
-
-            gfx.setFont(font);
+            // fixed：自定义字体，中文问题
+            if (isChinese(renderingBuffer.getBuf()[buf.getStart() + offset])){
+                gfx.setFont(mySettingsProvider.getTerminalChineseFont());
+            }else{
+                gfx.setFont(font);
+            }
 
             int descent = gfx.getFontMetrics(font).getDescent();
             int baseLine = (y + 1) * myCharSize.height - mySpaceBetweenLines / 2 - descent;
@@ -1325,8 +1341,8 @@ public class TerminalPanel extends JComponent implements TerminalDisplay, Termin
         // workaround to fix Swing bad rendering of bold special chars on Linux
         if (bold && mySettingsProvider.DECCompatibilityMode() && CharacterSets.isDecBoxChar(c)) {
             return myNormalFont;
-//      return new Font("新宋体", Font.PLAIN, (int) mySettingsProvider.getTerminalFontSize());
         }
+
         return bold ? (italic ? myBoldItalicFont : myBoldFont)
                 : (italic ? myItalicFont : myNormalFont);
     }

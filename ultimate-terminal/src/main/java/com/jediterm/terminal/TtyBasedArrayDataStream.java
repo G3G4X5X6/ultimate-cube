@@ -33,6 +33,7 @@ public class TtyBasedArrayDataStream extends ArrayTerminalDataStream {
         if (!myTtyConnector.ready() && myOnBeforeBlockingWait != null) {
             myOnBeforeBlockingWait.run();
         }
+
         myLength = myTtyConnector.read(myBuf, myOffset, myBuf.length);
         // TODO 输入的字符不进行替换
         replace63();

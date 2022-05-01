@@ -3,9 +3,14 @@ package com.g3g4x5x6.panels.ssh.panel;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.App;
 import com.g3g4x5x6.MainFrame;
-import com.g3g4x5x6.utils.ConfigUtil;
+import com.g3g4x5x6.ssh.SessionInfo;
+import com.g3g4x5x6.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.SessionUtil;
+import com.g3g4x5x6.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -97,7 +102,7 @@ public class RecentSessionsPanel extends JPanel {
     private void initData() {
         tableModel.setRowCount(0);
 
-        File file = new File(ConfigUtil.getWorkPath() + "/sessions");
+        File file = new File(AppConfig.getWorkPath() + "/sessions");
         if (file.exists()) {
             for (File f : Objects.requireNonNull(file.listFiles())) {
                 if (f.isFile() && f.getName().startsWith("recent_ssh")) {
@@ -137,7 +142,7 @@ public class RecentSessionsPanel extends JPanel {
     @SneakyThrows
     private void monitorSessions() {
         // 需要监听的文件目录（只能监听目录）
-        String path = Path.of(ConfigUtil.getWorkPath(), "/sessions").toString();
+        String path = Path.of(AppConfig.getWorkPath(), "/sessions").toString();
 
         WatchService watchService = FileSystems.getDefault().newWatchService();
         Path p = Paths.get(path);
@@ -158,8 +163,9 @@ public class RecentSessionsPanel extends JPanel {
                     }
                     watchKey.reset();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+//                e.printStackTrace();
+                log.debug("关闭文件监控服务异常");
             }
         });
         thread.setDaemon(false);
@@ -199,7 +205,7 @@ public class RecentSessionsPanel extends JPanel {
         AbstractAction deleteMultiAction = new AbstractAction("清除全部") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String path = ConfigUtil.getWorkPath() + "/sessions";
+                String path = AppConfig.getWorkPath() + "/sessions";
                 File file = new File(path);
                 for (File f : Objects.requireNonNull(file.listFiles())) {
                     if (f.isFile()) {
@@ -213,7 +219,7 @@ public class RecentSessionsPanel extends JPanel {
         AbstractAction deleteAllAction = new AbstractAction("清除选中") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String path = ConfigUtil.getWorkPath() + "/sessions";
+                String path = AppConfig.getWorkPath() + "/sessions";
                 File file = new File(path);
                 for (File f : Objects.requireNonNull(file.listFiles())) {
                     if (f.isFile()) {
@@ -254,7 +260,7 @@ public class RecentSessionsPanel extends JPanel {
         String user = (String) tableModel.getValueAt(index, 5);
         String auth = (String) tableModel.getValueAt(index, 6);
 
-        File dir = new File(ConfigUtil.getWorkPath() + "/sessions/");
+        File dir = new File(AppConfig.getWorkPath() + "/sessions/");
         if (dir.exists()) {
             for (File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user) && file.getName().contains(auth)) {
@@ -263,7 +269,22 @@ public class RecentSessionsPanel extends JPanel {
                         @Override
                         protected String doInBackground() {
                             // 此处处于 SwingWorker 线程池中
-                            SessionUtil.openSshSession(MainFrame.mainTabbedPane, file.getAbsolutePath());
+                            // 等待进度条
+                            MainFrame.addWaitProgressBar();
+
+                            SessionInfo sessionInfo = SessionUtil.openSshSession(file.getAbsolutePath());
+                            if (SshUtil.testConnection(sessionInfo.getSessionAddress(), port) == 1) {
+                                String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
+                                MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                                        new SshTabbedPane(sessionInfo)
+                                );
+                                MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
+                            }
+                            App.sessionInfos.put(sessionInfo.getSessionId(), sessionInfo);
+
+                            // 移除等待进度条
+                            MainFrame.removeWaitProgressBar();
+
                             return "Done";
                         }
 

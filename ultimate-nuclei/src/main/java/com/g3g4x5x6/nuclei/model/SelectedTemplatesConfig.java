@@ -1,7 +1,7 @@
 package com.g3g4x5x6.nuclei.model;
 
 
-import com.g3g4x5x6.ultils.ConfigUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileWriter;
@@ -53,7 +53,7 @@ public class SelectedTemplatesConfig {
     }
 
     public static void main(String[] args) throws IOException {
-        String targetPath = ConfigUtil.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
+        String targetPath = NucleiConfig.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
 
         List<String> target = new ArrayList<>();
         List<String> templates = new ArrayList<>();
