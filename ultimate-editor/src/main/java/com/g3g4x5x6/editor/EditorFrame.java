@@ -161,7 +161,7 @@ public class EditorFrame extends JFrame implements ActionListener {
     }
 
     private void initMenuBar() {
-        JCheckBox showToolBar = new JCheckBox("显示工具栏   ");
+        JCheckBoxMenuItem showToolBar = new JCheckBoxMenuItem("显示工具栏   ");
         showToolBar.setSelected(true);
         showToolBar.addActionListener(e -> toolBar.setVisible(showToolBar.isSelected()));
         viewMenu.add(showToolBar);

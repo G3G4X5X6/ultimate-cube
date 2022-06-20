@@ -55,8 +55,8 @@ public class FilesBrowser extends JPanel implements MouseListener {
 
     public FilesBrowser(SftpFileSystem fileSystem) {
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(250, 500));
-        this.setSize(new Dimension(250, 500));
+        this.setPreferredSize(new Dimension(750, 400));
+        this.setSize(new Dimension(750, 400));
 
         this.fs = fileSystem;
 
@@ -202,6 +202,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
 
     private void initToolBar() {
         toolBar = new JToolBar(SwingConstants.VERTICAL);
+        toolBar.setAutoscrolls(true);
 
         JButton revertBtn = new JButton(new FlatSVGIcon("icons/reset.svg"));
         revertBtn.setToolTipText("返回上级目录");

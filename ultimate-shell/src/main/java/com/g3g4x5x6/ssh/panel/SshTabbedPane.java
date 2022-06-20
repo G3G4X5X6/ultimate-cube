@@ -6,9 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -51,17 +49,7 @@ public class SshTabbedPane extends JTabbedPane {
         }
         if (sessionInfo.getSshPane() != null)
             this.addTab("", new FlatSVGIcon("icons/linux.svg"), this.sessionInfo.getSshPane());
-//        if (sessionInfo.getSftpBrowser() != null) {
-//            this.addTab("", new FlatSVGIcon("icons/flattenPackages.svg"), this.sessionInfo.getSftpBrowser());
-//        } else {
-//            // SftpBrowser
-//            pinSftpBtn.setSelected(false);
-//            pinSftpBtn.setEnabled(false);
-//            pinSftpBtn.setToolTipText("该会话不支持 sftp ");
-//
-//            // 文件浏览器
-//            filesBrowserBtn.setEnabled(false);
-//        }
+
         // 关闭进度条
         progressBar.setVisible(false);
     }
@@ -71,25 +59,21 @@ public class SshTabbedPane extends JTabbedPane {
         trailing.setFloatable(false);
         trailing.setBorder(null);
 
-//        pinSftpBtn = new JToggleButton(new FlatSVGIcon("icons/flattenPackages.svg"));
-//        pinSftpBtn.setSelected(true);
-//        pinSftpBtn.addActionListener(new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if (pinSftpBtn.isSelected()){
-//                    insertTab("", new FlatSVGIcon("icons/flattenPackages.svg"), sessionInfo.getSftpBrowser(), "", 1);
-//                } else {
-//                    remove(1);
-//                }
-//            }
-//        });
 
         dialog = new JDialog();
-        dialog.setPreferredSize(new Dimension(250, 500));
-        dialog.setSize(new Dimension(250, 500));
+        dialog.setPreferredSize(new Dimension(750, 400));
+        dialog.setSize(new Dimension(750, 400));
         dialog.setTitle("FilesBrowser");
         dialog.setLayout(new BorderLayout());
+//        dialog.setAlwaysOnTop(true);
         dialog.setLocationRelativeTo(SshTabbedPane.this);
+        dialog.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                dialog.setVisible(false);
+                dialog.setAlwaysOnTop(false);
+            }
+        });
 
         filesBrowserBtn = new JButton(new FlatSVGIcon("icons/moduleDirectory.svg"));
         filesBrowserBtn.addMouseListener(new MouseAdapter() {
