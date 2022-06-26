@@ -27,7 +27,7 @@
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:2.0.0-alpha5" level="project" />
     <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.30" level="project" />
-    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.78" level="project" />
+    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.83" level="project" />
     <orderEntry type="library" name="Maven: com.g3g4x5x6:jediterm-pty:2.66" level="project" />
     <orderEntry type="module" module-name="ultimate-typeahead" />
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:23.0.0" level="project" />
