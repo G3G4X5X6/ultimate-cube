@@ -42,7 +42,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final JButton newBtn = new JButton(new FlatSVGIcon("icons/addFile.svg"));
     private final JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
     private final JButton saveBtn = new JButton(new FlatSVGIcon("icons/menu-saveall.svg"));
-    private final JButton searchBtn = new JButton(new FlatSVGIcon("icons/search.svg"));
+    private final JButton searchBtn = new JButton(new FlatSVGIcon("icons/find.svg"));
     private final JButton replaceBtn = new JButton(new FlatSVGIcon("icons/replace.svg"));
     private final JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("icons/toggleSoftWrap.svg"));
     private final JButton executeBtn = new JButton(new FlatSVGIcon("icons/execute.svg"));

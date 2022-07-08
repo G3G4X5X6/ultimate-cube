@@ -82,10 +82,18 @@ public class MainFrame extends JFrame implements MouseListener {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                log.debug("Windows");
+                log.debug("关闭窗口，Windows");
                 if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("false")) {
                     System.exit(0);
                 } else {
+                    setVisible(false);
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                log.debug("最小化窗口，Windows");
+                if (App.properties.getProperty("app.iconified.to.tray").equalsIgnoreCase("true")) {
                     setVisible(false);
                 }
             }
@@ -126,6 +134,8 @@ public class MainFrame extends JFrame implements MouseListener {
         JMenuItem settingsItem = new JMenuItem("全局配置");
         settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         settingsItem.addActionListener(settingsAction);
+
+        JMenuItem editSettingsItem = new JMenuItem("编辑配置文件");
         optionMenu.add(settingsItem);
         optionMenu.addSeparator();
         optionMenu.add(importSessionAction);
@@ -280,11 +290,11 @@ public class MainFrame extends JFrame implements MouseListener {
                         String msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
                                 "最新版本： <font color='green'>" + latestVersion + "</font><br><br>" +
                                 "是否现在下载最新版本？</html>";
-                        log.debug("Msg: " + msg);
+//                        log.debug("Msg: " + msg);
                         int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
                         if (code == 0) {
                             // TODO 更新
-                            log.debug("马上下载更新");
+//                            log.debug("马上下载更新");
                             CommonUtil.getLatestJar();
                         } else {
                             // TODO 暂不更新

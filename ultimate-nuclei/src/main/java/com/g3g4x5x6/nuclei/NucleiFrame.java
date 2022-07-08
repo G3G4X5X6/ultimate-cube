@@ -30,6 +30,9 @@ public class NucleiFrame extends JFrame {
     public static String reportDir = NucleiConfig.getProperty("nuclei.report.path");
     public static String templatesDir = NucleiConfig.getProperty("nuclei.templates.path");
 
+    private JToolBar toolBar;
+    private JMenuBar menuBar;
+
     private JMenu fileMenu = new JMenu("文件");
     private JMenu editMenu = new JMenu("编辑");
     private JMenu searchMenu = new JMenu("搜索");
@@ -51,9 +54,17 @@ public class NucleiFrame extends JFrame {
         this.setSize(new Dimension(1200, 700));
         this.setPreferredSize(new Dimension(1200, 700));
         this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.jpg"))).getImage());
 
-        JMenuBar menuBar = new JMenuBar();
+        initMenuBar();
+
+        initToolBar();
+
+        initTabbedPane();
+    }
+
+    private void initMenuBar() {
+        menuBar = new JMenuBar();
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(searchMenu);
@@ -86,7 +97,33 @@ public class NucleiFrame extends JFrame {
         });
         menuBar.add(Box.createGlue());
         menuBar.add(toggleButton);
+        this.setJMenuBar(menuBar);
+    }
 
+    private void initToolBar() {
+        toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+
+        // Target.svg
+        JButton targetBtn = new JButton(new FlatSVGIcon("icons/Target.svg"));
+        targetBtn.setToolTipText("设置目标");
+
+        targetPanel = new TargetPanel();
+        JDialog dialog = new JDialog(this);
+        dialog.setTitle("设置全局目标");
+        dialog.setModal(false);
+        dialog.setSize(new Dimension(750, 350));
+        dialog.setLocationRelativeTo(this);
+        dialog.getContentPane().add(targetPanel);
+        targetBtn.addActionListener((e)->{
+            dialog.setVisible(true);
+        });
+
+        toolBar.add(targetBtn);
+        this.add(toolBar, BorderLayout.NORTH);
+    }
+
+    private void initTabbedPane(){
         frameTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         initClosableTabs(frameTabbedPane);
         customComponents();
@@ -94,7 +131,6 @@ public class NucleiFrame extends JFrame {
         frameTabbedPane.addTab("Settings", new FlatSVGIcon("icons/pinTab.svg"), new SettingsPanel());
         frameTabbedPane.addTab("Running", new FlatSVGIcon("icons/pinTab.svg"), new RunningPanel());
 
-        this.setJMenuBar(menuBar);
         this.add(frameTabbedPane, BorderLayout.CENTER);
     }
 
@@ -125,23 +161,6 @@ public class NucleiFrame extends JFrame {
                 EditTemplatePanel editPanel = new EditTemplatePanel();
                 frameTabbedPane.addTab(editPanel.getTitle(), editPanel.getIcon(), editPanel);
                 frameTabbedPane.setSelectedIndex(frameTabbedPane.getTabCount() - 1);
-            }
-        });
-
-        // Target.svg
-        JButton targetBtn = new JButton(new FlatSVGIcon("icons/Target.svg"));
-        targetBtn.setToolTipText("设置目标URL");
-        JPopupMenu targetPopupMenu = new JPopupMenu();
-        targetPopupMenu.setBorder(null);
-        targetPopupMenu.setSize(new Dimension(600, 200));
-        targetPopupMenu.setPreferredSize(new Dimension(600, 200));
-        targetPanel = new TargetPanel();
-        targetPopupMenu.add(targetPanel);
-        targetBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                log.debug("填写目标");
-                targetPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
 
@@ -188,7 +207,6 @@ public class NucleiFrame extends JFrame {
         });
 
         trailing.add(addBtn);
-        trailing.add(targetBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(Box.createHorizontalGlue());
         trailing.add(trailMenuBtn);
@@ -205,9 +223,9 @@ public class NucleiFrame extends JFrame {
 
     private static void initFlatLaf() {
         try {
-            UIManager.setLookAndFeel( new FlatLightLaf() );
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception ex) {
+            System.err.println("Failed to initialize LaF");
         }
         UIManager.put("TextComponent.arc", 5);
     }

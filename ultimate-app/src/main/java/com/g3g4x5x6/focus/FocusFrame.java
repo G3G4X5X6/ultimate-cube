@@ -5,8 +5,6 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.MainFrame;
-import com.g3g4x5x6.NewTabbedPane;
-import com.g3g4x5x6.panels.ssh.panel.SessionManagerPanel;
 import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.ssh.panel.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 import static com.formdev.flatlaf.FlatClientProperties.*;
 
@@ -31,7 +28,7 @@ public class FocusFrame extends JFrame {
     private final JTabbedPane tabbedPane = new JTabbedPane();
 
     public FocusFrame() {
-        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.jpg"))).getImage());
         this.setUndecorated(true);                      //去处边框
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);   //最大化
         this.setAlwaysOnTop(true);                      //总在最前面
@@ -40,7 +37,7 @@ public class FocusFrame extends JFrame {
         this.add(tabbedPane, BorderLayout.CENTER);
 
         removeOld(); // Remove old tab pane from MainFrame
-        initClosableTabs();
+//        initClosableTabs();
         customComponents();
         initTabbedPane();
     }
@@ -53,44 +50,44 @@ public class FocusFrame extends JFrame {
         }
     }
 
-    private void initClosableTabs() {
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
-                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
-                    if (tabbedPane.getComponentAt(tabIndex) instanceof FocusPanel) {
-                        FocusPanel focusPanel = (FocusPanel) tabbedPane.getComponentAt(tabIndex);
-                        focusPanel.getSessionInfo().close();
-                        App.sessionInfos.remove(focusPanel.getSessionInfo().getSessionId());
-                        log.debug(String.valueOf(App.sessionInfos.size()));
-                    }
-                    tabbedPane.removeTabAt(tabIndex);
-                });
-    }
+//    private void initClosableTabs() {
+//        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
+//        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
+//        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
+//                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
+//                    if (tabbedPane.getComponentAt(tabIndex) instanceof FocusPanel) {
+//                        FocusPanel focusPanel = (FocusPanel) tabbedPane.getComponentAt(tabIndex);
+//                        focusPanel.getSessionInfo().close();
+//                        App.sessionInfos.remove(focusPanel.getSessionInfo().getSessionId());
+//                        log.debug(String.valueOf(App.sessionInfos.size()));
+//                    }
+//                    tabbedPane.removeTabAt(tabIndex);
+//                });
+//    }
 
     private void customComponents() {
         JToolBar trailing = new JToolBar();
         trailing.setFloatable(false);
         trailing.setBorder(null);
 
-        JButton addBtn = new JButton(new FlatSVGIcon("icons/add.svg"));
-        addBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabbedPane.insertTab("新建选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(tabbedPane), "新建选项卡", tabbedPane.getTabCount());
-                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
-            }
-        });
-        // swiftPackage.svg
-        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/swiftPackage.svg"));
-        sessionManagerBtn.setToolTipText("会话管理面板");
-        sessionManagerBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(tabbedPane), "会话管理", tabbedPane.getTabCount());
-                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
-            }
-        });
+//        JButton addBtn = new JButton(new FlatSVGIcon("icons/add.svg"));
+//        addBtn.addActionListener(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                tabbedPane.insertTab("新建选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(tabbedPane), "新建选项卡", tabbedPane.getTabCount());
+//                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+//            }
+//        });
+//        // swiftPackage.svg
+//        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/swiftPackage.svg"));
+//        sessionManagerBtn.setToolTipText("会话管理面板");
+//        sessionManagerBtn.addActionListener(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                tabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(tabbedPane), "会话管理", tabbedPane.getTabCount());
+//                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+//            }
+//        });
 
         JButton fullScreenBtn = new JButton(new FlatSVGIcon("icons/fitContent.svg"));
         fullScreenBtn.setToolTipText("专注模式");
@@ -132,8 +129,8 @@ public class FocusFrame extends JFrame {
             }
         });
 
-        trailing.add(addBtn);
-        trailing.add(sessionManagerBtn);
+//        trailing.add(addBtn);
+//        trailing.add(sessionManagerBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(fullScreenBtn);
         trailing.add(toggleButton);

@@ -1,7 +1,6 @@
 package com.g3g4x5x6.dashboard;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.console.ConsolePane;
 import com.g3g4x5x6.dashboard.quickstarter.QuickStarterPane;
 
 import javax.swing.*;

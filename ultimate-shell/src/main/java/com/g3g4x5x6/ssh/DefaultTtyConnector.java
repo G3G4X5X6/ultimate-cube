@@ -69,8 +69,8 @@ public class DefaultTtyConnector implements TtyConnector {
     private Map<String, ?> getEnv() {
         Map<String, String> env = new LinkedHashMap<>();
         String lang = System.getenv().get("LANG");
-//        env.put("LANG", lang != null ? lang : "zh_CN.UTF-8");
         env.put("LANG", lang != null ? lang : "en_US.UTF-8");
+        // env.put("LANG", lang != null ? lang : "zh_CN.UTF-8");
         env.put("compression.s2c", "zlib,none");
         env.put("compression.c2s", "zlib,none");
         env.put("StrictHostKeyChecking", "no");

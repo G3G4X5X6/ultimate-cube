@@ -3,8 +3,8 @@ package com.g3g4x5x6.dashboard;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
-import com.g3g4x5x6.utils.CommonUtil;
 import com.g3g4x5x6.utils.AppConfig;
+import com.g3g4x5x6.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -120,7 +120,7 @@ public class ConnectionPane extends JPanel {
                     String ipAndInfo = ip + "(" + CommonUtil.queryIp(ip) + ")";
                     row[2] = ipAndInfo;
                 } else if (netBtn.isSelected()) {
-                    log.debug("TCP ALL: continue");
+//                    log.debug("TCP ALL: continue");
                     continue;
                 }
                 if (ip.strip().equals("127.0.0.1")) {
@@ -137,7 +137,7 @@ public class ConnectionPane extends JPanel {
                 if (!ip.strip().equals("0.0.0.0") && !ip.strip().equals("*") && !ip.strip().startsWith("[") && netBtn.isSelected()) {
                     String ipAndInfo = ip + "(" + CommonUtil.queryIp(ip) + ")";
                     row[2] = ipAndInfo;
-                    log.debug("UDP: " + ipAndInfo);
+//                    log.debug("UDP: " + ipAndInfo);
                 } else {
                     continue;
                 }

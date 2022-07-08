@@ -76,7 +76,7 @@ public class EditorFrame extends JFrame implements ActionListener {
         this.setSize(new Dimension(1200, 700));
         this.setPreferredSize(new Dimension(1200, 700));
         this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.jpg"))).getImage());
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);

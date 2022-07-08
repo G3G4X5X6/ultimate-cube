@@ -49,15 +49,18 @@ public class FilesBrowser extends JPanel implements MouseListener {
     private final JTextField pathField = new JTextField();
     private String currentPath = "";
 
+    private LinkedList<String> forward = new LinkedList<>();
+    private LinkedList<String> back = new LinkedList<>();
+
+    private JButton backBtn;
+    private JButton forwardBtn;
+
     private DropTargetListenerBrowserImpl dropTargetListener;
 
     private EditorFrame editorFrame;
 
     public FilesBrowser(SftpFileSystem fileSystem) {
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(750, 400));
-        this.setSize(new Dimension(750, 400));
-
         this.fs = fileSystem;
 
         initTable();
@@ -110,7 +113,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                 return false;
             }
         };
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
         // 文件名, 权限, 大小, 类型, 属组, 修改时间
         String[] columns = new String[]{"文件名", "权限", "大小", "类型", "属组", "修改时间"};
@@ -143,7 +146,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
         table.getColumn("修改时间").setCellRenderer(centerRenderer);
 
         initData();
-        fitTableColumns(table);
+//        fitTableColumns(table);
 
         // 注册拖拽监听
         registerDropTarget();
@@ -208,13 +211,33 @@ public class FilesBrowser extends JPanel implements MouseListener {
         revertBtn.setToolTipText("返回上级目录");
         revertBtn.addActionListener(revertAction);
 
-        JButton backBtn = new JButton(new FlatSVGIcon("icons/back.svg"));
+        backBtn = new JButton(new FlatSVGIcon("icons/back.svg"));
         backBtn.setToolTipText("后退");
         backBtn.addActionListener(backAction);
+        backBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == 3) {
+                    JPopupMenu popupMenu = new JPopupMenu();
+                    configPopupMenu("back", popupMenu);
+                    popupMenu.show(backBtn, e.getX(), e.getY());
+                }
+            }
+        });
 
-        JButton forwardBtn = new JButton(new FlatSVGIcon("icons/forward.svg"));
+        forwardBtn = new JButton(new FlatSVGIcon("icons/forward.svg"));
         forwardBtn.setToolTipText("前进");
         forwardBtn.addActionListener(forwardAction);
+        forwardBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == 3) {
+                    JPopupMenu popupMenu = new JPopupMenu();
+                    configPopupMenu("forward", popupMenu);
+                    popupMenu.show(backBtn, e.getX(), e.getY());
+                }
+            }
+        });
 
         JButton uploadBtn = new JButton(new FlatSVGIcon("icons/upload.svg"));
         uploadBtn.setToolTipText("上传");
@@ -329,6 +352,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
             else
                 quickPath = currentPath + "/" + fileName;
 
+            back.push(currentPath);
             // 1. 检查路径是否存在
             if (Files.exists(fs.getPath(quickPath))) {
                 if (Files.isDirectory(fs.getPath(quickPath)))
@@ -367,9 +391,44 @@ public class FilesBrowser extends JPanel implements MouseListener {
         log.debug("runCommand: " + output);
     }
 
+    private void configPopupMenu(String flag, JPopupMenu popupMenu) {
+        if (flag.equals("back")) {
+            for (String item : back) {
+                popupMenu.add(new AbstractAction(item) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        forward.push(currentPath);
+                        back.remove(e.getActionCommand());
+
+                        // 目录调整
+                        pathField.setText(e.getActionCommand());
+                        currentPath = e.getActionCommand();
+                        gotoDir(currentPath);
+                    }
+                });
+            }
+        } else {
+            for (String item : forward) {
+                popupMenu.add(new AbstractAction(item) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        back.push(currentPath);
+                        forward.remove(e.getActionCommand());
+
+                        // 目录调整
+                        pathField.setText(e.getActionCommand());
+                        currentPath = e.getActionCommand();
+                        gotoDir(currentPath);
+                    }
+                });
+            }
+        }
+    }
+
     AbstractAction revertAction = new AbstractAction("返回上级目录") {
         @Override
         public void actionPerformed(ActionEvent e) {
+            back.push(currentPath);
             if (!currentPath.equals("/")) {
                 currentPath = fs.getPath(currentPath).getParent().toString();
                 pathField.setText(currentPath);
@@ -383,6 +442,19 @@ public class FilesBrowser extends JPanel implements MouseListener {
     AbstractAction backAction = new AbstractAction("后退") {
         @Override
         public void actionPerformed(ActionEvent e) {
+            // TODO
+            // 判断列表是否为空
+            if (back.size() != 0) {
+                log.debug("后退操作");
+                // 栈操作
+                String path = back.pop();
+                forward.push(currentPath);
+
+                // 目录调整
+                pathField.setText(path);
+                currentPath = path;
+                gotoDir(path);
+            }
 
         }
     };
@@ -390,7 +462,19 @@ public class FilesBrowser extends JPanel implements MouseListener {
     AbstractAction forwardAction = new AbstractAction("前进") {
         @Override
         public void actionPerformed(ActionEvent e) {
+            // TODO
+            // 判断列表是否为空
+            if (forward.size() != 0) {
+                log.debug("前进操作");
+                // 栈操作
+                String path = forward.pop();
+                back.push(currentPath);
 
+                // 目录调整
+                pathField.setText(path);
+                currentPath = path;
+                gotoDir(path);
+            }
         }
     };
 
@@ -452,9 +536,6 @@ public class FilesBrowser extends JPanel implements MouseListener {
                         }
                     }
                 }).start();
-
-                // TODO 手动刷新：上传完成，刷新当前目录
-//                gotoDir(currentPath);
             }
         }
     };
@@ -474,7 +555,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                     // 获取待下载路径
                     LinkedList<String> downPath = new LinkedList<>();
                     int[] indexes = table.getSelectedRows();
-                    for (int index : indexes){
+                    for (int index : indexes) {
                         downPath.add(currentPath + "/" + tableModel.getValueAt(index, 0).toString().replaceFirst("DIR:", ""));
                     }
                     // 创建任务面板
@@ -484,8 +565,8 @@ public class FilesBrowser extends JPanel implements MouseListener {
                     taskPanel.setFileCount("下载完成：" + fileCount.get());
                     new Thread(() -> {
                         // 开始下载
-                        for (String path : downPath){
-                            if (Files.isDirectory(fs.getPath(path))){
+                        for (String path : downPath) {
+                            if (Files.isDirectory(fs.getPath(path))) {
                                 // 目录下载
                                 try {
                                     Files.walkFileTree(fs.getPath(path), new SimpleFileVisitor<>() {
@@ -508,7 +589,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                             taskPanel.setTaskLabel(file.toString());
                                             taskPanel.setMin(0);
                                             taskPanel.setMax((int) Files.size(file));
-                                            if (Files.size(file) == 0){
+                                            if (Files.size(file) == 0) {
                                                 taskPanel.setMax(1);
                                             }
 
@@ -521,7 +602,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                                 sendLen += bytesRead;
                                                 taskPanel.setProgressBarValue(sendLen);
                                             }
-                                            if (Files.size(file) == 0){
+                                            if (Files.size(file) == 0) {
                                                 taskPanel.setProgressBarValue(1);
                                             }
                                             outputStream.flush();   //
@@ -669,7 +750,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
     AbstractAction openFileAction = new AbstractAction("打开文件") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (editorFrame == null){
+            if (editorFrame == null) {
                 editorFrame = EditorFrame.getInstance();
             }
 

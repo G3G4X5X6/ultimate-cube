@@ -3,8 +3,7 @@
 [//]: # (  <img src="doc/img/cube.jpg" alt="G3G4X5X6"/>)
 
 [//]: # (</p>)
-![ultimate-cube](https://socialify.git.ci/G3G4X5X6/ultimate-cube/image?description=1&font=KoHo&forks=1&issues=1&language=1&name=1&owner=1&pattern=Brick%20Wall&pulls=1&stargazers=1&theme=Light)
-
+![ultimate-cube](https://socialify.git.ci/G3G4X5X6/ultimate-cube/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1)
 # ultimate-cube
 
 简体中文 [English](README.en.md)

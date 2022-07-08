@@ -55,6 +55,8 @@
         <jSerialComm-version>2.7.0</jSerialComm-version>
 
         <junit-jupiter-version>RELEASE</junit-jupiter-version>
+
+        <jcolor-version>5.5.1</jcolor-version>
     </properties>
 
     <dependencyManagement>
@@ -224,6 +226,14 @@
                 <version>${junit-jupiter-version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
+            <dependency>
+                <groupId>com.diogonunes</groupId>
+                <artifactId>JColor</artifactId>
+                <version>${jcolor-version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -337,7 +347,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${pom.basedir/target/classes}</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${basedir}/src/main/java</directory>

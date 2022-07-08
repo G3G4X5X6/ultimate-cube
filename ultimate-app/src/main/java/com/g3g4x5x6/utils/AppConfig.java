@@ -25,7 +25,7 @@ public class AppConfig {
                 log.debug("文件夹创建失败：" + work);
             }
         }
-        log.debug(work);
+//        log.debug(work);
         return work;
     }
 

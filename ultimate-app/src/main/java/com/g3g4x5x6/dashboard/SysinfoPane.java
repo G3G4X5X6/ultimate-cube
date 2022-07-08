@@ -54,19 +54,11 @@ public class SysinfoPane extends JPanel {
             // 不可编辑
             @Override
             public boolean isCellEditable(int row, int column) {
-                if (column == 0) {
-                    return false;
-                }
-                return true;
+                return column != 0;
             }
         };
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                flushWinTable();
-            }
-        }).start();
+        new Thread(this::flushWinTable).start();
 
         table.setModel(tableModel);
         tableModel.setColumnIdentifiers(columnNames);

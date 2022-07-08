@@ -1,16 +1,17 @@
 package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.ssh.SessionInfo;
-import com.g3g4x5x6.utils.CheckUtil;
 import com.g3g4x5x6.utils.AppConfig;
+import com.g3g4x5x6.utils.CheckUtil;
+import com.g3g4x5x6.utils.CommonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.PropertyConfigurator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -22,22 +23,28 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.Objects;
-import java.util.Properties;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.diogonunes.jcolor.Ansi.colorize;
+import static com.diogonunes.jcolor.Attribute.*;
+import static java.awt.Frame.NORMAL;
 
 
 @Slf4j
 public class App {
     public static MainFrame mainFrame;
-    public static Properties properties = loadProperties();
+    public static Properties properties;
     public static AtomicBoolean lockState = new AtomicBoolean(false);
     public static LinkedHashMap<String, SessionInfo> sessionInfos = new LinkedHashMap<>();
     public static String lockPassword = "";
 
     public static void main(String[] args) {
+        // 显示旗标
+        showBanner();
+        // 加载配置
+        properties = loadProperties();
         // 检查程序运行环境
         CheckUtil.checkEnv();
         // 加载自定义日志配置
@@ -61,9 +68,7 @@ public class App {
         // 初始化系统托盘
         initSystemTray();
 
-        log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        log.info("<<<<<<<<<<<<<<<<<<<<<程序启动完成>>>>>>>>>>>>>>>>>>>>>");
-        log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        showBootstrapTips();
     }
 
     private static void initFlatLaf() {
@@ -81,18 +86,6 @@ public class App {
         UIManager.put("TextComponent.arc", 5);
     }
 
-    public static void initGlobalFont(Font font) {
-        FontUIResource fontResource = new FontUIResource(font);
-        for(Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements();) {
-            Object key = keys.nextElement();
-            Object value = UIManager.get(key);
-            if(value instanceof FontUIResource) {
-                System.out.println(key);
-                UIManager.put(key, fontResource);
-            }
-        }
-    }
-
     private static void initSystemTray() {
         /*
          * 添加系统托盘
@@ -107,33 +100,12 @@ public class App {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            // 创建点击图标时的弹出菜单
-//            PopupMenu popupMenu = new PopupMenu();
-//
-//            MenuItem openItem = new MenuItem();
-//            openItem.setLabel("Open");
-//            MenuItem exitItem = new MenuItem();
-//            exitItem.setLabel("Quit");
-//
-//            openItem.addActionListener(e -> {
-//                // 点击打开菜单时显示窗口
-//                openApp();
-//            });
-//            exitItem.addActionListener(e -> {
-//                // 点击退出菜单时退出程序
-//                System.exit(0);
-//            });
-//
-//            popupMenu.add(openItem);
-//            popupMenu.add(exitItem);
-
 
             // 创建右键图标时的弹出菜单：JPopupMenu
             JPopupMenu popupMenu = new JPopupMenu();
 
             JMenuItem openMenuItem = new JMenuItem("打开");
-            JMenuItem exitMenuItem = new JMenuItem("退出");
-
+            openMenuItem.setIcon(new FlatSVGIcon("icons/start.svg"));
             openMenuItem.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -141,6 +113,8 @@ public class App {
                 }
             });
 
+            JMenuItem exitMenuItem = new JMenuItem("退出");
+            exitMenuItem.setIcon(new FlatSVGIcon("icons/exit.svg"));
             exitMenuItem.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -148,7 +122,29 @@ public class App {
                 }
             });
 
+            JMenuItem editorMenuItem = new JMenuItem("内置编辑器");
+            editorMenuItem.setIcon(new FlatSVGIcon("icons/editScheme.svg"));
+            editorMenuItem.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    MainFrame.editorFrame.setVisible(true);
+                }
+            });
+
+            JMenuItem nucleiMenuItem = new JMenuItem("Poc验证框架");
+            nucleiMenuItem.setIcon(new FlatSVGIcon("icons/Administrator.svg"));
+            nucleiMenuItem.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    MainFrame.nucleiFrame.setVisible(true);
+                }
+            });
+
             popupMenu.add(openMenuItem);
+            popupMenu.addSeparator();
+            popupMenu.add(nucleiMenuItem);
+            popupMenu.add(editorMenuItem);
+            popupMenu.addSeparator();
             popupMenu.add(exitMenuItem);
 
             // 创建一个托盘图标
@@ -196,6 +192,7 @@ public class App {
                 lockDialog.setVisible(true);
             } else {
                 mainFrame.setVisible(true);
+                mainFrame.setExtendedState(NORMAL);
             }
         }
     }
@@ -231,7 +228,8 @@ public class App {
         } catch (Exception ignored) {
 
         }
-        log.debug(properties.toString());
+
+        CommonUtil.terminalOutput("加载程序主配置：" + properties.toString());
         return properties;
     }
 
@@ -239,10 +237,33 @@ public class App {
         try {
             if (App.properties.getProperty("app.log.setting.enable").equalsIgnoreCase("true")) {
                 PropertyConfigurator.configureAndWatch(App.properties.getProperty("app.log.setting.path").replace("{workspace}", AppConfig.getWorkPath()));
-                log.info("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<已加载自定义日志配置>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+                CommonUtil.terminalOutput("已加载自定义日志配置");
             }
         } catch (Exception e) {
             log.debug(e.getMessage());
         }
+    }
+
+    private static void showBanner(){
+        // Credits
+        System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
+        System.out.print(colorize("\tPOWER BY ", BOLD(), BRIGHT_YELLOW_TEXT(), GREEN_BACK()));
+        System.out.println(colorize("G3G4X5X6\t", BOLD(), BRIGHT_YELLOW_TEXT(), RED_BACK()));
+        System.out.println(colorize("\nI hope you find it useful ;)", YELLOW_TEXT(), BOLD()));
+        System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
+    }
+
+    private static void showBootstrapTips(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
+        System.out.print(colorize("\tStarted at ", BOLD(), BRIGHT_YELLOW_TEXT(), GREEN_BACK()));
+        System.out.println(colorize(sdf.format(new Date()) + "\t", BOLD(), BRIGHT_YELLOW_TEXT(), RED_BACK()));
+        System.out.println();
+        System.out.print(colorize("——————————————————————————————————————————————————————————————", CYAN_TEXT(), BOLD()));
+        System.out.println(colorize("\nGo for it!", YELLOW_TEXT(), BOLD()));
+        System.out.print(colorize("——————————————————————————————————————————————————————————————", CYAN_TEXT(), BOLD()));
+        System.out.println();
+        System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
     }
 }

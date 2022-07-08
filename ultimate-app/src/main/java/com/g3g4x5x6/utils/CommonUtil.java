@@ -10,13 +10,17 @@ import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.ListIterator;
-import java.util.Properties;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.diogonunes.jcolor.Ansi.colorize;
+import static com.diogonunes.jcolor.Attribute.BLUE_TEXT;
 
 @Slf4j
 public class CommonUtil {
@@ -82,33 +86,26 @@ public class CommonUtil {
             con.setRequestProperty("Content-Type", "application/json");
             con.connect();
 
-            System.out.println("HTTP状态码=" + con.getResponseCode());
-
-            BufferedReader inn = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+            BufferedReader inn = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
             String value = inn.readLine().trim();
             while (value != null) {
                 if (!"".equals(value)) {
-                    result.append(value.trim() + "\n");
+                    result.append(value.trim()).append("\n");
                 }
                 value = inn.readLine();
             }
 
             inn.close();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         JSONObject object = JSONObject.parseObject(result.toString());
-        String tagName = object.getString("tag_name");
-        System.out.println(tagName);
-        return tagName;
+        return object.getString("tag_name");
     }
 
     public static void getLatestJar() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         try {
             URL url = new URL("https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -123,16 +120,12 @@ public class CommonUtil {
             String value = inn.readLine().trim();
             while (value != null) {
                 if (!"".equals(value)) {
-                    result.append(value.trim() + "\n");
+                    result.append(value.trim()).append("\n");
                 }
                 value = inn.readLine();
             }
 
             inn.close();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,10 +148,8 @@ public class CommonUtil {
         System.out.println(browser_download_url);
         try {
             Desktop.getDesktop().browse(new URL(browser_download_url).toURI());
-        } catch (IOException exception) {
+        } catch (IOException | URISyntaxException exception) {
             exception.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         }
     }
 
@@ -174,8 +165,7 @@ public class CommonUtil {
             exception.printStackTrace();
         }
         //获取key对应的value值
-        String currentVersion = properties.getProperty("version");
-        return currentVersion;
+        return properties.getProperty("version");
     }
 
     @Deprecated
@@ -197,7 +187,7 @@ public class CommonUtil {
     public static void generateSystemInfo() {
         File temp = new File(AppConfig.getWorkPath() + "/temp");
         if (!temp.exists()) {
-            temp.mkdir();
+            boolean ignored = temp.mkdir();
         }
         String fileName = temp.getAbsolutePath() + "/systeminfo.txt";
         String output = exec("systeminfo");
@@ -214,36 +204,32 @@ public class CommonUtil {
     public static String getSystemInfo() {
         File temp = new File(AppConfig.getWorkPath() + "/temp");
         if (!temp.exists()) {
-            temp.mkdir();
+            boolean ignored = temp.mkdir();
         }
         String fileName = temp.getAbsolutePath() + "/systeminfo.txt";
-        StringBuffer systemInfo = new StringBuffer();
-        String tempStr = null;
+        StringBuilder systemInfo = new StringBuilder();
+        String tempStr;
         try {
             CharsetMatch cm = CommonUtil.checkCharset(new BufferedInputStream(new FileInputStream(fileName)));
-            log.debug("[systeminfo.txt] Encoding: " + cm.getName());
             BufferedReader reader = new BufferedReader(cm.getReader());
             while ((tempStr = reader.readLine()) != null) {
-                systemInfo.append(tempStr + "\n");
+                systemInfo.append(tempStr).append("\n");
             }
-            log.debug(systemInfo.toString());
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch (IOException exception) {
-            exception.printStackTrace();
         }
         return systemInfo.toString();
     }
 
     public static String exec(String cmd) {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         Runtime runtime = Runtime.getRuntime();
         try {
             CharsetMatch cm = CommonUtil.checkCharset(runtime.exec(cmd).getInputStream());
             BufferedReader br = new BufferedReader(cm.getReader());
             String line = null;
             while ((line = br.readLine()) != null) {
-                b.append(line + "\n");
+                b.append(line).append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -258,6 +244,7 @@ public class CommonUtil {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+        assert qqwry != null;
         IPZone ipzone = qqwry.findIP(ip);
 //        System.out.printf("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
         return String.format("%s, %s", ipzone.getMainInfo(), ipzone.getSubInfo());
@@ -273,6 +260,24 @@ public class CommonUtil {
 
     public static Boolean isMac() {
         return true;
+    }
+
+    public static void terminalOutput(String msg) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String threadName = Thread.currentThread().getName();
+        System.out.println(colorize(sdf.format(new Date()) + " INFO [" + threadName + "] - " + msg, BLUE_TEXT()));
+    }
+
+    public static void initGlobalFont(Font font) {
+        FontUIResource fontResource = new FontUIResource(font);
+        for (Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements(); ) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof FontUIResource) {
+                System.out.println(key);
+                UIManager.put(key, fontResource);
+            }
+        }
     }
 
     public static void main(String[] args) {

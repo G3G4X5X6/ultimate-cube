@@ -2,12 +2,18 @@ package com.g3g4x5x6.ssh;
 
 import com.g3g4x5x6.sftp.SftpBrowser;
 import com.g3g4x5x6.ssh.panel.DropTargetListenerBrowserImpl;
+import com.g3g4x5x6.ssh.panel.FilesBrowser;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.channel.RequestHandler;
+import org.apache.sshd.common.session.ConnectionService;
 import org.apache.sshd.common.session.SessionHeartbeatController;
+import org.apache.sshd.common.session.helpers.AbstractConnectionServiceRequestHandler;
+import org.apache.sshd.common.util.buffer.Buffer;
+import org.apache.sshd.core.CoreModuleProperties;
 import org.apache.sshd.putty.PuttyKeyUtils;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
@@ -22,6 +28,8 @@ import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +50,7 @@ public class SessionInfo {
     private String sessionComment = "";
     // SSH 会话组件
     private JediTermWidget sshPane = null;
-    private SftpBrowser sftpBrowser = null;
+    private FilesBrowser sftpBrowser = null;
     // SSH 连接信息
     private SshClient client;
     private ClientSession session;
@@ -58,7 +66,7 @@ public class SessionInfo {
         init();
         this.sshPane = createTerminalWidget();
         if (sftpFlag)
-            this.sftpBrowser = new SftpBrowser(this.sftpFileSystem);
+            this.sftpBrowser = new FilesBrowser(this.sftpFileSystem);
 
         // 注册拖拽监听
         registerDropTarget();
@@ -88,6 +96,9 @@ public class SessionInfo {
     }
 
     private ClientSession getSession(SshClient client) throws IOException, GeneralSecurityException {
+        // TODO 可设置是否启用、时间周期
+        CoreModuleProperties.HEARTBEAT_INTERVAL.set(client, Duration.ofSeconds(60L));
+
         ClientSession session = client.connect(this.sessionUser, this.sessionAddress, Integer.parseInt(this.sessionPort)).verify(5000, TimeUnit.MILLISECONDS).getSession();
         if (Files.exists(Path.of(sessionKeyPath)) && !sessionKeyPath.equalsIgnoreCase("")) {
             KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, Path.of(sessionKeyPath), null).iterator().next();
@@ -222,11 +233,11 @@ public class SessionInfo {
         this.sshPane = sshPane;
     }
 
-    public SftpBrowser getSftpBrowser() {
+    public FilesBrowser getSftpBrowser() {
         return sftpBrowser;
     }
 
-    public void setSftpBrowser(SftpBrowser sftpBrowser) {
+    public void setSftpBrowser(FilesBrowser sftpBrowser) {
         this.sftpBrowser = sftpBrowser;
     }
 

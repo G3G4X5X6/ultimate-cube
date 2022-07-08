@@ -27,7 +27,7 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
         } else {
             fontName = "Monospaced";
         }
-        return new Font(fontName, Font.PLAIN, (int) getTerminalFontSize());
+        return new Font(fontName, Font.BOLD, (int) getTerminalFontSize());
     }
 
     @Override
