@@ -4,8 +4,10 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.nuclei.NucleiYamlCompletionProvider;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.panel.settings.SettingTarget;
+import com.g3g4x5x6.nuclei.panel.targetpanel.StringTargetPanel;
 import com.g3g4x5x6.ultils.DialogUtil;
+import com.g3g4x5x6.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fife.rsta.ui.search.FindDialog;
@@ -51,7 +53,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final JButton terminalBtn = new JButton(new FlatSVGIcon("icons/OpenTerminal_13x13.svg"));
 
     private RunningDialog runningDialog = new RunningDialog();
-    private TargetPanel targetPanel = new TargetPanel();
+    private StringTargetPanel targetPanel = new StringTargetPanel();
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
     private String savePath = "";
@@ -318,7 +320,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         // 获取目标URL
         String targets = targetPanel.getTextArea().getText().strip();
         if (targets.equalsIgnoreCase("")) {
-            targets = NucleiFrame.targetPanel.getTextArea().getText().strip();
+            targets = SettingTarget.stringTargetPanel.getTextArea().getText().strip();
             if (targets.equalsIgnoreCase("")) {
                 JOptionPane.showMessageDialog(NucleiFrame.nucleiFrame, "请先填写扫描目标", "警告", JOptionPane.WARNING_MESSAGE);
             }

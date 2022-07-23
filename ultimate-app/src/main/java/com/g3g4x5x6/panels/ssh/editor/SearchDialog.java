@@ -29,7 +29,7 @@ public class SearchDialog extends JDialog implements ActionListener {
         searchField = new JTextField(25);
         toolBar.add(searchField);
         // nextOccurence.svg
-        final JButton nextButton = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/nextOccurence.svg"));
+        final JButton nextButton = new JButton(new FlatSVGIcon("icons/nextOccurence.svg"));
         nextButton.setToolTipText("下一个");
         nextButton.setActionCommand("FindNext");
         nextButton.addActionListener(this);
@@ -41,49 +41,49 @@ public class SearchDialog extends JDialog implements ActionListener {
             }
         });
         // previousOccurence.svg
-        JButton prevButton = new JButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/previousOccurence.svg"));
+        JButton prevButton = new JButton(new FlatSVGIcon("icons/previousOccurence.svg"));
         prevButton.setToolTipText("上一个");
         prevButton.setActionCommand("FindPrev");
         prevButton.addActionListener(this);
         toolBar.add(prevButton);
         // regex.svg  regexSelected.svg
-        regexCB = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/regex.svg"));
+        regexCB = new JToggleButton(new FlatSVGIcon("icons/regex.svg"));
         regexCB.setToolTipText("正则匹配");
         regexCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (regexCB.isSelected()) {
-                    regexCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/regexSelected.svg"));
+                    regexCB.setIcon(new FlatSVGIcon("icons/regexSelected.svg"));
                 } else {
-                    regexCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/regex.svg"));
+                    regexCB.setIcon(new FlatSVGIcon("icons/regex.svg"));
                 }
             }
         });
         toolBar.add(regexCB);
         // matchCase.svg matchCaseSelected.svg
-        matchCaseCB = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/matchCase.svg"));
+        matchCaseCB = new JToggleButton(new FlatSVGIcon("icons/matchCase.svg"));
         matchCaseCB.setToolTipText("区分大小写");
         matchCaseCB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (matchCaseCB.isSelected()) {
-                    matchCaseCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/matchCaseSelected.svg"));
+                    matchCaseCB.setIcon(new FlatSVGIcon("icons/matchCaseSelected.svg"));
                 } else {
-                    matchCaseCB.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/matchCase.svg"));
+                    matchCaseCB.setIcon(new FlatSVGIcon("icons/matchCase.svg"));
                 }
             }
         });
         toolBar.add(matchCaseCB);
         // words.svg  wordsSelected.svg WholeWord
-        wholeWord = new JToggleButton(new FlatSVGIcon("com/g3g4x5x6/ui/icons/words.svg"));
+        wholeWord = new JToggleButton(new FlatSVGIcon("icons/words.svg"));
         wholeWord.setToolTipText("整词匹配）");
         wholeWord.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (wholeWord.isSelected()) {
-                    wholeWord.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/wordsSelected.svg"));
+                    wholeWord.setIcon(new FlatSVGIcon("icons/wordsSelected.svg"));
                 } else {
-                    wholeWord.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/words.svg"));
+                    wholeWord.setIcon(new FlatSVGIcon("icons/words.svg"));
                 }
             }
         });

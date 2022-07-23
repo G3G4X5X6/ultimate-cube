@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ultimate-cube</artifactId>
         <groupId>com.g3g4x5x6</groupId>
-        <version>6.6.7</version>
+        <version>6.6.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-typeahead</artifactId>
-            <version>6.6.7</version>
+            <version>6.6.9</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

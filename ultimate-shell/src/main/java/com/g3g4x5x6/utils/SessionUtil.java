@@ -71,7 +71,7 @@ public class SessionUtil {
             sessionInfo.setSessionAddress(host);
             sessionInfo.setSessionPort(port);
             sessionInfo.setSessionUser(user);
-            sessionInfo.setSessionPass(pass);
+            sessionInfo.setSessionPass(VaultUtil.decryptPasswd(pass));
             sessionInfo.setSessionKeyPath(privateKey);
             sessionInfo.setSessionLoginType(loginType);
             sessionInfo.setSessionProtocol(protocol);

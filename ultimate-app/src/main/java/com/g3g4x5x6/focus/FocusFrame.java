@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.Objects;
 
-import static com.formdev.flatlaf.FlatClientProperties.*;
+import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT;
 
 /**
  * this.setUndecorated(true);                      //去处边框

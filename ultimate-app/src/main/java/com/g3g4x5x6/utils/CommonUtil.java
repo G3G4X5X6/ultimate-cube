@@ -14,7 +14,9 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -280,11 +282,4 @@ public class CommonUtil {
         }
     }
 
-    public static void main(String[] args) {
-//        System.out.println(getLastestVersion());
-//        System.out.println(getCurrentVersion());
-//        generateSystemInfo();
-//        System.out.println(getSystemInfo());
-        getLatestJar();
-    }
 }

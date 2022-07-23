@@ -109,7 +109,7 @@ public class TelnetPane extends JPanel {
                     // TODO 保存会话
 
                     // 打开会话
-                    tabbedPane.insertTab("Telnet-" + hostField.getText(), new FlatSVGIcon("com/g3g4x5x6/ui/icons/OpenTerminal_13x13.svg"),
+                    tabbedPane.insertTab("Telnet-" + hostField.getText(), new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
                             createTerminalWidget(),
                             "Telnet-" + hostField.getText(),
                             tabbedPane.getSelectedIndex());

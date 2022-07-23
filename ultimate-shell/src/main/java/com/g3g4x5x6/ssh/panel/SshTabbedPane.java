@@ -5,7 +5,9 @@ import com.g3g4x5x6.ssh.SessionInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 

@@ -7,7 +7,7 @@
     <groupId>com.g3g4x5x6</groupId>
     <artifactId>ultimate-cube</artifactId>
     <packaging>pom</packaging>
-    <version>6.6.7</version>
+    <version>6.6.9</version>
     <modules>
         <module>ultimate-terminal</module>
         <module>ultimate-editor</module>
@@ -57,6 +57,7 @@
         <junit-jupiter-version>RELEASE</junit-jupiter-version>
 
         <jcolor-version>5.5.1</jcolor-version>
+        <hutool-version>5.8.4</hutool-version>
     </properties>
 
     <dependencyManagement>
@@ -232,6 +233,12 @@
                 <groupId>com.diogonunes</groupId>
                 <artifactId>JColor</artifactId>
                 <version>${jcolor-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool-version}</version>
             </dependency>
 
         </dependencies>

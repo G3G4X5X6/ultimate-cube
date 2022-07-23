@@ -12,6 +12,7 @@ import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.focus.FocusFrame;
 import com.g3g4x5x6.nuclei.NucleiFrame;
+import com.g3g4x5x6.panels.ssh.panel.RandomPassword;
 import com.g3g4x5x6.panels.ssh.panel.SessionManagerPanel;
 import com.g3g4x5x6.settings.SettingsDialog;
 import com.g3g4x5x6.ssh.SessionInfo;
@@ -171,7 +172,18 @@ public class MainFrame extends JFrame implements MouseListener {
         JMenuItem editorItem = new JMenuItem("简易编辑器");
         editorItem.setIcon(new FlatSVGIcon("icons/editScheme.svg"));
         editorItem.addActionListener(myEditorAction);
+
+        JMenuItem randomPassItem = new JMenuItem("随机密码生成器");
+        randomPassItem.setIcon(new FlatSVGIcon("icons/colGreyKey.svg"));
+        randomPassItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showRandomPasswordDialog();
+            }
+        });
+
         toolMenu.add(editorItem);
+        toolMenu.add(randomPassItem);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         // 快捷键
@@ -327,7 +339,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initClosableTabs(mainTabbedPane);
         initTrailPopupMenu();
         customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
-        initTabPopupMenu();     //  定制 ”选项卡面板“ 标签右键功能
+        initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
         // 添加 ”仪表盘“ 面板
         mainTabbedPane.addTab("仪表板",
@@ -339,11 +351,11 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private void initTrailPopupMenu() {
         JMenuItem item = new JMenuItem("生成随机密码");
-        item.setIcon(new FlatSVGIcon("icons/shield.svg"));
+        item.setIcon(new FlatSVGIcon("icons/colGreyKey.svg"));
         item.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogUtil.info("敬请期待！");
+                showRandomPasswordDialog();
             }
         });
         trailPopupMenu.add(item);
@@ -703,6 +715,17 @@ public class MainFrame extends JFrame implements MouseListener {
     }
 
 
+    private void showRandomPasswordDialog(){
+        JDialog dialog = new JDialog(MainFrame.this);
+        dialog.setTitle("随机密码生成器");
+        dialog.setSize(new Dimension(450, 145));
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(MainFrame.this);
+        dialog.setContentPane(new RandomPassword());
+        dialog.setVisible(true);
+    }
+
+
     /**
      * 定义
      */
@@ -1004,13 +1027,14 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
+    private final AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
         public void actionPerformed(final ActionEvent e) {
-            DialogUtil.msg("About",
-                    "<html>UltimateShell " + Version.VERSION + " <br>" +
+            JOptionPane.showMessageDialog(MainFrame.this,
+                    "<html>ultimate-cube v" + Version.VERSION + " <br>" +
                             "Build on " + Version.BUILD_TIMESTAMP + "#" + Version.BUILD_NUMBER + "<br><br>" +
                             "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a><br>" +
-                            "Email to <a href='mailto://g3g4x5x6@foxmail.com'>g3g4x5x6@foxmail.com</a></html>");
+                            "Email to <a href='mailto://g3g4x5x6@foxmail.com'>g3g4x5x6@foxmail.com</a></html>",
+                    "About", JOptionPane.INFORMATION_MESSAGE);
         }
     };
 }

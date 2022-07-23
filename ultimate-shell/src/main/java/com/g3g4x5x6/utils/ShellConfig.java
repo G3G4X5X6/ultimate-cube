@@ -55,6 +55,29 @@ public class ShellConfig {
         return value;
     }
 
+    public static void setProperty(String key, String value) {
+        ShellConfig.properties.setProperty(key, value);
+    }
+
+    public static void saveSettingsProperties() {
+        try {
+            StringBuilder settingsText = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new FileReader(getPropertiesPath()));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                if (!line.startsWith("#") && !line.strip().equals("")) {
+                    String key = line.strip().split("=")[0];
+                    line = key + "=" + (ShellConfig.properties.getProperty(key) != null ? ShellConfig.properties.getProperty(key) : line.strip().split("=")[1]);
+                }
+                settingsText.append(line).append("\n");
+            }
+            Files.write(Path.of(getPropertiesPath()), settingsText.toString().getBytes(StandardCharsets.UTF_8));
+            log.info("保存配置成功!");
+        } catch (Exception e) {
+            log.error("保存配置失败：" + e.getMessage());
+        }
+    }
+
     public static String getHomePath() {
         return Path.of(System.getProperties().getProperty("user.home")).toString();
     }

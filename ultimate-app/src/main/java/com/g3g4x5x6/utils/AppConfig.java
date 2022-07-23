@@ -51,6 +51,10 @@ public class AppConfig {
         return value;
     }
 
+    public static void setProperty(String key, String value) {
+        App.properties.setProperty(key, value);
+    }
+
     public static void saveSettingsProperties() {
         try {
             StringBuilder settingsText = new StringBuilder();

@@ -6,8 +6,9 @@ import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.g3g4x5x6.ssh.SessionInfo;
-import com.g3g4x5x6.utils.ShellConfig;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.ShellConfig;
+import com.g3g4x5x6.utils.VaultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
@@ -118,7 +119,7 @@ public class NewSshPane extends JPanel {
                     sessionInfo.setSessionAddress(hostField.getText());
                     sessionInfo.setSessionPort(portField.getText());
                     sessionInfo.setSessionUser(userField.getText());
-                    sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
+                    sessionInfo.setSessionPass(VaultUtil.decryptPasswd(String.valueOf(passField.getPassword())));
                     sessionInfo.setSessionKeyPath(keyLabel.getText());
                     sessionInfo.setSessionLoginType(authType);
                     sessionInfo.setSessionComment(commentText.getText());
@@ -167,7 +168,7 @@ public class NewSshPane extends JPanel {
         session.put("sessionAddress", hostField.getText());
         session.put("sessionPort", portField.getText());
         session.put("sessionUser", userField.getText());
-        session.put("sessionPass", String.valueOf(passField.getPassword()));
+        session.put("sessionPass", VaultUtil.encryptPasswd(String.valueOf(passField.getPassword())));
         session.put("sessionKeyPath", keyLabel.getText());
         session.put("sessionLoginType", authType);
         session.put("sessionComment", commentText.getText());

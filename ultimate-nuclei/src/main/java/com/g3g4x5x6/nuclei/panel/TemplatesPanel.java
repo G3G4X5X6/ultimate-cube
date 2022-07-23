@@ -8,6 +8,7 @@ import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.nuclei.model.SelectedTagsConfig;
 import com.g3g4x5x6.nuclei.model.SelectedTemplatesConfig;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
+import com.g3g4x5x6.nuclei.panel.settings.SettingTarget;
 import com.g3g4x5x6.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -147,7 +148,7 @@ public class TemplatesPanel extends JPanel {
             // 不可编辑
             @Override
             public boolean isCellEditable(int row, int column) {
-                return true;
+                return false;
             }
         };
         String[] columnNames = {
@@ -377,7 +378,7 @@ public class TemplatesPanel extends JPanel {
     @SneakyThrows
     private void runTemplatesInSelectedConsole(ConsolePanel consolePanel) {
         log.debug("Run command with Selected 666");
-        if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
+        if (!SettingTarget.stringTargetPanel.getTextArea().getText().strip().equals("")) {
             SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
             for (int index : templatesTable.getSelectedRows()) {
@@ -389,7 +390,7 @@ public class TemplatesPanel extends JPanel {
                     selected.addTemplate(savePath);
                 }
             }
-            selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
+            selected.setTarget(Arrays.asList(SettingTarget.stringTargetPanel.getTextArea().getText().split("\\s+")));
 
             String configPath = NucleiConfig.getWorkPath() + "/temp/nuclei/" + UUID.randomUUID() + ".yaml";
             Yaml yaml = new Yaml();
@@ -408,10 +409,10 @@ public class TemplatesPanel extends JPanel {
 
     @SneakyThrows
     private void runTagsInSelectedConsole(ConsolePanel consolePanel) {
-        if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
+        if (!SettingTarget.stringTargetPanel.getTextArea().getText().strip().equals("")) {
             // 配置对象
             SelectedTagsConfig selected = new SelectedTagsConfig();
-            selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
+            selected.setTarget(Arrays.asList(SettingTarget.stringTargetPanel.getTextArea().getText().split("\\s+")));
 
             ArrayList<String> tempTags = new ArrayList<>();
             for (int index : templatesTable.getSelectedRows()) {
@@ -510,7 +511,7 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Selected");
-            if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
+            if (!SettingTarget.stringTargetPanel.getTextArea().getText().strip().equals("")) {
                 SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
                 ArrayList<String> tempTemplate = new ArrayList<>();
@@ -520,7 +521,7 @@ public class TemplatesPanel extends JPanel {
                     tempTemplate.add(savePath);
                 }
                 selected.setTemplates(tempTemplate);
-                selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
+                selected.setTarget(Arrays.asList(SettingTarget.stringTargetPanel.getTextArea().getText().split("\\s+")));
 
                 String configPath = NucleiConfig.getWorkPath() + "/temp/nuclei/templates_" + UUID.randomUUID() + ".yaml";
                 Yaml yaml = new Yaml();
@@ -545,10 +546,10 @@ public class TemplatesPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("Generate command with Tags");
-            if (!NucleiFrame.targetPanel.getTextArea().getText().strip().equals("")) {
+            if (!SettingTarget.stringTargetPanel.getTextArea().getText().strip().equals("")) {
                 // 配置对象
                 SelectedTagsConfig selected = new SelectedTagsConfig();
-                selected.setTarget(Arrays.asList(NucleiFrame.targetPanel.getTextArea().getText().split("\\s+")));
+                selected.setTarget(Arrays.asList(SettingTarget.stringTargetPanel.getTextArea().getText().split("\\s+")));
 
                 ArrayList<String> tempTags = new ArrayList<>();
                 for (int index : templatesTable.getSelectedRows()) {

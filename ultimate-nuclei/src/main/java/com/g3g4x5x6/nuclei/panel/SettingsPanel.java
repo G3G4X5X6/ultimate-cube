@@ -7,13 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SettingsPanel extends JPanel {
-    private JButton newBtn = new JButton(new FlatSVGIcon("icons/addFile.svg"));
-    private JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
-    private JButton saveBtn = new JButton(new FlatSVGIcon("icons/menu-saveall.svg"));
-    private JButton terminalBtn = new JButton(new FlatSVGIcon("icons/changeView.svg"));
+    private final JButton newBtn = new JButton(new FlatSVGIcon("icons/addFile.svg"));
+    private final JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
+    private final JButton saveBtn = new JButton(new FlatSVGIcon("icons/menu-saveall.svg"));
+    private final JButton terminalBtn = new JButton(new FlatSVGIcon("icons/changeView.svg"));
 
-    private JToolBar toolBar;
-    private JTabbedPane tabbedPane;
+    public static JTabbedPane tabbedPane;
+
+    // TODO 搞个全局配置对象
 
     public SettingsPanel() {
         this.setLayout(new BorderLayout());
@@ -24,56 +25,61 @@ public class SettingsPanel extends JPanel {
     }
 
     private void initToolBar(){
-        toolBar = new JToolBar();
+        JToolBar toolBar = new JToolBar(SwingConstants.VERTICAL);
         toolBar.setFloatable(false);
         toolBar.add(newBtn);
         toolBar.add(openBtn);
         toolBar.add(saveBtn);
         toolBar.addSeparator();
         toolBar.add(terminalBtn);
-        this.add(toolBar, BorderLayout.NORTH);
+        this.add(toolBar, BorderLayout.EAST);
     }
 
     private void initTabbedPane(){
         tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // add Tab
-        TargetSetting targetSetting = new TargetSetting();
-        tabbedPane.addTab("Target", new FlatSVGIcon("icons/pinTab.svg"), targetSetting);
+        SettingTarget targetSetting = new SettingTarget();
+        tabbedPane.addTab("Target", new FlatSVGIcon("icons/Target.svg"), targetSetting);
 
-        TemplateSetting templateSetting = new TemplateSetting();
+        SettingTemplate templateSetting = new SettingTemplate();
         tabbedPane.addTab("Templates", new FlatSVGIcon("icons/pinTab.svg"), templateSetting);
 
-        FilteringSetting filteringSetting = new FilteringSetting();
+        SettingFiltering filteringSetting = new SettingFiltering();
         tabbedPane.addTab("Filtering", new FlatSVGIcon("icons/pinTab.svg"), filteringSetting);
 
-        OutputSetting outputSetting = new OutputSetting();
+        SettingOutput outputSetting = new SettingOutput();
         tabbedPane.addTab("Output", new FlatSVGIcon("icons/pinTab.svg"), outputSetting);
 
-        ConfigurationSetting configurationSetting = new ConfigurationSetting();
+        SettingConfiguration configurationSetting = new SettingConfiguration();
         tabbedPane.addTab("Configurations", new FlatSVGIcon("icons/pinTab.svg"), configurationSetting);
 
-        InteractshSetting interactshSetting = new InteractshSetting();
+        SettingInteractsh interactshSetting = new SettingInteractsh();
         tabbedPane.addTab("Interactsh", new FlatSVGIcon("icons/pinTab.svg"), interactshSetting);
 
-        RateLimitSetting rateLimitSetting = new RateLimitSetting();
+        SettingRateLimit rateLimitSetting = new SettingRateLimit();
         tabbedPane.addTab("RateLimit", new FlatSVGIcon("icons/pinTab.svg"), rateLimitSetting);
 
-        OptimizationSetting optimizationSetting = new OptimizationSetting();
+        SettingOptimization optimizationSetting = new SettingOptimization();
         tabbedPane.addTab("Optimizations", new FlatSVGIcon("icons/pinTab.svg"), optimizationSetting);
 
-        HeadlessSetting headlessSetting = new HeadlessSetting();
+        SettingHeadless headlessSetting = new SettingHeadless();
         tabbedPane.addTab("Headless", new FlatSVGIcon("icons/pinTab.svg"), headlessSetting);
 
-        DebugSetting debugSetting = new DebugSetting();
+        SettingDebug debugSetting = new SettingDebug();
         tabbedPane.addTab("Debug", new FlatSVGIcon("icons/pinTab.svg"), debugSetting);
 
-        UpdateSetting updateSetting = new UpdateSetting();
+        SettingUpdate updateSetting = new SettingUpdate();
         tabbedPane.addTab("Update", new FlatSVGIcon("icons/pinTab.svg"), updateSetting);
 
-        StatisticsSetting statisticsSetting = new StatisticsSetting();
+        SettingStatistics statisticsSetting = new SettingStatistics();
         tabbedPane.addTab("Statistics", new FlatSVGIcon("icons/pinTab.svg"), statisticsSetting);
 
         this.add(tabbedPane, BorderLayout.CENTER);
     }
+
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
+    }
+
 }

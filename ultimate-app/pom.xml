@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ultimate-cube</artifactId>
         <groupId>com.g3g4x5x6</groupId>
-        <version>6.6.7</version>
+        <version>6.6.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,22 +20,22 @@
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-shell</artifactId>
-            <version>6.6.7</version>
+            <version>6.6.9</version>
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-terminal</artifactId>
-            <version>6.6.7</version>
+            <version>6.6.9</version>
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-editor</artifactId>
-            <version>6.6.7</version>
+            <version>6.6.9</version>
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-nuclei</artifactId>
-            <version>6.6.7</version>
+            <version>6.6.9</version>
         </dependency>
 
         <dependency>
@@ -56,6 +56,7 @@
             <groupId>com.diogonunes</groupId>
             <artifactId>JColor</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

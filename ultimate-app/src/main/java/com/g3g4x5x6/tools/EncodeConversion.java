@@ -59,17 +59,17 @@ public class EncodeConversion extends JDialog {
         // Action
         conversionBtn = new JButton();
         conversionBtn.setToolTipText("开始转换编码");
-        conversionBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/converter.svg"));
+        conversionBtn.setIcon(new FlatSVGIcon("icons/converter.svg"));
         importBtn = new JButton();
         importBtn.setToolTipText("导入待转换文件");
-        importBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/newFolder.svg"));
+        importBtn.setIcon(new FlatSVGIcon("icons/newFolder.svg"));
         exportBtn = new JButton();
-        exportBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/savedContext.svg"));
+        exportBtn.setIcon(new FlatSVGIcon("icons/savedContext.svg"));
         exportBtn.setToolTipText("保存文件目录");
 
         cleanBtn = new JButton();
         cleanBtn.setToolTipText("清除待转换文件，重新选择");
-        cleanBtn.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/delete.svg"));
+        cleanBtn.setIcon(new FlatSVGIcon("icons/delete.svg"));
         String[] dstEncode = new String[]{"UTF-8", "UTF-16BE", "UTF-16LE", "UTF-32BE", "UTF-32LE", "ISO-2022-JP", "ISO-2022-CN",
                 "GB18030", "Big5", "EUC-JP", "EUC-KR", "windows-1252", "ISO-8859-1", "windows-1250", "ISO-8859-2",
                 "windows-1251", "windows-1256", "KOI8-R", "windows-1254", "ISO-8859-9"};    // new CharsetRecog_sjis()
@@ -85,7 +85,7 @@ public class EncodeConversion extends JDialog {
         srcComboBox.setEditable(true);
         srcComboBox.setToolTipText("转换前文件编码");
         JLabel label = new JLabel();
-        label.setIcon(new FlatSVGIcon("com/g3g4x5x6/ui/icons/fileTransfer.svg"));
+        label.setIcon(new FlatSVGIcon("icons/fileTransfer.svg"));
         dstComboBox = new JComboBox<>(dstEncode);
         dstComboBox.setEditable(true);
         dstComboBox.setToolTipText("转换后文件编码");

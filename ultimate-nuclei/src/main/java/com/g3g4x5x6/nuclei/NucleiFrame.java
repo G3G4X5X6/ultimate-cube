@@ -4,7 +4,10 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
-import com.g3g4x5x6.nuclei.panel.*;
+import com.g3g4x5x6.nuclei.panel.EditTemplatePanel;
+import com.g3g4x5x6.nuclei.panel.RunningPanel;
+import com.g3g4x5x6.nuclei.panel.SettingsPanel;
+import com.g3g4x5x6.nuclei.panel.TemplatesPanel;
 import com.g3g4x5x6.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,26 +28,22 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 public class NucleiFrame extends JFrame {
     public static NucleiFrame nucleiFrame = new NucleiFrame();
     public static JTabbedPane frameTabbedPane;
-    public static TargetPanel targetPanel;
 
     public static String reportDir = NucleiConfig.getProperty("nuclei.report.path");
     public static String templatesDir = NucleiConfig.getProperty("nuclei.templates.path");
 
-    private JToolBar toolBar;
-    private JMenuBar menuBar;
-
-    private JMenu fileMenu = new JMenu("文件");
-    private JMenu editMenu = new JMenu("编辑");
-    private JMenu searchMenu = new JMenu("搜索");
-    private JMenu viewMenu = new JMenu("视图");
-    private JMenu encodeMenu = new JMenu("编码");
-    private JMenu langMenu = new JMenu("语言");
-    private JMenu settingsMenu = new JMenu("设置");
-    private JMenu macroMenu = new JMenu("宏");
-    private JMenu runMenu = new JMenu("运行");
-    private JMenu pluginMenu = new JMenu("插件");
-    private JMenu winMenu = new JMenu("窗口");
-    private JMenu aboutMenu = new JMenu("关于");
+    private final JMenu fileMenu = new JMenu("开始");
+    private final JMenu editMenu = new JMenu("编辑");
+    private final JMenu searchMenu = new JMenu("搜索");
+    private final JMenu viewMenu = new JMenu("视图");
+    private final JMenu encodeMenu = new JMenu("编码");
+    private final JMenu langMenu = new JMenu("语言");
+    private final JMenu settingsMenu = new JMenu("设置");
+    private final JMenu macroMenu = new JMenu("宏");
+    private final JMenu runMenu = new JMenu("运行");
+    private final JMenu pluginMenu = new JMenu("插件");
+    private final JMenu winMenu = new JMenu("窗口");
+    private final JMenu aboutMenu = new JMenu("关于");
 
     private final JPopupMenu trailPopupMenu = new JPopupMenu();
 
@@ -64,7 +63,7 @@ public class NucleiFrame extends JFrame {
     }
 
     private void initMenuBar() {
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
         menuBar.add(searchMenu);
@@ -77,7 +76,8 @@ public class NucleiFrame extends JFrame {
         menuBar.add(pluginMenu);
         menuBar.add(winMenu);
         menuBar.add(aboutMenu);
-        // TODO 置顶图标按钮
+
+        // 置顶图标按钮
         FlatToggleButton toggleButton = new FlatToggleButton();
         toggleButton.setIcon(new FlatSVGIcon("icons/pinTab.svg"));
         toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
@@ -97,28 +97,38 @@ public class NucleiFrame extends JFrame {
         });
         menuBar.add(Box.createGlue());
         menuBar.add(toggleButton);
+
+        // 初始化一级菜单
+        initMenu();
+
         this.setJMenuBar(menuBar);
     }
 
+    private void initMenu(){
+
+    }
+
     private void initToolBar() {
-        toolBar = new JToolBar();
+        JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
 
         // Target.svg
         JButton targetBtn = new JButton(new FlatSVGIcon("icons/Target.svg"));
-        targetBtn.setToolTipText("设置目标");
-
-        targetPanel = new TargetPanel();
-        JDialog dialog = new JDialog(this);
-        dialog.setTitle("设置全局目标");
-        dialog.setModal(false);
-        dialog.setSize(new Dimension(750, 350));
-        dialog.setLocationRelativeTo(this);
-        dialog.getContentPane().add(targetPanel);
-        targetBtn.addActionListener((e)->{
-            dialog.setVisible(true);
+        targetBtn.setToolTipText("设置全局目标");
+        targetBtn.addActionListener(e -> {
+            NucleiFrame.frameTabbedPane.setSelectedIndex(1);
+            SettingsPanel.tabbedPane.setSelectedIndex(0);
         });
 
+        JButton executeBtn = new JButton(new FlatSVGIcon("icons/execute.svg"));
+        executeBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("executeBtn 执行...");
+            }
+        });
+
+        toolBar.add(executeBtn);
         toolBar.add(targetBtn);
         this.add(toolBar, BorderLayout.NORTH);
     }
@@ -207,7 +217,6 @@ public class NucleiFrame extends JFrame {
         });
 
         trailing.add(addBtn);
-        trailing.add(Box.createHorizontalGlue());
         trailing.add(Box.createHorizontalGlue());
         trailing.add(trailMenuBtn);
         frameTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);

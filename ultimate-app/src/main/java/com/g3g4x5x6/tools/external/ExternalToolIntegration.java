@@ -44,6 +44,17 @@ public class ExternalToolIntegration {
     private JSONArray parseSettings() {
         JSONArray array;
         try {
+            // 判断文件是否存在
+            Path path = Path.of(settings_path);
+            if (!Files.exists(path)) {
+                try {
+                    InputStream extIn = ExternalToolIntegration.class.getClassLoader().getResourceAsStream("settings.json");
+                    assert extIn != null;
+                    Files.copy(extIn, path);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             BufferedReader reader = new BufferedReader(new FileReader(settings_path));
             StringBuilder json = new StringBuilder();
             String line;
