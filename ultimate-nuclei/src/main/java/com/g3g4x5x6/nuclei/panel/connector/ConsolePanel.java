@@ -1,7 +1,7 @@
 package com.g3g4x5x6.nuclei.panel.connector;
 
 import com.g3g4x5x6.nuclei.panel.RunningPanel;
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.ultils.NucleiConfig;
 import com.jediterm.terminal.Questioner;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;

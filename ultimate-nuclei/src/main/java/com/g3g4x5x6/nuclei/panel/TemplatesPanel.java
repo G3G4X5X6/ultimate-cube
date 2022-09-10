@@ -3,13 +3,17 @@ package com.g3g4x5x6.nuclei.panel;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.formdev.flatlaf.extras.components.FlatTriStateCheckBox;
 import com.formdev.flatlaf.icons.FlatSearchIcon;
 import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.nuclei.model.SelectedTagsConfig;
 import com.g3g4x5x6.nuclei.model.SelectedTemplatesConfig;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.nuclei.panel.settings.SettingTarget;
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.panel.settings.template.GlobalTemplatePanel;
+import com.g3g4x5x6.nuclei.panel.settings.template.GlobalWorkflowPanel;
+import com.g3g4x5x6.nuclei.ui.AccentColorIcon;
+import com.g3g4x5x6.nuclei.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
@@ -24,10 +28,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -36,44 +37,108 @@ import java.util.*;
 @Slf4j
 public class TemplatesPanel extends JPanel {
     private static final String defaultNucleiTemplatesPath = NucleiConfig.getProperty("nuclei.templates.path");
-    private JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
-    private JButton severityBtn = new JButton(new FlatSVGIcon("icons/sortBySeverity.svg"));
-    private JButton refreshBtn = new JButton(new FlatSVGIcon("icons/refresh.svg"));
-    private JTextField searchField = new JTextField();
 
-    private JScrollPane tableScroll;
-    private JTable templatesTable;
+    private final LinkedList<LinkedHashMap<String, String>> templates = new LinkedList<>();
+    private final LinkedList<String> filterList = new LinkedList<>();
+
+    private final JButton openBtn = new JButton(new FlatSVGIcon("icons/menu-open.svg"));
+    private final FlatTriStateCheckBox customBtn = new FlatTriStateCheckBox();
+
+    private final JButton filterBtn = new JButton(new FlatSVGIcon("icons/filter.svg"));
+    private final JToggleButton infoBtn = new JToggleButton(new AccentColorIcon("#007AFF"));
+    private final JToggleButton lowBtn = new JToggleButton(new AccentColorIcon("#28CD41"));
+    private final JToggleButton mediumBtn = new JToggleButton(new AccentColorIcon("#FFCC00"));
+    private final JToggleButton highBtn = new JToggleButton(new AccentColorIcon("#FF9500"));
+    private final JToggleButton criticalBtn = new JToggleButton(new AccentColorIcon("#FF3B30"));
+    private final JToggleButton templateBtn = new JToggleButton(new AccentColorIcon("#00CED1"));
+    private final JToggleButton workflowBtn = new JToggleButton(new AccentColorIcon("#FF7F50"));
+
+    private final JButton refreshBtn = new JButton(new FlatSVGIcon("icons/refresh.svg"));
+    private final JTextField searchField = new JTextField();
+
+    private final JScrollPane tableScroll;
+    private final JTable templatesTable;
     private DefaultTableModel tableModel;
     private JPopupMenu tablePopMenu;
     private TableRowSorter<DefaultTableModel> sorter;
     private Clipboard clipboard;
 
-    private final JPopupMenu severityPopupMenu = new JPopupMenu();
-    private JCheckBox infoBox = new JCheckBox("Information");
-    private JCheckBox lowBox = new JCheckBox("Low");
-    private JCheckBox mediumBox = new JCheckBox("Medium");
-    private JCheckBox highBox = new JCheckBox("High");
-    private JCheckBox criticalBox = new JCheckBox("Critical");
-
-    private LinkedList<LinkedHashMap<String, String>> templates = new LinkedList<>();
-
     public TemplatesPanel() {
         this.setLayout(new BorderLayout());
+
+        // Severity
+        infoBtn.setSelected(true);
+        infoBtn.setToolTipText("Info");
+        lowBtn.setSelected(true);
+        lowBtn.setToolTipText("Low");
+        mediumBtn.setSelected(true);
+        mediumBtn.setToolTipText("Medium");
+        highBtn.setSelected(true);
+        highBtn.setToolTipText("High");
+        criticalBtn.setSelected(true);
+        criticalBtn.setToolTipText("Critical");
+        // Type
+        templateBtn.setSelected(true);
+        templateBtn.setToolTipText("Templates");
+        workflowBtn.setSelected(true);
+        workflowBtn.setToolTipText("Workflows");
+
+        // Source
+        customBtn.setSelected(true);
+        customBtn.setToolTipText("自定义模板");
+        customBtn.getState();
+
+        // Filter
+        filterList.add("info");
+        filterList.add("low");
+        filterList.add("medium");
+        filterList.add("high");
+        filterList.add("critical");
+        filterList.add("template");
+        filterList.add("workflow");
+        filterList.add("custom");
 
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
         toolBar.add(openBtn);
+        toolBar.add(customBtn);
+
         toolBar.addSeparator();
-        toolBar.add(severityBtn);
+        toolBar.add(infoBtn);
+        toolBar.add(lowBtn);
+        toolBar.add(mediumBtn);
+        toolBar.add(highBtn);
+        toolBar.add(criticalBtn);
+        toolBar.add(filterBtn);
+        toolBar.add(templateBtn);
+        toolBar.add(workflowBtn);
+
         toolBar.addSeparator();
         toolBar.add(refreshBtn);
         toolBar.addSeparator();
         toolBar.add(Box.createGlue());
         toolBar.add(searchField);
+
         initToolBarAction();
 
 
         tablePopMenu = new JPopupMenu();
+        tablePopMenu.add(new AbstractAction("追加选中模板到全局配置") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("追加选中模板到全局配置");
+                for (int index : templatesTable.getSelectedRows()) {
+                    int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
+                    String savePath = templates.get(num).get("path");
+                    if (savePath.contains("workflow")) {
+                        GlobalWorkflowPanel.addWorkflows(savePath);
+                    } else {
+                        GlobalTemplatePanel.addTemplates(savePath);
+                    }
+                }
+            }
+        });
+        tablePopMenu.addSeparator();
         tablePopMenu.add(editAction);
         tablePopMenu.add(openDirAction);
         tablePopMenu.add(copyPathAction);
@@ -189,31 +254,40 @@ public class TemplatesPanel extends JPanel {
     }
 
     private void initToolBarAction() {
-        infoBox.setSelected(true);
-        lowBox.setSelected(true);
-        mediumBox.setSelected(true);
-        highBox.setSelected(true);
-        criticalBox.setSelected(true);
-        severityPopupMenu.add(infoBox);
-        severityPopupMenu.add(lowBox);
-        severityPopupMenu.add(mediumBox);
-        severityPopupMenu.add(highBox);
-        severityPopupMenu.add(criticalBox);
-        JMenuItem okMenuItem = new JMenuItem("确认");
-        okMenuItem.setIcon(new FlatSVGIcon("icons/inspectionsOK.svg"));
-        okMenuItem.addActionListener(new AbstractAction() {
+        openBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO 过滤风险级别
+                // 创建一个默认的文件选取器
+                JFileChooser fileChooser = new JFileChooser();
+                // 设置默认显示的文件夹为当前文件夹
+                fileChooser.setCurrentDirectory(new File(NucleiConfig.getWorkPath()));
+                // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                // 设置是否允许多选
+                fileChooser.setMultiSelectionEnabled(false);
+                // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
+                int result = fileChooser.showOpenDialog(TemplatesPanel.this);
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // 如果点击了"确定", 则获取选择的文件路径
+                    File file = fileChooser.getSelectedFile();
+                    NucleiConfig.setProperty("nuclei.templates.custom.path", file.getAbsolutePath().replace("\\", "/"));
+                    NucleiConfig.saveSettingsProperties();
+                    refreshDataForTable();
+                }
             }
         });
-        severityPopupMenu.add(okMenuItem);
-        severityBtn.addMouseListener(new MouseAdapter() {
+
+        filterBtn.setToolTipText("点击筛选");
+        filterBtn.addActionListener(e -> filter());
+
+        customBtn.addActionListener(new AbstractAction() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                severityPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+            public void actionPerformed(ActionEvent e) {
+                openBtn.setEnabled(customBtn.isSelected());
             }
         });
+
         refreshBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -253,16 +327,37 @@ public class TemplatesPanel extends JPanel {
             templates.clear();
             try {
                 // 初始化列表并输出列表大小
-                log.debug("Templates Count: " + getAllTemplatesFromPath());
+                int templateCount = getAllTemplatesFromPath();
+                log.debug("Templates Count: " + templateCount);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            String customPath = NucleiConfig.getProperty("nuclei.templates.custom.path").replace("\\", "/");
             int count = 0;
             for (LinkedHashMap<String, String> templateInfo : templates) {
                 count++;
+                // Filter custom
+                String path = templateInfo.get("path");
+                if (customBtn.getState() == FlatTriStateCheckBox.State.INDETERMINATE){
+                    if (!path.replace("\\", "/").startsWith(customPath))
+                        continue;
+                }
+                if (!filterList.contains("custom")) {
+                    if (path.replace("\\", "/").startsWith(customPath))
+                        continue;
+                }
+                String tType = templateInfo.get("path").endsWith("workflow.yaml") ? "workflow" : "template";
+                // Filter template, workflow, custom
+                if (!filterList.contains(tType))
+                    continue;
                 String id = templateInfo.get("id");
                 String name = templateInfo.get("name");
                 String severity = templateInfo.get("severity");
+                // Filter Severity && workflow without severity
+                if (!filterList.contains(severity) && !tType.equalsIgnoreCase("workflow"))
+                    continue;
+
                 String author = templateInfo.get("author");
                 String description = templateInfo.get("description");
                 String reference = templateInfo.get("reference");
@@ -270,6 +365,34 @@ public class TemplatesPanel extends JPanel {
                 tableModel.addRow(new String[]{String.valueOf(count), id, name, severity, tags, author, description, reference});
             }
         }).start();
+    }
+
+    private void filter() {
+        // 清除过滤器
+        filterList.clear();
+
+        // 配置过滤器
+        if (infoBtn.isSelected())
+            filterList.add("info");
+        if (lowBtn.isSelected())
+            filterList.add("low");
+        if (mediumBtn.isSelected())
+            filterList.add("medium");
+        if (highBtn.isSelected())
+            filterList.add("high");
+        if (criticalBtn.isSelected())
+            filterList.add("critical");
+        if (templateBtn.isSelected())
+            filterList.add("template");
+        if (workflowBtn.isSelected())
+            filterList.add("workflow");
+        if (customBtn.isSelected())
+            filterList.add("custom");
+
+        log.debug(filterList.toString());
+
+        // 刷新数据
+        refreshDataForTable();
     }
 
     private LinkedHashMap<String, String> getTemplate(String path) {
@@ -321,49 +444,36 @@ public class TemplatesPanel extends JPanel {
      * @throws IOException 抛出异常
      */
     private int getAllTemplatesFromPath() throws IOException {
+        // office template
         if (Files.exists(Path.of(TemplatesPanel.defaultNucleiTemplatesPath))) {
-            Files.walkFileTree(Paths.get(TemplatesPanel.defaultNucleiTemplatesPath), new SimpleFileVisitor<>() {
-                // 访问文件时触发
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    if (file.toString().endsWith(".yaml")) {
-                        templates.add(getTemplate(file.toString()));
-                    }
-                    return FileVisitResult.CONTINUE;
-                }
-
-                // 访问目录时触发
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-            return templates.size();
+            walkFiles(TemplatesPanel.defaultNucleiTemplatesPath);
         }
-        return 0;
+
+        // custom template
+        if (Files.exists(Path.of(NucleiConfig.getProperty("nuclei.templates.custom.path")))){
+            walkFiles(NucleiConfig.getProperty("nuclei.templates.custom.path"));
+        }
+
+        return templates.size();
     }
 
-    private int getTemplatesFromPath(String rootPath) throws IOException {
-        if (Files.exists(Path.of(rootPath))) {
-            Files.walkFileTree(Paths.get(rootPath), new SimpleFileVisitor<>() {
-                // 访问文件时触发
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                    if (file.toString().endsWith(".yaml")) {
-                        templates.add(getTemplate(file.toString()));
-                    }
-                    return FileVisitResult.CONTINUE;
+    private void walkFiles(String path) throws IOException {
+        Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<>() {
+            // 访问文件时触发
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                if (file.toString().endsWith(".yaml")) {
+                    templates.add(getTemplate(file.toString()));
                 }
+                return FileVisitResult.CONTINUE;
+            }
 
-                // 访问目录时触发
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-            return templates.size();
-        }
-        return 0;
+            // 访问目录时触发
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
     private LinkedHashMap<String, ConsolePanel> getConsolePanels() {
@@ -377,7 +487,7 @@ public class TemplatesPanel extends JPanel {
 
     @SneakyThrows
     private void runTemplatesInSelectedConsole(ConsolePanel consolePanel) {
-        log.debug("Run command with Selected 666");
+        log.debug("Run command with Selected");
         if (!SettingTarget.stringTargetPanel.getTextArea().getText().strip().equals("")) {
             SelectedTemplatesConfig selected = new SelectedTemplatesConfig();
 
@@ -492,6 +602,7 @@ public class TemplatesPanel extends JPanel {
         @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
+            // TODO 警告提示，再次确认
             for (int index : templatesTable.getSelectedRows()) {
                 int num = Integer.parseInt(templatesTable.getValueAt(index, 0).toString()) - 1;
                 String savePath = templates.get(num).get("path");

@@ -232,7 +232,7 @@ public class App {
 
         }
 
-        CommonUtil.terminalOutput("加载程序主配置：" + properties.toString());
+        CommonUtil.terminalOutput("加载程序主配置：" + properties);
         return properties;
     }
 

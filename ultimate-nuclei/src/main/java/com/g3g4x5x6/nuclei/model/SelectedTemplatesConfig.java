@@ -1,7 +1,7 @@
 package com.g3g4x5x6.nuclei.model;
 
 
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.ultils.NucleiConfig;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileWriter;

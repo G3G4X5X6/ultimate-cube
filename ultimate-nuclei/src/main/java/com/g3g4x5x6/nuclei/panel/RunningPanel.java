@@ -2,12 +2,13 @@ package com.g3g4x5x6.nuclei.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.ultils.NucleiConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.LinkedHashMap;
 import java.util.function.BiConsumer;
 
 import static com.formdev.flatlaf.FlatClientProperties.*;
@@ -50,9 +51,7 @@ public class RunningPanel extends JPanel {
         addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                count++;
-                tabbedPane.addTab("#" + count, new ConsolePanel());
-                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+                createConsole();
             }
         });
 
@@ -69,6 +68,24 @@ public class RunningPanel extends JPanel {
         trailing.add(refreshBtn);
         trailing.add(Box.createHorizontalGlue());
         tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    public ConsolePanel createConsole(){
+        count++;
+        ConsolePanel consolePanel = new ConsolePanel();
+        tabbedPane.addTab("#" + count, consolePanel);
+        tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+
+        return consolePanel;
+    }
+
+    public LinkedHashMap<String, ConsolePanel> getConsolePanels() {
+        LinkedHashMap<String, ConsolePanel> consolePanels = new LinkedHashMap<>();
+        int count = tabbedPane.getTabCount();
+        for (int i = 0; i < count; i++) {
+            consolePanels.put(tabbedPane.getTitleAt(i), (ConsolePanel) tabbedPane.getComponentAt(i));
+        }
+        return consolePanels;
     }
 
 }

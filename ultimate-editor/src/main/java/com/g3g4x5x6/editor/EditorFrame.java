@@ -494,23 +494,4 @@ public class EditorFrame extends JFrame implements ActionListener {
         }
     };
 
-    public static void main(String[] args) {
-        initFlatLaf();
-        EditorFrame editor = new EditorFrame();
-        editor.setTitle(EditorConfig.getProperty("editor.title"));
-        editor.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        editor.addAndSelectPanel(new EditorPanel());
-
-        editor.setVisible(true);
-    }
-
-    private static void initFlatLaf() {
-        try {
-            UIManager.setLookAndFeel( new FlatLightLaf() );
-        } catch( Exception ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        }
-        UIManager.put("TextComponent.arc", 5);
-    }
 }

@@ -5,9 +5,9 @@ import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.nuclei.NucleiYamlCompletionProvider;
 import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.nuclei.panel.settings.SettingTarget;
-import com.g3g4x5x6.nuclei.panel.targetpanel.StringTargetPanel;
-import com.g3g4x5x6.ultils.DialogUtil;
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.ultils.DialogUtil;
+import com.g3g4x5x6.nuclei.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.ultils.TextAreaUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.fife.rsta.ui.search.FindDialog;
@@ -52,8 +52,8 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final JButton targetBtn = new JButton(new FlatSVGIcon("icons/targetTest.svg"));
     private final JButton terminalBtn = new JButton(new FlatSVGIcon("icons/OpenTerminal_13x13.svg"));
 
-    private RunningDialog runningDialog = new RunningDialog();
-    private StringTargetPanel targetPanel = new StringTargetPanel();
+    private final RunningDialog runningDialog = new RunningDialog();
+    private final EditorPanel editorPanel = new EditorPanel();
     private String title = "NewTemplate.yaml";
     private String tips = "Nuclei's Template";
     private String savePath = "";
@@ -62,6 +62,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
     private final RSyntaxTextArea textArea;
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
+
 
     public EditTemplatePanel() {
         this.setLayout(new BorderLayout());
@@ -213,7 +214,8 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
         targetPopupMenu.setBorder(null);
         targetPopupMenu.setSize(new Dimension(600, 200));
         targetPopupMenu.setPreferredSize(new Dimension(600, 200));
-        targetPopupMenu.add(targetPanel);
+
+        targetPopupMenu.add(editorPanel);
         targetBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -318,7 +320,7 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
 
     private void testTemplate(boolean isDebug) {
         // 获取目标URL
-        String targets = targetPanel.getTextArea().getText().strip();
+        String targets = SettingTarget.getInstance().getTargets();
         if (targets.equalsIgnoreCase("")) {
             targets = SettingTarget.stringTargetPanel.getTextArea().getText().strip();
             if (targets.equalsIgnoreCase("")) {
@@ -471,6 +473,29 @@ public class EditTemplatePanel extends JPanel implements SearchListener {
 
         public void runCommand(String command) {
             console.write(command);
+        }
+    }
+
+    private class EditorPanel extends JPanel {
+        private RSyntaxTextArea textArea = TextAreaUtils.createTextArea();
+        private JToolBar toolBar = new JToolBar();
+        private final JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("icons/toggleSoftWrap.svg"));
+        public EditorPanel() {
+            this.setLayout(new BorderLayout());
+
+            RTextScrollPane sp = new RTextScrollPane(textArea);
+            sp.setBorder(null);
+
+            toolBar.setFloatable(false);
+            toolBar.add(lineWrapBtn);
+            initToolBar();
+
+            this.add(sp, BorderLayout.CENTER);
+            this.add(toolBar, BorderLayout.NORTH);
+        }
+
+        private void initToolBar() {
+            lineWrapBtn.addActionListener(e -> textArea.setLineWrap(lineWrapBtn.isSelected()));
         }
     }
 }

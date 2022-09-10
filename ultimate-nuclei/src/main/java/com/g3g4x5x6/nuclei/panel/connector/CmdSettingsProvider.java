@@ -1,6 +1,6 @@
 package com.g3g4x5x6.nuclei.panel.connector;
 
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.ultils.NucleiConfig;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;

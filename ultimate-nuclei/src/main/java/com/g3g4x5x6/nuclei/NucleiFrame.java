@@ -1,14 +1,15 @@
 package com.g3g4x5x6.nuclei;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
+import com.g3g4x5x6.nuclei.model.GlobalConfigModel;
 import com.g3g4x5x6.nuclei.panel.EditTemplatePanel;
 import com.g3g4x5x6.nuclei.panel.RunningPanel;
 import com.g3g4x5x6.nuclei.panel.SettingsPanel;
 import com.g3g4x5x6.nuclei.panel.TemplatesPanel;
-import com.g3g4x5x6.ultils.NucleiConfig;
+import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
+import com.g3g4x5x6.nuclei.ultils.NucleiConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.common.util.OsUtils;
@@ -19,6 +20,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
@@ -31,6 +34,15 @@ public class NucleiFrame extends JFrame {
 
     public static String reportDir = NucleiConfig.getProperty("nuclei.report.path");
     public static String templatesDir = NucleiConfig.getProperty("nuclei.templates.path");
+    public static GlobalConfigModel globalConfigModel = new GlobalConfigModel();
+
+    // look to the master,follow the master,walk with the master,see through the master,become the master.
+    // 寻找大师，追随大师，与师偕行，领悟大师，成为大师
+    private final JLabel mottoLabel = new JLabel("追随大师，成为大师，超越大师");
+
+    private final TemplatesPanel templatesPanel = new TemplatesPanel();
+    private final SettingsPanel settingsPanel = new SettingsPanel();
+    private final RunningPanel runningPanel = new RunningPanel();
 
     private final JMenu fileMenu = new JMenu("开始");
     private final JMenu editMenu = new JMenu("编辑");
@@ -104,13 +116,70 @@ public class NucleiFrame extends JFrame {
         this.setJMenuBar(menuBar);
     }
 
-    private void initMenu(){
-
+    private void initMenu() {
+        // pluginIcon.svg
+        JMenuItem openSpace = new JMenuItem("打开工作空间");
+        openSpace.setIcon(new FlatSVGIcon("icons/pluginIcon.svg"));
+        openSpace.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Thread(() -> {
+                    try {
+                        Desktop.getDesktop().open(new File(NucleiConfig.getProperty("nuclei.bin.path")));
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                }).start();
+            }
+        });
+        fileMenu.add(openSpace);
     }
-
     private void initToolBar() {
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
+
+        JButton executeBtn = new JButton(new FlatSVGIcon("icons/execute.svg"));
+        executeBtn.setToolTipText("默认新建终端运行（右键可选择已有终端运行）");
+        executeBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                log.debug("GlobalConfigModel: \n" + globalConfigModel.toString());
+
+                if (e.getButton() == 3){
+                    JPopupMenu popupMenu = new JPopupMenu();
+
+                    LinkedHashMap<String, ConsolePanel> consolePanels = runningPanel.getConsolePanels();
+                    for (String title : consolePanels.keySet()) {
+                        JMenuItem tempItem = new JMenuItem(title);
+                        tempItem.addActionListener(new AbstractAction() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                log.debug("Execute in " + title);
+                                // runTemplatesInSelectedConsole(consolePanels.get(title));
+
+                                // 跳转至运行终端
+                                NucleiFrame.frameTabbedPane.setSelectedIndex(2);
+                                RunningPanel.tabbedPane.setSelectedComponent(consolePanels.get(title));
+                            }
+                        });
+                        popupMenu.add(tempItem);
+                    }
+                    popupMenu.show(executeBtn, e.getX(), e.getY());
+                }else {
+
+                    // 创建终端执行任务
+                    ConsolePanel consolePanel = runningPanel.createConsole();
+
+                    // TODO 组装配置文件：GlobalConfigModel
+
+                    // TODO 执行扫描任务
+
+                    // 跳转至运行终端
+                    NucleiFrame.frameTabbedPane.setSelectedIndex(2);
+                    RunningPanel.tabbedPane.setSelectedComponent(consolePanel);
+                }
+            }
+        });
 
         // Target.svg
         JButton targetBtn = new JButton(new FlatSVGIcon("icons/Target.svg"));
@@ -120,26 +189,25 @@ public class NucleiFrame extends JFrame {
             SettingsPanel.tabbedPane.setSelectedIndex(0);
         });
 
-        JButton executeBtn = new JButton(new FlatSVGIcon("icons/execute.svg"));
-        executeBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("executeBtn 执行...");
-            }
-        });
-
         toolBar.add(executeBtn);
         toolBar.add(targetBtn);
+
+        toolBar.add(Box.createGlue());
+        toolBar.add(new JLabel(""));
+        toolBar.add(Box.createGlue());
+        toolBar.add(mottoLabel);
+        toolBar.add(Box.createGlue());
+
         this.add(toolBar, BorderLayout.NORTH);
     }
 
-    private void initTabbedPane(){
+    private void initTabbedPane() {
         frameTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         initClosableTabs(frameTabbedPane);
         customComponents();
-        frameTabbedPane.addTab("Templates", new FlatSVGIcon("icons/pinTab.svg"), new TemplatesPanel());
-        frameTabbedPane.addTab("Settings", new FlatSVGIcon("icons/pinTab.svg"), new SettingsPanel());
-        frameTabbedPane.addTab("Running", new FlatSVGIcon("icons/pinTab.svg"), new RunningPanel());
+        frameTabbedPane.addTab("Templates", new FlatSVGIcon("icons/pinTab.svg"), templatesPanel);
+        frameTabbedPane.addTab("Settings", new FlatSVGIcon("icons/pinTab.svg"), settingsPanel);
+        frameTabbedPane.addTab("Running", new FlatSVGIcon("icons/pinTab.svg"), runningPanel);
 
         this.add(frameTabbedPane, BorderLayout.CENTER);
     }
@@ -154,7 +222,6 @@ public class NucleiFrame extends JFrame {
                     }
                 });
     }
-
 
     private void customComponents() {
         JToolBar trailing;
@@ -222,20 +289,4 @@ public class NucleiFrame extends JFrame {
         frameTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
-    public static void main(String[] args) {
-        initFlatLaf();
-        NucleiFrame nuclei = new NucleiFrame();
-        nuclei.setTitle(NucleiConfig.getProperty("nuclei.title"));
-        nuclei.setDefaultCloseOperation(NucleiFrame.EXIT_ON_CLOSE);
-        nuclei.setVisible(true);
-    }
-
-    private static void initFlatLaf() {
-        try {
-            UIManager.setLookAndFeel(new FlatLightLaf());
-        } catch (Exception ex) {
-            System.err.println("Failed to initialize LaF");
-        }
-        UIManager.put("TextComponent.arc", 5);
-    }
 }
