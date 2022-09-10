@@ -11,11 +11,9 @@
     <modules>
         <module>ultimate-terminal</module>
         <module>ultimate-editor</module>
-        <module>ultimate-nuclei</module>
         <module>ultimate-shell</module>
         <module>ultimate-app</module>
         <module>ultimate-typeahead</module>
-        <module>ultimate-vault</module>
     </modules>
 
     <properties>
@@ -338,32 +336,6 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-resource</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${pom.basedir/target/classes}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/main/java</directory>
-                                    <includes>
-                                        <include>**/*.*</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

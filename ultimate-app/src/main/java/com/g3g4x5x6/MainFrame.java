@@ -278,7 +278,7 @@ public class MainFrame extends JFrame implements MouseListener {
         updateBtn.setFocusable(false);
 
         FlatButton closeBtn = new FlatButton();
-        closeBtn.setIcon(new FlatSVGIcon("icons/closeHover.svg"));
+        closeBtn.setIcon(new FlatSVGIcon("icons/popFrame.svg"));
         closeBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
         closeBtn.setFocusable(false);
         closeBtn.addActionListener(e -> {
