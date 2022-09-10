@@ -46,6 +46,8 @@ public class App {
     public static void main(String[] args) {
         // 显示旗标
         showBanner();
+        // 加载日志配置
+        loadLogger();
         // 加载配置
         properties = loadProperties();
         // 检查程序运行环境
@@ -54,6 +56,17 @@ public class App {
         initLog4j();
         // 启动主程序
         SwingUtilities.invokeLater(App::createGUI);
+    }
+
+    private static void loadLogger() {
+        try {
+            // TODO getWorkSpace
+            System.setProperty("WORKDIR", String.valueOf(Path.of(System.getProperties().getProperty("user.home"), ".ultimate-cube/")));
+            String configFilename = Objects.requireNonNull(App.class.getClassLoader().getResource("")).getPath() + "log4j.properties";
+            PropertyConfigurator.configureAndWatch(configFilename);
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+        }
     }
 
     private static void createGUI() {
@@ -142,7 +155,7 @@ public class App {
 
             // 创建一个托盘图标
             assert image != null;
-            DefaultTrayIcon trayIcon = new DefaultTrayIcon(image, "ultimatecube's SystemTray", popupMenu);
+            DefaultTrayIcon trayIcon = new DefaultTrayIcon(image, "点击打开", popupMenu);
             // 托盘图标自适应尺寸
             trayIcon.setImageAutoSize(true);
             trayIcon.addMouseListener(new MouseAdapter() {
