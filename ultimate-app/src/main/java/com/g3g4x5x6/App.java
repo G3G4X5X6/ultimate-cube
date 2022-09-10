@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.ssh.SessionInfo;
+import com.g3g4x5x6.ui.tray.DefaultTrayIcon;
+import com.g3g4x5x6.ui.tray.DefaultTrayIconPopupMenu;
 import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.CheckUtil;
 import com.g3g4x5x6.utils.CommonUtil;
@@ -23,8 +25,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.Properties;
@@ -113,69 +113,10 @@ public class App {
             }
 
             // 创建右键图标时的弹出菜单：JPopupMenu
-            JPopupMenu popupMenu = new JPopupMenu();
-
-            JMenuItem openMenuItem = new JMenuItem("打开");
-            openMenuItem.setIcon(new FlatSVGIcon("icons/start.svg"));
-            openMenuItem.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    openApp();
-                }
-            });
-
-            JMenuItem exitMenuItem = new JMenuItem("退出");
-            exitMenuItem.setIcon(new FlatSVGIcon("icons/exit.svg"));
-            exitMenuItem.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
-                }
-            });
-
-            JMenuItem editorMenuItem = new JMenuItem("内置编辑器");
-            editorMenuItem.setIcon(new FlatSVGIcon("icons/editScheme.svg"));
-            editorMenuItem.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    MainFrame.editorFrame.setVisible(true);
-                }
-            });
-
-            popupMenu.add(openMenuItem);
-            popupMenu.addSeparator();
-            popupMenu.add(editorMenuItem);
-            popupMenu.addSeparator();
-            popupMenu.add(exitMenuItem);
-
+            DefaultTrayIconPopupMenu popupMenu = new DefaultTrayIconPopupMenu();
             // 创建一个托盘图标
             assert image != null;
             DefaultTrayIcon trayIcon = new DefaultTrayIcon(image, "点击打开", popupMenu);
-            // 托盘图标自适应尺寸
-            trayIcon.setImageAutoSize(true);
-            trayIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    switch (e.getButton()) {
-                        case MouseEvent.BUTTON1: {
-                            System.out.println("托盘图标被鼠标左键被点击");
-                            openApp();
-                            break;
-                        }
-                        case MouseEvent.BUTTON2: {
-                            System.out.println("托盘图标被鼠标中键被点击");
-                            break;
-                        }
-                        case MouseEvent.BUTTON3: {
-                            System.out.println("托盘图标被鼠标右键被点击，X:" + e.getX() + " <=> Y:" + e.getY());
-                            break;
-                        }
-                        default: {
-                            break;
-                        }
-                    }
-                }
-            });
 
             // 添加托盘图标到系统托盘
             try {
@@ -186,7 +127,7 @@ public class App {
         }
     }
 
-    private static void openApp() {
+    public static void openApp() {
         if (!mainFrame.isShowing()) {
             if (App.lockState.get()) {
                 LockDialog lockDialog = new LockDialog();

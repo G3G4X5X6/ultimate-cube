@@ -33,7 +33,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.sshd.common.util.OsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,6 +53,28 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
  */
 @Slf4j
 public class MainFrame extends JFrame implements MouseListener {
+
+    public static JTabbedPane mainTabbedPane;
+    public static EditorFrame editorFrame = EditorFrame.getInstance();
+    public static JProgressBar waitProgressBar;
+    public static AtomicInteger waitCount = new AtomicInteger(0);
+    public static int focusIndex = 0;
+
+    private final ExternalToolIntegration integration = new ExternalToolIntegration();
+
+    // TODO JFrame 组件定义
+    private final JMenuBar menuBar = new JMenuBar();
+    private final JMenu terminalMenu = new JMenu("终端");
+    private final JMenu viewMenu = new JMenu("查看");
+    private final JMenu optionMenu = new JMenu("选项");
+    private final JMenu toolMenu = new JMenu("工具");
+    private final JMenu pluginMenu = new JMenu("插件");
+    private final JMenu helpMenu = new JMenu("帮助");
+    private final JMenu externalSubMenu = new JMenu("外部集成工具");
+    private final JPopupMenu popupMenu = new JPopupMenu();
+    private final JPopupMenu trailPopupMenu = new JPopupMenu();
+
+    private String latestVersion;
 
     public MainFrame() throws HeadlessException {
         // 主窗口设置
@@ -687,32 +708,6 @@ public class MainFrame extends JFrame implements MouseListener {
         dialog.setContentPane(new RandomPassword());
         dialog.setVisible(true);
     }
-
-
-    /**
-     * 定义
-     */
-    public static JTabbedPane mainTabbedPane;
-    public static EditorFrame editorFrame = EditorFrame.getInstance();
-    public static JProgressBar waitProgressBar;
-    public static AtomicInteger waitCount = new AtomicInteger(0);
-    public static int focusIndex = 0;
-
-    private final ExternalToolIntegration integration = new ExternalToolIntegration();
-
-    // TODO JFrame 组件定义
-    private final JMenuBar menuBar = new JMenuBar();
-    private final JMenu terminalMenu = new JMenu("终端");
-    private final JMenu viewMenu = new JMenu("查看");
-    private final JMenu optionMenu = new JMenu("选项");
-    private final JMenu toolMenu = new JMenu("工具");
-    private final JMenu pluginMenu = new JMenu("插件");
-    private final JMenu helpMenu = new JMenu("帮助");
-    private final JMenu externalSubMenu = new JMenu("外部集成工具");
-    private final JPopupMenu popupMenu = new JPopupMenu();
-    private final JPopupMenu trailPopupMenu = new JPopupMenu();
-
-    private String latestVersion;
 
     // TODO 菜单动作
     private final AbstractAction myNewAction = new AbstractAction("新建会话") {
