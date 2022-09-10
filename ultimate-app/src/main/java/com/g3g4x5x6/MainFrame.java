@@ -11,8 +11,10 @@ import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.focus.FocusFrame;
-import com.g3g4x5x6.panels.ssh.panel.RandomPassword;
-import com.g3g4x5x6.panels.ssh.panel.SessionManagerPanel;
+import com.g3g4x5x6.panel.ConnectionPane;
+import com.g3g4x5x6.panel.RandomPassword;
+import com.g3g4x5x6.panel.SessionManagerPanel;
+import com.g3g4x5x6.panel.SysinfoPane;
 import com.g3g4x5x6.settings.SettingsDialog;
 import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.ssh.panel.SshTabbedPane;
@@ -149,7 +151,32 @@ public class MainFrame extends JFrame implements MouseListener {
                 focusAction();
             }
         });
+
+        JMenu paneMenu = new JMenu("面板");
+        JMenuItem infoItem = new JMenuItem("系统信息");
+        infoItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.insertTab("系统信息", new FlatSVGIcon("icons/addToDictionary.svg"), new SysinfoPane(), "操作系统信息", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+            }
+        });
+        JMenuItem networkItem = new JMenuItem("网络连接");
+        networkItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.insertTab("网络连接", new FlatSVGIcon("icons/addToDictionary.svg"), new ConnectionPane(), "网络连接", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+
+            }
+        });
+        paneMenu.add(infoItem);
+        paneMenu.add(networkItem);
+
         viewMenu.add(focusItem);
+        viewMenu.add(paneMenu);
+
+
 
         // 选项菜单
         JMenuItem settingsItem = new JMenuItem("全局配置");

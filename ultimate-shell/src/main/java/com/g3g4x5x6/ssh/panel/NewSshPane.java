@@ -68,8 +68,8 @@ public class NewSshPane extends JPanel {
         this.setLayout(borderLayout);
         this.mainTabbedPane = tabbedPane;
 
-        basicSettingPaneTitle = "Basic SSH Settings";
-        advancedSettingPaneTitle = "Advanced SSH Settings";
+        basicSettingPaneTitle = "基本设置";
+        advancedSettingPaneTitle = "高级设置";
 
         leftFlow.setAlignment(FlowLayout.LEFT);
         rightFlow.setAlignment(FlowLayout.RIGHT);
