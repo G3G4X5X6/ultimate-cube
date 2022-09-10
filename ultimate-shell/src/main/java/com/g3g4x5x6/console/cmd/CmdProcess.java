@@ -2,6 +2,7 @@ package com.g3g4x5x6.console.cmd;
 
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
+import com.pty4j.PtyProcessOptions;
 import com.pty4j.WinSize;
 import com.pty4j.unix.Pty;
 import com.pty4j.unix.UnixPtyProcess;
@@ -47,21 +48,6 @@ public abstract class CmdProcess {
         return exec(command, environment, workingDirectory, false, false, (File) null);
     }
 
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static PtyProcess exec(String[] command, String[] environment) throws IOException {
-        return exec(command, (String[]) environment, (String) null, false);
-    }
-
-    /**
-     * @deprecated
-     */
-    @Deprecated
-    public static PtyProcess exec(String[] command, String[] environment, String workingDirectory, boolean console) throws IOException {
-        return (PtyProcess) (Platform.isWindows() ? new WinPtyProcess(command, environment, workingDirectory, console) : new UnixPtyProcess(command, environment, workingDirectory, new Pty(console), console ? new Pty() : null));
-    }
 
     public static PtyProcess exec(String[] command, Map<String, String> environment, String workingDirectory, boolean console) throws IOException {
         return exec(command, environment, workingDirectory, console, false, (File) null);

@@ -2,7 +2,6 @@ package com.g3g4x5x6.panels.ssh.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.g3g4x5x6.nuclei.panel.connector.ConsolePanel;
 import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
@@ -44,7 +43,6 @@ public class EditorPane extends JPanel {
     private JToolBar statusBar;
 
     private JPopupMenu savePopupMenu;
-    private final ConsolePanel consolePanel = new ConsolePanel();
     private String shellcheck = AppConfig.getWorkPath() + "/tools/xpack_tools/shellcheck/shellcheck";
 
     // default directory
@@ -77,7 +75,6 @@ public class EditorPane extends JPanel {
         savePopupMenu = new JPopupMenu();
         savePopupMenu.setSize(new Dimension(800, 400));
         savePopupMenu.setPreferredSize(new Dimension(800, 400));
-        savePopupMenu.add(consolePanel);
 
         initToolBar();
         initEditorPane();
@@ -232,30 +229,6 @@ public class EditorPane extends JPanel {
             }
         });
 
-        FlatButton checkBtn = new FlatButton();
-        checkBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
-        checkBtn.setIcon(new FlatSVGIcon("icons/shield.svg"));
-        checkBtn.setToolTipText("安全检查(右键执行，点击查看)");
-        checkBtn.addMouseListener(new MouseAdapter() {
-            @SneakyThrows
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                log.debug("Bash 安全检查");
-                if (!textArea.getText().strip().equals("")) {
-                    if (e.getButton() == 3) {
-                        String tempBash = AppConfig.getWorkPath() + "/temp/shellcheck_" + UUID.randomUUID() + ".sh";
-                        Files.write(Path.of(tempBash), textArea.getText().getBytes(StandardCharsets.UTF_8));
-                        // run
-                        consolePanel.write(Path.of(shellcheck) + " " + tempBash + "\r");
-                    }
-                    // show
-                    savePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                } else {
-                    DialogUtil.warn("没内容就不要检查了吧");
-                }
-            }
-        });
-
         // 搜索
         JButton searchBtn = new JButton(new FlatSVGIcon("icons/search.svg"));
         searchBtn.addMouseListener(new MouseAdapter() {
@@ -371,7 +344,6 @@ public class EditorPane extends JPanel {
         toolBar.add(importBtn);
         toolBar.add(exportBtn);
         toolBar.addSeparator();
-        toolBar.add(checkBtn);
         toolBar.addSeparator();
         toolBar.add(searchBtn);
         toolBar.addSeparator();

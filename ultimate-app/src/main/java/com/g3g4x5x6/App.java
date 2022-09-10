@@ -134,18 +134,8 @@ public class App {
                 }
             });
 
-            JMenuItem nucleiMenuItem = new JMenuItem("Poc验证框架");
-            nucleiMenuItem.setIcon(new FlatSVGIcon("icons/Administrator.svg"));
-            nucleiMenuItem.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    MainFrame.nucleiFrame.setVisible(true);
-                }
-            });
-
             popupMenu.add(openMenuItem);
             popupMenu.addSeparator();
-            popupMenu.add(nucleiMenuItem);
             popupMenu.add(editorMenuItem);
             popupMenu.addSeparator();
             popupMenu.add(exitMenuItem);

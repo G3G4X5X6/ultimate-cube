@@ -99,14 +99,10 @@ public class CmdProcessBuilder {
         if (this.myEnvironment == null) {
             this.myEnvironment = System.getenv();
         }
-
-        CmdProcessOptions options = new CmdProcessOptions(this.myCommand, this.myEnvironment, this.myDirectory, this.myRedirectErrorStream, this.myInitialColumns, this.myInitialRows, this.myWindowsAnsiColorEnabled, this.myUnixOpenTtyToPreserveOutputAfterTermination);
         if (Platform.isWindows()) {
             return new ProcessBuilder(this.myCommand).start();
-//            return (PtyProcess)(this.myCygwin ? new CygwinPtyProcess(this.myCommand, this.myEnvironment, this.myDirectory, this.myLogFile, this.myConsole) : new WinPtyProcess(options, this.myConsole));
         } else {
             return null;
-//            return new UnixPtyProcess(options, this.myConsole);
         }
     }
 }

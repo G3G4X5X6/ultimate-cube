@@ -11,7 +11,6 @@ import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.focus.FocusFrame;
-import com.g3g4x5x6.nuclei.NucleiFrame;
 import com.g3g4x5x6.panels.ssh.panel.RandomPassword;
 import com.g3g4x5x6.panels.ssh.panel.SessionManagerPanel;
 import com.g3g4x5x6.settings.SettingsDialog;
@@ -407,43 +406,9 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        // Administrator.svg
-        JButton nucleiBtn = new JButton(new FlatSVGIcon("icons/Administrator.svg"));
-        nucleiBtn.setToolTipText("Nuclei: 漏洞验证框架GUI");
-        nucleiBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (nucleiFrame == null) {
-                    nucleiFrame = new NucleiFrame();
-                }
-                nucleiFrame.setTitle(App.properties.getProperty("nuclei.title"));
-                nucleiFrame.setVisible(true);
-            }
-        });
-
-
         // TODO 选项卡面板前置工具栏，暂不使用
         leading.add(dashboardBtn);
-//        mainTabbedPane.putClientProperty(TABBED_PANE_LEADING_COMPONENT, leading);
-        // TODO 选项卡面板后置工具栏，待实现
-        String iconPath = null;
-        if (OsUtils.isWin32()) {
-            // windows.svg
-            iconPath = "icons/windows.svg";
-        } else if (OsUtils.isUNIX()) {
-            // linux.svg
-            iconPath = "icons/linux.svg";
-        } else if (OsUtils.isOSX()) {
-            // macOS.svg
-            iconPath = "icons/macOS.svg";
-        }
-        JButton trailMenuBtn = new JButton(new FlatSVGIcon(iconPath));
-        trailMenuBtn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                trailPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-            }
-        });
+
         JButton editorBtn = new JButton(new FlatSVGIcon("icons/editScheme.svg"));
         editorBtn.addActionListener(myEditorAction);
 
@@ -468,10 +433,8 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
-        trailing.add(nucleiBtn);    // xpack-tools
         trailing.add(editorBtn);
         trailing.add(fullScreenBtn);
-        trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
@@ -731,7 +694,6 @@ public class MainFrame extends JFrame implements MouseListener {
      */
     public static JTabbedPane mainTabbedPane;
     public static EditorFrame editorFrame = EditorFrame.getInstance();
-    public static NucleiFrame nucleiFrame = new NucleiFrame();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
     public static int focusIndex = 0;

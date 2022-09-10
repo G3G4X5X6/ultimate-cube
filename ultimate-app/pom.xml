@@ -32,11 +32,6 @@
             <artifactId>ultimate-editor</artifactId>
             <version>6.6.9</version>
         </dependency>
-        <dependency>
-            <groupId>com.g3g4x5x6</groupId>
-            <artifactId>ultimate-nuclei</artifactId>
-            <version>6.6.9</version>
-        </dependency>
 
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
