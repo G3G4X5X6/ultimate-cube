@@ -22,6 +22,7 @@ import com.g3g4x5x6.tools.ColorPicker;
 import com.g3g4x5x6.tools.QRTool;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.tools.xpack.FreeRdp;
+import com.g3g4x5x6.ui.StatusBar;
 import com.g3g4x5x6.utils.*;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
@@ -64,6 +65,8 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private final ExternalToolIntegration integration = new ExternalToolIntegration();
 
+    private final JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
+
     // TODO JFrame 组件定义
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu terminalMenu = new JMenu("终端");
@@ -75,6 +78,8 @@ public class MainFrame extends JFrame implements MouseListener {
     private final JMenu externalSubMenu = new JMenu("外部集成工具");
     private final JPopupMenu popupMenu = new JPopupMenu();
     private final JPopupMenu trailPopupMenu = new JPopupMenu();
+
+    private final StatusBar statusBar = new StatusBar();
 
     private String latestVersion;
 
@@ -99,7 +104,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initMainTabbedPane();
 
         // TODO 初始化 ”状态栏“
-//        initStatusBar();
+        initStatusBar();
 
         WindowListener exitListener = new WindowAdapter() {
 
@@ -372,7 +377,19 @@ public class MainFrame extends JFrame implements MouseListener {
     }
 
     private void initToolBar() {
-        // 暂不实现
+//        JButton generatePassBtn = new JButton();
+//        generatePassBtn.setToolTipText("生成随机密码");
+//        generatePassBtn.setIcon(new FlatSVGIcon("icons/cargoGenerate.svg"));
+//        generatePassBtn.addActionListener(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                showRandomPasswordDialog();
+//            }
+//        });
+//
+//        toolBar.add(generatePassBtn);
+//
+//        this.add(toolBar, BorderLayout.WEST);
     }
 
     private void initMainTabbedPane() {
@@ -394,6 +411,10 @@ public class MainFrame extends JFrame implements MouseListener {
                 new DashboardPane());
 
         this.getContentPane().add(mainTabbedPane);
+    }
+
+    private void initStatusBar(){
+        this.add(statusBar, BorderLayout.SOUTH);
     }
 
     private void initTrailPopupMenu() {
