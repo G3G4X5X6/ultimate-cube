@@ -70,9 +70,6 @@ public class App {
     }
 
     private static void createGUI() {
-        // 设置GUI全局字体
-//        initGlobalFont(new Font("sans", Font.PLAIN, 14));
-
         // 配置主题皮肤
         initFlatLaf();
 
@@ -83,8 +80,6 @@ public class App {
 
         // 初始化系统托盘
         initSystemTray();
-
-        showBootstrapTips();
     }
 
     private static void initFlatLaf() {
@@ -257,19 +252,6 @@ public class App {
         System.out.print(colorize("\tPOWER BY ", BOLD(), BRIGHT_YELLOW_TEXT(), GREEN_BACK()));
         System.out.println(colorize("G3G4X5X6\t", BOLD(), BRIGHT_YELLOW_TEXT(), RED_BACK()));
         System.out.println(colorize("\nI hope you find it useful ;)", YELLOW_TEXT(), BOLD()));
-        System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
-    }
-
-    private static void showBootstrapTips(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
-        System.out.print(colorize("\tStarted at ", BOLD(), BRIGHT_YELLOW_TEXT(), GREEN_BACK()));
-        System.out.println(colorize(sdf.format(new Date()) + "\t", BOLD(), BRIGHT_YELLOW_TEXT(), RED_BACK()));
-        System.out.println();
-        System.out.print(colorize("——————————————————————————————————————————————————————————————", CYAN_TEXT(), BOLD()));
-        System.out.println(colorize("\nGo for it!", YELLOW_TEXT(), BOLD()));
-        System.out.print(colorize("——————————————————————————————————————————————————————————————", CYAN_TEXT(), BOLD()));
-        System.out.println();
         System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
     }
 }
