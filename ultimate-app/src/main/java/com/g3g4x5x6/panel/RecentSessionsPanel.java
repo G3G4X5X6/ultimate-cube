@@ -8,6 +8,7 @@ import com.g3g4x5x6.App;
 import com.g3g4x5x6.MainFrame;
 import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.ui.ToolBar;
 import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.SessionUtil;
 import com.g3g4x5x6.utils.SshUtil;
@@ -40,12 +41,17 @@ import java.util.Objects;
  */
 @Slf4j
 public class RecentSessionsPanel extends JPanel {
+    private final ToolBar toolBar = new ToolBar();
+
     private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
     private JTable recentTable;
     private DefaultTableModel tableModel;
 
     public RecentSessionsPanel() {
         this.setLayout(new BorderLayout());
+
+        // 初始化工具栏
+        initToolBar();
 
         // 初始化表格
         initTable();
@@ -64,6 +70,18 @@ public class RecentSessionsPanel extends JPanel {
                 }
             }
         });
+    }
+
+    private void initToolBar() {
+        // 1.
+        JButton refreshBtn = new JButton();
+        refreshBtn.setIcon(new FlatSVGIcon("icons/refresh.svg"));
+
+        // 2.
+        toolBar.add(refreshBtn);
+
+        // 3.
+        this.add(toolBar, BorderLayout.NORTH);
     }
 
     private void initTable() {

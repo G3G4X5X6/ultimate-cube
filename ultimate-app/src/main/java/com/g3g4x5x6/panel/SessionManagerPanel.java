@@ -10,6 +10,7 @@ import com.g3g4x5x6.MainFrame;
 import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.ssh.panel.NewSshPane;
 import com.g3g4x5x6.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.ui.ToolBar;
 import com.g3g4x5x6.utils.AppConfig;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.SessionUtil;
@@ -38,6 +39,7 @@ import java.util.Objects;
 
 @Slf4j
 public class SessionManagerPanel extends JPanel {
+    private final ToolBar toolBar = new ToolBar();
 
     private final JTabbedPane mainTabbedPane;
 
@@ -72,6 +74,9 @@ public class SessionManagerPanel extends JPanel {
         this.splitPane.setDividerLocation(200);
         this.add(splitPane, BorderLayout.CENTER);
 
+        // 初始化工具栏
+        initToolBar();
+
         // 初始化会话树
         initTree();
 
@@ -100,6 +105,18 @@ public class SessionManagerPanel extends JPanel {
                 }
             }
         });
+    }
+
+    private void initToolBar() {
+        // 1.
+        JButton refreshBtn = new JButton();
+        refreshBtn.setIcon(new FlatSVGIcon("icons/refresh.svg"));
+
+        // 2.
+        toolBar.add(refreshBtn);
+
+        // 3.
+        this.add(toolBar, BorderLayout.NORTH);
     }
 
     /**

@@ -11,7 +11,7 @@ public class StatusBar extends JPanel {
 
     public StatusBar() {
         this.setLayout(new BorderLayout());
-        
+
         label = new JLabel("就绪");
         add(label, BorderLayout.LINE_START);
 

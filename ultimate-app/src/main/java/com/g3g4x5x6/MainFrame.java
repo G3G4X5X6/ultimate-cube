@@ -6,7 +6,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.console.ConsolePane;
-import com.g3g4x5x6.dashboard.DashboardPane;
+import com.g3g4x5x6.dashboard.QuickStartPane;
 import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
@@ -405,10 +405,10 @@ public class MainFrame extends JFrame implements MouseListener {
         customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
-        // 添加 ”仪表盘“ 面板
-        mainTabbedPane.addTab("仪表板",
-                new FlatSVGIcon("icons/homeFolder.svg"),
-                new DashboardPane());
+        // 添加 ”快速启动“ 面板
+        mainTabbedPane.addTab("快速启动",
+                new FlatSVGIcon("icons/start.svg"),
+                new QuickStartPane());
 
         this.getContentPane().add(mainTabbedPane);
     }
