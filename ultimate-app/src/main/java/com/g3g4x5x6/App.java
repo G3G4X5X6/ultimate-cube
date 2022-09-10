@@ -1,7 +1,6 @@
 package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.ui.tray.DefaultTrayIcon;
@@ -15,9 +14,6 @@ import org.apache.log4j.PropertyConfigurator;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

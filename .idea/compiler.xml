@@ -7,9 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ultimate-terminal" />
         <module name="ultimate-typeahead" />
         <module name="ultimate-shell" />
-        <module name="ultimate-terminal" />
         <module name="ultimate-editor" />
         <module name="ultimate-app" />
       </profile>

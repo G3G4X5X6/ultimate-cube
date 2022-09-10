@@ -70,8 +70,8 @@ public class MainFrame extends JFrame implements MouseListener {
     // TODO JFrame 组件定义
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu terminalMenu = new JMenu("终端");
-    private final JMenu viewMenu = new JMenu("查看");
-    private final JMenu optionMenu = new JMenu("选项");
+    private final JMenu viewMenu = new JMenu("视图");
+    private final JMenu optionMenu = new JMenu("设置");
     private final JMenu toolMenu = new JMenu("工具");
     private final JMenu pluginMenu = new JMenu("插件");
     private final JMenu helpMenu = new JMenu("帮助");
@@ -142,8 +142,8 @@ public class MainFrame extends JFrame implements MouseListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        terminalMenu.add(openSessionMenu);
         terminalMenu.add(myNewAction);
+        terminalMenu.add(openSessionMenu);
         terminalMenu.add(mySessionAction);
         terminalMenu.add(myLocalTerminal);
 

@@ -69,5 +69,9 @@
             <version>6.6.9</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.pty4j</groupId>
+            <artifactId>pty4j</artifactId>
+        </dependency>
     </dependencies>
 </project>

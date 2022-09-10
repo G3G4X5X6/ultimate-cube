@@ -74,7 +74,7 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
     1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.6`
     2. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
     3. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
-    4. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
+    4. 运行项目或者打包（`maven` 插件 `assembly:assembly`）或者 `mvn clean package -DskipTests`
 
 
 1. 程序更新后，若无法正常连接SSH，请备份删除原配置文件 `application.properties`。

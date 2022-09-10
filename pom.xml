@@ -371,7 +371,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
         </plugins>
 
         <resources>
