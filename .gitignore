@@ -32,3 +32,6 @@ ultimate-typeahead/target
 ultimate-terminal/target
 ultimate-vault/target
 logs
+target
+*/target
+*/target/.*jar
