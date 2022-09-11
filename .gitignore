@@ -36,3 +36,4 @@ target
 target/*
 */target
 */target/.*jar
+*/buildNumber.properties
