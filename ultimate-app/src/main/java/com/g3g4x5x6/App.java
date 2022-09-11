@@ -61,7 +61,7 @@ public class App {
             String configFilename = Objects.requireNonNull(App.class.getClassLoader().getResource("")).getPath() + "log4j.properties";
             PropertyConfigurator.configureAndWatch(configFilename);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            e.printStackTrace();
         }
     }
 
