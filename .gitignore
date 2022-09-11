@@ -33,5 +33,6 @@ ultimate-terminal/target
 ultimate-vault/target
 logs
 target
+target/*
 */target
 */target/.*jar
