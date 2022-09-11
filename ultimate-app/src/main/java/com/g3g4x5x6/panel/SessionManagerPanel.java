@@ -11,10 +11,7 @@ import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.ssh.panel.NewSshPane;
 import com.g3g4x5x6.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.ui.ToolBar;
-import com.g3g4x5x6.utils.AppConfig;
-import com.g3g4x5x6.utils.DialogUtil;
-import com.g3g4x5x6.utils.SessionUtil;
-import com.g3g4x5x6.utils.SshUtil;
+import com.g3g4x5x6.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
@@ -470,7 +467,7 @@ public class SessionManagerPanel extends JPanel {
                             sshPane.setHostField(jsonObject.getString("sessionAddress"));
                             sshPane.setPortField(jsonObject.getString("sessionPort"));
                             sshPane.setUserField(jsonObject.getString("sessionUser"));
-                            sshPane.setPassField(jsonObject.getString("sessionPass"));
+                            sshPane.setPassField(VaultUtil.decryptPasswd(jsonObject.getString("sessionPass")));
                             sshPane.setKeyLabel(jsonObject.getString("sessionKeyPath"));
                             sshPane.setSessionName(jsonObject.getString("sessionName"));
                             sshPane.setCommentText(jsonObject.getString("sessionComment"));
