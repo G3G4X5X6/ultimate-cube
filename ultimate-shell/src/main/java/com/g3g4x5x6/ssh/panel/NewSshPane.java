@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
+import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT;
+
 
 @Slf4j
 public class NewSshPane extends JPanel {
@@ -80,6 +82,7 @@ public class NewSshPane extends JPanel {
         createAdvancedComponent();
     }
 
+
     /**
      * 初始化面板
      */
@@ -91,6 +94,7 @@ public class NewSshPane extends JPanel {
         JPanel btnPane = new JPanel();
         btnPane.setLayout(centerFlow);
         JButton saveBtn = new JButton("保存会话");
+        saveBtn.setIcon(new FlatSVGIcon("icons/menu-saveall.svg"));
         saveBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,38 +105,44 @@ public class NewSshPane extends JPanel {
 
         // TODO Save and open session
         JButton openButton = new JButton("快速连接");
-        openButton.setToolTipText("默认自动保存会话");
+        openButton.setToolTipText("默认不保存会话");
+        openButton.setIcon(new FlatSVGIcon("icons/rerun.svg"));
+
         JButton testButton = new JButton("测试通信");
+        testButton.setIcon(new FlatSVGIcon("icons/lightning.svg"));
 
         openButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 log.debug("快速连接");
+                openButton.setIcon(new FlatSVGIcon("icons/suspend.svg"));
 
-                // TODO 测试连接
-                if (testConnection() == 1) {
-                    int preIndex = mainTabbedPane.getSelectedIndex();
+                new Thread(() -> {
+                    // TODO 测试连接
+                    if (testConnection() == 1) {
+                        int preIndex = mainTabbedPane.getSelectedIndex();
 
-                    String defaultTitle = sessionName.getText().equals("") ? "未命名" : sessionName.getText();
-                    SessionInfo sessionInfo = new SessionInfo();
-                    sessionInfo.setSessionName(sessionName.getText());
-                    sessionInfo.setSessionAddress(hostField.getText());
-                    sessionInfo.setSessionPort(portField.getText());
-                    sessionInfo.setSessionUser(userField.getText());
-                    sessionInfo.setSessionPass(VaultUtil.decryptPasswd(String.valueOf(passField.getPassword())));
-                    sessionInfo.setSessionKeyPath(keyLabel.getText());
-                    sessionInfo.setSessionLoginType(authType);
-                    sessionInfo.setSessionComment(commentText.getText());
+                        String defaultTitle = sessionName.getText().equals("") ? "未命名" : sessionName.getText();
+                        SessionInfo sessionInfo = new SessionInfo();
+                        sessionInfo.setSessionName(sessionName.getText());
+                        sessionInfo.setSessionAddress(hostField.getText());
+                        sessionInfo.setSessionPort(portField.getText());
+                        sessionInfo.setSessionUser(userField.getText());
+                        sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
+                        sessionInfo.setSessionKeyPath(keyLabel.getText());
+                        sessionInfo.setSessionLoginType(authType);
+                        sessionInfo.setSessionComment(commentText.getText());
 
-                    // 鸠占鹊巢
-                    mainTabbedPane.insertTab(defaultTitle,
-                            new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
-                            new SshTabbedPane(sessionInfo), "奥里给", preIndex);
-                    mainTabbedPane.removeTabAt(preIndex + 1);
-                    mainTabbedPane.setSelectedIndex(preIndex);
-                } else {
-                    JOptionPane.showMessageDialog(NewSshPane.this, "连接失败", "警告", JOptionPane.WARNING_MESSAGE);
-                }
+                        // 鸠占鹊巢
+                        mainTabbedPane.insertTab(defaultTitle,
+                                new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                                new SshTabbedPane(sessionInfo), "奥里给", preIndex);
+                        mainTabbedPane.removeTabAt(preIndex + 1);
+                        mainTabbedPane.setSelectedIndex(preIndex);
+                    } else {
+                        JOptionPane.showMessageDialog(NewSshPane.this, "连接失败", "警告", JOptionPane.WARNING_MESSAGE);
+                    }
+                }).start();
             }
         });
 
@@ -140,16 +150,23 @@ public class NewSshPane extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 log.debug("测试连接");
-                switch (testConnection()) {
-                    case 0:
-                        DialogUtil.warn(NewSshPane.this, "连接失败");
-                        break;
-                    case 1:
-                        DialogUtil.info(NewSshPane.this, "连接成功");
-                        break;
-                    case 2:
-                        DialogUtil.info(NewSshPane.this, "请输入主机地址！！！");
-                }
+                testButton.setIcon(new FlatSVGIcon("icons/suspend.svg"));
+
+                new Thread(() -> {
+                    testButton.setIcon(new FlatSVGIcon("icons/lightning.svg"));
+
+                    switch (testConnection()) {
+                        case 0:
+                            DialogUtil.warn(NewSshPane.this, "连接失败");
+                            break;
+                        case 1:
+                            JOptionPane.showMessageDialog(NewSshPane.this, "连接成功", "信息", JOptionPane.INFORMATION_MESSAGE);
+                            break;
+                        case 2:
+                            DialogUtil.info(NewSshPane.this, "请输入主机地址！！！");
+                            break;
+                    }
+                }).start();
             }
         });
 
