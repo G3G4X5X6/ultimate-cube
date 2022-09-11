@@ -99,6 +99,7 @@ public class CommonUtil {
 
             inn.close();
         } catch (IOException e) {
+            log.error("获取程序更新信息异常");
             e.printStackTrace();
         }
 
