@@ -153,19 +153,18 @@ public class NewSshPane extends JPanel {
                 testButton.setIcon(new FlatSVGIcon("icons/suspend.svg"));
 
                 new Thread(() -> {
-                    testButton.setIcon(new FlatSVGIcon("icons/lightning.svg"));
-
                     switch (testConnection()) {
                         case 0:
-                            DialogUtil.warn(NewSshPane.this, "连接失败");
+                            JOptionPane.showMessageDialog(NewSshPane.this, "连接失败", "警告", JOptionPane.WARNING_MESSAGE);
                             break;
                         case 1:
                             JOptionPane.showMessageDialog(NewSshPane.this, "连接成功", "信息", JOptionPane.INFORMATION_MESSAGE);
                             break;
                         case 2:
-                            DialogUtil.info(NewSshPane.this, "请输入主机地址！！！");
+                            JOptionPane.showMessageDialog(NewSshPane.this, "请输入主机地址！！！", "信息", JOptionPane.INFORMATION_MESSAGE);
                             break;
                     }
+                    testButton.setIcon(new FlatSVGIcon("icons/lightning.svg"));
                 }).start();
             }
         });

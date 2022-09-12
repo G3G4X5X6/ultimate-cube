@@ -13,6 +13,7 @@ public class DefaultTrayIconPopupMenu extends JPopupMenu {
     }
 
     private void initMenuItem(){
+
         JMenuItem openMenuItem = new JMenuItem("打开");
         openMenuItem.setIcon(new FlatSVGIcon("icons/start.svg"));
         openMenuItem.addActionListener(new AbstractAction() {

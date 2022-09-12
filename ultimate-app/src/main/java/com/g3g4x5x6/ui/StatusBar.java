@@ -1,5 +1,6 @@
 package com.g3g4x5x6.ui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ui.icon.SizeGripIcon;
 
 import javax.swing.*;
@@ -13,6 +14,7 @@ public class StatusBar extends JPanel {
         this.setLayout(new BorderLayout());
 
         label = new JLabel("就绪");
+        label.setIcon(new FlatSVGIcon("icons/inspectionsOK.svg"));
         add(label, BorderLayout.LINE_START);
 
         // 总是在最后
