@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ultimate-cube</artifactId>
         <groupId>com.g3g4x5x6</groupId>
-        <version>6.6.9</version>
+        <version>6.6.10</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,17 +20,17 @@
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-shell</artifactId>
-            <version>6.6.9</version>
+            <version>6.6.10</version>
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-terminal</artifactId>
-            <version>6.6.9</version>
+            <version>6.6.10</version>
         </dependency>
         <dependency>
             <groupId>com.g3g4x5x6</groupId>
             <artifactId>ultimate-editor</artifactId>
-            <version>6.6.9</version>
+            <version>6.6.10</version>
         </dependency>
 
         <dependency>
