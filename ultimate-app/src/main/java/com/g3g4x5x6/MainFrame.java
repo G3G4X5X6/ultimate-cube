@@ -65,8 +65,6 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private final ExternalToolIntegration integration = new ExternalToolIntegration();
 
-    private final JToolBar toolBar = new JToolBar(JToolBar.VERTICAL);
-
     // TODO JFrame 组件定义
     private final JMenuBar menuBar = new JMenuBar();
     private final JMenu terminalMenu = new JMenu("终端");
@@ -96,9 +94,6 @@ public class MainFrame extends JFrame implements MouseListener {
 
         // 初始化 ”菜单栏——功能小图标“
         initFuncIconButton();
-
-        // TODO 初始化 ”工具栏“
-        initToolBar();
 
         // 初始化 ”主选项卡面板“
         initMainTabbedPane();
@@ -225,17 +220,7 @@ public class MainFrame extends JFrame implements MouseListener {
         editorItem.setIcon(new FlatSVGIcon("icons/editScheme.svg"));
         editorItem.addActionListener(myEditorAction);
 
-        JMenuItem randomPassItem = new JMenuItem("随机密码生成器");
-        randomPassItem.setIcon(new FlatSVGIcon("icons/colGreyKey.svg"));
-        randomPassItem.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showRandomPasswordDialog();
-            }
-        });
-
         toolMenu.add(editorItem);
-        toolMenu.add(randomPassItem);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         // 快捷键
@@ -245,7 +230,17 @@ public class MainFrame extends JFrame implements MouseListener {
         toolMenu.add(freeRdpItem);
         toolMenu.addSeparator();
 
+        JMenuItem randomPassItem = new JMenuItem("随机密码生成器");
+        randomPassItem.setIcon(new FlatSVGIcon("icons/section.svg"));
+        randomPassItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showRandomPasswordDialog();
+            }
+        });
+
         JMenu otherToolMenu = new JMenu("杂七杂八");
+        otherToolMenu.add(randomPassItem);
         otherToolMenu.add(encodeConversionAction);
         otherToolMenu.add(colorPickerAction);
         otherToolMenu.add(qrCodePickerAction);
@@ -376,22 +371,6 @@ public class MainFrame extends JFrame implements MouseListener {
         menuBar.add(closeBtn);
     }
 
-    private void initToolBar() {
-//        JButton generatePassBtn = new JButton();
-//        generatePassBtn.setToolTipText("生成随机密码");
-//        generatePassBtn.setIcon(new FlatSVGIcon("icons/cargoGenerate.svg"));
-//        generatePassBtn.addActionListener(new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                showRandomPasswordDialog();
-//            }
-//        });
-//
-//        toolBar.add(generatePassBtn);
-//
-//        this.add(toolBar, BorderLayout.WEST);
-    }
-
     private void initMainTabbedPane() {
         // 选项卡面板UI设置
         UIManager.put("TabbedPane.tabInsets", new Insets(0, 10, 0, 10));
@@ -401,7 +380,6 @@ public class MainFrame extends JFrame implements MouseListener {
         mainTabbedPane.setEnabled(true);
         mainTabbedPane.addMouseListener(this);
         initClosableTabs(mainTabbedPane);
-        initTrailPopupMenu();
         customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
@@ -415,18 +393,6 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private void initStatusBar(){
         this.add(statusBar, BorderLayout.SOUTH);
-    }
-
-    private void initTrailPopupMenu() {
-        JMenuItem item = new JMenuItem("生成随机密码");
-        item.setIcon(new FlatSVGIcon("icons/colGreyKey.svg"));
-        item.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showRandomPasswordDialog();
-            }
-        });
-        trailPopupMenu.add(item);
     }
 
     private void customComponents() {
@@ -475,6 +441,15 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
+        JButton genPassBtn = new JButton(new FlatSVGIcon("icons/section.svg"));
+        genPassBtn.setToolTipText("生成随机密码");
+        genPassBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showRandomPasswordDialog();
+            }
+        });
+
         // TODO 选项卡面板前置工具栏，暂不使用
         leading.add(dashboardBtn);
 
@@ -504,6 +479,7 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(editorBtn);
         trailing.add(fullScreenBtn);
+        trailing.add(genPassBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
