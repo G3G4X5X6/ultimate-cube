@@ -9,6 +9,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Random;
 
 @Slf4j
@@ -26,6 +28,14 @@ public class RandomPasswordPane extends JPanel {
         initToolBar();
 
         this.passTextLabel = new JLabel();
+        this.passTextLabel.setToolTipText("双击刷新密码");
+        this.passTextLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2)
+                    refreshPasswd();
+            }
+        });
         refreshPasswd();
 
         this.panel = new JPanel();
@@ -36,7 +46,7 @@ public class RandomPasswordPane extends JPanel {
     }
 
     private void refreshPasswd(){
-        this.passTextLabel.setFont(new Font("宋体", Font.BOLD, 32));
+        this.passTextLabel.setFont(Font.getFont(Font.MONOSPACED, new Font("宋体", Font.BOLD, 32)));
         this.passTextLabel.setForeground(Color.decode("#228B22"));
         this.passTextLabel.setText(GenPass.generatePassword());
     }
