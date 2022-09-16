@@ -12,7 +12,7 @@ import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.focus.FocusFrame;
 import com.g3g4x5x6.panel.ConnectionPane;
-import com.g3g4x5x6.panel.RandomPassword;
+import com.g3g4x5x6.panel.RandomPasswordPane;
 import com.g3g4x5x6.panel.SessionManagerPanel;
 import com.g3g4x5x6.panel.SysinfoPane;
 import com.g3g4x5x6.settings.SettingsDialog;
@@ -729,7 +729,7 @@ public class MainFrame extends JFrame implements MouseListener {
         dialog.setSize(new Dimension(450, 145));
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(MainFrame.this);
-        dialog.setContentPane(new RandomPassword());
+        dialog.setContentPane(new RandomPasswordPane());
         dialog.setVisible(true);
     }
 

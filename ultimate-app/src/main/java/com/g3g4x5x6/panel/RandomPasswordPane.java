@@ -12,13 +12,13 @@ import java.awt.event.ActionEvent;
 import java.util.Random;
 
 @Slf4j
-public class RandomPassword extends JPanel {
+public class RandomPasswordPane extends JPanel {
 
     private final JToolBar toolBar;
     private JPanel panel;
     private JLabel passTextLabel;
 
-    public RandomPassword(){
+    public RandomPasswordPane(){
         this.setLayout(new BorderLayout());
 
         this.toolBar = new JToolBar();
@@ -26,13 +26,19 @@ public class RandomPassword extends JPanel {
         initToolBar();
 
         this.passTextLabel = new JLabel();
-        this.passTextLabel.setText("<html><pre><font size=\"12\" face=\"arial\" color=\"green\">"+ GenPass.generatePassword() + "</font></pre></html>");
+        refreshPasswd();
 
         this.panel = new JPanel();
         this.panel.add(passTextLabel);
 
         this.add(toolBar, BorderLayout.NORTH);
         this.add(panel, BorderLayout.CENTER);
+    }
+
+    private void refreshPasswd(){
+        this.passTextLabel.setFont(new Font("宋体", Font.BOLD, 32));
+        this.passTextLabel.setForeground(Color.decode("#228B22"));
+        this.passTextLabel.setText(GenPass.generatePassword());
     }
 
     private void initToolBar(){
@@ -53,9 +59,8 @@ public class RandomPassword extends JPanel {
         refreshBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                passTextLabel.setText("<html><pre><font size=\"12\" face=\"arial\" color=\"green\">"+ GenPass.generatePassword() + "</font></pre></html>");
+                refreshPasswd();
                 log.debug("Password: " + passTextLabel.getText());
-                log.debug("Password: " + getPassFromHtml(passTextLabel.getText()));
             }
         });
 
@@ -64,13 +69,9 @@ public class RandomPassword extends JPanel {
         toolBar.add(refreshBtn);
     }
 
-    private static String getPassFromHtml(String html){
-        return html.substring("<html><pre><font size=\"12\" face=\"arial\" color=\"green\">".length(), html.indexOf("</font></pre></html>"));
-    }
-
     private static void setClipboardText(String passwordText) {
         Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
-        Transferable tText = new StringSelection(getPassFromHtml(passwordText));
+        Transferable tText = new StringSelection(passwordText);
         clip.setContents(tText, null);
     }
 
