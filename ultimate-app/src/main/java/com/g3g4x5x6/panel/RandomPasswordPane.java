@@ -17,8 +17,11 @@ import java.util.Random;
 public class RandomPasswordPane extends JPanel {
 
     private final JToolBar toolBar;
-    private JPanel panel;
-    private JLabel passTextLabel;
+    private final JLabel passTextLabel;
+
+    private JButton statusBtn;
+    private String notCopyIcon;
+    private String copiedIcon;
 
     public RandomPasswordPane(){
         this.setLayout(new BorderLayout());
@@ -28,18 +31,22 @@ public class RandomPasswordPane extends JPanel {
         initToolBar();
 
         this.passTextLabel = new JLabel();
-        this.passTextLabel.setToolTipText("双击刷新密码");
+        this.passTextLabel.setToolTipText("双击刷新密码，右键复制密码");
         this.passTextLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2)
                     refreshPasswd();
+
+                if (e.getButton() == 3)
+                    setClipboardText(passTextLabel.getText());
             }
         });
         refreshPasswd();
 
-        this.panel = new JPanel();
-        this.panel.add(passTextLabel);
+        // 为了 JLabel 居中显示
+        JPanel panel = new JPanel();
+        panel.add(passTextLabel);
 
         this.add(toolBar, BorderLayout.NORTH);
         this.add(panel, BorderLayout.CENTER);
@@ -49,9 +56,17 @@ public class RandomPasswordPane extends JPanel {
         this.passTextLabel.setFont(Font.getFont(Font.MONOSPACED, new Font("宋体", Font.BOLD, 32)));
         this.passTextLabel.setForeground(Color.decode("#228B22"));
         this.passTextLabel.setText(GenPass.generatePassword());
+
+        // 设置密码复制状态
+        statusBtn.setIcon(new FlatSVGIcon(notCopyIcon));
     }
 
     private void initToolBar(){
+        statusBtn = new JButton(new FlatSVGIcon("icons/intentionBulbGrey.svg"));
+        statusBtn.setToolTipText("复制状态");
+        notCopyIcon = "icons/intentionBulbGrey.svg";
+        copiedIcon = "icons/intentionBulb.svg";
+
         JButton copyPassBtn = new JButton();
         copyPassBtn.setIcon(new FlatSVGIcon("icons/copy.svg"));
         copyPassBtn.setToolTipText("复制密码到粘贴板");
@@ -74,15 +89,19 @@ public class RandomPasswordPane extends JPanel {
             }
         });
 
+        toolBar.add(statusBtn);
         toolBar.add(copyPassBtn);
         toolBar.add(Box.createGlue());
         toolBar.add(refreshBtn);
     }
 
-    private static void setClipboardText(String passwordText) {
+    private void setClipboardText(String passwordText) {
         Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
         Transferable tText = new StringSelection(passwordText);
         clip.setContents(tText, null);
+
+        // 设置已复制状态
+        statusBtn.setIcon(new FlatSVGIcon(copiedIcon));
     }
 
     private static class GenPass {
