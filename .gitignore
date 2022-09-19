@@ -23,7 +23,6 @@ hs_err_pid*
 
 
 .idea
-.idea/workspace.xml
 ultimate-app/target
 ultimate-editor/target/
 ultimate-nuclei/target
