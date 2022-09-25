@@ -1,8 +1,3 @@
-[//]: # (<p>)
-
-[//]: # (  <img src="doc/img/cube.jpg" alt="G3G4X5X6"/>)
-
-[//]: # (</p>)
 ![ultimate-cube](https://socialify.git.ci/G3G4X5X6/ultimate-cube/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1)
 
 # ultimate-cube
@@ -77,7 +72,7 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 3. 编译运行：
     1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.11`
     1. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
-    1. 安装新版本依赖：`mvn install` 
+    1. 安装新版本依赖：`mvn install`
     1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
     1. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
 
