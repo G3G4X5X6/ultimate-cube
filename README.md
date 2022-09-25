@@ -4,9 +4,9 @@
 <h1>ultimate-cube</h1>
 </div>
 
-简体中文 [English](README.en.md)
+> 简体中文 [English](README.en.md)
 
-#### 介绍
+#### 简介
 
 ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测试工程师、程序员、网站管理员、IT 管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
 
