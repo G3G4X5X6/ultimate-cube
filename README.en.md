@@ -1,8 +1,8 @@
-<p>
-  <img src="doc/img/cube.jpg" alt="G3G4X5X6"/>
-</p>
+<div align=center style="margin-top: 10px;">
 
-# ultimate-cube
+![nuclei-plus-icon](doc/img/splashscreen.png)
+<h1>ultimate-cube</h1>
+</div>
 
 [简体中文](README.md) English
 
