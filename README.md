@@ -4,7 +4,7 @@
 <h1>ultimate-cube</h1>
 </div>
 
-> 简体中文 [English](README.en.md)
+> [English](README.en.md)
 
 #### 简介
 
