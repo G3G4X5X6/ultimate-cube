@@ -1,6 +1,8 @@
-![ultimate-cube](https://socialify.git.ci/G3G4X5X6/ultimate-cube/image?description=1&font=KoHo&forks=1&issues=1&language=1&owner=1&pattern=Circuit%20Board&pulls=1&stargazers=1)
+<div align=center style="margin-top: 10px;">
 
-# ultimate-cube
+![nuclei-plus-icon](doc/img/splashscreen.png)
+<h1>ultimate-cube</h1>
+</div>
 
 简体中文 [English](README.en.md)
 
