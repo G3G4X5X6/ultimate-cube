@@ -75,10 +75,11 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
     # mvn install:install-file -Dfile=libs/jediterm-pty-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.66 -Dpackaging=jar
    ```
 3. 编译运行：
-    1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.6`
-    2. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
-    3. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
-    4. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
+    1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.11`
+    1. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
+    1. 安装新版本依赖：`mvn install` 
+    1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
+    1. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
 
 
 1. 程序更新后，若无法正常连接SSH，请备份删除原配置文件 `application.properties`。
