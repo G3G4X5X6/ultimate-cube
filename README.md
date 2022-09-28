@@ -38,9 +38,22 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 
 #### 安装教程
 
-1. 程序依赖运行环境：`JDK11+`
-1. `linux`, `OSX` 用户建议使用自带依赖的通用版本 ultimate-cube-x.x.x-jar-with-dependencies.jar
-1. `Windows` 用户 `无JDK` 环境的,建议使用 `ultimate-cube_setup.exe` 安装包（体积较大）
+##### A. github
+```shell
+# 1. 程序依赖运行环境：`JDK11+`
+# 2. `linux`, `OSX` 用户建议使用自带依赖的通用版本 ultimate-cube-x.x.x-jar-with-dependencies.jar
+# 3. `Windows` 用户 `无JDK` 环境的,建议使用 `ultimate-cube_setup.exe` 安装包（体积较大）
+```
+
+##### B. winget
+```shell
+# search
+winget search ultimate-cube
+
+# install
+winget install ultimate-cube
+```
+![SSH](doc/img/img_5.png)
 
 #### 使用说明
 
