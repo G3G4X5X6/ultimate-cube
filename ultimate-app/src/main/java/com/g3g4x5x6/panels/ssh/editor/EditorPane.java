@@ -546,9 +546,9 @@ public class EditorPane extends JPanel {
     }
 
     private void addAndSelectItem(String item) {
-        Boolean flag = false;
+        boolean flag = false;
         for (int i = 0; i < titleField.getItemCount(); i++) {
-            if (titleField.getItemAt(i).toString().equals(item)) {
+            if (titleField.getItemAt(i).equals(item)) {
                 flag = true;
             }
         }

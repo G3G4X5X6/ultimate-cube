@@ -76,6 +76,13 @@ public class RecentSessionsPanel extends JPanel {
         // 1.
         JButton refreshBtn = new JButton();
         refreshBtn.setIcon(new FlatSVGIcon("icons/refresh.svg"));
+        refreshBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("ToolBar: 刷新");
+                initData();
+            }
+        });
 
         // 2.
         toolBar.add(refreshBtn);

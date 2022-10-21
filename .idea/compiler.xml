@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ultimate-pty" />
         <module name="ultimate-terminal" />
         <module name="ultimate-typeahead" />
         <module name="ultimate-shell" />

@@ -108,6 +108,13 @@ public class SessionManagerPanel extends JPanel {
         // 1.
         JButton refreshBtn = new JButton();
         refreshBtn.setIcon(new FlatSVGIcon("icons/refresh.svg"));
+        refreshBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("刷新会话");
+                refresh();
+            }
+        });
 
         // 2.
         toolBar.add(refreshBtn);

@@ -11,10 +11,10 @@ import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.focus.FocusFrame;
-import com.g3g4x5x6.panel.ConnectionPane;
-import com.g3g4x5x6.panel.RandomPasswordPane;
+import com.g3g4x5x6.panel.other.ConnectionPane;
+import com.g3g4x5x6.panel.tool.RandomPasswordPane;
 import com.g3g4x5x6.panel.SessionManagerPanel;
-import com.g3g4x5x6.panel.SysinfoPane;
+import com.g3g4x5x6.panel.other.SysinfoPane;
 import com.g3g4x5x6.settings.SettingsDialog;
 import com.g3g4x5x6.ssh.SessionInfo;
 import com.g3g4x5x6.ssh.panel.SshTabbedPane;
@@ -137,8 +137,8 @@ public class MainFrame extends JFrame implements MouseListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        terminalMenu.add(myNewAction);
         terminalMenu.add(openSessionMenu);
+        terminalMenu.add(myNewAction);
         terminalMenu.add(mySessionAction);
         terminalMenu.add(myLocalTerminal);
 
@@ -983,7 +983,7 @@ public class MainFrame extends JFrame implements MouseListener {
         @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
-            Desktop.getDesktop().browse(new URL("https://github.com/G3G4X5X6/ultimateshell").toURI());
+            Desktop.getDesktop().browse(new URL("https://github.com/G3G4X5X6/ultimate-cube").toURI());
         }
     };
 
@@ -991,7 +991,7 @@ public class MainFrame extends JFrame implements MouseListener {
         @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
-            Desktop.getDesktop().browse(new URL("https://g3g4x5x6.github.io/ultimateshell/").toURI());
+            Desktop.getDesktop().browse(new URL("https://g3g4x5x6.github.io/ultimate-cube/").toURI());
         }
     };
 

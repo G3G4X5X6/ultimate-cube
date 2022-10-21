@@ -14,6 +14,7 @@
         <module>ultimate-shell</module>
         <module>ultimate-app</module>
         <module>ultimate-typeahead</module>
+        <module>ultimate-pty</module>
     </modules>
 
     <properties>

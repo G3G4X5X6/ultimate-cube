@@ -2,6 +2,8 @@ package com.g3g4x5x6.ssh.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.ssh.SessionInfo;
+import com.g3g4x5x6.utils.SshUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -69,6 +71,36 @@ public class SshTabbedPane extends JTabbedPane {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(progressBar);
         trailing.add(Box.createHorizontalGlue());
+
+        // 关机
+        JButton shutdownBtn = new JButton(new FlatSVGIcon("icons/suspend.svg"));
+        shutdownBtn.setToolTipText("点击3次关机(shutdown -h now)");
+        shutdownBtn.addMouseListener(new MouseAdapter() {
+            @SneakyThrows
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 3){
+                    SshUtil.exec(sessionInfo.getSession(), "shutdown -h now");
+                }
+            }
+        });
+
+        // 重启
+        JButton rebootBtn = new JButton(new FlatSVGIcon("icons/stopRefresh.svg"));
+        rebootBtn.setToolTipText("点击3次重启(shutdown -r now)");
+        rebootBtn.addMouseListener(new MouseAdapter() {
+            @SneakyThrows
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 3){
+                    SshUtil.exec(sessionInfo.getSession(), "shutdown -h now");
+                }
+            }
+        });
+
+        trailing.add(shutdownBtn);
+        trailing.add(rebootBtn);
+        trailing.addSeparator();
 
 //        trailing.add(pinSftpBtn);
         JButton refreshBtn = new JButton(new FlatSVGIcon("icons/refresh.svg"));

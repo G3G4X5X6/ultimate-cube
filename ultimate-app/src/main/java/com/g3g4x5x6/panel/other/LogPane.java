@@ -1,4 +1,4 @@
-package com.g3g4x5x6.panel;
+package com.g3g4x5x6.panel.other;
 
 import javax.swing.*;
 
