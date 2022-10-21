@@ -36,9 +36,14 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 - [ ] 支持国际化
 - [ ] 友好提示异常及报错信息
 
+#### 拆分项目
+
+- [nuclei-plus](https://github.com/Yong-An-Dang/nuclei-plus)
+
 #### 安装教程
 
 ##### A. github
+
 ```shell
 # 1. 程序依赖运行环境：`JDK11+`
 # 2. `linux`, `OSX` 用户建议使用自带依赖的通用版本 ultimate-cube-x.x.x-jar-with-dependencies.jar
@@ -46,6 +51,7 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 ```
 
 ##### B. winget
+
 ```shell
 # search
 winget search ultimate-cube
@@ -53,6 +59,7 @@ winget search ultimate-cube
 # install
 winget install ultimate-cube
 ```
+
 ![SSH](doc/img/img_5.png)
 
 #### 使用说明
