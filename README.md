@@ -39,6 +39,7 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 #### 拆分项目
 
 - [nuclei-plus](https://github.com/Yong-An-Dang/nuclei-plus)
+- [terminal-plus](https://github.com/Yong-An-Dang/terminal-plus)
 
 #### 安装教程
 
