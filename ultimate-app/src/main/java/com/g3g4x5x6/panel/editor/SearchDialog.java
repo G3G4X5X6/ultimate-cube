@@ -1,4 +1,4 @@
-package com.g3g4x5x6.panels.ssh.editor;
+package com.g3g4x5x6.panel.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;

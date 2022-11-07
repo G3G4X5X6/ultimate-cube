@@ -1,4 +1,4 @@
-package com.g3g4x5x6.panel.tool;
+package com.g3g4x5x6.panel.other;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import lombok.extern.slf4j.Slf4j;

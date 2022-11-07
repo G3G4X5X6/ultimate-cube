@@ -12,7 +12,7 @@ import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.focus.FocusFrame;
 import com.g3g4x5x6.panel.other.ConnectionPane;
-import com.g3g4x5x6.panel.tool.RandomPasswordPane;
+import com.g3g4x5x6.panel.other.RandomPasswordPane;
 import com.g3g4x5x6.panel.SessionManagerPanel;
 import com.g3g4x5x6.panel.other.SysinfoPane;
 import com.g3g4x5x6.settings.SettingsDialog;
@@ -75,7 +75,6 @@ public class MainFrame extends JFrame implements MouseListener {
     private final JMenu helpMenu = new JMenu("帮助");
     private final JMenu externalSubMenu = new JMenu("外部集成工具");
     private final JPopupMenu popupMenu = new JPopupMenu();
-    private final JPopupMenu trailPopupMenu = new JPopupMenu();
 
     private final StatusBar statusBar = new StatusBar();
 
