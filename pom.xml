@@ -9,12 +9,11 @@
     <packaging>pom</packaging>
     <version>6.6.11</version>
     <modules>
-        <module>ultimate-terminal</module>
-        <module>ultimate-editor</module>
-        <module>ultimate-shell</module>
         <module>ultimate-app</module>
-        <module>ultimate-typeahead</module>
+        <module>ultimate-editor</module>
         <module>ultimate-pty</module>
+        <module>ultimate-terminal</module>
+        <module>ultimate-typeahead</module>
     </modules>
 
     <properties>

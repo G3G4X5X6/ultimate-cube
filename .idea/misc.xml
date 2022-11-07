@@ -10,6 +10,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/ultimate-nuclei/pom.xml" />
+        <option value="$PROJECT_DIR$/ultimate-shell/pom.xml" />
         <option value="$PROJECT_DIR$/ultimate-vault/pom.xml" />
       </set>
     </option>
