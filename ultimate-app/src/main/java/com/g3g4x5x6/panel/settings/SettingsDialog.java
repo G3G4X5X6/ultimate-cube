@@ -1,4 +1,4 @@
-package com.g3g4x5x6.settings;
+package com.g3g4x5x6.panel.settings;
 
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.AppConfig;
