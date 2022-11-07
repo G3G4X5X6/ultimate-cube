@@ -2,6 +2,7 @@ package com.g3g4x5x6.remote.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.editor.util.EditorUtil;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +85,7 @@ public class SessionUtil {
                 //noinspection ResultOfMethodCallIgnored
                 file.delete();
             } else {
-                recentPath = ShellConfig.getWorkPath() + "/sessions/recent_" + file.getName();
+                recentPath = AppConfig.getWorkPath() + "/sessions/recent_" + file.getName();
             }
             Files.write(Path.of(recentPath), json.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {

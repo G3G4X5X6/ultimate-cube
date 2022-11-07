@@ -1,6 +1,6 @@
 package com.g3g4x5x6.remote.ssh;
 
-import com.g3g4x5x6.remote.utils.ShellConfig;
+import com.g3g4x5x6.AppConfig;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class SshSettingsProvider implements SettingsProvider {
     private Font chineseFont;
 
-    private final ColorScheme colorScheme = new ColorScheme(ShellConfig.getProperty("terminal.color.scheme"));
+    private final ColorScheme colorScheme = new ColorScheme(AppConfig.getProperty("terminal.color.scheme"));
 
     public ColorPalette getTerminalColorPalette() {
         return new DefaultColorPaletteImpl(colorScheme);
@@ -30,14 +30,14 @@ public class SshSettingsProvider implements SettingsProvider {
 
     @Override
     public float getLineSpacing() {
-        return Float.parseFloat(ShellConfig.getProperty("terminal.line.space"));
+        return Float.parseFloat(AppConfig.getProperty("terminal.line.space"));
     }
 
     @SneakyThrows
     public Font getTerminalFont() {
         String fontName;
         if (UIUtil.isWindows) {
-            fontName = ShellConfig.getProperty("terminal.font");
+            fontName = AppConfig.getProperty("terminal.font");
         } else if (UIUtil.isMac) {
             fontName = "Menlo";
         } else {
@@ -58,7 +58,7 @@ public class SshSettingsProvider implements SettingsProvider {
     }
 
     public float getTerminalFontSize() {
-        return Float.parseFloat(ShellConfig.getProperty("terminal.font.size"));
+        return Float.parseFloat(AppConfig.getProperty("terminal.font.size"));
     }
 
     @Override

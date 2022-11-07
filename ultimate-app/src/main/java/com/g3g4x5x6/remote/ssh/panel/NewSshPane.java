@@ -5,8 +5,8 @@ import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
+import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
-import com.g3g4x5x6.remote.utils.ShellConfig;
 import com.g3g4x5x6.remote.utils.VaultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
@@ -187,7 +187,7 @@ public class NewSshPane extends JPanel {
         session.put("sessionComment", commentText.getText());
         log.debug("Comment: " + commentText.getText());
 
-        String path = ShellConfig.getWorkPath() + "/sessions/ssh/" + Objects.requireNonNull(categoryCombo.getSelectedItem());
+        String path = AppConfig.getWorkPath() + "/sessions/ssh/" + Objects.requireNonNull(categoryCombo.getSelectedItem());
         String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType + ".json";
         if (editPath != null && !Path.of(fileName).toString().equalsIgnoreCase(editPath)) {
             try {
@@ -291,7 +291,7 @@ public class NewSshPane extends JPanel {
         categoryCombo.setPreferredSize(new Dimension(200, 25));
         categoryCombo.addItem("");
         ArrayList<String> list = new ArrayList<>();
-        String sshPath = Path.of(ShellConfig.getWorkPath(), "sessions", "ssh").toString();
+        String sshPath = Path.of(AppConfig.getWorkPath(), "sessions", "ssh").toString();
         recursiveListDirectory(new File(sshPath), list);
         for (String category : list) {
             log.debug("sshPath: " + sshPath);

@@ -4,6 +4,7 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
+import com.g3g4x5x6.AppConfig;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -12,15 +13,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class VaultUtil {
-    private static String secretKey = ShellConfig.getProperty("ssh.session.secret.key");
+    private static String secretKey = AppConfig.getProperty("ssh.session.secret.key");
 
     static {
         if (secretKey.equals("")) {
             //随机生成密钥
             byte[] key = SecureUtil.generateKey(SymmetricAlgorithm.AES.getValue()).getEncoded();
             secretKey = bytesToHex(key);
-            ShellConfig.setProperty("ssh.session.secret.key", secretKey);
-            ShellConfig.saveSettingsProperties();
+            AppConfig.setProperty("ssh.session.secret.key", secretKey);
+            AppConfig.saveSettingsProperties();
             log.debug("secretKey: " + secretKey);
         }
     }

@@ -1,8 +1,8 @@
 package com.g3g4x5x6.remote.ssh;
 
+import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.remote.ssh.panel.DropTargetListenerBrowserImpl;
 import com.g3g4x5x6.remote.ssh.panel.FilesBrowser;
-import com.g3g4x5x6.remote.utils.ShellConfig;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +91,7 @@ public class SessionInfo {
     private ClientSession getSession(SshClient client) throws IOException, GeneralSecurityException {
         // TODO 可设置是否启用、时间周期
         CoreModuleProperties.HEARTBEAT_INTERVAL.set(client,
-                Duration.ofSeconds(Long.parseLong(ShellConfig.getProperty("ssh.session.heartbeat.interval"))));
+                Duration.ofSeconds(Long.parseLong(AppConfig.getProperty("ssh.session.heartbeat.interval"))));
 
         ClientSession session = client.connect(this.sessionUser, this.sessionAddress, Integer.parseInt(this.sessionPort)).verify(5000, TimeUnit.MILLISECONDS).getSession();
         if (Files.exists(Path.of(sessionKeyPath)) && !sessionKeyPath.equalsIgnoreCase("")) {
