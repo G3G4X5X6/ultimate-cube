@@ -77,18 +77,16 @@ public class ConsolePane extends JPanel {
     private static @NotNull TtyConnector createTtyConnector() {
         try {
             Map<String, String> envs = System.getenv();
-            log.debug(envs.get("Path"));
             String[] command;
             if (UIUtil.isWindows) {
-                command = new String[]{"cmd.exe"};
+                command = new String[]{"powershell.exe"};
             } else {
                 command = new String[]{"/bin/bash", "--login"};
                 envs = new HashMap<>(System.getenv());
                 envs.put("TERM", "xterm-256color");
             }
 
-            PtyProcess process = new PtyProcessBuilder().setDirectory(System.getProperties().getProperty("user.home")).setCommand(command).setEnvironment(envs).start();
-
+            PtyProcess process = new PtyProcessBuilder().setCommand(command).setEnvironment(envs).start();
             return new PtyProcessTtyConnector(process, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new IllegalStateException(e);

@@ -1,13 +1,10 @@
 package com.g3g4x5x6.remote.console;
 
-import com.jediterm.terminal.TerminalColor;
-import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.ui.UIUtil;
 import com.jediterm.terminal.ui.settings.ColorScheme;
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class CmdSettingsProvider extends DefaultSettingsProvider {
@@ -34,19 +31,4 @@ public class CmdSettingsProvider extends DefaultSettingsProvider {
     public float getTerminalFontSize() {
         return 14;
     }
-
-    @Override
-    public TextStyle getDefaultStyle() {
-        return new TextStyle(
-                TerminalColor.rgb(
-                        UIManager.getColor("Panel.foreground").getRed(),
-                        UIManager.getColor("Panel.foreground").getGreen(),
-                        UIManager.getColor("Panel.foreground").getBlue()),
-                TerminalColor.rgb(
-                        UIManager.getColor("Table.background").getRed(),
-                        UIManager.getColor("Table.background").getGreen(),
-                        UIManager.getColor("Table.background").getBlue()));
-//                        UIManager.getColor("Panel.background").getBlue()));
-    }
-
 }
