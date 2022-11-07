@@ -5,8 +5,8 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.MainFrame;
-import com.g3g4x5x6.ssh.SessionInfo;
-import com.g3g4x5x6.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.remote.ssh.SessionInfo;
+import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;

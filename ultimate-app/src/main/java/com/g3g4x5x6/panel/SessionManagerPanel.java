@@ -6,12 +6,14 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
+import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.MainFrame;
-import com.g3g4x5x6.ssh.SessionInfo;
-import com.g3g4x5x6.ssh.panel.NewSshPane;
-import com.g3g4x5x6.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.remote.ssh.SessionInfo;
+import com.g3g4x5x6.remote.ssh.panel.NewSshPane;
+import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.ui.ToolBar;
-import com.g3g4x5x6.utils.*;
+import com.g3g4x5x6.remote.utils.*;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 

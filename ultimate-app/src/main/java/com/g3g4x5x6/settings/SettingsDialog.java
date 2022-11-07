@@ -1,7 +1,7 @@
 package com.g3g4x5x6.settings;
 
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.utils.AppConfig;
+import com.g3g4x5x6.AppConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 

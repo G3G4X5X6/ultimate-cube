@@ -1,7 +1,7 @@
 package com.g3g4x5x6.focus;
 
 
-import com.g3g4x5x6.ssh.SessionInfo;
+import com.g3g4x5x6.remote.ssh.SessionInfo;
 
 import javax.swing.*;
 import java.awt.*;

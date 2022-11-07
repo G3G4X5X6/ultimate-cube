@@ -6,9 +6,9 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.formatter.IpAddressFormatter;
 import com.g3g4x5x6.formatter.PortFormatter;
-import com.g3g4x5x6.utils.AppConfig;
+import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.utils.DialogUtil;
-import com.g3g4x5x6.utils.os.OsInfoUtil;
+import com.g3g4x5x6.remote.utils.os.OsInfoUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 

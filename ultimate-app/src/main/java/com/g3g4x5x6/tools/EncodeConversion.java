@@ -2,7 +2,7 @@ package com.g3g4x5x6.tools;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.App;
-import com.g3g4x5x6.utils.CommonUtil;
+import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.google.common.io.Files;
 import com.ibm.icu.text.CharsetMatch;
 import lombok.SneakyThrows;

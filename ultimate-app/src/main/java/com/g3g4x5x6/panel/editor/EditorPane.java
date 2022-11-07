@@ -2,7 +2,7 @@ package com.g3g4x5x6.panel.editor;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.g3g4x5x6.utils.AppConfig;
+import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
