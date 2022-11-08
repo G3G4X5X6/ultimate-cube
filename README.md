@@ -99,9 +99,11 @@ winget install ultimate-cube
     1. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
 
 
-1. 程序更新后，若无法正常连接SSH，请备份删除原配置文件 `application.properties`。
-2. 关于使用过程中的任何疑问，请于 GitHub 中的 `Discussions` 中的对应版本进行提问和反馈。
-3. 任何 `Issues` 请到 github 项目仓库中提出，此仓库仅作为源码存储仓库。
+#### 注意事项
+1. 请备份配置文件 `application.properties` 中的会话加密密钥 `ssh.session.secret.key`，丢失后将无法解密已加密的会话密码。
+2. 程序更新后，配置文件可能有所变动，若无法正常连接SSH，请备份并删除原配置文件 `application.properties`。
+3. 关于使用过程中的任何疑问，请于 GitHub 中的 `Discussions` 中的对应版本进行提问和反馈。
+4. 任何 `Issues` 请到 github 项目仓库中提出。
 
 #### 参与贡献
 
