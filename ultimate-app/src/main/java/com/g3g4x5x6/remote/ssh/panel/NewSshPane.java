@@ -152,10 +152,10 @@ public class NewSshPane extends JPanel {
                 new Thread(() -> {
                     switch (testConnection()) {
                         case 0:
-                            JOptionPane.showMessageDialog(NewSshPane.this, "连接失败", "警告", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(NewSshPane.this, "通信失败", "警告", JOptionPane.WARNING_MESSAGE);
                             break;
                         case 1:
-                            JOptionPane.showMessageDialog(NewSshPane.this, "连接成功", "信息", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(NewSshPane.this, "通信成功", "信息", JOptionPane.INFORMATION_MESSAGE);
                             break;
                         case 2:
                             JOptionPane.showMessageDialog(NewSshPane.this, "请输入主机地址！！！", "信息", JOptionPane.INFORMATION_MESSAGE);

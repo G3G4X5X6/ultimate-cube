@@ -5,6 +5,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import com.g3g4x5x6.AppConfig;
+import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -36,12 +37,19 @@ public class VaultUtil {
     }
 
     public static String decryptPasswd(String passwordHex) {
-        // 密钥
-        byte[] key = hexToBytes(secretKey);
-        // 构建
-        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
-        //解密为字符串
-        return aes.decryptStr(passwordHex, CharsetUtil.CHARSET_UTF_8);
+        try{
+            // 密钥
+            byte[] key = hexToBytes(secretKey);
+            // 构建
+            SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
+            //解密为字符串
+            return aes.decryptStr(passwordHex, CharsetUtil.CHARSET_UTF_8);
+
+        }catch (Exception e){
+//            e.printStackTrace();
+            DialogUtil.error("密码解密失败，置空");
+        }
+        return "";
     }
 
 
