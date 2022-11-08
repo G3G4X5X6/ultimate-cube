@@ -46,8 +46,7 @@ public class VaultUtil {
             return aes.decryptStr(passwordHex, CharsetUtil.CHARSET_UTF_8);
 
         }catch (Exception e){
-//            e.printStackTrace();
-            DialogUtil.error("密码解密失败，置空");
+            DialogUtil.error("密码解密失败: \n" + e.getMessage());
         }
         return "";
     }

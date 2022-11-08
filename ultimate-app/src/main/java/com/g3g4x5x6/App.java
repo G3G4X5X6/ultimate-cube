@@ -3,10 +3,10 @@ package com.g3g4x5x6;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
+import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.ui.tray.DefaultTrayIcon;
 import com.g3g4x5x6.ui.tray.DefaultTrayIconPopupMenu;
-import com.g3g4x5x6.remote.utils.CheckUtil;
-import com.g3g4x5x6.remote.utils.CommonUtil;
+import com.g3g4x5x6.utils.CheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.PropertyConfigurator;
 
