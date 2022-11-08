@@ -102,7 +102,7 @@ public class App {
             // 加载一个图片用于托盘图标的显示
             Image image = null;
             try {
-                image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.jpg")));
+                image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
             } catch (IOException e) {
                 e.printStackTrace();
             }
