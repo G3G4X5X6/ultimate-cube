@@ -1,4 +1,4 @@
-package com.g3g4x5x6.panel;
+package com.g3g4x5x6.remote;
 
 
 import com.alibaba.fastjson.JSON;
@@ -40,14 +40,14 @@ import java.util.Objects;
  *
  */
 @Slf4j
-public class RecentSessionsPanel extends JPanel {
+public class RecentSessionPane extends JPanel {
     private final ToolBar toolBar = new ToolBar();
 
     private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
     private JTable recentTable;
     private DefaultTableModel tableModel;
 
-    public RecentSessionsPanel() {
+    public RecentSessionPane() {
         this.setLayout(new BorderLayout());
 
         // 初始化工具栏
