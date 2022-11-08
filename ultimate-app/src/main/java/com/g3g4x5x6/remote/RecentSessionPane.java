@@ -234,8 +234,9 @@ public class RecentSessionPane extends JPanel {
                 File file = new File(path);
                 for (File f : Objects.requireNonNull(file.listFiles())) {
                     if (f.isFile()) {
-                        if (f.getName().startsWith("recent_ssh"))
+                        if (f.getName().startsWith("recent_ssh")) {
                             f.delete();
+                        }
                     }
                 }
             }
