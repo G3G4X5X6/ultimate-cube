@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
+import com.g3g4x5x6.editor.ui.StatusBar;
 import com.g3g4x5x6.editor.util.EditorConfig;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +62,7 @@ public class EditorFrame extends JFrame implements ActionListener {
     private JButton replaceBtn = new JButton(new FlatSVGIcon("icons/replace.svg"));
     private JToggleButton lineWrapBtn = new JToggleButton(new FlatSVGIcon("icons/toggleSoftWrap.svg"));
     private JTabbedPane tabbedPane;
-    private JToolBar statusBar;
+    private StatusBar statusBar;
     private JPopupMenu trailPopupMenu = new JPopupMenu();
     private JPopupMenu rightPopupMenu = new JPopupMenu();
     private Clipboard clipboard;
@@ -144,8 +145,7 @@ public class EditorFrame extends JFrame implements ActionListener {
             }
         });
 
-        statusBar = new JToolBar();
-        statusBar.setFloatable(false);
+        statusBar = new StatusBar();
         initStatusBar();
 
         this.setJMenuBar(menuBar);
@@ -154,7 +154,7 @@ public class EditorFrame extends JFrame implements ActionListener {
         this.add(statusBar, BorderLayout.SOUTH);
     }
 
-    public static EditorFrame getInstance(){
+    public static EditorFrame getInstance() {
         if (editorFrame == null)
             editorFrame = new EditorFrame();
         return editorFrame;
@@ -239,11 +239,10 @@ public class EditorFrame extends JFrame implements ActionListener {
                 }
             }
         });
-        statusBar.add(Box.createGlue());
-        statusBar.addSeparator();
-        statusBar.add(searchStatusLabel);
-        statusBar.addSeparator();
-        statusBar.add(syntaxLabel);
+
+        statusBar.setComponent(searchStatusLabel);
+        statusBar.setGlue();
+        statusBar.setComponent(syntaxLabel);
     }
 
     private void initClosableTabs(JTabbedPane tabbedPane) {
