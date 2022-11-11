@@ -36,3 +36,5 @@ target/*
 */target
 */target/.*jar
 */buildNumber.properties
+fofax.yaml
+.fofax-last

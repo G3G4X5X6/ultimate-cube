@@ -14,6 +14,7 @@ public class CheckUtil {
         // 检查程序工作目录
         String workspace = AppConfig.getWorkPath();
         String[] pathArray = new String[]{
+                workspace + "/bin",                         // 检查第三方可执行文件目录
                 workspace + "/note",                        // 检查备忘笔记目录
                 workspace + "/export",                      // 检查会话导出目录
                 workspace + "/temp",                        // 检查缓存目录

@@ -3,6 +3,7 @@ package com.g3g4x5x6.remote.console;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
+import com.g3g4x5x6.AppConfig;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
@@ -80,6 +81,10 @@ public class ConsolePane extends JPanel {
             String[] command;
             if (UIUtil.isWindows) {
                 command = new String[]{"powershell.exe"};
+                // 分号; 分割变量值  => C:\Windows\system32;C:\Windows;
+                String PATH = envs.get("Path") + ";" + AppConfig.getBinPath();
+                envs = new HashMap<>(System.getenv());
+                envs.put("Path", PATH);
             } else {
                 command = new String[]{"/bin/bash", "--login"};
                 envs = new HashMap<>(System.getenv());
