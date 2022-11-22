@@ -31,10 +31,10 @@
         <rstaui-version>3.1.3</rstaui-version>
         <autocomplete-version>3.1.4</autocomplete-version>
 
-        <sshd-core-version>2.8.0</sshd-core-version>
-        <sshd-sftp-version>2.8.0</sshd-sftp-version>
+        <sshd-core-version>2.9.2</sshd-core-version>
+        <sshd-sftp-version>2.9.2</sshd-sftp-version>
         <sshd-common-version>2.9.2</sshd-common-version>
-        <sshd-putty-version>2.8.0</sshd-putty-version>
+        <sshd-putty-version>2.9.2</sshd-putty-version>
 
         <slf4j-api-version>2.0.0-alpha5</slf4j-api-version>
         <slf4j-log4j12-version>2.0.0-alpha5</slf4j-log4j12-version>
