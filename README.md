@@ -92,7 +92,7 @@ winget install ultimate-cube
     # mvn install:install-file -Dfile=libs/jediterm-pty-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.66 -Dpackaging=jar
    ```
 3. 编译运行：
-    1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.11`
+    1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.12`
     1. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
     1. 安装新版本依赖：`mvn install`
     1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
