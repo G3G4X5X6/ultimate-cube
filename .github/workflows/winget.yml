@@ -10,4 +10,4 @@ jobs:
       - uses: vedantmgoyal2009/winget-releaser@v1
         with:
           identifier: G3G4X5X6.ultimate-cube
-          token: ${{ secrets.WINGET_TOKEN_NEW }}
+          token: ${{ secrets.WINGET_TOKEN }}
