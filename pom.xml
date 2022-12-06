@@ -49,7 +49,7 @@
         <tightvnc-jviewer-version>2.8.3</tightvnc-jviewer-version>
         <snakeyaml-version>1.32</snakeyaml-version>
         <commons-io-version>2.11.0</commons-io-version>
-        <commons-net-version>3.7.2</commons-net-version>
+        <commons-net-version>3.9.0</commons-net-version>
         <jSerialComm-version>2.7.0</jSerialComm-version>
 
         <junit-jupiter-version>RELEASE</junit-jupiter-version>
