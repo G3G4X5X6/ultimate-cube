@@ -207,7 +207,7 @@ public class MainFrame extends JFrame implements MouseListener {
         openSpace.setIcon(new FlatSVGIcon("icons/pluginIcon.svg"));
 
         // relevantProposal.svg
-        JMenuItem aboutMe = new JMenuItem("关于 UltimateShell");
+        JMenuItem aboutMe = new JMenuItem("关于 ultimate-cube");
         aboutMe.addActionListener(myAboutAction);
         aboutMe.setIcon(new FlatSVGIcon("icons/relevantProposal.svg"));
 
@@ -978,7 +978,7 @@ public class MainFrame extends JFrame implements MouseListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("插件规范");
-            Desktop.getDesktop().browse(new URL("https://github.com/G3G4X5X6/ultimateshell/wiki/Plugin-development-specification").toURI());
+            Desktop.getDesktop().browse(new URL("https://github.com/G3G4X5X6/ultimate-cube/wiki/0x03-Plugin-development-specification").toURI());
         }
     };
 
@@ -1011,7 +1011,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private final AbstractAction myAboutAction = new AbstractAction("关于 UltimateShell") {
+    private final AbstractAction myAboutAction = new AbstractAction("关于 ultimate-cube") {
         public void actionPerformed(final ActionEvent e) {
             JOptionPane.showMessageDialog(MainFrame.this,
                     "<html>ultimate-cube v" + Version.VERSION + " <br>" +
