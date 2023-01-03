@@ -1,6 +1,6 @@
-> <font style='color:green'>TIPS</font>
->
-> `ultimate-cube` 有一个工作空间（目录）在第一次运行时创建，相关数据皆在其中。
+!!! note 
+
+    `ultimate-cube` 有一个工作空间（目录）在第一次运行时创建，相关数据皆在其中。
 
 ## :material-tag: 发布版本
 
