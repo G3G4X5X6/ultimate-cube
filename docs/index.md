@@ -93,7 +93,7 @@ MIT © 2022 勾三股四弦五小六
 
 ## :star_struck: 集星趋势 (Stared)
 
-![Stargazers over time](https://starchart.cc/G3G4X5X6/ultimateshell.svg)
+ [![Stargazers over time](https://starchart.cc/G3G4X5X6/ultimate-cube.svg)](https://starchart.cc/G3G4X5X6/ultimate-cube) 
 
 
 
