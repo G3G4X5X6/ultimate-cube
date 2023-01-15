@@ -3,6 +3,7 @@ package com.g3g4x5x6.remote.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fazecast.jSerialComm.SerialPort;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.remote.utils.os.OsInfoUtil;
 import com.github.jarod.qqwry.IPZone;
@@ -14,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
@@ -66,6 +70,12 @@ public class CommonUtil {
         }
         CharsetMatch cm = cd.detect();
         return cm;
+    }
+
+    public static void setClipboardText(String text) {
+        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Transferable tText = new StringSelection(text);
+        clip.setContents(tText, null);
     }
 
 

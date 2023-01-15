@@ -2,6 +2,7 @@ package com.g3g4x5x6.remote.ssh.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
+import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +72,18 @@ public class SshTabbedPane extends JTabbedPane {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(progressBar);
         trailing.add(Box.createHorizontalGlue());
+
+        JButton copyIpBtn = new JButton(new FlatSVGIcon("icons/copy.svg"));
+        copyIpBtn.setToolTipText("复制当前会话的远程服务器IP地址");
+        copyIpBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CommonUtil.setClipboardText(sessionInfo.getSessionAddress());
+            }
+        });
+
+        trailing.add(copyIpBtn);
+        trailing.addSeparator();
 
         // 关机
         JButton shutdownBtn = new JButton(new FlatSVGIcon("icons/suspend.svg"));
