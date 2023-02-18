@@ -113,6 +113,5 @@ winget install ultimate-cube
 3. 提交代码
 4. 新建 Pull Request
 
-#### [感谢 `JetBrain` 提供的强大编辑器](https://jb.gg/OpenSourceSupport)
-![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
-
+#### [感谢 `JetBrains` 提供的强大编辑器](https://jb.gg/OpenSourceSupport)
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
