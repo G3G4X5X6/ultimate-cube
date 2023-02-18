@@ -105,10 +105,14 @@ winget install ultimate-cube
 3. 关于使用过程中的任何疑问，请于 GitHub 中的 `Discussions` 中的对应版本进行提问和反馈。
 4. 任何 `Issues` 请到 github 项目仓库中提出。
 
+
 #### 参与贡献
 
 1. Fork 本仓库
 2. 新建 Feat_xxx 分支
 3. 提交代码
 4. 新建 Pull Request
+
+#### [感谢 `JetBrain` 提供的强大编辑器](https://jb.gg/OpenSourceSupport)
+![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png)
 
