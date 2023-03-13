@@ -88,8 +88,10 @@ public class NewSshPane extends JPanel {
         basicSettingTabbedPane.addTab(basicSettingPaneTitle, basicSettingPane);
         advancedSettingTabbedPane.addTab(advancedSettingPaneTitle, advancedSettingPane);
 
+
         JPanel btnPane = new JPanel();
         btnPane.setLayout(centerFlow);
+
         JButton saveBtn = new JButton("保存会话");
         saveBtn.setIcon(new FlatSVGIcon("icons/menu-saveall.svg"));
         saveBtn.addActionListener(new AbstractAction() {
@@ -100,14 +102,19 @@ public class NewSshPane extends JPanel {
             }
         });
 
-        // TODO Save and open session
+        JButton openAndSaveBtn = new JButton("保存并连接");
+        openAndSaveBtn.setIcon(new FlatSVGIcon("icons/connectionStatus.svg"));
+        openAndSaveBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO
+            }
+        });
+
+        // open session
         JButton openButton = new JButton("快速连接");
         openButton.setToolTipText("默认不保存会话");
         openButton.setIcon(new FlatSVGIcon("icons/rerun.svg"));
-
-        JButton testButton = new JButton("测试通信");
-        testButton.setIcon(new FlatSVGIcon("icons/lightning.svg"));
-
         openButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -138,11 +145,15 @@ public class NewSshPane extends JPanel {
                         mainTabbedPane.setSelectedIndex(preIndex);
                     } else {
                         JOptionPane.showMessageDialog(NewSshPane.this, "连接失败", "警告", JOptionPane.WARNING_MESSAGE);
+                        openButton.setIcon(new FlatSVGIcon("icons/rerun.svg"));
                     }
                 }).start();
             }
         });
 
+
+        JButton testButton = new JButton("测试通信");
+        testButton.setIcon(new FlatSVGIcon("icons/lightning.svg"));
         testButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -169,6 +180,7 @@ public class NewSshPane extends JPanel {
         btnPane.add(openButton);
         btnPane.add(testButton);
         btnPane.add(saveBtn);
+        btnPane.add(openAndSaveBtn);
         this.add(basicSettingTabbedPane, BorderLayout.NORTH);
         this.add(advancedSettingTabbedPane, BorderLayout.CENTER);
         this.add(btnPane, BorderLayout.SOUTH);
