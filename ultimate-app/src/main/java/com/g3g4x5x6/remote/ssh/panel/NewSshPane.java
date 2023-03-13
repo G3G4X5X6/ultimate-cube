@@ -102,15 +102,6 @@ public class NewSshPane extends JPanel {
             }
         });
 
-        JButton openAndSaveBtn = new JButton("保存并连接");
-        openAndSaveBtn.setIcon(new FlatSVGIcon("icons/connectionStatus.svg"));
-        openAndSaveBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // TODO
-            }
-        });
-
         // open session
         JButton openButton = new JButton("快速连接");
         openButton.setToolTipText("默认不保存会话");
@@ -124,25 +115,7 @@ public class NewSshPane extends JPanel {
                 new Thread(() -> {
                     // TODO 测试连接
                     if (testConnection() == 1) {
-                        int preIndex = mainTabbedPane.getSelectedIndex();
-
-                        String defaultTitle = sessionName.getText().equals("") ? "未命名" : sessionName.getText();
-                        SessionInfo sessionInfo = new SessionInfo();
-                        sessionInfo.setSessionName(sessionName.getText());
-                        sessionInfo.setSessionAddress(hostField.getText());
-                        sessionInfo.setSessionPort(portField.getText());
-                        sessionInfo.setSessionUser(userField.getText());
-                        sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
-                        sessionInfo.setSessionKeyPath(keyLabel.getText());
-                        sessionInfo.setSessionLoginType(authType);
-                        sessionInfo.setSessionComment(commentText.getText());
-
-                        // 鸠占鹊巢
-                        mainTabbedPane.insertTab(defaultTitle,
-                                new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
-                                new SshTabbedPane(sessionInfo), "奥里给", preIndex);
-                        mainTabbedPane.removeTabAt(preIndex + 1);
-                        mainTabbedPane.setSelectedIndex(preIndex);
+                        openSession();
                     } else {
                         JOptionPane.showMessageDialog(NewSshPane.this, "连接失败", "警告", JOptionPane.WARNING_MESSAGE);
                         openButton.setIcon(new FlatSVGIcon("icons/rerun.svg"));
@@ -173,6 +146,31 @@ public class NewSshPane extends JPanel {
                             break;
                     }
                     testButton.setIcon(new FlatSVGIcon("icons/lightning.svg"));
+                }).start();
+            }
+        });
+
+        JButton openAndSaveBtn = new JButton("保存并连接");
+        openAndSaveBtn.setIcon(new FlatSVGIcon("icons/connectionStatus.svg"));
+        openAndSaveBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("保存并连接");
+
+                // 保存
+                saveSession();
+
+                // 连接
+                openAndSaveBtn.setIcon(new FlatSVGIcon("icons/suspend.svg"));
+                new Thread(() -> {
+                    // 测试连接
+                    if (testConnection() == 1) {
+                        openSession();
+                        openAndSaveBtn.setIcon(new FlatSVGIcon("icons/connectionStatus.svg"));
+                    } else {
+                        JOptionPane.showMessageDialog(NewSshPane.this, "连接失败", "警告", JOptionPane.WARNING_MESSAGE);
+                        openAndSaveBtn.setIcon(new FlatSVGIcon("icons/connectionStatus.svg"));
+                    }
                 }).start();
             }
         });
@@ -220,6 +218,28 @@ public class NewSshPane extends JPanel {
             e.printStackTrace();
             JOptionPane.showMessageDialog(NewSshPane.this, "会话保存失败", "错误", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void openSession() {
+        int preIndex = mainTabbedPane.getSelectedIndex();
+
+        String defaultTitle = sessionName.getText().equals("") ? "未命名" : sessionName.getText();
+        SessionInfo sessionInfo = new SessionInfo();
+        sessionInfo.setSessionName(sessionName.getText());
+        sessionInfo.setSessionAddress(hostField.getText());
+        sessionInfo.setSessionPort(portField.getText());
+        sessionInfo.setSessionUser(userField.getText());
+        sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
+        sessionInfo.setSessionKeyPath(keyLabel.getText());
+        sessionInfo.setSessionLoginType(authType);
+        sessionInfo.setSessionComment(commentText.getText());
+
+        // 鸠占鹊巢
+        mainTabbedPane.insertTab(defaultTitle,
+                new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                new SshTabbedPane(sessionInfo), "奥里给", preIndex);
+        mainTabbedPane.removeTabAt(preIndex + 1);
+        mainTabbedPane.setSelectedIndex(preIndex);
     }
 
     /**
