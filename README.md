@@ -62,25 +62,6 @@ winget install ultimate-cube
 
 ![SSH](doc/img/img_5.png)
 
-#### 使用说明
-
-##### 快速启动
-
-![SSH](doc/img/img_4.png)
-
-##### 新建会话
-
-![SSH](doc/img/img_2.png)
-![Serial](doc/img/img_3.png)
-
-##### SSH
-
-![img.png](doc/img/img.png)
-
-##### SFTP
-
-![img.png](doc/img/img_1.png)
-
 #### 构建
 
 1. 构建环境：`JDK11+`, `IDEA`
@@ -112,6 +93,25 @@ winget install ultimate-cube
 2. 新建 Feat_xxx 分支
 3. 提交代码
 4. 新建 Pull Request
+
+#### 使用说明
+
+##### 快速启动
+
+![SSH](doc/img/img_4.png)
+
+##### 新建会话
+
+![SSH](doc/img/img_2.png)
+![Serial](doc/img/img_3.png)
+
+##### SSH
+
+![img.png](doc/img/img.png)
+
+##### SFTP
+
+![img.png](doc/img/img_1.png)
 
 #### [感谢 `JetBrains` 提供的强大编辑器](https://jb.gg/OpenSourceSupport)
 ![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
