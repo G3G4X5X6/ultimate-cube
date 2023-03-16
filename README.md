@@ -54,10 +54,10 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 
 ```shell
 # search
-winget search ultimate-cube
+winget search ultimatecube
 
 # install
-winget install ultimate-cube
+winget install ultimatecube
 ```
 
 ![SSH](doc/img/img_5.png)
