@@ -25,6 +25,7 @@ public class SshTabbedPane extends JTabbedPane {
 
     // ProgressBar for wait to reset
     private JProgressBar progressBar;
+    private JPopupMenu otherPopupMenu;
 
     private final FilesBrowser filesBrowser = null;
 
@@ -82,6 +83,16 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
+        JMenuItem copyPassBtn = new JMenuItem("复制密码");
+        copyPassBtn.setIcon(new FlatSVGIcon("icons/copy.svg"));
+        copyPassBtn.setToolTipText("复制当前会话密码");
+        copyPassBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CommonUtil.setClipboardText(sessionInfo.getSessionPass());
+            }
+        });
+
         trailing.add(copyIpBtn);
         trailing.addSeparator();
 
@@ -136,12 +147,14 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
+        otherPopupMenu = new JPopupMenu();
+        otherPopupMenu.add(copyPassBtn);
         JButton funcBtn = new JButton(new FlatSVGIcon("icons/listFiles.svg"));
         funcBtn.setToolTipText("功能右键");
         funcBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // TODO 右键功能菜单
+                otherPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
 
