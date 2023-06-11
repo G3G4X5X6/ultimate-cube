@@ -27,6 +27,7 @@ public class DefaultTrayIcon extends TrayIcon {
         // 设置系统图标大小为自动调整
         this.setImageAutoSize(true);
 
+        dialog.setVisible(false);
         dialog.setUndecorated(true);
         dialog.setPreferredSize(new Dimension(1, 1));
         dialog.setSize(new Dimension(1, 1));

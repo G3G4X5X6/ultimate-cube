@@ -104,27 +104,17 @@ public class MainFrame extends JFrame implements MouseListener {
         // TODO 初始化 ”状态栏“
         initStatusBar();
 
-        WindowListener exitListener = new WindowAdapter() {
-
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                log.debug("关闭窗口，Windows");
-                if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("false")) {
-                    System.exit(0);
-                } else {
-                    setVisible(false);
-                }
-            }
+                log.debug("退出");
+                // TODO 退出前的清理动作
+                //
 
-            @Override
-            public void windowIconified(WindowEvent e) {
-                log.debug("最小化窗口，Windows");
-                if (App.properties.getProperty("app.iconified.to.tray").equalsIgnoreCase("true")) {
-                    setVisible(false);
-                }
+                // 退出
+                System.exit(0);
             }
-        };
-        this.addWindowListener(exitListener);
+        });
     }
 
     /**
@@ -178,7 +168,6 @@ public class MainFrame extends JFrame implements MouseListener {
 
         viewMenu.add(focusItem);
         viewMenu.add(paneMenu);
-
 
 
         // 选项菜单
@@ -394,7 +383,7 @@ public class MainFrame extends JFrame implements MouseListener {
         this.getContentPane().add(mainTabbedPane);
     }
 
-    private void initStatusBar(){
+    private void initStatusBar() {
         this.add(statusBar, BorderLayout.SOUTH);
     }
 
@@ -591,7 +580,7 @@ public class MainFrame extends JFrame implements MouseListener {
         AbstractAction copyCurrentTabAction = new AbstractAction("复制会话") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(()->{
+                new Thread(() -> {
                     // 等待进度条
                     MainFrame.addWaitProgressBar();
 
@@ -726,7 +715,7 @@ public class MainFrame extends JFrame implements MouseListener {
     }
 
 
-    private void showRandomPasswordDialog(){
+    private void showRandomPasswordDialog() {
         JDialog dialog = new JDialog(MainFrame.this);
         dialog.setTitle("随机密码生成器");
         dialog.setSize(new Dimension(450, 145));

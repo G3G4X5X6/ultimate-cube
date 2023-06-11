@@ -13,6 +13,10 @@ import org.apache.log4j.PropertyConfigurator;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,9 +76,6 @@ public class App {
         mainFrame.setTitle(properties.getProperty("app.title"));
         mainFrame.pack();
         mainFrame.setVisible(true);
-
-        // 初始化系统托盘
-        initSystemTray();
     }
 
     private static void initFlatLaf() {
@@ -90,36 +91,6 @@ public class App {
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
         UIManager.put("TextComponent.arc", 5);
-    }
-
-    private static void initSystemTray() {
-        /*
-         * 添加系统托盘
-         */
-        if (SystemTray.isSupported()) {
-            // 获取当前平台的系统托盘
-            SystemTray tray = SystemTray.getSystemTray();
-            // 加载一个图片用于托盘图标的显示
-            Image image = null;
-            try {
-                image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            // 创建右键图标时的弹出菜单：JPopupMenu
-            DefaultTrayIconPopupMenu popupMenu = new DefaultTrayIconPopupMenu();
-            // 创建一个托盘图标
-            assert image != null;
-            DefaultTrayIcon trayIcon = new DefaultTrayIcon(image, "点击打开", popupMenu);
-
-            // 添加托盘图标到系统托盘
-            try {
-                tray.add(trayIcon);
-            } catch (AWTException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static void openApp() {
@@ -182,7 +153,7 @@ public class App {
         }
     }
 
-    private static void showBanner(){
+    private static void showBanner() {
         // Credits
         System.out.println(colorize("==============================================================", CYAN_TEXT(), BOLD()));
         System.out.print(colorize("\tPOWER BY ", BOLD(), BRIGHT_YELLOW_TEXT(), GREEN_BACK()));
