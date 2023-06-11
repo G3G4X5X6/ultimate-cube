@@ -11,6 +11,7 @@ import com.g3g4x5x6.MainFrame;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.NewSshPane;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
+import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SessionUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
@@ -28,6 +29,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -63,6 +65,7 @@ public class SessionManagerPanel extends JPanel {
     private final JMenuItem openSessionItem = new JMenuItem("打开会话");
     private final JMenuItem testSessionItem = new JMenuItem("测试会话");
     private final JMenuItem editSessionItem = new JMenuItem("编辑会话");
+    private final JMenuItem copyPassItem = new JMenuItem("复制密码");
 
     /**
      * TODO 已展开的节点添加目录时无法添加节点。
@@ -496,6 +499,21 @@ public class SessionManagerPanel extends JPanel {
             }
         };
 
+        AbstractAction copyPassAction = new AbstractAction("复制密码") {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String[] array = getRowFilePath(sessionTable.getSelectedRow());
+                File file = new File(array[0]);
+                try {
+                    String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                    JSONObject jsonObject = JSON.parseObject(json);
+                    CommonUtil.setClipboardText(VaultUtil.decryptPasswd(jsonObject.getString("sessionPass")));
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        };
+
         refreshItem.addActionListener(refreshAction);
         openSessionItem.addActionListener(openSession);
         testSessionItem.addActionListener(testSession);
@@ -504,6 +522,7 @@ public class SessionManagerPanel extends JPanel {
         delSessionItem.addActionListener(delSession);
         addDirItem.addActionListener(addDirectory);
         delDirItem.addActionListener(delDirectory);
+        copyPassItem.addActionListener(copyPassAction);
     }
 
     private JPopupMenu createPopupMenu() {
@@ -520,6 +539,8 @@ public class SessionManagerPanel extends JPanel {
         popupMenu.addSeparator();
         popupMenu.add(addDirItem);
         popupMenu.add(delDirItem);
+        popupMenu.addSeparator();
+        popupMenu.add(copyPassItem);
 
         return popupMenu;
     }
