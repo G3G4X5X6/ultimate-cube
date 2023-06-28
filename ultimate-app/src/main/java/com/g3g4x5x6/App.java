@@ -166,12 +166,13 @@ public class App {
             SystemTray tray = SystemTray.getSystemTray();
 
             // 创建托盘图标
-            Image image;
+            Image image = null;
             try {
                 image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
+            assert image != null;
             TrayIcon trayIcon = new TrayIcon(image, "ultimate-cube");
 
             // 设置鼠标提示
