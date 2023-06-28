@@ -104,17 +104,25 @@ public class MainFrame extends JFrame implements MouseListener {
         // TODO 初始化 ”状态栏“
         initStatusBar();
 
-        this.addWindowListener(new WindowAdapter() {
+        WindowListener exitListener = new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                log.debug("退出");
-                // TODO 退出前的清理动作
-                //
-
-                // 退出
-                System.exit(0);
+                log.debug("关闭窗口，Windows");
+                if (App.properties.getProperty("app.quit.to.tray").equalsIgnoreCase("false")) {
+                    System.exit(0);
+                } else {
+                    setVisible(false);
+                }
             }
-        });
+            @Override
+            public void windowIconified(WindowEvent e) {
+                log.debug("最小化窗口，Windows");
+                if (App.properties.getProperty("app.iconified.to.tray").equalsIgnoreCase("true")) {
+                    setVisible(false);
+                }
+            }
+        };
+        this.addWindowListener(exitListener);
     }
 
     /**

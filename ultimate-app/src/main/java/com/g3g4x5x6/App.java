@@ -76,6 +76,9 @@ public class App {
         mainFrame.setTitle(properties.getProperty("app.title"));
         mainFrame.pack();
         mainFrame.setVisible(true);
+
+        // 初始化系统托盘
+        initSystemTray();
     }
 
     private static void initFlatLaf() {
@@ -150,6 +153,44 @@ public class App {
             }
         } catch (Exception e) {
             log.debug(e.getMessage());
+        }
+    }
+
+    private static void initSystemTray() {
+        /*
+         * 添加系统托盘
+         */
+        // 检查系统是否支持托盘功能
+        if (SystemTray.isSupported()) {
+            // 创建系统托盘对象
+            SystemTray tray = SystemTray.getSystemTray();
+
+            // 创建托盘图标
+            Image image;
+            try {
+                image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            TrayIcon trayIcon = new TrayIcon(image, "ultimate-cube");
+
+            // 设置鼠标提示
+            trayIcon.setToolTip("My ultimate-cube");
+            trayIcon.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    openApp();
+                }
+            });
+
+            try {
+                // 将托盘图标添加到系统托盘
+                tray.add(trayIcon);
+            } catch (AWTException e) {
+                System.err.println("Failed to add TrayIcon to SystemTray");
+            }
+        } else {
+            System.err.println("SystemTray is not supported");
         }
     }
 
