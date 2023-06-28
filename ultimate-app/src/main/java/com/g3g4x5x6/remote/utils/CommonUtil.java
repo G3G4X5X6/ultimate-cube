@@ -3,7 +3,6 @@ package com.g3g4x5x6.remote.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fazecast.jSerialComm.SerialPort;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.remote.utils.os.OsInfoUtil;
 import com.github.jarod.qqwry.IPZone;
