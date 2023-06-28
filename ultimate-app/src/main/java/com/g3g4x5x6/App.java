@@ -174,7 +174,7 @@ public class App {
             }
             assert image != null;
             TrayIcon trayIcon = new TrayIcon(image, "ultimate-cube");
-
+            trayIcon.setImageAutoSize(true);
             // 设置鼠标提示
             trayIcon.setToolTip("My ultimate-cube");
             trayIcon.addMouseListener(new MouseAdapter() {
