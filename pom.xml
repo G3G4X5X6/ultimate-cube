@@ -32,7 +32,7 @@
         <autocomplete-version>3.1.4</autocomplete-version>
 
         <sshd-core-version>2.9.2</sshd-core-version>
-        <sshd-sftp-version>2.9.2</sshd-sftp-version>
+        <sshd-sftp-version>2.10.0</sshd-sftp-version>
         <sshd-common-version>2.9.2</sshd-common-version>
         <sshd-putty-version>2.9.2</sshd-putty-version>
 
