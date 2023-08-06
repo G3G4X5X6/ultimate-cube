@@ -1,6 +1,8 @@
 package com.g3g4x5x6.remote.ssh;
 
 import com.g3g4x5x6.AppConfig;
+import com.g3g4x5x6.terminal.settings.ColorScheme;
+import com.g3g4x5x6.terminal.settings.DefaultColorPaletteImpl;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
@@ -8,8 +10,7 @@ import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
-import com.jediterm.terminal.ui.settings.ColorScheme;
-import com.jediterm.terminal.ui.settings.DefaultColorPaletteImpl;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +20,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.Objects;
 
-public class SshSettingsProvider implements SettingsProvider {
+public class SshSettingsProvider extends DefaultSettingsProvider {
     private Font chineseFont;
 
     private final ColorScheme colorScheme = new ColorScheme(AppConfig.getProperty("terminal.color.scheme"));
@@ -92,9 +93,6 @@ public class SshSettingsProvider implements SettingsProvider {
         return new TextStyle(TerminalColor.rgb(200, 200, 200), TerminalColor.rgb(255, 255, 0));
     }
 
-    public TextStyle getHyperlinkColor() {
-        return new TextStyle(TerminalColor.awt(Color.BLUE), TerminalColor.WHITE);
-    }
 
     public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
         return HyperlinkStyle.HighlightMode.HOVER;
@@ -163,6 +161,11 @@ public class SshSettingsProvider implements SettingsProvider {
     @NotNull
     public TerminalTypeAheadSettings getTypeAheadSettings() {
         return DefaultTerminalTypeAheadSettings.DEFAULT;
+    }
+
+    @Override
+    public boolean sendArrowKeysInAlternativeMode() {
+        return false;
     }
 
     @NotNull

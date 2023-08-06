@@ -4,7 +4,7 @@ package com.g3g4x5x6.remote.console;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.AppConfig;
-import com.g3g4x5x6.pty.PtyProcessTtyConnector;
+import com.g3g4x5x6.terminal.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.UIUtil;

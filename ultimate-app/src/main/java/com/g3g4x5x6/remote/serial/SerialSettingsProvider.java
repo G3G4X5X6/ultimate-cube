@@ -96,13 +96,24 @@ public class SerialSettingsProvider implements SettingsProvider {
         return new Font(fontName, 0, (int) this.getTerminalFontSize());
     }
 
-    @Override
-    public Font getTerminalChineseFont() {
-        return null;
-    }
 
     public float getTerminalFontSize() {
         return 14.0F;
+    }
+
+    @Override
+    public float getLineSpacing() {
+        return SettingsProvider.super.getLineSpacing();
+    }
+
+    @Override
+    public boolean shouldDisableLineSpacingForAlternateScreenBuffer() {
+        return SettingsProvider.super.shouldDisableLineSpacingForAlternateScreenBuffer();
+    }
+
+    @Override
+    public boolean shouldFillCharacterBackgroundIncludingLineSpacing() {
+        return SettingsProvider.super.shouldFillCharacterBackgroundIncludingLineSpacing();
     }
 
     @Override
@@ -131,7 +142,7 @@ public class SerialSettingsProvider implements SettingsProvider {
     }
 
     public TextStyle getHyperlinkColor() {
-        return new TextStyle(TerminalColor.awt(Color.BLUE), TerminalColor.WHITE);
+        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
     }
 
     public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
@@ -201,5 +212,10 @@ public class SerialSettingsProvider implements SettingsProvider {
     @NotNull
     public TerminalTypeAheadSettings getTypeAheadSettings() {
         return TerminalTypeAheadSettings.DEFAULT;
+    }
+
+    @Override
+    public boolean sendArrowKeysInAlternativeMode() {
+        return false;
     }
 }
