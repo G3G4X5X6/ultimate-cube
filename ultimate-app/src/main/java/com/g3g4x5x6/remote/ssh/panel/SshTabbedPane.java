@@ -79,6 +79,7 @@ public class SshTabbedPane extends JTabbedPane {
         copyIpBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                copyIpBtn.setToolTipText("复制当前会话的远程服务器IP地址：" + sessionInfo.getSessionAddress());
                 CommonUtil.setClipboardText(sessionInfo.getSessionAddress());
             }
         });

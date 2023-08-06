@@ -1,4 +1,4 @@
-package com.jediterm.pty;
+package com.g3g4x5x6.pty;
 
 import com.jediterm.terminal.ProcessTtyConnector;
 import com.pty4j.PtyProcess;

@@ -60,7 +60,7 @@ public class App {
             String configFilename = Objects.requireNonNull(App.class.getClassLoader().getResource("")).getPath() + "log4j.properties";
             PropertyConfigurator.configureAndWatch(configFilename);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("日志器加载异常：" + e.getMessage());
         }
     }
 
@@ -86,7 +86,6 @@ public class App {
                 log.debug("加载主题：" + properties.getProperty("app.theme.class"));
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
         UIManager.put("TextComponent.arc", 5);
@@ -112,7 +111,7 @@ public class App {
                 assert appIn != null;
                 Files.copy(appIn, Path.of(AppConfig.getPropertiesPath()));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("配置初始化异常：" + e.getMessage());
             }
         }
 
@@ -123,7 +122,7 @@ public class App {
                 assert logIn != null;
                 Files.copy(logIn, Path.of(AppConfig.getWorkPath() + "/log4j.properties"));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("初始化日志配置异常：" + e.getMessage());
             }
         }
 
@@ -166,7 +165,7 @@ public class App {
             try {
                 image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("托盘图标加载异常：" + e.getMessage());
             }
             assert image != null;
             TrayIcon trayIcon = new TrayIcon(image, "ultimate-cube");
