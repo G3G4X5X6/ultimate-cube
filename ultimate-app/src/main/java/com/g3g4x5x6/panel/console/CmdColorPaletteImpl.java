@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote.console;
+package com.g3g4x5x6.panel.console;
 
 import com.g3g4x5x6.terminal.settings.ColorScheme;
 import com.jediterm.core.Color;

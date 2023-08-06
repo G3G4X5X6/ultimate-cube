@@ -1,4 +1,4 @@
-package com.g3g4x5x6.panel.editor;
+package com.g3g4x5x6.panel.notepad;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;

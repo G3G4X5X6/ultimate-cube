@@ -16,7 +16,7 @@ import com.g3g4x5x6.panel.other.RandomPasswordPane;
 import com.g3g4x5x6.panel.other.SysinfoPane;
 import com.g3g4x5x6.panel.settings.SettingsDialog;
 import com.g3g4x5x6.remote.NewTabbedPane;
-import com.g3g4x5x6.remote.console.ConsolePane;
+import com.g3g4x5x6.panel.console.ConsolePane;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.CommonUtil;

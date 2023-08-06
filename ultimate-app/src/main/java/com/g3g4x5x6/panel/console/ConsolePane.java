@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote.console;
+package com.g3g4x5x6.panel.console;
 
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -24,15 +24,20 @@ import java.util.Map;
 @Slf4j
 public class ConsolePane extends JPanel {
 
-    private BorderLayout borderLayout = new BorderLayout();
-    private JToolBar toolBar;
     private JProgressBar progressBar;
+    private final JToolBar toolBar;
 
     public ConsolePane() {
-        this.setLayout(borderLayout);
+        this.setLayout(new BorderLayout());
         toolBar = new JToolBar();
         toolBar.setFloatable(false);
+        initToolbar();
 
+        openTerminal();
+        log.info(">>>>>>>> 启动本地终端");
+    }
+
+    private void initToolbar() {
         // 刷新按钮
         FlatButton freshBtn = new FlatButton();
         freshBtn.setButtonType(FlatButton.ButtonType.toolBarButton);
@@ -47,18 +52,17 @@ public class ConsolePane extends JPanel {
                 }).start();
             }
         });
+
         // 终端刷新进度条
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
-
-        openTerminal();
 
         toolBar.add(freshBtn);
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(progressBar);
         toolBar.add(Box.createHorizontalGlue());
+
         this.add(toolBar, BorderLayout.NORTH);
-        log.info(">>>>>>>> 启动本地终端");
     }
 
     private void openTerminal() {
