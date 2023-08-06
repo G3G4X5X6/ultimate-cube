@@ -8,7 +8,8 @@
 
 #### 简介
 
-ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测试工程师、程序员、网站管理员、IT 管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
+ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测试工程师、程序员、网站管理员、IT
+管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
 
 #### 软件架构
 
@@ -66,12 +67,13 @@ winget install ultimatecube
 
 1. 构建环境：`JDK11+`, `IDEA`
 2. 安装依赖：
-   ```shell
-    # tightvnc-jviewer.jar, jediterm-pty-2.66.jar, com.jediterm.terminal-2.66.jar, jediterm-typeahead-2.66.jar
-    mvn install:install-file -Dfile=libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
-    # mvn install:install-file -Dfile=libs/jediterm-typeahead-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.66 -Dpackaging=jar
-    # mvn install:install-file -Dfile=libs/jediterm-pty-2.66.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.66 -Dpackaging=jar
-   ```
+
+```shell
+mvn install:install-file -Dfile=libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
+mvn install:install-file -Dfile=libs/jediterm-core-3.20-SNAPSHOT.jar -DgroupId=com.jediterm  -DartifactId=jediterm-core -Dversion=3.20-SNAPSHOT -Dpackaging=jar
+mvn install:install-file -Dfile=libs/jediterm-ui-3.20-SNAPSHOT.jar -DgroupId=com.jediterm  -DartifactId=jediterm-ui -Dversion=3.20-SNAPSHOT -Dpackaging=jar
+  ```
+
 3. 编译运行：
     1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.16`
     1. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
@@ -79,13 +81,12 @@ winget install ultimatecube
     1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
     1. 运行项目或者打包（`maven` 插件 `assembly:assembly`）
 
-
 #### 注意事项
+
 1. 请备份配置文件 `application.properties` 中的会话加密密钥 `ssh.session.secret.key`，丢失后将无法解密已加密的会话密码。
 2. 程序更新后，配置文件可能有所变动，若无法正常连接SSH，请备份并删除原配置文件 `application.properties`。
 3. 关于使用过程中的任何疑问，请于 GitHub 中的 `Discussions` 中的对应版本进行提问和反馈。
 4. 任何 `Issues` 请到 github 项目仓库中提出。
-
 
 #### 参与贡献
 
@@ -114,4 +115,5 @@ winget install ultimatecube
 ![img.png](doc/img/img_1.png)
 
 #### [感谢 `JetBrains` 提供的强大编辑器](https://jb.gg/OpenSourceSupport)
+
 ![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
