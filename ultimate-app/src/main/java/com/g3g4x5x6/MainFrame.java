@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
-import com.g3g4x5x6.dashboard.QuickStartPane;
+import com.g3g4x5x6.dashboard.QuickStartTabbedPane;
 import com.g3g4x5x6.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
@@ -62,6 +62,7 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 public class MainFrame extends JFrame implements MouseListener {
 
     public static JTabbedPane mainTabbedPane;
+    public static QuickStartTabbedPane quickStartTabbedPane = new QuickStartTabbedPane();
     public static EditorFrame editorFrame = EditorFrame.getInstance();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
@@ -114,6 +115,7 @@ public class MainFrame extends JFrame implements MouseListener {
                     setVisible(false);
                 }
             }
+
             @Override
             public void windowIconified(WindowEvent e) {
                 log.debug("最小化窗口，Windows");
@@ -384,9 +386,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
         // 添加 ”快速启动“ 面板
-        mainTabbedPane.addTab("快速启动",
-                new FlatSVGIcon("icons/start.svg"),
-                new QuickStartPane());
+        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/start.svg"), quickStartTabbedPane);
 
         this.getContentPane().add(mainTabbedPane);
     }
@@ -414,6 +414,7 @@ public class MainFrame extends JFrame implements MouseListener {
         });
 
         JButton addBtn = new JButton(new FlatSVGIcon("icons/add.svg"));
+        addBtn.setToolTipText("新建会话");
         addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -421,14 +422,37 @@ public class MainFrame extends JFrame implements MouseListener {
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
-        // swiftPackage.svg
-        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/swiftPackage.svg"));
-        sessionManagerBtn.setToolTipText("会话管理面板");
+
+        JButton recentPaneBtn = new JButton(new FlatSVGIcon("icons/history.svg"));
+        recentPaneBtn.setToolTipText("最近会话");
+        recentPaneBtn.setSelected(true);
+        recentPaneBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.setSelectedIndex(0);
+                quickStartTabbedPane.setSelectedIndex(0);
+            }
+        });
+
+        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/bookmarksList.svg"));
+        sessionManagerBtn.setToolTipText("会话管理");
+        sessionManagerBtn.setSelected(true);
         sessionManagerBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+                mainTabbedPane.setSelectedIndex(0);
+                quickStartTabbedPane.setSelectedIndex(1);
+            }
+        });
+
+        JButton notePaneBtn = new JButton(new FlatSVGIcon("icons/addNote.svg"));
+        notePaneBtn.setToolTipText("备忘笔记");
+        notePaneBtn.setSelected(true);
+        notePaneBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.setSelectedIndex(0);
+                quickStartTabbedPane.setSelectedIndex(2);
             }
         });
 
@@ -473,7 +497,9 @@ public class MainFrame extends JFrame implements MouseListener {
         });
 
         trailing.add(addBtn);
+        trailing.add(recentPaneBtn);
         trailing.add(sessionManagerBtn);
+        trailing.add(notePaneBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());

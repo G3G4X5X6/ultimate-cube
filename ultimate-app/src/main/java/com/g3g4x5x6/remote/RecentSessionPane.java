@@ -46,6 +46,7 @@ public class RecentSessionPane extends JPanel {
     private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
     private JTable recentTable;
     private DefaultTableModel tableModel;
+    private WatchService watchService;
 
     public RecentSessionPane() {
         this.setLayout(new BorderLayout());
@@ -81,6 +82,16 @@ public class RecentSessionPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("ToolBar: 刷新");
                 initData();
+
+                try {
+                    watchService.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+
+                } finally {
+                    log.info("刷新文件监控服务");
+                    monitorSessions();
+                }
             }
         });
 
@@ -151,7 +162,7 @@ public class RecentSessionPane extends JPanel {
                                 jsonObject.getString("sessionLoginType"),
                         });
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.debug(e.getMessage());
                     }
                 }
             }
@@ -169,7 +180,7 @@ public class RecentSessionPane extends JPanel {
         // 需要监听的文件目录（只能监听目录）
         String path = Path.of(AppConfig.getWorkPath(), "/sessions").toString();
 
-        WatchService watchService = FileSystems.getDefault().newWatchService();
+        watchService = FileSystems.getDefault().newWatchService();
         Path p = Paths.get(path);
         p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY,
                 StandardWatchEventKinds.ENTRY_DELETE,
