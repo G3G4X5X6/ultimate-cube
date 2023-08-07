@@ -33,7 +33,7 @@
 
         <sshd-core-version>2.9.2</sshd-core-version>
         <sshd-sftp-version>2.9.2</sshd-sftp-version>
-        <sshd-common-version>2.9.2</sshd-common-version>
+        <sshd-common-version>2.10.0</sshd-common-version>
         <sshd-putty-version>2.9.2</sshd-putty-version>
 
         <slf4j-api-version>2.0.0-alpha5</slf4j-api-version>
