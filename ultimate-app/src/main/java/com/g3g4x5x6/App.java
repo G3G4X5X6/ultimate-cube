@@ -171,7 +171,7 @@ public class App {
             TrayIcon trayIcon = new TrayIcon(image, "ultimate-cube");
             trayIcon.setImageAutoSize(true);
             // 设置鼠标提示
-            trayIcon.setToolTip("My ultimate-cube");
+            trayIcon.setToolTip("ultimate-cube");
             trayIcon.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
