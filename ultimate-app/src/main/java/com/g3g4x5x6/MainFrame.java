@@ -91,7 +91,7 @@ public class MainFrame extends JFrame implements MouseListener {
         this.setPreferredSize(new Dimension(1000, 600));
         this.setMinimumSize(new Dimension(950, 600));
         this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("app.png"))).getImage());
 
         // 初始化 ”菜单栏“
         initMenuBar();
