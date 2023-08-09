@@ -11,7 +11,6 @@ import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
 import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
-import com.jediterm.terminal.ui.settings.SettingsProvider;
 import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,26 +35,22 @@ public class SshSettingsProvider extends DefaultSettingsProvider {
 
     @SneakyThrows
     public Font getTerminalFont() {
-        String fontName;
-        if (UIUtil.isWindows) {
-            fontName = AppConfig.getProperty("terminal.font");
-        } else if (UIUtil.isMac) {
-            fontName = "Menlo";
-        } else {
-            fontName = "Monospaced";
-        }
+//        String fontName;
+//        if (UIUtil.isWindows) {
+//            fontName = AppConfig.getProperty("terminal.font");
+//        } else if (UIUtil.isMac) {
+//            fontName = "Menlo";
+//        } else {
+//            fontName = "Monospaced";
+//        }
+//        fontName = "楷体";
 //        return new Font(fontName, Font.PLAIN, (int) this.getTerminalFontSize());
-        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/" + "CascadiaCode.ttf")));
+        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/ttf/" + "JetBrainsMonoNL-Regular.ttf")));
         return myFont.deriveFont(Font.PLAIN, (int) this.getTerminalFontSize());
     }
 
-    @SneakyThrows
-    public Font getTerminalChineseFont(){
-        if (chineseFont == null){
-            chineseFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/" + "NotoSansSC-Regular.otf")));
-//            chineseFont = new Font("宋体", Font.PLAIN, (int) this.getTerminalFontSize());
-        }
-        return chineseFont.deriveFont(Font.PLAIN, (int) this.getTerminalFontSize());
+    public Font getTerminalChineseFont() {
+        return new Font("新宋体", Font.PLAIN, (int) this.getTerminalFontSize());
     }
 
     public float getTerminalFontSize() {
