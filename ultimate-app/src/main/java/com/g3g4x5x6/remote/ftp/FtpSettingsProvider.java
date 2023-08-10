@@ -1,6 +1,5 @@
 package com.g3g4x5x6.remote.ftp;
 
-import com.jediterm.core.Color;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
@@ -9,14 +8,14 @@ import com.jediterm.terminal.emulator.ColorPaletteImpl;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
-import com.jediterm.terminal.ui.settings.SettingsProvider;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
 
-public class FtpSettingsProvider implements SettingsProvider {
+public class FtpSettingsProvider extends DefaultSettingsProvider {
     private TextStyle textStyle;
 
     @NotNull
@@ -102,20 +101,6 @@ public class FtpSettingsProvider implements SettingsProvider {
         return 14.0F;
     }
 
-    @Override
-    public float getLineSpacing() {
-        return SettingsProvider.super.getLineSpacing();
-    }
-
-    @Override
-    public boolean shouldDisableLineSpacingForAlternateScreenBuffer() {
-        return SettingsProvider.super.shouldDisableLineSpacingForAlternateScreenBuffer();
-    }
-
-    @Override
-    public boolean shouldFillCharacterBackgroundIncludingLineSpacing() {
-        return SettingsProvider.super.shouldFillCharacterBackgroundIncludingLineSpacing();
-    }
 
     @Override
     public TextStyle getDefaultStyle() {

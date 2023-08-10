@@ -8,14 +8,14 @@ import com.jediterm.terminal.emulator.ColorPaletteImpl;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
-import com.jediterm.terminal.ui.settings.SettingsProvider;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
 
-public class TelnetSettingsProvider implements SettingsProvider {
+public class TelnetSettingsProvider extends DefaultSettingsProvider {
 
     @NotNull
     public TerminalActionPresentation getNewSessionActionPresentation() {
@@ -101,21 +101,6 @@ public class TelnetSettingsProvider implements SettingsProvider {
     }
 
     @Override
-    public float getLineSpacing() {
-        return SettingsProvider.super.getLineSpacing();
-    }
-
-    @Override
-    public boolean shouldDisableLineSpacingForAlternateScreenBuffer() {
-        return SettingsProvider.super.shouldDisableLineSpacingForAlternateScreenBuffer();
-    }
-
-    @Override
-    public boolean shouldFillCharacterBackgroundIncludingLineSpacing() {
-        return SettingsProvider.super.shouldFillCharacterBackgroundIncludingLineSpacing();
-    }
-
-    @Override
     public TextStyle getDefaultStyle() {
         return new TextStyle(
                 TerminalColor.rgb(
@@ -127,10 +112,6 @@ public class TelnetSettingsProvider implements SettingsProvider {
                         UIManager.getColor("Table.background").getGreen(),
                         UIManager.getColor("Table.background").getBlue()));
     }
-
-//    public void setDefaultStyle(TextStyle textStyle){
-//        this.textStyle = textStyle;
-//    }
 
     public TextStyle getSelectionColor() {
         return new TextStyle(TerminalColor.WHITE, TerminalColor.rgb(82, 109, 165));

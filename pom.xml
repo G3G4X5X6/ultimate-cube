@@ -55,6 +55,8 @@
 
         <jcolor-version>5.5.1</jcolor-version>
         <hutool-version>5.8.4</hutool-version>
+
+        <zip4j-version>2.11.5</zip4j-version>
     </properties>
 
     <dependencyManagement>
@@ -83,6 +85,14 @@
                 <artifactId>jediterm-ui</artifactId>
                 <version>${jediterm-ui-version}</version>
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j -->
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j-version}</version>
+            </dependency>
+
 
             <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
             <dependency>

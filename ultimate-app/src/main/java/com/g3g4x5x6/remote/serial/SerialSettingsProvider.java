@@ -8,6 +8,7 @@ import com.jediterm.terminal.emulator.ColorPaletteImpl;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
 
-public class SerialSettingsProvider implements SettingsProvider {
+public class SerialSettingsProvider extends DefaultSettingsProvider {
 
     @NotNull
     public TerminalActionPresentation getNewSessionActionPresentation() {
@@ -99,21 +100,6 @@ public class SerialSettingsProvider implements SettingsProvider {
 
     public float getTerminalFontSize() {
         return 14.0F;
-    }
-
-    @Override
-    public float getLineSpacing() {
-        return SettingsProvider.super.getLineSpacing();
-    }
-
-    @Override
-    public boolean shouldDisableLineSpacingForAlternateScreenBuffer() {
-        return SettingsProvider.super.shouldDisableLineSpacingForAlternateScreenBuffer();
-    }
-
-    @Override
-    public boolean shouldFillCharacterBackgroundIncludingLineSpacing() {
-        return SettingsProvider.super.shouldFillCharacterBackgroundIncludingLineSpacing();
     }
 
     @Override
