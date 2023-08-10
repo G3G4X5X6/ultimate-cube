@@ -1,4 +1,4 @@
-package com.g3g4x5x6.panel.settings;
+package com.g3g4x5x6.settings;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;

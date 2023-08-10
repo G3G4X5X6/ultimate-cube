@@ -5,8 +5,6 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.AppConfig;
-import com.g3g4x5x6.formatter.IpAddressFormatter;
-import com.g3g4x5x6.formatter.PortFormatter;
 import com.g3g4x5x6.remote.utils.os.OsInfoUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.SneakyThrows;
@@ -144,7 +142,7 @@ public class FreeRdp extends JDialog {
         // Host
         JPanel hostPane = new JPanel();
         JLabel hostLabel = new JLabel("Remote Host*");
-        hostField = new JFormattedTextField(new IpAddressFormatter());
+        hostField = new JFormattedTextField();
         hostField.setColumns(10);
         hostField.setText("172.17.200.12");
         hostPane.add(hostLabel);
@@ -153,7 +151,7 @@ public class FreeRdp extends JDialog {
         // Port
         JPanel portPane = new JPanel();
         JLabel portLabel = new JLabel("Port*");
-        portField = new JFormattedTextField(new PortFormatter());
+        portField = new JFormattedTextField();
         portField.setColumns(4);
         portField.setText("3389");
         portPane.add(portLabel);
