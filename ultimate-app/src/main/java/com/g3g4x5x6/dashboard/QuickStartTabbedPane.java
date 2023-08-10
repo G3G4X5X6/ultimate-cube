@@ -16,7 +16,7 @@ public class QuickStartTabbedPane extends JTabbedPane {
 
     public QuickStartTabbedPane() {
         this.addTab("最近会话", new FlatSVGIcon("icons/ShowRecentTabStripItems(Color).svg"), new RecentSessionPane());
-        this.addTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(MainFrame.mainTabbedPane));
+        this.addTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel());
         this.addTab("备忘笔记", new FlatSVGIcon("icons/addNote.svg"), new NotePane());
     }
 }
