@@ -1,6 +1,6 @@
 package com.g3g4x5x6.panel.console;
 
-import com.g3g4x5x6.terminal.settings.ColorScheme;
+import com.g3g4x5x6.ui.terminal.settings.ColorScheme;
 import com.jediterm.core.Color;
 import com.jediterm.terminal.emulator.ColorPalette;
 import org.jetbrains.annotations.NotNull;

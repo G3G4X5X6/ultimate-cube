@@ -1,4 +1,4 @@
-package com.g3g4x5x6.terminal.settings;
+package com.g3g4x5x6.ui.terminal.settings;
 
 
 import com.alibaba.fastjson.JSONArray;

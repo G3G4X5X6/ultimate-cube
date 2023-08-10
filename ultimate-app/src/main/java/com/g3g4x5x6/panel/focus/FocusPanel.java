@@ -1,4 +1,4 @@
-package com.g3g4x5x6.focus;
+package com.g3g4x5x6.panel.focus;
 
 
 import com.g3g4x5x6.remote.ssh.SessionInfo;

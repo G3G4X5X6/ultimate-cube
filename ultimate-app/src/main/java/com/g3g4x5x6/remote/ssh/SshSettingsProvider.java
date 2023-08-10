@@ -1,8 +1,8 @@
 package com.g3g4x5x6.remote.ssh;
 
 import com.g3g4x5x6.AppConfig;
-import com.g3g4x5x6.terminal.settings.ColorScheme;
-import com.g3g4x5x6.terminal.settings.DefaultColorPaletteImpl;
+import com.g3g4x5x6.ui.terminal.settings.ColorScheme;
+import com.g3g4x5x6.ui.terminal.settings.DefaultColorPaletteImpl;
 import com.jediterm.core.Platform;
 import com.jediterm.terminal.HyperlinkStyle;
 import com.jediterm.terminal.TerminalColor;

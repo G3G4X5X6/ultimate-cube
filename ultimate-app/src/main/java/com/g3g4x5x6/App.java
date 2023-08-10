@@ -1,7 +1,7 @@
 package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.g3g4x5x6.dialog.LockDialog;
+import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.utils.CheckUtil;

@@ -1,4 +1,4 @@
-package com.g3g4x5x6.dialog;
+package com.g3g4x5x6.ui.dialog;
 
 import com.g3g4x5x6.App;
 import lombok.extern.slf4j.Slf4j;

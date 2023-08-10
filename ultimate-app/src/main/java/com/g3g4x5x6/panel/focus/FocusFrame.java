@@ -1,4 +1,4 @@
-package com.g3g4x5x6.focus;
+package com.g3g4x5x6.panel.focus;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
