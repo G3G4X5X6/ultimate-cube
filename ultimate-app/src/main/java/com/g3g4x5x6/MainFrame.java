@@ -22,8 +22,6 @@ import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SessionUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
-import com.g3g4x5x6.tools.ColorPicker;
-import com.g3g4x5x6.tools.QRTool;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.tools.xpack.FreeRdp;
 import com.g3g4x5x6.ui.StatusBar;
@@ -243,9 +241,6 @@ public class MainFrame extends JFrame implements MouseListener {
 
         JMenu otherToolMenu = new JMenu("杂七杂八");
         otherToolMenu.add(randomPassItem);
-        otherToolMenu.add(encodeConversionAction);
-        otherToolMenu.add(colorPickerAction);
-        otherToolMenu.add(qrCodePickerAction);
         toolMenu.add(otherToolMenu);
         toolMenu.addSeparator();
         toolMenu.add(externalSubMenu);
@@ -801,34 +796,6 @@ public class MainFrame extends JFrame implements MouseListener {
                 editorFrame.setTitle(App.properties.getProperty("editor.title"));
                 editorFrame.setVisible(true);
             }).start();
-        }
-    };
-
-    private final AbstractAction encodeConversionAction = new AbstractAction("文件编码转换") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DialogUtil.info("敬请期待");
-        }
-    };
-
-    private final AbstractAction colorPickerAction = new AbstractAction("截图取色") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            log.debug("取色器");
-            SwingUtilities.invokeLater(() -> {
-                        ColorPicker colorPicker = new ColorPicker();
-                        colorPicker.setVisible(true);
-                    }
-            );
-        }
-    };
-
-    private final AbstractAction qrCodePickerAction = new AbstractAction("二维码") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            log.debug("QR Code");
-            QRTool qrCode = new QRTool();
-            qrCode.setVisible(true);
         }
     };
 
