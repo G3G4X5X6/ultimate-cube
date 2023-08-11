@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -46,6 +47,7 @@ public class RecentSessionPane extends JPanel {
     private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
     private JTable recentTable;
     private DefaultTableModel tableModel;
+    private TableRowSorter<DefaultTableModel> sorter;
     private WatchService watchService;
 
     public RecentSessionPane() {
@@ -67,7 +69,7 @@ public class RecentSessionPane extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    openSession(recentTable.getSelectedRow());
+                    openSession(sorter.convertRowIndexToModel(recentTable.getSelectedRow()));
                 }
             }
         });
@@ -112,8 +114,9 @@ public class RecentSessionPane extends JPanel {
             }
         };
         tableModel.setColumnIdentifiers(columnNames);
-        recentTable.setAutoCreateRowSorter(true);
-        recentTable.setUpdateSelectionOnSort(true);
+        // 搜索功能
+        sorter = new TableRowSorter<>(tableModel);
+        recentTable.setRowSorter(sorter);
 
         initData();
 
@@ -232,8 +235,9 @@ public class RecentSessionPane extends JPanel {
                 log.debug("再次打开会话");
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = recentTable.getSelectedRows();
+
                 for (int index : indexs) {
-                    openSession(index);
+                    openSession(sorter.convertRowIndexToModel(index));
                 }
             }
         };

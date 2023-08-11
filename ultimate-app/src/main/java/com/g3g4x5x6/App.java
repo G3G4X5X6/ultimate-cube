@@ -90,9 +90,9 @@ public class App {
         UIManager.put("MenuBar.font", fontResource);
         UIManager.put("Menu.font", fontResource);
         UIManager.put("MenuItem.font", fontResource);
-        UIManager.put("Tree.font", fontResource);
-        UIManager.put("Label.font", fontResource);
-        UIManager.put("Table.font", fontResource);
+//        UIManager.put("Tree.font", fontResource);
+//        UIManager.put("Label.font", fontResource);
+//        UIManager.put("Table.font", fontResource);
 //        UIManager.put("Button.font", fontResource);
 //        UIManager.put("ToggleButton.font", fontResource);
 //        UIManager.put("RadioButton.font", fontResource);

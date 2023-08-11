@@ -37,8 +37,18 @@ public class AppConfig {
                 log.debug("文件夹创建失败：" + work);
             }
         }
-//        log.debug(work);
         return work;
+    }
+
+    public static String getTempPath() {
+        String temp = Path.of(getHomePath() + "/.ultimate-cube/temp").toString();
+        File file = new File(temp);
+        if (!file.exists()) {
+            if (!file.mkdir()) {
+                log.debug("文件夹创建失败：" + temp);
+            }
+        }
+        return temp;
     }
 
     public static String getHomePath() {

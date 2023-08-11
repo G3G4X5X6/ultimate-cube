@@ -754,7 +754,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                 editorFrame = EditorFrame.getInstance();
             }
 
-            String openFileName = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
+            String openFileName = tableModel.getValueAt(sorter.convertRowIndexToModel(table.getSelectedRow()), 0).toString();
             String savePath = currentPath + "/" + openFileName;
             StringBuilder text = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(fs.getClient().read(savePath)))) {
@@ -763,7 +763,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                     text.append(line).append("\n");
                 }
             } catch (IOException ioException) {
-                ioException.printStackTrace();
+                log.debug(ioException.getMessage());
                 JOptionPane.showMessageDialog(FilesBrowser.this, ioException.getMessage(), "警告", JOptionPane.WARNING_MESSAGE);
             }
 
@@ -775,4 +775,5 @@ public class FilesBrowser extends JPanel implements MouseListener {
             editorFrame.setVisible(true);
         }
     };
+
 }

@@ -1,6 +1,6 @@
 package com.g3g4x5x6.remote.ssh;
 
-import com.jediterm.terminal.Questioner;
+import com.g3g4x5x6.AppConfig;
 import com.jediterm.terminal.TtyConnector;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import org.apache.sshd.common.channel.PtyChannelConfiguration;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -25,14 +26,15 @@ public class DefaultTtyConnector implements TtyConnector {
 
     private OutputStream outputStream;
     private BufferedReader reader;
+    private FileWriter outputFileWriter;
 
-    public DefaultTtyConnector(ClientSession clientSession) {
+    public DefaultTtyConnector(ClientSession clientSession, SessionInfo sessionInfo) {
         this.session = clientSession;
-    }
 
-    @Override
-    public boolean init(Questioner questioner) {
         try {
+            // 终端输入输出历史记录
+            this.outputFileWriter = new FileWriter(Path.of(AppConfig.getTempPath(), "history_" + sessionInfo.getSessionName() + "_" + sessionInfo.getSessionAddress() + "_" + sessionInfo.getSessionProtocol() + ".txt").toString());
+
             PipedOutputStream out = new PipedOutputStream();
             InputStream channelIn = new PipedInputStream(out);
             PipedOutputStream channelOut = new PipedOutputStream();
@@ -43,10 +45,9 @@ public class DefaultTtyConnector implements TtyConnector {
             reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             outputStream = channel.getInvertedIn();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
 
-        return true;
     }
 
     private ChannelShell initClientChannel(ClientSession session, InputStream input, OutputStream output) throws IOException {
@@ -95,8 +96,10 @@ public class DefaultTtyConnector implements TtyConnector {
      * TODO 本地保存会话记录：String.valueOf(chars)
      */
     @Override
-    public int read(char[] chars, int i, int i1) throws IOException {
-        return reader.read(chars, i, i1);
+    public int read(char[] chars, int off, int len) throws IOException {
+        outputFileWriter.write(chars, off, len);
+        outputFileWriter.flush();
+        return reader.read(chars, off, len);
     }
 
     @Override
@@ -116,6 +119,8 @@ public class DefaultTtyConnector implements TtyConnector {
     @Override
     public void write(String string) throws IOException {
         log.debug("session history: " + string);
+        outputFileWriter.write(string);
+        outputFileWriter.flush();
         this.write(string.getBytes(StandardCharsets.UTF_8));
     }
 
