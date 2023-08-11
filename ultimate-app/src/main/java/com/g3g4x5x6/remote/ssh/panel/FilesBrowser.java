@@ -501,7 +501,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                     int fileCount = fileList.size();
                     for (File file : fileList) {
                         log.debug(file.getAbsolutePath());
-                        taskPanel.setFileCount(fileCount);
+                        taskPanel.setFileCount(--fileCount);
                         taskPanel.setTaskLabel(file.getAbsolutePath());
                         taskPanel.setMin(0);
                         taskPanel.setMax((int) file.length());
@@ -530,7 +530,6 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                 sendLen += len;
                                 taskPanel.setProgressBarValue(sendLen);
                             }
-                            fileCount -= 1;
                         } catch (IOException fileNotFoundException) {
                             fileNotFoundException.printStackTrace();
                         }

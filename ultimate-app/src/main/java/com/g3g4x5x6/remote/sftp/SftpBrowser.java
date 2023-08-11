@@ -485,7 +485,7 @@ public class SftpBrowser extends JPanel {
                     int fileCount = fileList.size();
                     for (File file : fileList) {
                         log.debug(file.getAbsolutePath());
-                        taskPanel.setFileCount(fileCount);
+                        taskPanel.setFileCount(--fileCount);
                         taskPanel.setTaskLabel(file.getAbsolutePath());
                         taskPanel.setMin(0);
                         taskPanel.setMax((int) file.length());
@@ -502,7 +502,7 @@ public class SftpBrowser extends JPanel {
                             }
                             FileInputStream fis = new FileInputStream(file);
                             OutputStream outputStream = Files.newOutputStream(fs.getPath(finalPath));
-                            byte data[] = new byte[1024 * 8];   // 缓冲区
+                            byte[] data = new byte[1024 * 8];   // 缓冲区
                             int len = 0;        // 创建长度
                             int sendLen = 0;    // 已发送长度
                             while ((len = fis.read(data)) != -1) {
@@ -511,7 +511,6 @@ public class SftpBrowser extends JPanel {
                                 sendLen += len;
                                 taskPanel.setProgressBarValue(sendLen);
                             }
-                            fileCount -= 1;
                         } catch (IOException fileNotFoundException) {
                             fileNotFoundException.printStackTrace();
                         }
