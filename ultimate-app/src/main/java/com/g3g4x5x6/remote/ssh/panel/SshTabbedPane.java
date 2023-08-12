@@ -4,6 +4,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +21,7 @@ import static com.g3g4x5x6.remote.utils.SessionUtil.getLogArea;
 
 @Slf4j
 public class SshTabbedPane extends JTabbedPane {
+    @Getter
     private final String id;
     private final SessionInfo sessionInfo;
 
@@ -45,7 +47,7 @@ public class SshTabbedPane extends JTabbedPane {
             try {
                 this.sessionInfo.initComponent();
             } catch (GeneralSecurityException | IOException e) {
-                e.printStackTrace();
+                log.debug(e.getMessage());
                 addTab(e.getCause().toString(), new FlatSVGIcon("icons/balloonError.svg"), getLogArea(e.getCause().toString(), e.getStackTrace()));
             }
         }
@@ -79,6 +81,7 @@ public class SshTabbedPane extends JTabbedPane {
         copyIpBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                copyIpBtn.setToolTipText("复制当前会话的远程服务器IP地址：" + sessionInfo.getSessionAddress());
                 CommonUtil.setClipboardText(sessionInfo.getSessionAddress());
             }
         });
@@ -103,7 +106,7 @@ public class SshTabbedPane extends JTabbedPane {
             @SneakyThrows
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 3){
+                if (e.getClickCount() == 3) {
                     SshUtil.exec(sessionInfo.getSession(), "shutdown -h now");
                 }
             }
@@ -116,7 +119,7 @@ public class SshTabbedPane extends JTabbedPane {
             @SneakyThrows
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 3){
+                if (e.getClickCount() == 3) {
                     SshUtil.exec(sessionInfo.getSession(), "shutdown -h now");
                 }
             }
@@ -181,9 +184,9 @@ public class SshTabbedPane extends JTabbedPane {
                     filesBrowser.updateFs(sessionInfo.getSftpFileSystem());
                 // 关闭进度条
                 progressBar.setVisible(false);
-            } catch (GeneralSecurityException | IOException e) {
-                e.printStackTrace();
-            }finally {
+            } catch (GeneralSecurityException | IOException | NullPointerException e) {
+                log.debug(e.getMessage());
+            } finally {
                 progressBar.setVisible(false);
             }
         }).start();
@@ -193,7 +196,4 @@ public class SshTabbedPane extends JTabbedPane {
         return sessionInfo;
     }
 
-    public String getId() {
-        return id;
-    }
 }

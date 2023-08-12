@@ -22,22 +22,31 @@
             <artifactId>ultimate-editor</artifactId>
             <version>6.6.16</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
-            <groupId>com.g3g4x5x6</groupId>
-            <artifactId>ultimate-pty</artifactId>
-            <version>6.6.16</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.g3g4x5x6</groupId>
-            <artifactId>ultimate-typeahead</artifactId>
-            <version>6.6.16</version>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.g3g4x5x6</groupId>
-            <artifactId>ultimate-terminal</artifactId>
-            <version>6.6.16</version>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jediterm</groupId>
+            <artifactId>jediterm-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jediterm</groupId>
+            <artifactId>jediterm-ui</artifactId>
         </dependency>
 
         <dependency>

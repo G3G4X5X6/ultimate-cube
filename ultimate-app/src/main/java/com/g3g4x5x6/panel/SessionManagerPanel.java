@@ -8,6 +8,7 @@ import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.MainFrame;
+import com.g3g4x5x6.remote.NewTabbedPane;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.NewSshPane;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
@@ -39,12 +40,11 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Objects;
 
+import static com.g3g4x5x6.MainFrame.mainTabbedPane;
+
 @Slf4j
 public class SessionManagerPanel extends JPanel {
     private final ToolBar toolBar = new ToolBar();
-
-    private final JTabbedPane mainTabbedPane;
-
     private final JSplitPane splitPane;
 
     private JTree sessionTree;
@@ -69,9 +69,8 @@ public class SessionManagerPanel extends JPanel {
     /**
      * TODO 已展开的节点添加目录时无法添加节点。
      */
-    public SessionManagerPanel(JTabbedPane tabbedPane) {
+    public SessionManagerPanel() {
         this.setLayout(new BorderLayout());
-        this.mainTabbedPane = tabbedPane;
 
         this.splitPane = new JSplitPane();
         this.splitPane.setDividerLocation(200);
@@ -384,15 +383,8 @@ public class SessionManagerPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("新增会话");
-                TreePath treePath = sessionTree.getSelectionPath();
-                String currentTag = convertPathToTag(treePath);
-                String category = "";
-                int index = currentTag.indexOf("/");
-                if (index != -1)
-                    category = Path.of(currentTag.substring(index + 1)).toString();
-                NewSshPane sshPane = new NewSshPane(MainFrame.mainTabbedPane);
-                sshPane.setCategory(category);
-                mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
+
+                mainTabbedPane.insertTab("新建会话", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建会话", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         };
@@ -476,7 +468,7 @@ public class SessionManagerPanel extends JPanel {
 
                         String finalCurrentTag = array[1];
                         new Thread(() -> {
-                            NewSshPane sshPane = new NewSshPane(MainFrame.mainTabbedPane);
+                            NewSshPane sshPane = new NewSshPane(mainTabbedPane);
                             sshPane.setHostField(jsonObject.getString("sessionAddress"));
                             sshPane.setPortField(jsonObject.getString("sessionPort"));
                             sshPane.setUserField(jsonObject.getString("sessionUser"));
@@ -551,12 +543,14 @@ public class SessionManagerPanel extends JPanel {
             testSessionItem.setEnabled(false);
             editSessionItem.setEnabled(false);
             delSessionItem.setEnabled(false);
+            copyPassItem.setEnabled(false);
         } else {
 //            addSessionItem.setEnabled(true);
             openSessionItem.setEnabled(true);
             testSessionItem.setEnabled(true);
             editSessionItem.setEnabled(true);
             delSessionItem.setEnabled(true);
+            copyPassItem.setEnabled(true);
         }
 
         if (sessionTree.isSelectionEmpty()) {
@@ -626,10 +620,10 @@ public class SessionManagerPanel extends JPanel {
                     SessionInfo sessionInfo = SessionUtil.openSshSession(file.getAbsolutePath());
                     if (SshUtil.testConnection(sessionInfo.getSessionAddress(), sessionInfo.getSessionPort()) == 1) {
                         String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
-                        MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                        mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
                                 new SshTabbedPane(sessionInfo)
                         );
-                        MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
+                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
                     }
                     App.sessionInfos.put(sessionInfo.getSessionId(), sessionInfo);
 

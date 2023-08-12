@@ -36,9 +36,7 @@ public class CommonUtil {
     }
 
     static {
-        for (SerialPort port : SerialPort.getCommPorts()) {
-            ports.add(port);
-        }
+        ports.addAll(Arrays.asList(SerialPort.getCommPorts()));
     }
 
     public static HashSet<SerialPort> getCommPorts() {
@@ -49,9 +47,7 @@ public class CommonUtil {
      * 未测试
      */
     public static void updateCommPorts() {
-        for (SerialPort port : SerialPort.getCommPorts()) {
-            ports.add(port);
-        }
+        Collections.addAll(ports, SerialPort.getCommPorts());
     }
 
     public static CharsetMatch checkCharset(InputStream input) {
@@ -60,15 +56,9 @@ public class CommonUtil {
         try {
             cd.setText(input);
         } catch (IOException e) {
-            try {
-                input.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
-        CharsetMatch cm = cd.detect();
-        return cm;
+        return cd.detect();
     }
 
     public static void setClipboardText(String text) {
@@ -80,13 +70,13 @@ public class CommonUtil {
 
     /**
      * example: 这将获取所有的版本
-     * https://api.github.com/repos/G3G4X5X6/ultimateshell/releases
+     * <a href="https://api.github.com/repos/G3G4X5X6/ultimateshell/releases">...</a>
      * <p>
      * 最新版本:
-     * https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest
+     * <a href="https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest">...</a>
      * <p>
      * 下载最新的包
-     * https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest  // 获取下载地址: r.assets[0].browser_download_url
+     * <a href="https://api.github.com/repos/G3G4X5X6/ultimateshell/releases/latest">...</a>  // 获取下载地址: r.assets[0].browser_download_url
      */
     public static String getLastestVersion() {
         StringBuilder result = new StringBuilder();
@@ -101,7 +91,7 @@ public class CommonUtil {
             BufferedReader inn = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
             String value = inn.readLine().trim();
             while (value != null) {
-                if (!"".equals(value)) {
+                if (!value.isEmpty()) {
                     result.append(value.trim()).append("\n");
                 }
                 value = inn.readLine();
@@ -110,10 +100,11 @@ public class CommonUtil {
             inn.close();
         } catch (IOException e) {
             log.error("获取程序更新信息异常");
-            e.printStackTrace();
         }
 
         JSONObject object = JSONObject.parseObject(result.toString());
+        if (object.isEmpty())
+            throw new NullPointerException();
         return object.getString("tag_name");
     }
 

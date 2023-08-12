@@ -92,10 +92,10 @@ public class DropTargetListenerImpl implements DropTargetListener {
         TaskProgressPanel taskPanel = new TaskProgressPanel("上传", 0, 100, "");
         sftpBrowser.getSftpTabbedPanel().addTask(taskPanel);
         new Thread(() -> {
-            int fileCount = files.size();
+            int fileCount = files.size() -1;
             for (File file : files) {
                 log.debug(file.getAbsolutePath());
-                taskPanel.setFileCount(fileCount);
+                taskPanel.setFileCount(--fileCount);
                 taskPanel.setTaskLabel(file.getAbsolutePath());
                 taskPanel.setMin(0);
                 taskPanel.setMax((int) file.length());
@@ -121,7 +121,6 @@ public class DropTargetListenerImpl implements DropTargetListener {
                         sendLen += len;
                         taskPanel.setProgressBarValue(sendLen);
                     }
-                    fileCount -= 1;
                 } catch (IOException fileNotFoundException) {
                     fileNotFoundException.printStackTrace();
                 }

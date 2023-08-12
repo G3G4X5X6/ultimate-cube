@@ -5,25 +5,23 @@ import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
-import com.g3g4x5x6.dashboard.QuickStartPane;
-import com.g3g4x5x6.dialog.LockDialog;
+import com.g3g4x5x6.dashboard.QuickStartTabbedPane;
+import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
-import com.g3g4x5x6.focus.FocusFrame;
+import com.g3g4x5x6.panel.focus.FocusFrame;
 import com.g3g4x5x6.panel.SessionManagerPanel;
 import com.g3g4x5x6.panel.other.ConnectionPane;
-import com.g3g4x5x6.panel.other.RandomPasswordPane;
+import com.g3g4x5x6.tools.RandomPasswordPane;
 import com.g3g4x5x6.panel.other.SysinfoPane;
-import com.g3g4x5x6.panel.settings.SettingsDialog;
+import com.g3g4x5x6.settings.SettingsDialog;
 import com.g3g4x5x6.remote.NewTabbedPane;
-import com.g3g4x5x6.remote.console.ConsolePane;
+import com.g3g4x5x6.panel.console.ConsolePane;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SessionUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
-import com.g3g4x5x6.tools.ColorPicker;
-import com.g3g4x5x6.tools.QRTool;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.tools.xpack.FreeRdp;
 import com.g3g4x5x6.ui.StatusBar;
@@ -62,6 +60,7 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 public class MainFrame extends JFrame implements MouseListener {
 
     public static JTabbedPane mainTabbedPane;
+    public static QuickStartTabbedPane quickStartTabbedPane = new QuickStartTabbedPane();
     public static EditorFrame editorFrame = EditorFrame.getInstance();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
@@ -90,7 +89,7 @@ public class MainFrame extends JFrame implements MouseListener {
         this.setPreferredSize(new Dimension(1000, 600));
         this.setMinimumSize(new Dimension(950, 600));
         this.setLocationRelativeTo(null);
-        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("app.png"))).getImage());
 
         // 初始化 ”菜单栏“
         initMenuBar();
@@ -114,6 +113,7 @@ public class MainFrame extends JFrame implements MouseListener {
                     setVisible(false);
                 }
             }
+
             @Override
             public void windowIconified(WindowEvent e) {
                 log.debug("最小化窗口，Windows");
@@ -241,9 +241,6 @@ public class MainFrame extends JFrame implements MouseListener {
 
         JMenu otherToolMenu = new JMenu("杂七杂八");
         otherToolMenu.add(randomPassItem);
-        otherToolMenu.add(encodeConversionAction);
-        otherToolMenu.add(colorPickerAction);
-        otherToolMenu.add(qrCodePickerAction);
         toolMenu.add(otherToolMenu);
         toolMenu.addSeparator();
         toolMenu.add(externalSubMenu);
@@ -349,14 +346,10 @@ public class MainFrame extends JFrame implements MouseListener {
                         String msg = "<html>当前版本：  <font color='red'>" + currentVersion + "</font<br>" +
                                 "最新版本： <font color='green'>" + latestVersion + "</font><br><br>" +
                                 "是否现在下载最新版本？</html>";
-//                        log.debug("Msg: " + msg);
                         int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
                         if (code == 0) {
-                            // TODO 更新
-//                            log.debug("马上下载更新");
                             CommonUtil.getLatestJar();
                         } else {
-                            // TODO 暂不更新
                             log.debug("暂不下载更新");
                         }
                     }
@@ -384,9 +377,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
         // 添加 ”快速启动“ 面板
-        mainTabbedPane.addTab("快速启动",
-                new FlatSVGIcon("icons/start.svg"),
-                new QuickStartPane());
+        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/start.svg"), quickStartTabbedPane);
 
         this.getContentPane().add(mainTabbedPane);
     }
@@ -414,21 +405,45 @@ public class MainFrame extends JFrame implements MouseListener {
         });
 
         JButton addBtn = new JButton(new FlatSVGIcon("icons/add.svg"));
+        addBtn.setToolTipText("新建会话");
         addBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+                mainTabbedPane.insertTab("新建会话", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建会话", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
-        // swiftPackage.svg
-        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/swiftPackage.svg"));
-        sessionManagerBtn.setToolTipText("会话管理面板");
+
+        JButton recentPaneBtn = new JButton(new FlatSVGIcon("icons/history.svg"));
+        recentPaneBtn.setToolTipText("最近会话");
+        recentPaneBtn.setSelected(true);
+        recentPaneBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.setSelectedIndex(0);
+                quickStartTabbedPane.setSelectedIndex(0);
+            }
+        });
+
+        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/bookmarksList.svg"));
+        sessionManagerBtn.setToolTipText("会话管理");
+        sessionManagerBtn.setSelected(true);
         sessionManagerBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
-                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+                mainTabbedPane.setSelectedIndex(0);
+                quickStartTabbedPane.setSelectedIndex(1);
+            }
+        });
+
+        JButton notePaneBtn = new JButton(new FlatSVGIcon("icons/addNote.svg"));
+        notePaneBtn.setToolTipText("备忘笔记");
+        notePaneBtn.setSelected(true);
+        notePaneBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainTabbedPane.setSelectedIndex(0);
+                quickStartTabbedPane.setSelectedIndex(2);
             }
         });
 
@@ -473,7 +488,9 @@ public class MainFrame extends JFrame implements MouseListener {
         });
 
         trailing.add(addBtn);
+        trailing.add(recentPaneBtn);
         trailing.add(sessionManagerBtn);
+        trailing.add(notePaneBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
@@ -736,14 +753,14 @@ public class MainFrame extends JFrame implements MouseListener {
     // TODO 菜单动作
     private final AbstractAction myNewAction = new AbstractAction("新建会话") {
         public void actionPerformed(final ActionEvent e) {
-            mainTabbedPane.insertTab("新建选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建选项卡", mainTabbedPane.getTabCount());
+            mainTabbedPane.insertTab("新建会话", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(mainTabbedPane), "新建会话", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
 
     private final AbstractAction mySessionAction = new AbstractAction("会话管理") {
         public void actionPerformed(final ActionEvent e) {
-            mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(mainTabbedPane), "会话管理", mainTabbedPane.getTabCount());
+            mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(), "会话管理", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
@@ -775,34 +792,6 @@ public class MainFrame extends JFrame implements MouseListener {
                 editorFrame.setTitle(App.properties.getProperty("editor.title"));
                 editorFrame.setVisible(true);
             }).start();
-        }
-    };
-
-    private final AbstractAction encodeConversionAction = new AbstractAction("文件编码转换") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DialogUtil.info("敬请期待");
-        }
-    };
-
-    private final AbstractAction colorPickerAction = new AbstractAction("截图取色") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            log.debug("取色器");
-            SwingUtilities.invokeLater(() -> {
-                        ColorPicker colorPicker = new ColorPicker();
-                        colorPicker.setVisible(true);
-                    }
-            );
-        }
-    };
-
-    private final AbstractAction qrCodePickerAction = new AbstractAction("二维码") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            log.debug("QR Code");
-            QRTool qrCode = new QRTool();
-            qrCode.setVisible(true);
         }
     };
 

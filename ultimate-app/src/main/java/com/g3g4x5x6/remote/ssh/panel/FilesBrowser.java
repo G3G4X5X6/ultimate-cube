@@ -5,7 +5,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatSearchIcon;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
-import com.g3g4x5x6.remote.sftp.TaskProgressPanel;
+import com.g3g4x5x6.exception.UserStopException;
 import com.g3g4x5x6.remote.utils.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -464,7 +464,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
         public void actionPerformed(ActionEvent e) {
             // TODO
             // 判断列表是否为空
-            if (forward.size() != 0) {
+            if (!forward.isEmpty()) {
                 log.debug("前进操作");
                 // 栈操作
                 String path = forward.pop();
@@ -501,7 +501,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                     int fileCount = fileList.size();
                     for (File file : fileList) {
                         log.debug(file.getAbsolutePath());
-                        taskPanel.setFileCount(fileCount);
+                        taskPanel.setFileCount(--fileCount);
                         taskPanel.setTaskLabel(file.getAbsolutePath());
                         taskPanel.setMin(0);
                         taskPanel.setMax((int) file.length());
@@ -530,7 +530,6 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                 sendLen += len;
                                 taskPanel.setProgressBarValue(sendLen);
                             }
-                            fileCount -= 1;
                         } catch (IOException fileNotFoundException) {
                             fileNotFoundException.printStackTrace();
                         }
@@ -601,6 +600,12 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                                 outputStream.write(buf, 0, bytesRead);
                                                 sendLen += bytesRead;
                                                 taskPanel.setProgressBarValue(sendLen);
+                                                if (taskPanel.isTerminate())
+                                                    try {
+                                                        throw new UserStopException("用户终止任务");
+                                                    } catch (UserStopException ex) {
+                                                        throw new RuntimeException(ex);
+                                                    }
                                             }
                                             if (Files.size(file) == 0) {
                                                 taskPanel.setProgressBarValue(1);
@@ -614,7 +619,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                         }
                                     });
                                 } catch (IOException ioException) {
-                                    ioException.printStackTrace();
+                                    log.debug(ioException.getMessage());
                                 }
                             } else {
                                 // 文件下载
@@ -636,6 +641,9 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                         outputStream.write(buf, 0, bytesRead);
                                         sendLen += bytesRead;
                                         taskPanel.setProgressBarValue(sendLen);
+
+                                        if (taskPanel.isTerminate())
+                                            throw new UserStopException("用户终止任务");
                                     }
                                     outputStream.flush();   //
                                     outputStream.close();
@@ -643,8 +651,8 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                     int count = fileCount.addAndGet(+1);
                                     taskPanel.setFileCount("下载完成：" + count);
                                     log.info("下载完成：" + path);
-                                } catch (IOException fileNotFoundException) {
-                                    fileNotFoundException.printStackTrace();
+                                } catch (IOException | UserStopException ex) {
+                                    log.debug(ex.getMessage());
                                 }
                             }
                         }
@@ -754,7 +762,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                 editorFrame = EditorFrame.getInstance();
             }
 
-            String openFileName = tableModel.getValueAt(table.getSelectedRow(), 0).toString();
+            String openFileName = tableModel.getValueAt(sorter.convertRowIndexToModel(table.getSelectedRow()), 0).toString();
             String savePath = currentPath + "/" + openFileName;
             StringBuilder text = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(fs.getClient().read(savePath)))) {
@@ -763,7 +771,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                     text.append(line).append("\n");
                 }
             } catch (IOException ioException) {
-                ioException.printStackTrace();
+                log.debug(ioException.getMessage());
                 JOptionPane.showMessageDialog(FilesBrowser.this, ioException.getMessage(), "警告", JOptionPane.WARNING_MESSAGE);
             }
 
@@ -775,4 +783,5 @@ public class FilesBrowser extends JPanel implements MouseListener {
             editorFrame.setVisible(true);
         }
     };
+
 }

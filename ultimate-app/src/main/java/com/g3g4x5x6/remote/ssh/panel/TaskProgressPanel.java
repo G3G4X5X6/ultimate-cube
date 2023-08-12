@@ -2,16 +2,20 @@ package com.g3g4x5x6.remote.ssh.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
+import lombok.Getter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskProgressPanel extends JPanel {
     private final JProgressBar progressBar;
     private final JLabel taskLabel;
     private final JButton fileCount;
+    @Getter
+    private boolean terminate = false;
 
     public TaskProgressPanel(String title, int min, int max, String path) {
         this.setLayout(new BorderLayout());
@@ -49,9 +53,9 @@ public class TaskProgressPanel extends JPanel {
         cancelBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cancelBtn.setText("已取消");
+                cancelBtn.setText("用户已取消任务");
                 cancelBtn.setEnabled(false);
-                // TODO
+                setTerminate(true);
 
             }
         });
@@ -68,6 +72,10 @@ public class TaskProgressPanel extends JPanel {
 
     public void setMax(int max) {
         progressBar.setMaximum(max);
+    }
+
+    public void setTerminate(boolean terminate) {
+        this.terminate = terminate;
     }
 
     public void setMin(int min) {

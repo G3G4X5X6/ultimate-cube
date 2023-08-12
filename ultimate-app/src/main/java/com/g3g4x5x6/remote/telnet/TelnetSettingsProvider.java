@@ -8,14 +8,14 @@ import com.jediterm.terminal.emulator.ColorPaletteImpl;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
-import com.jediterm.terminal.ui.settings.SettingsProvider;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
 
-public class TelnetSettingsProvider implements SettingsProvider {
+public class TelnetSettingsProvider extends DefaultSettingsProvider {
 
     @NotNull
     public TerminalActionPresentation getNewSessionActionPresentation() {
@@ -96,11 +96,6 @@ public class TelnetSettingsProvider implements SettingsProvider {
         return new Font(fontName, 0, (int) this.getTerminalFontSize());
     }
 
-    @Override
-    public Font getTerminalChineseFont() {
-        return null;
-    }
-
     public float getTerminalFontSize() {
         return 14.0F;
     }
@@ -118,10 +113,6 @@ public class TelnetSettingsProvider implements SettingsProvider {
                         UIManager.getColor("Table.background").getBlue()));
     }
 
-//    public void setDefaultStyle(TextStyle textStyle){
-//        this.textStyle = textStyle;
-//    }
-
     public TextStyle getSelectionColor() {
         return new TextStyle(TerminalColor.WHITE, TerminalColor.rgb(82, 109, 165));
     }
@@ -131,7 +122,7 @@ public class TelnetSettingsProvider implements SettingsProvider {
     }
 
     public TextStyle getHyperlinkColor() {
-        return new TextStyle(TerminalColor.awt(Color.BLUE), TerminalColor.WHITE);
+        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
     }
 
     public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
@@ -201,5 +192,10 @@ public class TelnetSettingsProvider implements SettingsProvider {
     @NotNull
     public TerminalTypeAheadSettings getTypeAheadSettings() {
         return TerminalTypeAheadSettings.DEFAULT;
+    }
+
+    @Override
+    public boolean sendArrowKeysInAlternativeMode() {
+        return false;
     }
 }

@@ -1,7 +1,7 @@
 package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.g3g4x5x6.dialog.LockDialog;
+import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.utils.CheckUtil;
@@ -10,6 +10,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -49,6 +50,8 @@ public class App {
         CheckUtil.checkEnv();
         // 加载自定义日志配置
         initLog4j();
+        // 修改默认字体
+        setDefaultFont();
         // 启动主程序
         SwingUtilities.invokeLater(App::createGUI);
     }
@@ -60,8 +63,60 @@ public class App {
             String configFilename = Objects.requireNonNull(App.class.getClassLoader().getResource("")).getPath() + "log4j.properties";
             PropertyConfigurator.configureAndWatch(configFilename);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("日志器加载异常：" + e.getMessage());
         }
+    }
+
+    private static void setDefaultFont() {
+        // 读取字体文件
+        try (InputStream fontStream = Objects.requireNonNull(App.class.getClassLoader().getResourceAsStream("fonts/Noto_Sans_SC/" + "NotoSansSC-Regular.otf"))) {
+            // 加载字体
+            Font font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+
+            // 注册字体
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(font);
+
+            // 设置所有组件的默认字体
+            setUIFont(new FontUIResource(font.deriveFont(Font.PLAIN, 14)));
+
+        } catch (FontFormatException | IOException e) {
+            log.debug(e.getMessage());
+        }
+    }
+
+    private static void setUIFont(FontUIResource fontResource) {
+        // 设置所有组件的默认字体
+        UIManager.put("MenuBar.font", fontResource);
+        UIManager.put("Menu.font", fontResource);
+        UIManager.put("MenuItem.font", fontResource);
+//        UIManager.put("Tree.font", fontResource);
+//        UIManager.put("Label.font", fontResource);
+//        UIManager.put("Table.font", fontResource);
+//        UIManager.put("Button.font", fontResource);
+//        UIManager.put("ToggleButton.font", fontResource);
+//        UIManager.put("RadioButton.font", fontResource);
+//        UIManager.put("CheckBox.font", fontResource);
+//        UIManager.put("ColorChooser.font", fontResource);
+//        UIManager.put("ComboBox.font", fontResource);
+//        UIManager.put("List.font", fontResource);
+//        UIManager.put("RadioButtonMenuItem.font", fontResource);
+//        UIManager.put("CheckBoxMenuItem.font", fontResource);
+//        UIManager.put("PopupMenu.font", fontResource);
+//        UIManager.put("OptionPane.font", fontResource);
+//        UIManager.put("Panel.font", fontResource);
+//        UIManager.put("ProgressBar.font", fontResource);
+//        UIManager.put("ScrollPane.font", fontResource);
+//        UIManager.put("Viewport.font", fontResource);
+//        UIManager.put("TableHeader.font", fontResource);
+//        UIManager.put("TextField.font", fontResource);
+//        UIManager.put("PasswordField.font", fontResource);
+//        UIManager.put("TextArea.font", fontResource);
+//        UIManager.put("TextPane.font", fontResource);
+//        UIManager.put("EditorPane.font", fontResource);
+//        UIManager.put("TitledBorder.font", fontResource);
+//        UIManager.put("ToolBar.font", fontResource);
+//        UIManager.put("ToolTip.font", fontResource);
     }
 
     private static void createGUI() {
@@ -86,7 +141,6 @@ public class App {
                 log.debug("加载主题：" + properties.getProperty("app.theme.class"));
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
             log.error("Failed to initialize LaF !!!!!!!! \n" + ex.getMessage());
         }
         UIManager.put("TextComponent.arc", 5);
@@ -112,7 +166,7 @@ public class App {
                 assert appIn != null;
                 Files.copy(appIn, Path.of(AppConfig.getPropertiesPath()));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("配置初始化异常：" + e.getMessage());
             }
         }
 
@@ -123,7 +177,7 @@ public class App {
                 assert logIn != null;
                 Files.copy(logIn, Path.of(AppConfig.getWorkPath() + "/log4j.properties"));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("初始化日志配置异常：" + e.getMessage());
             }
         }
 
@@ -166,13 +220,13 @@ public class App {
             try {
                 image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("托盘图标加载异常：" + e.getMessage());
             }
             assert image != null;
             TrayIcon trayIcon = new TrayIcon(image, "ultimate-cube");
             trayIcon.setImageAutoSize(true);
             // 设置鼠标提示
-            trayIcon.setToolTip("My ultimate-cube");
+            trayIcon.setToolTip("ultimate-cube");
             trayIcon.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {

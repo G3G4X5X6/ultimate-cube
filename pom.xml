@@ -11,9 +11,6 @@
     <modules>
         <module>ultimate-app</module>
         <module>ultimate-editor</module>
-        <module>ultimate-pty</module>
-        <module>ultimate-terminal</module>
-        <module>ultimate-typeahead</module>
     </modules>
 
     <properties>
@@ -36,14 +33,16 @@
         <sshd-common-version>2.10.0</sshd-common-version>
         <sshd-putty-version>2.9.2</sshd-putty-version>
 
-        <slf4j-api-version>2.0.0-alpha5</slf4j-api-version>
-        <slf4j-log4j12-version>2.0.0-alpha5</slf4j-log4j12-version>
+        <slf4j-api-version>2.0.7</slf4j-api-version>
+        <slf4j-log4j12-version>2.0.7</slf4j-log4j12-version>
 
         <poi-version>5.0.0</poi-version>
         <jna-version>5.8.0</jna-version>
         <qqwry-java-version>0.8.0</qqwry-java-version>
 
-        <pty4j-version>0.12.7</pty4j-version>
+        <pty4j-version>0.12.13</pty4j-version>
+        <jediterm-core-version>3.20-SNAPSHOT</jediterm-core-version>
+        <jediterm-ui-version>3.20-SNAPSHOT</jediterm-ui-version>
         <annotations-version>RELEASE</annotations-version>
 
         <tightvnc-jviewer-version>2.8.3</tightvnc-jviewer-version>
@@ -56,10 +55,45 @@
 
         <jcolor-version>5.5.1</jcolor-version>
         <hutool-version>5.8.4</hutool-version>
+
+        <zip4j-version>2.11.5</zip4j-version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>com.g3g4x5x6</groupId>
+                <artifactId>tightvnc-jviewer</artifactId>
+                <version>${tightvnc-jviewer-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.pty4j</groupId>
+                <artifactId>pty4j</artifactId>
+                <version>${pty4j-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jediterm</groupId>
+                <artifactId>jediterm-core</artifactId>
+                <version>${jediterm-core-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.jediterm</groupId>
+                <artifactId>jediterm-ui</artifactId>
+                <version>${jediterm-ui-version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j -->
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j-version}</version>
+            </dependency>
+
+
             <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -173,21 +207,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jetbrains.pty4j</groupId>
-                <artifactId>pty4j</artifactId>
-                <version>${pty4j-version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>${annotations-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.g3g4x5x6</groupId>
-                <artifactId>tightvnc-jviewer</artifactId>
-                <version>${tightvnc-jviewer-version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->

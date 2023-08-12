@@ -8,6 +8,7 @@ import com.jediterm.terminal.emulator.ColorPaletteImpl;
 import com.jediterm.terminal.model.TerminalTypeAheadSettings;
 import com.jediterm.terminal.ui.TerminalActionPresentation;
 import com.jediterm.terminal.ui.UIUtil;
+import com.jediterm.terminal.ui.settings.DefaultSettingsProvider;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
 
-public class SerialSettingsProvider implements SettingsProvider {
+public class SerialSettingsProvider extends DefaultSettingsProvider {
 
     @NotNull
     public TerminalActionPresentation getNewSessionActionPresentation() {
@@ -96,10 +97,6 @@ public class SerialSettingsProvider implements SettingsProvider {
         return new Font(fontName, 0, (int) this.getTerminalFontSize());
     }
 
-    @Override
-    public Font getTerminalChineseFont() {
-        return null;
-    }
 
     public float getTerminalFontSize() {
         return 14.0F;
@@ -131,7 +128,7 @@ public class SerialSettingsProvider implements SettingsProvider {
     }
 
     public TextStyle getHyperlinkColor() {
-        return new TextStyle(TerminalColor.awt(Color.BLUE), TerminalColor.WHITE);
+        return new TextStyle(TerminalColor.BLACK, TerminalColor.WHITE);
     }
 
     public HyperlinkStyle.HighlightMode getHyperlinkHighlightingMode() {
@@ -201,5 +198,10 @@ public class SerialSettingsProvider implements SettingsProvider {
     @NotNull
     public TerminalTypeAheadSettings getTypeAheadSettings() {
         return TerminalTypeAheadSettings.DEFAULT;
+    }
+
+    @Override
+    public boolean sendArrowKeysInAlternativeMode() {
+        return false;
     }
 }

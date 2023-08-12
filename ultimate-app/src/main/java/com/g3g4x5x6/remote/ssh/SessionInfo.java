@@ -76,7 +76,7 @@ public class SessionInfo {
     private @NotNull JediTermWidget createTerminalWidget() {
         SshSettingsProvider sshSettingsProvider = new SshSettingsProvider();
         JediTermWidget widget = new JediTermWidget(sshSettingsProvider);
-        widget.setTtyConnector(new DefaultTtyConnector(session));
+        widget.setTtyConnector(new DefaultTtyConnector(session, this));
         widget.start();
         return widget;
     }

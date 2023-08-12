@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -46,6 +47,8 @@ public class RecentSessionPane extends JPanel {
     private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
     private JTable recentTable;
     private DefaultTableModel tableModel;
+    private TableRowSorter<DefaultTableModel> sorter;
+    private WatchService watchService;
 
     public RecentSessionPane() {
         this.setLayout(new BorderLayout());
@@ -66,7 +69,7 @@ public class RecentSessionPane extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    openSession(recentTable.getSelectedRow());
+                    openSession(sorter.convertRowIndexToModel(recentTable.getSelectedRow()));
                 }
             }
         });
@@ -81,6 +84,16 @@ public class RecentSessionPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("ToolBar: 刷新");
                 initData();
+
+                try {
+                    watchService.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+
+                } finally {
+                    log.info("刷新文件监控服务");
+                    monitorSessions();
+                }
             }
         });
 
@@ -101,8 +114,9 @@ public class RecentSessionPane extends JPanel {
             }
         };
         tableModel.setColumnIdentifiers(columnNames);
-        recentTable.setAutoCreateRowSorter(true);
-        recentTable.setUpdateSelectionOnSort(true);
+        // 搜索功能
+        sorter = new TableRowSorter<>(tableModel);
+        recentTable.setRowSorter(sorter);
 
         initData();
 
@@ -151,7 +165,7 @@ public class RecentSessionPane extends JPanel {
                                 jsonObject.getString("sessionLoginType"),
                         });
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.debug(e.getMessage());
                     }
                 }
             }
@@ -169,7 +183,7 @@ public class RecentSessionPane extends JPanel {
         // 需要监听的文件目录（只能监听目录）
         String path = Path.of(AppConfig.getWorkPath(), "/sessions").toString();
 
-        WatchService watchService = FileSystems.getDefault().newWatchService();
+        watchService = FileSystems.getDefault().newWatchService();
         Path p = Paths.get(path);
         p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY,
                 StandardWatchEventKinds.ENTRY_DELETE,
@@ -221,8 +235,9 @@ public class RecentSessionPane extends JPanel {
                 log.debug("再次打开会话");
                 // TODO 默认打开 SSH 会话, 未来实现会话自动类型鉴别
                 int[] indexs = recentTable.getSelectedRows();
+
                 for (int index : indexs) {
-                    openSession(index);
+                    openSession(sorter.convertRowIndexToModel(index));
                 }
             }
         };

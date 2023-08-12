@@ -2,6 +2,8 @@ package com.g3g4x5x6.remote.sftp;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
+import com.g3g4x5x6.exception.UserStopException;
+import lombok.SneakyThrows;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -47,11 +49,13 @@ public class TaskProgressPanel extends JPanel {
         cancelBtn.setIcon(new FlatSVGIcon("icons/cancel.svg"));
         cancelBtn.setToolTipText("取消任务");
         cancelBtn.addActionListener(new AbstractAction() {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
                 cancelBtn.setText("已取消");
                 cancelBtn.setEnabled(false);
-                // TODO
+
+                throw new UserStopException("用户取消任务");
 
             }
         });
