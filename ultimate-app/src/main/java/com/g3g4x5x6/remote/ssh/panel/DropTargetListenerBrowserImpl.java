@@ -1,6 +1,6 @@
 package com.g3g4x5x6.remote.ssh.panel;
 
-import com.g3g4x5x6.remote.sftp.TaskProgressPanel;
+import com.g3g4x5x6.exception.UserStopException;
 import com.g3g4x5x6.remote.utils.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -113,14 +113,16 @@ public class DropTargetListenerBrowserImpl implements DropTargetListener {
                                 outputStream.flush();
                                 sendLen += len;
                                 taskPanel.setProgressBarValue(sendLen);
+                                if (taskPanel.isTerminate())
+                                    throw new UserStopException("用户终止任务");
                             }
-                        } catch (IOException fileNotFoundException) {
-                            fileNotFoundException.printStackTrace();
+                        } catch (IOException | UserStopException e) {
+                            log.debug(e.getMessage());
                         }
                     }
                 }).start();
             } catch (Exception e) {
-                e.printStackTrace();
+                log.debug(e.getMessage());
             }
 
         }
