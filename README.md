@@ -8,7 +8,7 @@
 
 #### 简介
 
-ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测试工程师、程序员、网站管理员、IT
+ultimate-cube 是开源的远程服务器管理工具箱，目标是为安全工程师、程序员、网站管理员、IT
 管理员以及几乎所有需要以更简单的方式处理远程工作的用户提供大量定制功能。
 
 #### 软件架构
@@ -33,7 +33,7 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为渗透测
 
 - [ ] 持续优化及精简程序架构
 - [ ] 支持插件系统
-- [ ] 支持国际化
+- [ ] 支持国际化 
 - [ ] 友好提示异常及报错信息
 - [ ] 优化资源释放
 - [ ] 主密码（master password）
@@ -74,7 +74,7 @@ mvn install:install-file -Dfile=libs/jediterm-ui-3.20-SNAPSHOT.jar -DgroupId=com
   ```
 
 3. 编译运行：
-    1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.6.16`
+    1. 统一修改各模块版本号：`mvn versions:set -DnewVersion=6.10.21`
     1. 运行 `maven` 插件 `templating` 编译 `Version.java` 文件
     1. 安装新版本依赖：`mvn install`
     1. `IDEA` 菜单中 `Build Proect` 项目，复制静态文件到 `target` 目录
@@ -103,6 +103,7 @@ mvn install:install-file -Dfile=libs/jediterm-ui-3.20-SNAPSHOT.jar -DgroupId=com
 ##### 新建会话
 
 ![SSH](doc/img/img_2.png)
+<BR>
 ![Serial](doc/img/img_3.png)
 
 ##### SSH

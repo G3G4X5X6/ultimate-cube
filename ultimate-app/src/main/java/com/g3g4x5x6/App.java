@@ -87,9 +87,9 @@ public class App {
 
     private static void setUIFont(FontUIResource fontResource) {
         // 设置所有组件的默认字体
-        UIManager.put("MenuBar.font", fontResource);
-        UIManager.put("Menu.font", fontResource);
-        UIManager.put("MenuItem.font", fontResource);
+//        UIManager.put("MenuBar.font", fontResource);
+//        UIManager.put("Menu.font", fontResource);
+//        UIManager.put("MenuItem.font", fontResource);
 //        UIManager.put("Tree.font", fontResource);
 //        UIManager.put("Label.font", fontResource);
 //        UIManager.put("Table.font", fontResource);
