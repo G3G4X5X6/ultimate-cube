@@ -41,7 +41,7 @@ public class SshUtil {
         }
 
         try {
-            ClientSession session = client.connect(hostConfigEntry).verify(2000).getClientSession();
+            ClientSession session = client.connect(hostConfigEntry).verify(2000).getSession();
             session.close();
             client.close();
             return 1;
