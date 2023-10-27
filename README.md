@@ -114,6 +114,6 @@ mvn install:install-file -Dfile=libs/jediterm-ui-3.20-SNAPSHOT.jar -DgroupId=com
 
 ![img.png](doc/img/img_1.png)
 
-#### [感谢 `JetBrains` 提供的强大编辑器](https://jb.gg/OpenSourceSupport)
+#### [感谢 `JetBrains` 提供的强大开发工具](https://jb.gg/OpenSourceSupport)
 
 ![JetBrains Logo (Main) logo](https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg)
