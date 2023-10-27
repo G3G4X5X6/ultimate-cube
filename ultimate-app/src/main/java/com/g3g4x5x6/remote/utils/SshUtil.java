@@ -31,11 +31,11 @@ public class SshUtil {
         SshClient client = SshClient.setUpDefaultClient();
         client.start();
 
-        if (host.equals("")) {
+        if (host.isEmpty()) {
             try {
                 client.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
             return 2;
         }
@@ -70,7 +70,8 @@ public class SshUtil {
             channel.setErr(errorStream);
             channel.open().verify(defaultTimeout, TimeUnit.MILLISECONDS);
             channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), TimeUnit.SECONDS.toMillis(defaultTimeout));
-            String error = new String(errorStream.toByteArray());
+            String error = errorStream.toString();
+//            String error = new String(errorStream.toByteArray());
             log.debug(error);
             return responseStream.toString();
         } finally {
@@ -94,12 +95,11 @@ public class SshUtil {
 
                 channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED),
                         TimeUnit.SECONDS.toMillis(3));
-                String responseString = new String(responseStream.toByteArray());
+                String responseString = responseStream.toString();
                 System.out.println(responseString);
                 return responseString;
             } finally {
                 channel.close(false);
-                return null;
             }
         }
     }
@@ -112,7 +112,7 @@ public class SshUtil {
             channel.setErr(errorStream);
             channel.open().verify(3000, TimeUnit.MILLISECONDS);
             channel.waitFor(EnumSet.of(ClientChannelEvent.CLOSED), TimeUnit.SECONDS.toMillis(3));
-            String error = new String(errorStream.toByteArray());
+            String error = errorStream.toString();
             log.debug(error);
             return responseStream.toString();
         }
