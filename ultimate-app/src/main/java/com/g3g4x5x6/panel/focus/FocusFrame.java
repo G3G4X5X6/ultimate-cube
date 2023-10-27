@@ -28,7 +28,7 @@ public class FocusFrame extends JFrame {
     private final JTabbedPane tabbedPane = new JTabbedPane();
 
     public FocusFrame() {
-        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.jpg"))).getImage());
+        this.setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("icon.png"))).getImage());
         this.setUndecorated(true);                      //去处边框
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);   //最大化
         this.setAlwaysOnTop(true);                      //总在最前面
