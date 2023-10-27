@@ -28,10 +28,10 @@
         <rstaui-version>3.1.3</rstaui-version>
         <autocomplete-version>3.1.4</autocomplete-version>
 
-        <sshd-core-version>2.9.2</sshd-core-version>
-        <sshd-sftp-version>2.9.2</sshd-sftp-version>
-        <sshd-common-version>2.10.0</sshd-common-version>
-        <sshd-putty-version>2.9.2</sshd-putty-version>
+        <sshd-core-version>2.11.0</sshd-core-version>
+        <sshd-sftp-version>2.11.0</sshd-sftp-version>
+        <sshd-common-version>2.11.0</sshd-common-version>
+        <sshd-putty-version>2.11.0</sshd-putty-version>
 
         <slf4j-api-version>2.0.7</slf4j-api-version>
         <slf4j-log4j12-version>2.0.7</slf4j-log4j12-version>
@@ -265,6 +265,18 @@
     </dependencyManagement>
 
     <repositories>
+
+        <repository>
+            <id>central</id>
+            <url>https://maven.aliyun.com/repository/central</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
         <repository>
             <id>jetbrains-intellij-dependencies</id>
             <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies</url>
