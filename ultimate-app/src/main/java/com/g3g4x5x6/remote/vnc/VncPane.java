@@ -1,12 +1,9 @@
-package com.g3g4x5x6.remote.ftp;
+package com.g3g4x5x6.remote.vnc;
 
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +11,7 @@ import java.awt.event.ActionEvent;
 
 
 @Slf4j
-public class FtpPane extends JPanel {
+public class VncPane extends JPanel {
     private JTabbedPane mainTabbedPane;
     private JTabbedPane basicSettingTabbedPane;
     private String basicSettingPaneTitle;
@@ -29,7 +26,7 @@ public class FtpPane extends JPanel {
     private JTextField userField;
     private JPasswordField passField;
 
-    public FtpPane(JTabbedPane mainTabbedPane) {
+    public VncPane(JTabbedPane mainTabbedPane) {
         this.mainTabbedPane = mainTabbedPane;
         this.setLayout(new BorderLayout());
         FlowLayout flowLayout = new FlowLayout();
@@ -38,12 +35,12 @@ public class FtpPane extends JPanel {
         basicSettingTabbedPane = new JTabbedPane();
         basicSettingPane = new JPanel();
         basicSettingPane.setLayout(flowLayout);
-        basicSettingPaneTitle = "Basic FTP Settings";
+        basicSettingPaneTitle = "Basic VNC Settings";
 
         advancedSettingTabbedPane = new JTabbedPane();
         advancedSettingPane = new JPanel();
         advancedSettingPane.setLayout(flowLayout);
-        advancedSettingPaneTitle = "Advanced FTP Settings";
+        advancedSettingPaneTitle = "Advanced VNC Settings";
 
         initBasicPane();
         initAdvancePane();
@@ -106,7 +103,7 @@ public class FtpPane extends JPanel {
                             mainTabbedPane.getSelectedIndex());
                     mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
                 } else {
-                    JOptionPane.showMessageDialog(FtpPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(VncPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -116,9 +113,9 @@ public class FtpPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("FTP 测试通信");
                 if (testOpen()) {
-                    JOptionPane.showMessageDialog(FtpPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(VncPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(FtpPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(VncPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -145,15 +142,4 @@ public class FtpPane extends JPanel {
         return false;
     }
 
-    private @NotNull JediTermWidget createTerminalWidget() {
-        JediTermWidget widget = new JediTermWidget(new FtpSettingsProvider());
-        widget.setTtyConnector(createTtyConnector());
-        widget.start();
-        return widget;
-    }
-
-    @Deprecated
-    private @NotNull TtyConnector createTtyConnector() {
-        return new FtpTtyConnector(hostField.getText(), Integer.parseInt(portField.getText()));
-    }
 }
