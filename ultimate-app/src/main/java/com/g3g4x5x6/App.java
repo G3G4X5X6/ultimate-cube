@@ -90,8 +90,10 @@ public class App {
 //        UIManager.put("MenuBar.font", fontResource);
 //        UIManager.put("Menu.font", fontResource);
 //        UIManager.put("MenuItem.font", fontResource);
+//        UIManager.put("PopupMenu.font", fontResource);
 //        UIManager.put("Tree.font", fontResource);
 //        UIManager.put("Label.font", fontResource);
+//        UIManager.put("TableHeader.font", fontResource);
 //        UIManager.put("Table.font", fontResource);
 //        UIManager.put("Button.font", fontResource);
 //        UIManager.put("ToggleButton.font", fontResource);
@@ -102,13 +104,11 @@ public class App {
 //        UIManager.put("List.font", fontResource);
 //        UIManager.put("RadioButtonMenuItem.font", fontResource);
 //        UIManager.put("CheckBoxMenuItem.font", fontResource);
-//        UIManager.put("PopupMenu.font", fontResource);
 //        UIManager.put("OptionPane.font", fontResource);
 //        UIManager.put("Panel.font", fontResource);
 //        UIManager.put("ProgressBar.font", fontResource);
 //        UIManager.put("ScrollPane.font", fontResource);
 //        UIManager.put("Viewport.font", fontResource);
-//        UIManager.put("TableHeader.font", fontResource);
 //        UIManager.put("TextField.font", fontResource);
 //        UIManager.put("PasswordField.font", fontResource);
 //        UIManager.put("TextArea.font", fontResource);
