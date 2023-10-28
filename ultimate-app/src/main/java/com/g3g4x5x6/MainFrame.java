@@ -70,7 +70,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
     // TODO JFrame 组件定义
     private final JMenuBar menuBar = new JMenuBar();
-    private final JMenu terminalMenu = new JMenu("终端");
+    private final JMenu terminalMenu = new JMenu("文件");
     private final JMenu viewMenu = new JMenu("视图");
     private final JMenu optionMenu = new JMenu("设置");
     private final JMenu toolMenu = new JMenu("工具");
