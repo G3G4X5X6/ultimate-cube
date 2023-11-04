@@ -33,7 +33,7 @@ ultimate-cube 是开源的远程服务器管理工具箱，目标是为安全工
 
 - [ ] 持续优化及精简程序架构
 - [ ] 支持插件系统
-- [ ] 支持国际化 
+- [ ] 支持国际化
 - [ ] 友好提示异常及报错信息
 - [ ] 优化资源释放
 - [ ] 主密码（master password）
@@ -96,23 +96,20 @@ mvn install:install-file -Dfile=libs/jediterm-ui-3.20-SNAPSHOT.jar -DgroupId=com
 
 #### 使用说明
 
-##### 快速启动
+##### 快速面板
 
-![SSH](doc/img/img_4.png)
+![1_quick.png](doc%2Fimg%2F1_quick.png)
 
 ##### 新建会话
 
-![SSH](doc/img/img_2.png)
-<BR>
-![Serial](doc/img/img_3.png)
+![4_create_session.png](doc%2Fimg%2F4_create_session.png)
 
 ##### SSH
 
-![img.png](doc/img/img.png)
+![2_ssh.png](doc%2Fimg%2F2_ssh.png)
 
 ##### SFTP
-
-![img.png](doc/img/img_1.png)
+![3_sftp.png](doc%2Fimg%2F3_sftp.png)
 
 #### [感谢 `JetBrains` 提供的强大开发工具](https://jb.gg/OpenSourceSupport)
 
