@@ -28,6 +28,7 @@ site_description: >-
 # Repository
 repo_name: G3G4X5X6/ultimate-cube
 repo_url: https://github.com/G3G4X5X6/ultimate-cube
+edit_uri: edit/master/docs/
 
 # Copyright
 copyright: Copyright &copy; 2016 - 2022 G3G4X5X6
@@ -57,24 +58,41 @@ theme:
     - toc.follow
     # - toc.integrate
   palette:
-    - scheme: default
+
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: white
+      accent: indigo
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default 
       primary: white
       accent: indigo
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       primary: brown
       accent: indigo
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to system preference
   font:
     text: Roboto
     code: Roboto Mono
   favicon: assets/favicon.png
   icon:
     logo: logo
+    repo: fontawesome/brands/git-alt
+    edit: material/pencil 
+    view: material/eye
 
 # Plugins
 plugins:
