@@ -96,20 +96,23 @@ theme:
 
 # Plugins
 plugins:
-  # - social
   - tags
   - blog
   - search:
       separator: '[\s\u200b\-]'
-  # - redirects:
-  #     redirect_maps:
-  #       changelog/insiders.md: insiders/changelog.md
-  #       conventions.md: philosophy.md
-  #       reference/abbreviations.md: reference/tooltips.md
-  #       reference/meta-tags.md: reference/index.md
-  #       reference/variables.md: https://mkdocs-macros-plugin.readthedocs.io/
-  #       sponsorship.md: insiders/index.md
-  #       upgrading.md: upgrade.md
+
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: datetime
+
+
+  - git-committers:
+      enabled: true
+      repository: G3G4X5X6/template-with-doc
+      branch: doc
+
+  - git-authors
+
   - minify:
       minify_html: true
       minify_js: true
