@@ -208,7 +208,7 @@ public class EditorFrame extends JFrame implements ActionListener {
 
         // 文件类型
         syntaxLabel = new JLabel("text/plain");
-        syntaxLabel.setIcon(new FlatSVGIcon("icons/applicationExtension.svg"));
+        syntaxLabel.setIcon(new FlatSVGIcon("icons/extensionRunConfiguration.svg"));
         JPopupMenu langMenu = new JPopupMenu();
         langMenu.setAutoscrolls(true);
 //        langMenu.setSize(new Dimension(200, 1000));
