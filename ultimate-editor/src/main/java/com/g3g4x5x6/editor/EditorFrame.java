@@ -202,15 +202,17 @@ public class EditorFrame extends JFrame implements ActionListener {
     private void initStatusBar() {
 
         // 搜索状态
-        searchStatusLabel = new JLabel("Ready");
+        searchStatusLabel = new JLabel();
+        searchStatusLabel.setIcon(new FlatSVGIcon("icons/green.svg"));
+        searchStatusLabel.setToolTipText("查找状态提示");
 
         // 文件类型
         syntaxLabel = new JLabel("text/plain");
         syntaxLabel.setIcon(new FlatSVGIcon("icons/file-text.svg"));
         JPopupMenu langMenu = new JPopupMenu();
         langMenu.setAutoscrolls(true);
-        langMenu.setSize(new Dimension(200, 1000));
-        langMenu.setPreferredSize(new Dimension(200, 1000));
+//        langMenu.setSize(new Dimension(200, 1000));
+//        langMenu.setPreferredSize(new Dimension(200, 1000));
         Class<SyntaxConstants> syntaxConstantsClass = SyntaxConstants.class;
         Field[] fields = syntaxConstantsClass.getDeclaredFields();
         for (Field field : fields) {
@@ -238,6 +240,7 @@ public class EditorFrame extends JFrame implements ActionListener {
             }
         });
 
+        statusBar.setComponent(new JLabel("  "));
         statusBar.setComponent(searchStatusLabel);
         statusBar.setGlue();
         statusBar.setComponent(syntaxLabel);
