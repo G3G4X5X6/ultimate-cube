@@ -3,6 +3,7 @@ package com.g3g4x5x6.editor;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.editor.provider.BashCompletionProvider;
 import com.g3g4x5x6.editor.provider.JavaCompletionProvider;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -40,7 +41,9 @@ public class EditorPanel extends JPanel implements SearchListener {
     private String uuid = UUID.randomUUID().toString();
     private FlatSVGIcon icon = new FlatSVGIcon("icons/file-text.svg");
     private final RSyntaxTextArea textArea;
+    @Getter
     private FindDialog findDialog;
+    @Getter
     private ReplaceDialog replaceDialog;
     private AutoCompletion ac = null;
     private String syntax = "text/plain";
@@ -516,11 +519,4 @@ public class EditorPanel extends JPanel implements SearchListener {
         EditorFrame.getInstance().setSearchStatusLabelStr(text);
     }
 
-    public FindDialog getFindDialog() {
-        return findDialog;
-    }
-
-    public ReplaceDialog getReplaceDialog() {
-        return replaceDialog;
-    }
 }
