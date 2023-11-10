@@ -12,7 +12,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ultimate-cube" target="11" />
       <module name="ultimate-nuclei" target="11" />
       <module name="ultimate-pty" target="11" />
       <module name="ultimate-shell" target="11" />
