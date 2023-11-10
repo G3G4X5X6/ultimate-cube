@@ -25,6 +25,7 @@ import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.tools.xpack.FreeRdp;
 import com.g3g4x5x6.ui.StatusBar;
+import com.g3g4x5x6.ui.icon.AccentColorIcon;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
@@ -447,16 +448,7 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        JButton fullScreenBtn = new JButton(new FlatSVGIcon("icons/fitContent.svg"));
-        fullScreenBtn.setToolTipText("专注模式");
-        fullScreenBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                focusAction();
-            }
-        });
-
-        JButton genPassBtn = new JButton(new FlatSVGIcon("icons/section.svg"));
+        JButton genPassBtn = new JButton(new AccentColorIcon("#DC143C"));
         genPassBtn.setToolTipText("生成随机密码");
         genPassBtn.addActionListener(new AbstractAction() {
             @Override
@@ -468,8 +460,13 @@ public class MainFrame extends JFrame implements MouseListener {
         // TODO 选项卡面板前置工具栏，暂不使用
         leading.add(dashboardBtn);
 
-        JButton editorBtn = new JButton(new FlatSVGIcon("icons/editScheme.svg"));
+//        JButton editorBtn = new JButton(new FlatSVGIcon("icons/editScheme.svg"));
+        JButton editorBtn = new JButton(new AccentColorIcon("#4682B4"));
+        editorBtn.setToolTipText("简易编辑器");
         editorBtn.addActionListener(myEditorAction);
+
+        JButton focusBtn = new JButton(new AccentColorIcon("#708090"));
+        focusBtn.setToolTipText("专注模式");
 
         waitProgressBar = new JProgressBar();
         waitProgressBar.setIndeterminate(true);
@@ -494,8 +491,8 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
+        trailing.add(focusBtn);
         trailing.add(editorBtn);
-        trailing.add(fullScreenBtn);
         trailing.add(genPassBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
