@@ -467,6 +467,12 @@ public class MainFrame extends JFrame implements MouseListener {
 
         JButton focusBtn = new JButton(new AccentColorIcon("#708090"));
         focusBtn.setToolTipText("专注模式");
+        focusBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("待定");
+            }
+        });
 
         waitProgressBar = new JProgressBar();
         waitProgressBar.setIndeterminate(true);
