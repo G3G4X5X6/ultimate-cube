@@ -207,7 +207,7 @@ public class MainFrame extends JFrame implements MouseListener {
         // relevantProposal.svg
         JMenuItem aboutMe = new JMenuItem("关于 ultimate-cube");
         aboutMe.addActionListener(myAboutAction);
-        aboutMe.setIcon(new FlatSVGIcon("icons/relevantProposal.svg"));
+        aboutMe.setIcon(new FlatSVGIcon("icons/informix.svg"));
 
         helpMenu.add(github);
         helpMenu.add(gitPage);
