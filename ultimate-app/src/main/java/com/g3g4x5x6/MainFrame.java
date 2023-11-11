@@ -132,6 +132,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private void initMenuBar() {
         // 终端菜单
         JMenu openSessionMenu = new JMenu("打开会话");
+        openSessionMenu.setIcon(new FlatSVGIcon("icons/listFiles.svg"));
         String rootPath = AppConfig.getWorkPath() + "/sessions/ssh/";
         File dir = new File(rootPath);
         try {
@@ -139,8 +140,13 @@ public class MainFrame extends JFrame implements MouseListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        JMenuItem newSessionItem = new JMenuItem("新建会话");
+        newSessionItem.setIcon(new FlatSVGIcon("icons/AddNewSectionRule.svg"));
+        newSessionItem.addActionListener(myNewAction);
+
         terminalMenu.add(openSessionMenu);
-        terminalMenu.add(myNewAction);
+        terminalMenu.add(newSessionItem);
         terminalMenu.add(mySessionAction);
         terminalMenu.add(myLocalTerminal);
 
@@ -181,6 +187,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
         // 选项菜单
         JMenuItem settingsItem = new JMenuItem("全局配置");
+        settingsItem.setIcon(new FlatSVGIcon("icons/settings.svg"));
         settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         settingsItem.addActionListener(settingsAction);
 
