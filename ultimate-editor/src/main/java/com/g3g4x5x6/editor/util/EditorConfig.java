@@ -73,6 +73,12 @@ public class EditorConfig {
     }
 
     public static String getPropertiesPath() {
+        File file = new File(Path.of(getWorkPath(), "config").toString());
+        if (!file.exists()) {
+            if (!file.mkdir()) {
+                log.debug("文件夹创建失败：" + Path.of(getWorkPath(), "config"));
+            }
+        }
         return getWorkPath() + "/config/editor.properties";
     }
 }
