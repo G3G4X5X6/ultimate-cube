@@ -142,13 +142,23 @@ public class MainFrame extends JFrame implements MouseListener {
         }
 
         JMenuItem newSessionItem = new JMenuItem("新建会话");
-        newSessionItem.setIcon(new FlatSVGIcon("icons/AddNewSectionRule.svg"));
+        newSessionItem.setIcon(new FlatSVGIcon("icons/openNewTab.svg"));
         newSessionItem.addActionListener(myNewAction);
+
+        // consoleRun.svg
+        JMenuItem consoleItem = new JMenuItem("本地终端");
+        consoleItem.setIcon(new FlatSVGIcon("icons/consoleRun.svg"));
+        consoleItem.addActionListener(myLocalTerminal);
+
+        // addBookmarksList
+        JMenuItem sessionItem = new JMenuItem("会话管理");
+        sessionItem.setIcon(new FlatSVGIcon("icons/addBookmarksList.svg"));
+        sessionItem.addActionListener(mySessionAction);
 
         terminalMenu.add(openSessionMenu);
         terminalMenu.add(newSessionItem);
-        terminalMenu.add(mySessionAction);
-        terminalMenu.add(myLocalTerminal);
+        terminalMenu.add(sessionItem);
+        terminalMenu.add(consoleItem);
 
         // 查看菜单
         JMenuItem focusItem = new JMenuItem("专注模式");
@@ -435,7 +445,7 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/bookmarksList.svg"));
+        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/addBookmarksList.svg"));
         sessionManagerBtn.setToolTipText("会话管理");
         sessionManagerBtn.setSelected(true);
         sessionManagerBtn.addActionListener(new AbstractAction() {
