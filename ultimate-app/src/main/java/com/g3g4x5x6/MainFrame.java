@@ -152,7 +152,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
         // 查看菜单
         JMenuItem focusItem = new JMenuItem("专注模式");
-        focusItem.setIcon(new FlatSVGIcon("icons/fitContent.svg"));
+        focusItem.setIcon(new FlatSVGIcon("icons/cwmScreenOn.svg"));
         focusItem.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -317,9 +317,11 @@ public class MainFrame extends JFrame implements MouseListener {
                 if (toggleButton.isSelected()) {
                     setAlwaysOnTop(true);
                     toggleButton.setToolTipText("取消置顶");
+                    editorFrame.setAlwaysOnTop(true);
                 } else {
                     setAlwaysOnTop(false);
                     toggleButton.setToolTipText("窗口置顶");
+                    MainFrame.editorFrame.setAlwaysOnTop(false);
                 }
             }
         });
@@ -512,6 +514,8 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private void focusAction() {
         log.debug("专注模式");
+        App.isFocus = true;
+        editorFrame.setAlwaysOnTop(true);
         setFocusIndex();
         FocusFrame focusFrame = new FocusFrame();
         focusFrame.setVisible(true);
@@ -801,6 +805,8 @@ public class MainFrame extends JFrame implements MouseListener {
                 }
                 editorFrame.setTitle(App.properties.getProperty("editor.title"));
                 editorFrame.setVisible(true);
+                editorFrame.setAlwaysOnTop(isAlwaysOnTop());
+
             }).start();
         }
     };

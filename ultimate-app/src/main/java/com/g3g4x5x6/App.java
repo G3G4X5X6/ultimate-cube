@@ -38,6 +38,7 @@ public class App {
     public static AtomicBoolean lockState = new AtomicBoolean(false);
     public static LinkedHashMap<String, SessionInfo> sessionInfos = new LinkedHashMap<>();
     public static String lockPassword = "";
+    public static boolean isFocus = false;
 
     public static void main(String[] args) {
         // 显示旗标

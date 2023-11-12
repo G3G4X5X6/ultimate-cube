@@ -50,47 +50,13 @@ public class FocusFrame extends JFrame {
         }
     }
 
-//    private void initClosableTabs() {
-//        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
-//        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
-//        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
-//                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
-//                    if (tabbedPane.getComponentAt(tabIndex) instanceof FocusPanel) {
-//                        FocusPanel focusPanel = (FocusPanel) tabbedPane.getComponentAt(tabIndex);
-//                        focusPanel.getSessionInfo().close();
-//                        App.sessionInfos.remove(focusPanel.getSessionInfo().getSessionId());
-//                        log.debug(String.valueOf(App.sessionInfos.size()));
-//                    }
-//                    tabbedPane.removeTabAt(tabIndex);
-//                });
-//    }
-
     private void customComponents() {
         JToolBar trailing = new JToolBar();
         trailing.setFloatable(false);
         trailing.setBorder(null);
 
-//        JButton addBtn = new JButton(new FlatSVGIcon("icons/add.svg"));
-//        addBtn.addActionListener(new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                tabbedPane.insertTab("新建选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), new NewTabbedPane(tabbedPane), "新建选项卡", tabbedPane.getTabCount());
-//                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
-//            }
-//        });
-//        // swiftPackage.svg
-//        JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/swiftPackage.svg"));
-//        sessionManagerBtn.setToolTipText("会话管理面板");
-//        sessionManagerBtn.addActionListener(new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                tabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(tabbedPane), "会话管理", tabbedPane.getTabCount());
-//                tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
-//            }
-//        });
-
-        JButton fullScreenBtn = new JButton(new FlatSVGIcon("icons/fitContent.svg"));
-        fullScreenBtn.setToolTipText("专注模式");
+        JButton fullScreenBtn = new JButton(new FlatSVGIcon("icons/cwmScreenOff.svg"));
+        fullScreenBtn.setToolTipText("退出专注模式");
         fullScreenBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,31 +75,8 @@ public class FocusFrame extends JFrame {
             }
         });
 
-        // 置顶图标按钮
-        FlatToggleButton toggleButton = new FlatToggleButton();
-        toggleButton.setIcon(new FlatSVGIcon("icons/pinTab.svg"));
-        toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
-        toggleButton.setToolTipText("窗口置顶");
-        toggleButton.setFocusable(false);
-        toggleButton.setSelected(true);
-        toggleButton.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (toggleButton.isSelected()) {
-                    setAlwaysOnTop(true);
-                    toggleButton.setToolTipText("取消置顶");
-                } else {
-                    setAlwaysOnTop(false);
-                    toggleButton.setToolTipText("窗口置顶");
-                }
-            }
-        });
-
-//        trailing.add(addBtn);
-//        trailing.add(sessionManagerBtn);
         trailing.add(Box.createHorizontalGlue());
         trailing.add(fullScreenBtn);
-        trailing.add(toggleButton);
         tabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 

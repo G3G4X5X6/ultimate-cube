@@ -33,6 +33,7 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 @Slf4j
 public class EditorFrame extends JFrame implements ActionListener {
     private static EditorFrame editorFrame = null;
+    private FlatToggleButton toggleButton;
     private JMenuBar menuBar = new JMenuBar();
     private JMenu fileMenu = new JMenu("文件");
     private JMenu editMenu = new JMenu("编辑");
@@ -90,11 +91,12 @@ public class EditorFrame extends JFrame implements ActionListener {
         menuBar.add(winMenu);
         menuBar.add(aboutMenu);
         // TODO 置顶图标按钮
-        FlatToggleButton toggleButton = new FlatToggleButton();
+        toggleButton = new FlatToggleButton();
         toggleButton.setIcon(new FlatSVGIcon("icons/pinTab.svg"));
         toggleButton.setButtonType(FlatButton.ButtonType.toolBarButton);
         toggleButton.setToolTipText("窗口置顶");
         toggleButton.setFocusable(false);
+        toggleButton.setSelected(this.isAlwaysOnTop());
         toggleButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -150,6 +152,12 @@ public class EditorFrame extends JFrame implements ActionListener {
         this.add(toolBar, BorderLayout.NORTH);
         this.add(tabbedPane, BorderLayout.CENTER);
         this.add(statusBar, BorderLayout.SOUTH);
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        super.setVisible(b);
+        toggleButton.setSelected(this.isAlwaysOnTop());
     }
 
     public static EditorFrame getInstance() {
