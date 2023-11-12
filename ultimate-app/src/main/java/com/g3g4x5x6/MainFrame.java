@@ -479,7 +479,8 @@ public class MainFrame extends JFrame implements MouseListener {
         focusBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("待定");
+                log.debug("专注模式");
+                focusAction();
             }
         });
 
