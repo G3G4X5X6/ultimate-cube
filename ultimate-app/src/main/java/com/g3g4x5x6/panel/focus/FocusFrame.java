@@ -1,8 +1,6 @@
 package com.g3g4x5x6.panel.focus;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.formdev.flatlaf.extras.components.FlatButton;
-import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.MainFrame;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
@@ -36,8 +34,7 @@ public class FocusFrame extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(tabbedPane, BorderLayout.CENTER);
 
-        removeOld(); // Remove old tab pane from MainFrame
-//        initClosableTabs();
+        removeOld();
         customComponents();
         initTabbedPane();
     }
@@ -64,7 +61,7 @@ public class FocusFrame extends JFrame {
                 // TODO 还原会话
                 for (String key : App.sessionInfos.keySet()) {
                     MainFrame.mainTabbedPane.addTab(
-                            App.sessionInfos.get(key).getSessionName().equals("") ? App.sessionInfos.get(key).getSessionAddress() : App.sessionInfos.get(key).getSessionName(),
+                            App.sessionInfos.get(key).getSessionName().isEmpty() ? App.sessionInfos.get(key).getSessionAddress() : App.sessionInfos.get(key).getSessionName(),
                             new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
                             new SshTabbedPane(App.sessionInfos.get(key))
                     );
@@ -87,13 +84,15 @@ public class FocusFrame extends JFrame {
             log.debug("sessionInfos.size(): " + App.sessionInfos.size() + " : " + sessionInfo.toString());
 
             tabbedPane.addTab(
-                    sessionInfo.getSessionName().equals("") ? sessionInfo.getSessionAddress() : sessionInfo.getSessionName(),
+                    sessionInfo.getSessionName().isEmpty() ? sessionInfo.getSessionAddress() : sessionInfo.getSessionName(),
                     new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
                     new FocusPanel(sessionInfo)
             );
         }
-        tabbedPane.setSelectedIndex(MainFrame.focusIndex);
-        MainFrame.focusIndex = 0;
+        if (tabbedPane.getTabCount() != 0){
+            tabbedPane.setSelectedIndex(MainFrame.focusIndex);
+            MainFrame.focusIndex = 0;
+        }
     }
 
 }

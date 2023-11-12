@@ -525,11 +525,13 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private void focusAction() {
         log.debug("专注模式");
-        App.isFocus = true;
-        editorFrame.setAlwaysOnTop(true);
-        setFocusIndex();
-        FocusFrame focusFrame = new FocusFrame();
-        focusFrame.setVisible(true);
+        if (!App.sessionInfos.isEmpty()) {
+            App.isFocus = true;
+            editorFrame.setAlwaysOnTop(true);
+            setFocusIndex();
+            FocusFrame focusFrame = new FocusFrame();
+            focusFrame.setVisible(true);
+        }
     }
 
     private void setFocusIndex() {
