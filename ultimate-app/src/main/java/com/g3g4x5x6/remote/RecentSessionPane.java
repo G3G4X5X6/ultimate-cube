@@ -316,7 +316,7 @@ public class RecentSessionPane extends JPanel {
                             SessionInfo sessionInfo = SessionUtil.openSshSession(file.getAbsolutePath());
                             if (SshUtil.testConnection(sessionInfo.getSessionAddress(), port) == 1) {
                                 String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
-                                MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                                MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"),
                                         new SshTabbedPane(sessionInfo)
                                 );
                                 MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);

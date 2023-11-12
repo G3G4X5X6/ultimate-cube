@@ -62,7 +62,7 @@ public class FocusFrame extends JFrame {
                 for (String key : App.sessionInfos.keySet()) {
                     MainFrame.mainTabbedPane.addTab(
                             App.sessionInfos.get(key).getSessionName().isEmpty() ? App.sessionInfos.get(key).getSessionAddress() : App.sessionInfos.get(key).getSessionName(),
-                            new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                            new FlatSVGIcon("icons/consoleRun.svg"),
                             new SshTabbedPane(App.sessionInfos.get(key))
                     );
                 }
@@ -85,7 +85,7 @@ public class FocusFrame extends JFrame {
 
             tabbedPane.addTab(
                     sessionInfo.getSessionName().isEmpty() ? sessionInfo.getSessionAddress() : sessionInfo.getSessionName(),
-                    new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                    new FlatSVGIcon("icons/consoleRun.svg"),
                     new FocusPanel(sessionInfo)
             );
         }

@@ -55,7 +55,7 @@ public class FreeRdp extends JDialog {
 
     private boolean openFlag = false;
     private String freeRdpSessionsDirPath = AppConfig.getWorkPath() + "/sessions/freeRdp";
-    private String exePath = AppConfig.getWorkPath() + "/tools/xpack_tools/freerdp/wfreerdp.exe";
+    private String exePath = AppConfig.getWorkPath() + "/bin/wfreerdp.exe";
 
     public FreeRdp() {
         super(App.mainFrame);

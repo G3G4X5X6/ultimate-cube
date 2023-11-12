@@ -576,7 +576,7 @@ public class MainFrame extends JFrame implements MouseListener {
                                     SessionInfo sessionInfo = SessionUtil.openSshSession(f.getAbsolutePath());
                                     if (SshUtil.testConnection(sessionInfo.getSessionAddress(), sessionInfo.getSessionPort()) == 1) {
                                         String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
-                                        MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                                        MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"),
                                                 new SshTabbedPane(sessionInfo)
                                         );
                                         MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
@@ -614,7 +614,7 @@ public class MainFrame extends JFrame implements MouseListener {
                 mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()));
         if (input != null && !input.strip().equalsIgnoreCase("")) {
             JLabel newTabTitle = new JLabel(input);
-            newTabTitle.setIcon(new FlatSVGIcon("icons/OpenTerminal_13x13.svg"));
+            newTabTitle.setIcon(new FlatSVGIcon("icons/consoleRun.svg"));
             mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), newTabTitle);
         }
     }
@@ -639,7 +639,7 @@ public class MainFrame extends JFrame implements MouseListener {
                     SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
                     mainTabbedPane.addTab(
                             "复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()),
-                            new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                            new FlatSVGIcon("icons/consoleRun.svg"),
                             new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy())
                     );
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
@@ -796,7 +796,7 @@ public class MainFrame extends JFrame implements MouseListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             mainTabbedPane.insertTab("<html><font style='color:green'><strong>本地终端</strong></font></html>",
-                    new FlatSVGIcon("icons/console.svg"),
+                    new FlatSVGIcon("icons/consoleRun.svg"),
                     new ConsolePane(),
                     "本地终端",
                     mainTabbedPane.getTabCount());

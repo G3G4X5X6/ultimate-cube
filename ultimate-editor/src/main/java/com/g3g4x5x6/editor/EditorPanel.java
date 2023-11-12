@@ -209,7 +209,7 @@ public class EditorPanel extends JPanel implements SearchListener {
                 // String SYNTAX_STYLE_UNIX_SHELL = "text/unix";
                 // 默认：text/unix -> bash
                 setSyntax("text/unix");
-                icon = new FlatSVGIcon("icons/OpenTerminal_13x13.svg");
+                icon = new FlatSVGIcon("icons/consoleRun.svg");
                 ac = new AutoCompletion(new BashCompletionProvider());
                 ac.install(textArea);
             }
@@ -436,7 +436,7 @@ public class EditorPanel extends JPanel implements SearchListener {
                 case "bash_history":
                 case "bash_profile":
                     setSyntax("text/unix");
-                    icon = new FlatSVGIcon("icons/OpenTerminal_13x13.svg");
+                    icon = new FlatSVGIcon("icons/consoleRun.svg");
                     ac = new AutoCompletion(new BashCompletionProvider());
                     ac.install(textArea);
                     break;

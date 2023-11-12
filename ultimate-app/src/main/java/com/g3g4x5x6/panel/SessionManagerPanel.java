@@ -620,7 +620,7 @@ public class SessionManagerPanel extends JPanel {
                     SessionInfo sessionInfo = SessionUtil.openSshSession(file.getAbsolutePath());
                     if (SshUtil.testConnection(sessionInfo.getSessionAddress(), sessionInfo.getSessionPort()) == 1) {
                         String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
-                        mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                        mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"),
                                 new SshTabbedPane(sessionInfo)
                         );
                         mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);

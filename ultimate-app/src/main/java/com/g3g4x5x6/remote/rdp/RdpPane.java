@@ -100,7 +100,7 @@ public class RdpPane extends JPanel {
                     // TODO 保存会话
 
                     // 打开会话
-                    mainTabbedPane.insertTab("FTP-" + hostField.getText(), new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                    mainTabbedPane.insertTab("FTP-" + hostField.getText(), new FlatSVGIcon("icons/consoleRun.svg"),
                             new JPanel(),
                             "FTP-" + hostField.getText(),
                             mainTabbedPane.getSelectedIndex());

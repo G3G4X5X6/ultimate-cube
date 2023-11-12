@@ -101,7 +101,7 @@ public class SerialPane extends JPanel {
                     // TODO 保存会话
 
                     // 打开会话
-                    tabbedPane.insertTab("Serial-" + comComboBox.getSelectedItem(), new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                    tabbedPane.insertTab("Serial-" + comComboBox.getSelectedItem(), new FlatSVGIcon("icons/consoleRun.svg"),
                             createTerminalWidget(),
                             "Serial-" + comComboBox.getSelectedItem(),
                             tabbedPane.getSelectedIndex());

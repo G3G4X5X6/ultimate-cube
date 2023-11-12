@@ -236,7 +236,7 @@ public class NewSshPane extends JPanel {
 
         // 鸠占鹊巢
         mainTabbedPane.insertTab(defaultTitle,
-                new FlatSVGIcon("icons/OpenTerminal_13x13.svg"),
+                new FlatSVGIcon("icons/consoleRun.svg"),
                 new SshTabbedPane(sessionInfo), "奥里给", preIndex);
         mainTabbedPane.removeTabAt(preIndex + 1);
         mainTabbedPane.setSelectedIndex(preIndex);
