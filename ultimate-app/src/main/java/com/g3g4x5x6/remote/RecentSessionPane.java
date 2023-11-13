@@ -148,7 +148,7 @@ public class RecentSessionPane extends JPanel {
         File file = new File(AppConfig.getWorkPath() + "/sessions");
         if (file.exists()) {
             for (File f : Objects.requireNonNull(file.listFiles())) {
-                if (f.isFile() && f.getName().startsWith("recent_ssh")) {
+                if (f.isFile() && f.getName().startsWith("recent_")) {
                     BasicFileAttributes attrs = Files.readAttributes(Paths.get(f.getPath()), BasicFileAttributes.class);
                     FileTime time = attrs.lastModifiedTime();
 

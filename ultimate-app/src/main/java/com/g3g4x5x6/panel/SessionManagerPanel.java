@@ -768,6 +768,9 @@ public class SessionManagerPanel extends JPanel {
                     inputStream.close();
                     reader.close();
 
+                    // 保存最近会话
+                    Files.write(Path.of(AppConfig.getWorkPath() + "/sessions/recent_" + Path.of(sessionPath).getFileName()), jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
+
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
