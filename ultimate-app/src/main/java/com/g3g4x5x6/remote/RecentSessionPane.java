@@ -15,6 +15,7 @@ import com.g3g4x5x6.ui.ToolBar;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -116,6 +117,9 @@ public class RecentSessionPane extends JPanel {
         tableModel.setColumnIdentifiers(columnNames);
         // 搜索功能
         sorter = new TableRowSorter<>(tableModel);
+        // 降序排序，但没啥效果
+        sorter.setSortsOnUpdates(true);
+        sorter.setSortKeys(java.util.Collections.singletonList(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
         recentTable.setRowSorter(sorter);
 
         initData();
@@ -190,6 +194,21 @@ public class RecentSessionPane extends JPanel {
                 StandardWatchEventKinds.ENTRY_CREATE
         );
 
+        Thread thread = getThread(path);
+        thread.start();
+
+        // 增加jvm关闭的钩子来关闭监听
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                watchService.close();
+            } catch (Exception e) {
+                // pass
+            }
+        }));
+    }
+
+    @NotNull
+    private Thread getThread(String path) {
         Thread thread = new Thread(() -> {
             try {
                 while (true) {
@@ -208,16 +227,7 @@ public class RecentSessionPane extends JPanel {
             }
         });
         thread.setDaemon(false);
-        thread.start();
-
-        // 增加jvm关闭的钩子来关闭监听
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                watchService.close();
-            } catch (Exception e) {
-                // pass
-            }
-        }));
+        return thread;
     }
 
     private void initPopupMenu() {
