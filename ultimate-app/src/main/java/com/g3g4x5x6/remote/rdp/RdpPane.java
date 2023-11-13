@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 
 @Slf4j
@@ -233,8 +234,7 @@ public class RdpPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("Save & Open FreeRDP");
-                if (saveFreeRDP())
-                    new Thread(() -> openFreeRDP()).start();
+                if (saveFreeRDP()) new Thread(() -> openFreeRDP()).start();
             }
         });
 
@@ -314,18 +314,28 @@ public class RdpPane extends JPanel {
 
     private boolean saveFreeRDP() {
         boolean isSuccess = false;
-        // TODO 保存远程桌面设置
+        // 保存远程桌面设置
         packCmdList();
+
+        LinkedHashMap<String, Object> session = new LinkedHashMap<>();
+        session.put("sessionName", title.getText());
+        session.put("sessionProtocol", "RDP");
+        session.put("sessionAddress", hostField.getText());
+        session.put("sessionPort", portField.getText());
+        session.put("sessionUser", userField.getText());
+        session.put("sessionPass", VaultUtil.encryptPasswd(String.valueOf(passField.getPassword())));
+        session.put("sessionArgs", cmdList);
+        session.put("sessionLoginType", "password");
+        session.put("sessionComment", "暂不支持");
+
         String sessionFile;
         if (!hostField.getText().isBlank()) {
-            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" +
-                    (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" +
-                    (userField.getText().isBlank() ? "-" : userField.getText().strip()) + ".json";
+            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" + (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" + (userField.getText().isBlank() ? "-" : userField.getText().strip()) + ".json";
             log.debug("SessionFile: " + sessionFile);
 
             try {
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File(sessionFile)));
-                out.write(JSON.toJSONString(cmdList).getBytes(StandardCharsets.UTF_8));
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(sessionFile));
+                out.write(JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
                 out.flush();
                 out.close();
                 DialogUtil.info("远程桌面会话保存成功！");
@@ -347,12 +357,11 @@ public class RdpPane extends JPanel {
         // 服务器IP
         cmdList.add("/v:" + hostField.getText());
         // 远程桌面端口
-        if (!portField.getText().strip().equals(""))
-            cmdList.add("/port:" + portField.getText());
+        if (!portField.getText().strip().equals("")) cmdList.add("/port:" + portField.getText());
         // 用户名
         cmdList.add("/u:" + userField.getText());
         // 用户密码
-        if (!String.valueOf(passField.getPassword()).strip().equals(""))
+        if (!String.valueOf(passField.getPassword()).isBlank())
             cmdList.add("/p:" + VaultUtil.encryptPasswd(String.valueOf(passField.getPassword())));
         // 全屏设置
         if (fullscreen.isSelected()) {
