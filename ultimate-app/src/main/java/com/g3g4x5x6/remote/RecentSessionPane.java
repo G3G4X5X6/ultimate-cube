@@ -9,7 +9,8 @@ import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.MainFrame;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
-import com.g3g4x5x6.remote.utils.SessionUtil;
+import com.g3g4x5x6.remote.utils.session.SessionOpenTool;
+import com.g3g4x5x6.remote.utils.session.SessionUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.ui.ToolBar;
 import lombok.SneakyThrows;
@@ -315,38 +316,15 @@ public class RecentSessionPane extends JPanel {
         if (dir.exists()) {
             for (File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user) && file.getName().contains(auth)) {
-                    // 创建后台任务
-                    SwingWorker<String, Object> task = new SwingWorker<>() {
-                        @Override
-                        protected String doInBackground() {
-                            // 此处处于 SwingWorker 线程池中
-                            // 等待进度条
-                            MainFrame.addWaitProgressBar();
-
-                            SessionInfo sessionInfo = SessionUtil.openSshSession(file.getAbsolutePath());
-                            if (SshUtil.testConnection(sessionInfo.getSessionAddress(), port) == 1) {
-                                String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
-                                MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"),
-                                        new SshTabbedPane(sessionInfo)
-                                );
-                                MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
-                            }
-                            App.sessionInfos.put(sessionInfo.getSessionId(), sessionInfo);
-
-                            // 移除等待进度条
-                            MainFrame.removeWaitProgressBar();
-
-                            return "Done";
-                        }
-
-                        @Override
-                        protected void done() {
-                            // 此方法将在后台任务完成后在事件调度线程中被回调
-                            initData();
-                        }
-                    };
-                    // 启动任务
-                    task.execute();
+                    log.debug("SessionPath: " + file.getAbsolutePath());
+                    try {
+                        String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                        JSONObject jsonObject = JSON.parseObject(json);
+                        String protocol = jsonObject.getString("sessionProtocol");
+                        SessionOpenTool.OpenSessionByProtocol(file.getAbsolutePath(), protocol);
+                    } catch (IOException e) {
+                        log.debug(e.getMessage());
+                    }
                 }
             }
         }
