@@ -36,16 +36,16 @@ public class VaultUtil {
         return aes.encryptHex(passwordStr);
     }
 
-    public static String decryptPasswd(String passwordHex) {
-        try{
+    public static String decryptPasswd(String passwordStr) {
+        try {
             // 密钥
             byte[] key = hexToBytes(secretKey);
             // 构建
             SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
             //解密为字符串
-            return aes.decryptStr(passwordHex, CharsetUtil.CHARSET_UTF_8);
+            return aes.decryptStr(passwordStr, CharsetUtil.CHARSET_UTF_8);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             DialogUtil.error("密码解密失败: \n" + e.getMessage());
         }
         return "";

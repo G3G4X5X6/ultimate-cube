@@ -23,7 +23,6 @@ import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SessionUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
-import com.g3g4x5x6.tools.xpack.FreeRdp;
 import com.g3g4x5x6.ui.StatusBar;
 import com.g3g4x5x6.ui.icon.AccentColorIcon;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -241,11 +240,6 @@ public class MainFrame extends JFrame implements MouseListener {
         toolMenu.add(editorItem);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
-        // 快捷键
-        JMenuItem freeRdpItem = new JMenuItem("FreeRDP");
-        freeRdpItem.setAccelerator(KeyStroke.getKeyStroke('D', InputEvent.ALT_DOWN_MASK));
-        freeRdpItem.addActionListener(freeRDPAction);
-        toolMenu.add(freeRdpItem);
         toolMenu.addSeparator();
 
         JMenuItem randomPassItem = new JMenuItem("随机密码生成器");
@@ -844,14 +838,6 @@ public class MainFrame extends JFrame implements MouseListener {
             parser.parse(new String[]{});
             Viewer viewer = new Viewer(parser);
             SwingUtilities.invokeLater(viewer);
-        }
-    };
-
-    private final AbstractAction freeRDPAction = new AbstractAction("FreeRDP") {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            FreeRdp freeRdp = new FreeRdp();
-            freeRdp.setVisible(true);
         }
     };
 

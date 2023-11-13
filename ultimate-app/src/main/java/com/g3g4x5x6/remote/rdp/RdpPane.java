@@ -1,8 +1,13 @@
 package com.g3g4x5x6.remote.rdp;
 
 
+import com.alibaba.fastjson.JSON;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.g3g4x5x6.AppConfig;
+import com.g3g4x5x6.remote.utils.VaultUtil;
+import com.g3g4x5x6.remote.utils.os.OsInfoUtil;
+import com.g3g4x5x6.utils.DialogUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
@@ -11,23 +16,41 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 
 @Slf4j
 public class RdpPane extends JPanel {
+
     private JTabbedPane mainTabbedPane;
-    private JTabbedPane basicSettingTabbedPane;
-    private String basicSettingPaneTitle;
-    private JPanel basicSettingPane;
+    private final JPanel controlPane;
+    private final JTabbedPane basicSettingTabbedPane;
+    private final String basicSettingPaneTitle;
+    private final JPanel basicSettingPane;
 
-    private JTabbedPane advancedSettingTabbedPane;
-    private String advancedSettingPaneTitle;
-    private JPanel advancedSettingPane;
+    private final JTabbedPane advancedSettingTabbedPane;
+    private final String advancedSettingPaneTitle;
+    private final JPanel advancedSettingPane;
 
+    private ArrayList<String> cmdList;
+    // 参数区域: basicSettingPane
     private JFormattedTextField hostField;
     private JFormattedTextField portField;
     private JTextField userField;
     private JPasswordField passField;
+    // 参数区域: advancedSettingPane
+    private JCheckBox fullscreen;
+    private JCheckBox sound;
+    private JCheckBox microphone;
+    private JTextField title;
+    private JTextField width;
+    private JTextField height;
+
+    private boolean openFlag = false;
+    private final String freeRdpSessionsDirPath = AppConfig.getWorkPath() + "/sessions/FreeRDP";
+    private final String exePath = AppConfig.getWorkPath() + "/bin/wfreerdp.exe";
 
     public RdpPane(JTabbedPane mainTabbedPane) {
         this.mainTabbedPane = mainTabbedPane;
@@ -45,11 +68,15 @@ public class RdpPane extends JPanel {
         advancedSettingPane.setLayout(flowLayout);
         advancedSettingPaneTitle = "Advanced RDP Settings";
 
+        controlPane = new JPanel();
+
         initBasicPane();
         initAdvancePane();
+        initControlPane();
 
         this.add(basicSettingTabbedPane, BorderLayout.NORTH);
         this.add(advancedSettingTabbedPane, BorderLayout.CENTER);
+        this.add(controlPane, BorderLayout.SOUTH);
     }
 
     private void initBasicPane() {
@@ -67,7 +94,7 @@ public class RdpPane extends JPanel {
         JLabel portLabel = new JLabel("Port*");
         portField = new JFormattedTextField();
         portField.setColumns(4);
-        portField.setText("21");
+        portField.setText("3389");
         portPane.add(portLabel);
         portPane.add(portField);
 
@@ -84,46 +111,8 @@ public class RdpPane extends JPanel {
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
         passField.setColumns(8);
-        passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
         passPane.add(passLabel);
         passPane.add(passField);
-
-        // 按钮
-        JPanel btnPane = new JPanel();
-        JButton saveBtn = new JButton("快速连接");
-        saveBtn.setToolTipText("自动保存会话");
-        saveBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("FTP 快速连接");
-                if (testOpen()) {
-                    // TODO 保存会话
-
-                    // 打开会话
-                    mainTabbedPane.insertTab("FTP-" + hostField.getText(), new FlatSVGIcon("icons/consoleRun.svg"),
-                            new JPanel(),
-                            "FTP-" + hostField.getText(),
-                            mainTabbedPane.getSelectedIndex());
-                    mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
-                } else {
-                    JOptionPane.showMessageDialog(RdpPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-        JButton testBtn = new JButton("测试通信");
-        testBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("FTP 测试通信");
-                if (testOpen()) {
-                    JOptionPane.showMessageDialog(RdpPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(RdpPane.this, "敬请期待！", "警告", JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        });
-        btnPane.add(saveBtn);
-        btnPane.add(testBtn);
 
         basicSettingPane.add(hostPane);
         basicSettingPane.add(Box.createHorizontalGlue());
@@ -132,17 +121,266 @@ public class RdpPane extends JPanel {
         basicSettingPane.add(userPane);
         basicSettingPane.add(Box.createHorizontalGlue());
         basicSettingPane.add(passPane);
-        basicSettingPane.add(Box.createHorizontalGlue());
-        basicSettingPane.add(btnPane);
     }
 
     private void initAdvancePane() {
         advancedSettingTabbedPane.addTab(advancedSettingPaneTitle, advancedSettingPane);
+        // Title
+        JPanel titlePane = new JPanel();
+        title = new JTextField();
+        title.setColumns(15);
+        titlePane.add(new JLabel("窗口标题"));
+        titlePane.add(title);
+
+        // Size
+        JPanel sizePane = new JPanel();
+        width = new JTextField();
+        width.setColumns(4);
+        width.setEditable(false);
+        height = new JTextField();
+        height.setColumns(4);
+        height.setEditable(false);
+        fullscreen = new JCheckBox("Fullscreen");
+        fullscreen.setSelected(true);
+        fullscreen.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (fullscreen.isSelected()) {
+                    width.setEditable(false);
+                    height.setEditable(false);
+                } else {
+                    width.setEditable(true);
+                    height.setEditable(true);
+                }
+            }
+        });
+        sizePane.add(new JLabel("分辨率: "));
+        sizePane.add(new JLabel("Width"));
+        sizePane.add(width);
+        sizePane.add(new JLabel("Height"));
+        sizePane.add(height);
+        sizePane.add(fullscreen);
+
+        // CheckBox: fullscreen
+        JPanel checkBoxPane = new JPanel();
+        /**
+         * https://www.jianshu.com/p/f6fcf5b56fe3
+         * 启用音频输出：
+         * audio-mode的参数为： 0 - redirect；1 - leave on server (or laptop)； 2 - disable audio。
+         * 当使用/audio-mode:1时，表示在远程电脑上输出音频
+         */
+        sound = new JCheckBox("Sound");
+        sound.setSelected(false);
+        microphone = new JCheckBox("Microphone");
+        microphone.setSelected(false);
+        checkBoxPane.add(sound);
+        checkBoxPane.add(microphone);
+
+        advancedSettingPane.add(titlePane);
+        advancedSettingPane.add(Box.createHorizontalGlue());
+        advancedSettingPane.add(sizePane);
+        advancedSettingPane.add(Box.createHorizontalGlue());
+        advancedSettingPane.add(checkBoxPane);
+    }
+
+    private void initControlPane() {
+        FlowLayout flowLayout = new FlowLayout();
+        flowLayout.setAlignment(FlowLayout.CENTER);
+        controlPane.setLayout(flowLayout);
+
+        JButton openBtn = new JButton("快速连接");
+        openBtn.setToolTipText("默认不保存会话");
+        openBtn.setIcon(new FlatSVGIcon("icons/rerun.svg"));
+
+        JButton testBtn = new JButton("测试通信");
+        testBtn.setIcon(new FlatSVGIcon("icons/lightning.svg"));
+
+        JButton saveBtn = new JButton("保存会话");
+        saveBtn.setIcon(new FlatSVGIcon("icons/menu-saveall.svg"));
+
+        JButton saveAndOpenBtn = new JButton("保存并连接");
+        saveAndOpenBtn.setIcon(new FlatSVGIcon("icons/connectionStatus.svg"));
+
+        controlPane.add(openBtn);
+        controlPane.add(testBtn);
+        controlPane.add(saveBtn);
+        controlPane.add(saveAndOpenBtn);
+
+        openBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("Open FreeRDP");
+                new Thread(() -> openFreeRDP()).start();
+            }
+        });
+
+        testBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO 测试端口是否开放
+            }
+        });
+
+        saveBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("Save FreeRDP");
+                saveFreeRDP();
+            }
+        });
+
+        saveAndOpenBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("Save & Open FreeRDP");
+                if (saveFreeRDP())
+                    new Thread(() -> openFreeRDP()).start();
+            }
+        });
 
     }
 
-    private Boolean testOpen() {
-        return false;
+    private void openFreeRDP() {
+        // TODO 打开远程桌面
+        if (!hostField.getText().isBlank()) {
+            try {
+                //创建ProcessBuilder对象
+                ProcessBuilder processBuilder = new ProcessBuilder();
+
+                //封装执行的第三方程序(命令)
+                if (!openFlag) {
+                    // 封装参数
+                    packCmdList();
+
+                    // 解密密码
+                    // VaultUtil.decryptPasswd(jsonObject.getString("sessionPass"))
+                    // /p:7418db4111130de6004ef9b82a09e4b3
+                    ArrayList<String> tmpList = (ArrayList<String>) cmdList.clone();
+                    for (String arg : tmpList) {
+                        if (arg.contains("/p:")) {
+                            cmdList.remove(arg);
+                            cmdList.add("/p:" + VaultUtil.decryptPasswd(arg.substring(3)));
+                        }
+                    }
+
+                    // 列表头部插入 freerdp 命令
+                    if (OsInfoUtil.isWindows()) {
+                        cmdList.add(0, exePath);
+                    }
+                    if (OsInfoUtil.isLinux()) {
+
+                    }
+                    if (OsInfoUtil.isMacOS()) {
+
+                    }
+                    if (OsInfoUtil.isMacOSX()) {
+
+                    }
+                } else {
+                    openFlag = false;
+                }
+
+                // 设置执行命令及其参数列表
+                processBuilder.command(cmdList);
+                log.debug(cmdList.toString());
+
+                //将标准输入流和错误输入流合并
+                // 通过标准输入流读取信息就可以拿到第三方程序输出的错误信息、正常信息
+                processBuilder.redirectErrorStream(true);
+
+                //启动一个进程
+                Process process = processBuilder.start();
+                //读取输入流
+                InputStream inputStream = process.getInputStream();
+                //将字节流转成字符流
+                InputStreamReader reader = new InputStreamReader(inputStream, "gbk");
+                //字符缓冲区
+                char[] chars = new char[1024];
+                int len = -1;
+                while ((len = reader.read(chars)) != -1) {
+                    String string = new String(chars, 0, len);
+                    log.debug(string);
+                }
+                inputStream.close();
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                DialogUtil.error(e.getMessage());
+            }
+        } else {
+            DialogUtil.warn("请输入服务器IP地址或者域名！");
+        }
+    }
+
+    private boolean saveFreeRDP() {
+        boolean isSuccess = false;
+        // TODO 保存远程桌面设置
+        packCmdList();
+        String sessionFile;
+        if (!hostField.getText().isBlank()) {
+            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" +
+                    (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" +
+                    (userField.getText().isBlank() ? "-" : userField.getText().strip()) + ".json";
+            log.debug("SessionFile: " + sessionFile);
+
+            try {
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(new File(sessionFile)));
+                out.write(JSON.toJSONString(cmdList).getBytes(StandardCharsets.UTF_8));
+                out.flush();
+                out.close();
+                DialogUtil.info("远程桌面会话保存成功！");
+                isSuccess = true;
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        } else {
+            DialogUtil.warn("请输入服务器IP地址或者域名！");
+        }
+        log.debug(JSON.toJSONString(cmdList));
+        return isSuccess;
+    }
+
+    private void packCmdList() {
+        cmdList = new ArrayList<>();
+
+        // 不同操作系统平台通用参数封装
+        // 服务器IP
+        cmdList.add("/v:" + hostField.getText());
+        // 远程桌面端口
+        if (!portField.getText().strip().equals(""))
+            cmdList.add("/port:" + portField.getText());
+        // 用户名
+        cmdList.add("/u:" + userField.getText());
+        // 用户密码
+        if (!String.valueOf(passField.getPassword()).strip().equals(""))
+            cmdList.add("/p:" + VaultUtil.encryptPasswd(String.valueOf(passField.getPassword())));
+        // 全屏设置
+        if (fullscreen.isSelected()) {
+            cmdList.add("/f");
+        } else {
+            // 分辨率设置：width
+            if (!width.getText().strip().equals("")) {
+                cmdList.add("/w:" + width.getText().strip());
+            }
+            // 分辨率设置：height
+            if (!height.getText().strip().equals("")) {
+                cmdList.add("/h:" + height.getText().strip());
+            }
+        }
+        // 标题设置
+        if (!title.getText().strip().equals("")) {
+            cmdList.add("/t:" + title.getText().strip());
+        }
+        // 音频重定向： Sound
+        if (sound.isSelected()) {
+            cmdList.add("/sound");
+        }
+        // 麦克风设置： Microphone
+        if (microphone.isSelected()) {
+            cmdList.add("/mic");
+        }
+        // +window-drag 没看出什么效果
+        cmdList.add("+window-drag");
     }
 
 }

@@ -20,8 +20,10 @@ public class CheckUtil {
                 workspace + "/temp",                        // 检查缓存目录
                 workspace + "/logs",                        // 检查日志目录
                 workspace + "/editor",                      // 检查编辑器缓存目录
-                workspace + "/sessions/ssh/",               // 检查SSH会话存储目录
-                workspace + "/sessions/freeRdp/",           // 检查RDP会话存储目录
+                workspace + "/sessions/SSH/",               // 检查SSH会话存储目录
+                workspace + "/sessions/VNC/",               // 检查VNC会话存储目录
+                workspace + "/sessions/FreeRDP/",           // 检查RDP会话存储目录
+                workspace + "/sessions/Telnet/",            // 检查Telnet会话存储目录
                 workspace + "/tools/external_tools",        // 检查外部集成工具目录，重点在于 `settings.json`
         };
         for (String path : pathArray) {
