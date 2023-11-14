@@ -326,7 +326,7 @@ public class RdpPane extends JPanel {
 
         String sessionFile;
         if (!hostField.getText().isBlank()) {
-            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" + (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" + (userField.getText().isBlank() ? "-" : userField.getText().strip()) + "-" + "password" + ".json";
+            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" + (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" + (userField.getText().isBlank() ? "-" : userField.getText().strip()) + "_" + "password" + ".json";
             log.debug("SessionFile: " + sessionFile);
 
             try {

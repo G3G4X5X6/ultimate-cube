@@ -133,7 +133,7 @@ public class SessionOpenTool {
 
                 // 保存最近会话
                 Path path = Path.of(sessionPath);
-                if (!path.getFileName().startsWith("recent_"))
+                if (!path.getFileName().toString().startsWith("recent_"))
                     Files.write(Path.of(AppConfig.getWorkPath() + "/sessions/recent_" + path.getFileName()), jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
 
             } catch (IOException ioException) {
