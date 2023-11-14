@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote.utils.session;
+package com.g3g4x5x6.utils.session;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote.utils.session;
+package com.g3g4x5x6.utils.session;
 
 
 import com.alibaba.fastjson.JSON;
@@ -11,7 +11,7 @@ import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
-import com.g3g4x5x6.remote.utils.os.OsInfoUtil;
+import com.g3g4x5x6.utils.os.OsInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 

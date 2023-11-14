@@ -1,6 +1,6 @@
 package com.g3g4x5x6.remote.ssh;
 
-import com.g3g4x5x6.remote.utils.session.SessionUtil;
+import com.g3g4x5x6.utils.session.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
 

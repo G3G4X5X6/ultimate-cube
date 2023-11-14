@@ -2,16 +2,12 @@ package com.g3g4x5x6.remote.rdp;
 
 
 import com.alibaba.fastjson.JSON;
-import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.remote.utils.VaultUtil;
-import com.g3g4x5x6.remote.utils.os.OsInfoUtil;
+import com.g3g4x5x6.utils.os.OsInfoUtil;
 import com.g3g4x5x6.utils.DialogUtil;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -330,7 +326,7 @@ public class RdpPane extends JPanel {
 
         String sessionFile;
         if (!hostField.getText().isBlank()) {
-            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" + (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" + (userField.getText().isBlank() ? "-" : userField.getText().strip()) + "password" + ".json";
+            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" + (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" + (userField.getText().isBlank() ? "-" : userField.getText().strip()) + "-" + "password" + ".json";
             log.debug("SessionFile: " + sessionFile);
 
             try {
