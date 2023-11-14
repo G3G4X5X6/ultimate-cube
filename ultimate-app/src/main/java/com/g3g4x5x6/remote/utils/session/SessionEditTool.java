@@ -1,4 +1,4 @@
-package com.g3g4x5x6.utils.session;
+package com.g3g4x5x6.remote.utils.session;
 
 
 import com.alibaba.fastjson.JSON;
@@ -28,18 +28,18 @@ import static com.g3g4x5x6.MainFrame.mainTabbedPane;
 
 
 @Slf4j
-public class SessionOpenTool {
+public class SessionEditTool {
     private static final String freeRdpPath = AppConfig.getWorkPath() + "/bin/wfreerdp.exe";
 
-    public static void OpenSessionByProtocol(String sessionPath, String protocol) {
+    public static void EditSessionByProtocol(String sessionPath, String protocol) {
         switch (protocol) {
             case "SSH":
                 log.debug("SSH");
-                SessionOpenTool.OpenSessionForSSH(sessionPath);
+                SessionEditTool.EditSessionForSSH(sessionPath);
                 break;
             case "RDP":
                 log.debug("RDP");
-                SessionOpenTool.OpenSessionForRDP(sessionPath);
+                SessionEditTool.EditSessionForRDP(sessionPath);
             case "VNC":
                 log.debug("VNC");
             case "Telnet":
@@ -49,7 +49,7 @@ public class SessionOpenTool {
         }
     }
 
-    private static void OpenSessionForSSH(String sessionPath) {
+    private static void EditSessionForSSH(String sessionPath) {
         File file = new File(sessionPath);
         if (file.exists()) {
             new Thread(() -> {
@@ -70,7 +70,7 @@ public class SessionOpenTool {
         }
     }
 
-    private static void OpenSessionForRDP(String sessionPath) {
+    private static void EditSessionForRDP(String sessionPath) {
 
         new Thread(() -> {
             try {

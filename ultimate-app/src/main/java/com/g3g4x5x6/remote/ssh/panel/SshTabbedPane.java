@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import static com.formdev.flatlaf.FlatClientProperties.TABBED_PANE_TRAILING_COMPONENT;
-import static com.g3g4x5x6.utils.session.SessionUtil.getLogArea;
+import static com.g3g4x5x6.remote.utils.session.SessionUtil.getLogArea;
 
 
 @Slf4j

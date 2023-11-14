@@ -1,4 +1,4 @@
-package com.g3g4x5x6.panel;
+package com.g3g4x5x6.remote;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -6,10 +6,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.AppConfig;
-import com.g3g4x5x6.remote.NewTabbedPane;
 import com.g3g4x5x6.remote.ssh.panel.NewSshPane;
 import com.g3g4x5x6.remote.utils.CommonUtil;
-import com.g3g4x5x6.utils.session.SessionOpenTool;
+import com.g3g4x5x6.remote.utils.session.SessionOpenTool;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
 import com.g3g4x5x6.ui.ToolBar;

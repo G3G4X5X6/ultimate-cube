@@ -1,12 +1,10 @@
 package com.g3g4x5x6.dashboard;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
-import com.g3g4x5x6.MainFrame;
-import com.g3g4x5x6.panel.SessionManagerPanel;
+import com.g3g4x5x6.remote.SessionManagerPanel;
 import com.g3g4x5x6.remote.RecentSessionPane;
 
 import javax.swing.*;
-import java.awt.*;
 
 
 /**
