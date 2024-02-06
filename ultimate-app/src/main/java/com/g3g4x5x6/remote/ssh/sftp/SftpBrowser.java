@@ -1,9 +1,9 @@
-package com.g3g4x5x6.remote.sftp;
+package com.g3g4x5x6.remote.ssh.sftp;
 
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.editor.EditorFrame;
-import com.g3g4x5x6.remote.sftp.actions.*;
+import com.g3g4x5x6.remote.ssh.sftp.actions.*;
 import com.g3g4x5x6.remote.utils.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

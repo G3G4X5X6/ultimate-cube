@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote.sftp;
+package com.g3g4x5x6.remote.ssh.sftp;
 
 import com.g3g4x5x6.editor.util.EditorUtil;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;

@@ -1,7 +1,7 @@
-package com.g3g4x5x6.remote.sftp.actions;
+package com.g3g4x5x6.remote.ssh.sftp.actions;
 
 import com.g3g4x5x6.editor.EditorPanel;
-import com.g3g4x5x6.remote.sftp.SftpBrowser;
+import com.g3g4x5x6.remote.ssh.sftp.SftpBrowser;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
