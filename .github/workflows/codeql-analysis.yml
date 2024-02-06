@@ -47,11 +47,9 @@ jobs:
       #       uses: LucaFeger/action-maven-cli@1.1.0
       - name: Install dependencies
         run: |
-          mvn install:install-file -Dfile=src/main/resources/libs/jediterm-pty-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-pty -Dversion=2.49 -Dpackaging=jar
-          mvn install:install-file -Dfile=src/main/resources/libs/jediterm-ssh-2.49.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-ssh -Dversion=2.49 -Dpackaging=jar
-          mvn install:install-file -Dfile=src/main/resources/libs/terminal-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=terminal -Dversion=2.54 -Dpackaging=jar
-          mvn install:install-file -Dfile=src/main/resources/libs/jediterm-typeahead-2.54.jar -DgroupId=com.g3g4x5x6  -DartifactId=jediterm-typeahead -Dversion=2.54 -Dpackaging=jar
-          mvn install:install-file -Dfile=src/main/resources/libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
+          mvn install:install-file -Dfile=libs/tightvnc-jviewer.jar -DgroupId=com.g3g4x5x6  -DartifactId=tightvnc-jviewer -Dversion=2.8.3 -Dpackaging=jar
+          mvn install:install-file -Dfile=libs/jediterm-core-3.20-SNAPSHOT.jar -DgroupId=com.jediterm  -DartifactId=jediterm-core -Dversion=3.20-SNAPSHOT -Dpackaging=jar
+          mvn install:install-file -Dfile=libs/jediterm-ui-3.20-SNAPSHOT.jar -DgroupId=com.jediterm  -DartifactId=jediterm-ui -Dversion=3.20-SNAPSHOT -Dpackaging=jar
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
