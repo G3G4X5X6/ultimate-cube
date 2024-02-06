@@ -5,9 +5,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.ui.terminal.pty.PtyProcessTtyConnector;
+import com.g3g4x5x6.utils.os.OsInfoUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.JediTermWidget;
-import com.jediterm.terminal.ui.UIUtil;
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +83,7 @@ public class ConsolePane extends JPanel {
         try {
             Map<String, String> envs = System.getenv();
             String[] command;
-            if (UIUtil.isWindows) {
+            if (OsInfoUtil.isWindows()) {
                 command = new String[]{AppConfig.getProperty("terminal.shell", "cmd")};
                 // 分号; 分割变量值  => C:\Windows\system32;C:\Windows;
                 String PATH = envs.get("Path") + ";" + AppConfig.getBinPath();
