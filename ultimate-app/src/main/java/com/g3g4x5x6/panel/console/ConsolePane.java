@@ -84,7 +84,7 @@ public class ConsolePane extends JPanel {
             Map<String, String> envs = System.getenv();
             String[] command;
             if (UIUtil.isWindows) {
-                command = new String[]{"powershell.exe"};
+                command = new String[]{AppConfig.getProperty("terminal.shell", "cmd")};
                 // 分号; 分割变量值  => C:\Windows\system32;C:\Windows;
                 String PATH = envs.get("Path") + ";" + AppConfig.getBinPath();
                 envs = new HashMap<>(System.getenv());

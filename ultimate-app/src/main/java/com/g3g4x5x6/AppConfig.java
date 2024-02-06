@@ -73,6 +73,13 @@ public class AppConfig {
         return value;
     }
 
+    public static String getProperty(String key, String fill) {
+        String value = getProperty(key);
+        if (value.isEmpty() || value.isBlank())
+            return fill;
+        return value;
+    }
+
     public static void setProperty(String key, String value) {
         App.properties.setProperty(key, value);
     }
