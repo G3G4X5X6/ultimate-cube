@@ -53,9 +53,9 @@ public class SshTabbedPane extends JTabbedPane {
         }
         // 选项卡
         if (sessionInfo.getSshPane() != null)
-            this.addTab("", new FlatSVGIcon("icons/linux.svg"), this.sessionInfo.getSshPane());
+            this.addTab("终端会话", new FlatSVGIcon("icons/linux.svg"), this.sessionInfo.getSshPane());
         if (sessionInfo.getSftpBrowser() != null)
-            this.addTab("", new FlatSVGIcon("icons/flattenPackages.svg"), this.sessionInfo.getSftpBrowser());
+            this.addTab("文件管理", new FlatSVGIcon("icons/flattenPackages.svg"), this.sessionInfo.getSftpBrowser());
 
         // 关闭进度条
         progressBar.setVisible(false);
