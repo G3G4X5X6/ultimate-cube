@@ -100,7 +100,8 @@ public class SshTabbedPane extends JTabbedPane {
         trailing.addSeparator();
 
         // 关机
-        JButton shutdownBtn = new JButton(new FlatSVGIcon("icons/suspend.svg"));
+        JMenuItem shutdownBtn = new JMenuItem("点击3次关机");
+        shutdownBtn.setIcon(new FlatSVGIcon("icons/suspend.svg"));
         shutdownBtn.setToolTipText("点击3次关机(shutdown -h now)");
         shutdownBtn.addMouseListener(new MouseAdapter() {
             @SneakyThrows
@@ -113,7 +114,8 @@ public class SshTabbedPane extends JTabbedPane {
         });
 
         // 重启
-        JButton rebootBtn = new JButton(new FlatSVGIcon("icons/stopRefresh.svg"));
+        JMenuItem rebootBtn = new JMenuItem("点击3次重启");
+        rebootBtn.setIcon(new FlatSVGIcon("icons/stopRefresh.svg"));
         rebootBtn.setToolTipText("点击3次重启(shutdown -r now)");
         rebootBtn.addMouseListener(new MouseAdapter() {
             @SneakyThrows
@@ -125,9 +127,9 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
-        trailing.add(shutdownBtn);
-        trailing.add(rebootBtn);
-        trailing.addSeparator();
+//        trailing.add(shutdownBtn);
+//        trailing.add(rebootBtn);
+//        trailing.addSeparator();
 
 //        trailing.add(pinSftpBtn);
         JButton refreshBtn = new JButton(new FlatSVGIcon("icons/refresh.svg"));
@@ -152,7 +154,10 @@ public class SshTabbedPane extends JTabbedPane {
 
         otherPopupMenu = new JPopupMenu();
         otherPopupMenu.add(copyPassBtn);
-        JButton funcBtn = new JButton(new FlatSVGIcon("icons/listFiles.svg"));
+        otherPopupMenu.addSeparator();
+        otherPopupMenu.add(shutdownBtn);
+        otherPopupMenu.add(rebootBtn);
+        JButton funcBtn = new JButton(new FlatSVGIcon("icons/groups.svg"));
         funcBtn.setToolTipText("功能右键");
         funcBtn.addMouseListener(new MouseAdapter() {
             @Override
@@ -180,8 +185,7 @@ public class SshTabbedPane extends JTabbedPane {
                 this.addTab("", new FlatSVGIcon("icons/linux.svg"), this.sessionInfo.getSshPane());
                 if (sessionInfo.getSftpBrowser() != null)
                     this.addTab("", new FlatSVGIcon("icons/flattenPackages.svg"), this.sessionInfo.getSftpBrowser());
-                else
-                    filesBrowser.updateFs(sessionInfo.getSftpFileSystem());
+                else filesBrowser.updateFs(sessionInfo.getSftpFileSystem());
                 // 关闭进度条
                 progressBar.setVisible(false);
             } catch (GeneralSecurityException | IOException | NullPointerException e) {

@@ -244,7 +244,7 @@ public class MainFrame extends JFrame implements MouseListener {
         toolMenu.addSeparator();
 
         JMenuItem randomPassItem = new JMenuItem("随机密码生成器");
-        randomPassItem.setIcon(new FlatSVGIcon("icons/section.svg"));
+        randomPassItem.setIcon(new FlatSVGIcon("icons/cwmPermissions.svg"));
         randomPassItem.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -466,7 +466,8 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        JButton genPassBtn = new JButton(new AccentColorIcon("#DC143C"));
+        JButton genPassBtn = new JButton(new FlatSVGIcon("icons/cwmPermissions.svg"));
+//        genPassBtn.setSelected(true);
         genPassBtn.setToolTipText("生成随机密码");
         genPassBtn.addActionListener(new AbstractAction() {
             @Override
@@ -478,12 +479,13 @@ public class MainFrame extends JFrame implements MouseListener {
         // TODO 选项卡面板前置工具栏，暂不使用
         leading.add(dashboardBtn);
 
-//        JButton editorBtn = new JButton(new FlatSVGIcon("icons/editScheme.svg"));
-        JButton editorBtn = new JButton(new AccentColorIcon("#4682B4"));
+        JButton editorBtn = new JButton(new FlatSVGIcon("icons/editScheme.svg"));
+//        editorBtn.setSelected(true);
         editorBtn.setToolTipText("简易编辑器");
         editorBtn.addActionListener(myEditorAction);
 
-        JButton focusBtn = new JButton(new AccentColorIcon("#708090"));
+        JButton focusBtn = new JButton(new FlatSVGIcon("icons/cwmScreenOn.svg"));
+//        focusBtn.setSelected(true);
         focusBtn.setToolTipText("专注模式");
         focusBtn.addActionListener(new AbstractAction() {
             @Override
@@ -516,9 +518,9 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
+        trailing.add(genPassBtn);
         trailing.add(focusBtn);
         trailing.add(editorBtn);
-        trailing.add(genPassBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
