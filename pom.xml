@@ -57,6 +57,8 @@
         <hutool-version>5.8.18</hutool-version>
 
         <zip4j-version>2.11.5</zip4j-version>
+
+        <org-eclipse-jgit>6.8.0.202311291450-r</org-eclipse-jgit>
     </properties>
 
     <dependencyManagement>
@@ -93,6 +95,12 @@
                 <version>${zip4j-version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.eclipse.jgit/org.eclipse.jgit -->
+            <dependency>
+                <groupId>org.eclipse.jgit</groupId>
+                <artifactId>org.eclipse.jgit</artifactId>
+                <version>${org-eclipse-jgit}</version>
+            </dependency>
 
             <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
             <dependency>

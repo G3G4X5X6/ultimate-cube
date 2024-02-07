@@ -25,6 +25,7 @@ import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.StatusBar;
 import com.g3g4x5x6.ui.icon.AccentColorIcon;
+import com.g3g4x5x6.user.UserDialog;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
@@ -294,7 +295,13 @@ public class MainFrame extends JFrame implements MouseListener {
         usersButton.setIcon(new FlatSVGIcon("icons/users.svg"));
         usersButton.setButtonType(FlatButton.ButtonType.toolBarButton);
         usersButton.setFocusable(false);
-        usersButton.addActionListener(e -> JOptionPane.showMessageDialog(MainFrame.this, "Hello User! How are you?", "User", JOptionPane.INFORMATION_MESSAGE));
+        usersButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UserDialog userDialog = new UserDialog();
+                userDialog.setVisible(true);
+            }
+        });
 
         FlatButton lockBtn = new FlatButton();
         lockBtn.setIcon(new FlatSVGIcon("icons/lock.svg"));
@@ -357,9 +364,7 @@ public class MainFrame extends JFrame implements MouseListener {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         // 检查更新
-                        String msg = "<html>当前版本：  <fo nt color='red'>" + currentVersion + "</font<br>" +
-                                "最新版本： <font color='green'>" + latestVersion + "</font><br><br>" +
-                                "是否现在下载最新版本？</html>";
+                        String msg = "<html>当前版本：  <fo nt color='red'>" + currentVersion + "</font<br>" + "最新版本： <font color='green'>" + latestVersion + "</font><br><br>" + "是否现在下载最新版本？</html>";
                         int code = JOptionPane.showConfirmDialog(App.mainFrame, msg, "更新", JOptionPane.YES_NO_OPTION);
                         if (code == 0) {
                             CommonUtil.getLatestJar();
@@ -391,7 +396,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
         // 添加 ”快速启动“ 面板
-        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/start.svg"), quickStartTabbedPane);
+        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/homeFolder.svg"), quickStartTabbedPane);
 
         this.getContentPane().add(mainTabbedPane);
     }
@@ -570,9 +575,7 @@ public class MainFrame extends JFrame implements MouseListener {
                                     SessionInfo sessionInfo = SessionUtil.openSshSession(f.getAbsolutePath());
                                     if (SshUtil.testConnection(sessionInfo.getSessionAddress(), sessionInfo.getSessionPort()) == 1) {
                                         String defaultTitle = sessionInfo.getSessionName().equals("") ? "未命名" : sessionInfo.getSessionName();
-                                        MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"),
-                                                new SshTabbedPane(sessionInfo)
-                                        );
+                                        MainFrame.mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"), new SshTabbedPane(sessionInfo));
                                         MainFrame.mainTabbedPane.setSelectedIndex(MainFrame.mainTabbedPane.getTabCount() - 1);
                                     }
                                     App.sessionInfos.put(sessionInfo.getSessionId(), sessionInfo);
@@ -589,23 +592,21 @@ public class MainFrame extends JFrame implements MouseListener {
     private void initClosableTabs(JTabbedPane tabbedPane) {
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSABLE, true);
         tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_TOOLTIPTEXT, "Close");
-        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK,
-                (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
-                    if (tabIndex != 0) {
-                        if (mainTabbedPane.getComponentAt(tabIndex) instanceof SshTabbedPane) {
-                            SshTabbedPane sshTabbedPane = (SshTabbedPane) mainTabbedPane.getComponentAt(tabIndex);
-                            sshTabbedPane.getSessionInfo().close();
-                            App.sessionInfos.remove(sshTabbedPane.getSessionInfo().getSessionId());
-                            log.debug("Close: " + App.sessionInfos.size());
-                        }
-                        mainTabbedPane.removeTabAt(tabIndex);
-                    }
-                });
+        tabbedPane.putClientProperty(TABBED_PANE_TAB_CLOSE_CALLBACK, (BiConsumer<JTabbedPane, Integer>) (tabPane, tabIndex) -> {
+            if (tabIndex != 0) {
+                if (mainTabbedPane.getComponentAt(tabIndex) instanceof SshTabbedPane) {
+                    SshTabbedPane sshTabbedPane = (SshTabbedPane) mainTabbedPane.getComponentAt(tabIndex);
+                    sshTabbedPane.getSessionInfo().close();
+                    App.sessionInfos.remove(sshTabbedPane.getSessionInfo().getSessionId());
+                    log.debug("Close: " + App.sessionInfos.size());
+                }
+                mainTabbedPane.removeTabAt(tabIndex);
+            }
+        });
     }
 
     private void renameTabTitle() {
-        String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题",
-                mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()));
+        String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题", mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()));
         if (input != null && !input.strip().equalsIgnoreCase("")) {
             JLabel newTabTitle = new JLabel(input);
             newTabTitle.setIcon(new FlatSVGIcon("icons/consoleRun.svg"));
@@ -631,11 +632,7 @@ public class MainFrame extends JFrame implements MouseListener {
                     MainFrame.addWaitProgressBar();
 
                     SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
-                    mainTabbedPane.addTab(
-                            "复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()),
-                            new FlatSVGIcon("icons/consoleRun.svg"),
-                            new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy())
-                    );
+                    mainTabbedPane.addTab("复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()), new FlatSVGIcon("icons/consoleRun.svg"), new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy()));
                     mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
 
                     // 移除等待进度条
@@ -789,11 +786,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private final AbstractAction myLocalTerminal = new AbstractAction("本地终端") {
         @Override
         public void actionPerformed(ActionEvent e) {
-            mainTabbedPane.insertTab("<html><font style='color:green'><strong>本地终端</strong></font></html>",
-                    new FlatSVGIcon("icons/consoleRun.svg"),
-                    new ConsolePane(),
-                    "本地终端",
-                    mainTabbedPane.getTabCount());
+            mainTabbedPane.insertTab("<html><font style='color:green'><strong>本地终端</strong></font></html>", new FlatSVGIcon("icons/consoleRun.svg"), new ConsolePane(), "本地终端", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };
@@ -914,8 +907,7 @@ public class MainFrame extends JFrame implements MouseListener {
                         }
                         // 更新 session 表
                         String sql_relation = "INSERT INTO relation VALUES (null , " +    // id, 自增
-                                "'" + rowStr[0] + "', " +
-                                "'" + rowStr[1] + "');";
+                                "'" + rowStr[0] + "', " + "'" + rowStr[1] + "');";
                         log.debug("sql_relation: " + sql_relation);
                         // TODO
 //                        ExcelUtil.importBackup(sql_relation);
@@ -1014,12 +1006,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private final AbstractAction myAboutAction = new AbstractAction("关于 ultimate-cube") {
         public void actionPerformed(final ActionEvent e) {
-            JOptionPane.showMessageDialog(MainFrame.this,
-                    "<html>ultimate-cube v" + Version.VERSION + " <br>" +
-                            "Build on " + Version.BUILD_TIMESTAMP + "#" + Version.BUILD_NUMBER + "<br><br>" +
-                            "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a><br>" +
-                            "Email to <a href='mailto://g3g4x5x6@foxmail.com'>g3g4x5x6@foxmail.com</a></html>",
-                    "About", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(MainFrame.this, "<html>ultimate-cube v" + Version.VERSION + " <br>" + "Build on " + Version.BUILD_TIMESTAMP + "#" + Version.BUILD_NUMBER + "<br><br>" + "Powered by <a href='https://github.com/G3G4X5X6'>G3G4X5X6</a><br>" + "Email to <a href='mailto://g3g4x5x6@foxmail.com'>g3g4x5x6@foxmail.com</a></html>", "About", JOptionPane.INFORMATION_MESSAGE);
         }
     };
 }

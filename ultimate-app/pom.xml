@@ -59,6 +59,11 @@
             <artifactId>pty4j</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.sshd/sshd-core -->
         <dependency>
             <groupId>org.apache.sshd</groupId>
