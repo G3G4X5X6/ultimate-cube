@@ -197,7 +197,7 @@ public class NewSshPane extends JPanel {
         session.put("sessionComment", commentText.getText());
         log.debug("Comment: " + commentText.getText());
 
-        String path = AppConfig.getWorkPath() + "/sessions/ssh/" + Objects.requireNonNull(categoryCombo.getSelectedItem());
+        String path = AppConfig.getWorkPath() + "/sessions/SSH/" + Objects.requireNonNull(categoryCombo.getSelectedItem());
         String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType + ".json";
         if (editPath != null && !Path.of(fileName).toString().equalsIgnoreCase(editPath)) {
             try {
@@ -323,7 +323,7 @@ public class NewSshPane extends JPanel {
         categoryCombo.setPreferredSize(new Dimension(200, 25));
         categoryCombo.addItem("");
         ArrayList<String> list = new ArrayList<>();
-        String sshPath = Path.of(AppConfig.getWorkPath(), "sessions", "ssh").toString();
+        String sshPath = Path.of(AppConfig.getWorkPath(), "sessions", "SSH").toString();
         recursiveListDirectory(new File(sshPath), list);
         for (String category : list) {
             log.debug("sshPath: " + sshPath);
