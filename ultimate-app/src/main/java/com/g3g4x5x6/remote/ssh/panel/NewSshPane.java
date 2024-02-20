@@ -299,6 +299,7 @@ public class NewSshPane extends JPanel {
         commentText = new JTextArea();
         commentText.setRows(5);
         JScrollPane scrollPane = new JScrollPane(commentText);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         describePane.add(new JLabel("  备注描述:"), BorderLayout.NORTH);
