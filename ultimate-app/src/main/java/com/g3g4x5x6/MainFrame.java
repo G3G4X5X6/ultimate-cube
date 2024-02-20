@@ -518,9 +518,9 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
-        trailing.add(genPassBtn);
-        trailing.add(focusBtn);
         trailing.add(editorBtn);
+        trailing.add(genPassBtn);
+//        trailing.add(focusBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
