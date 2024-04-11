@@ -48,7 +48,7 @@ public class DefaultTrayIcon extends TrayIcon {
                         break;
                     }
                     case MouseEvent.BUTTON3: {
-                        log.debug("托盘图标被鼠标右键被点击，X:" + e.getX() + " <=> Y:" + e.getY());
+                        log.debug("托盘图标被鼠标右键被点击，X:{} <=> Y:{}", e.getX(), e.getY());
 
                         // 鼠标右键在组件上释放时调用，显示弹出菜单
                         if (popupMenu != null) {
@@ -59,10 +59,9 @@ public class DefaultTrayIcon extends TrayIcon {
                             // 设置dialog的显示位置
                             dialog.setLocation(e.getX(), (int) (e.getY() - size.getHeight()));
                             dialog.setVisible(true);
-                            log.debug("SS: " + dialog.getX() + " : " + dialog.getY());
 
                             // 显示弹出菜单 popupMenu
-                            popupMenu.show(dialog, 0, 0);
+                            popupMenu.show(dialog, 1, 1);
                         }
                         break;
                     }

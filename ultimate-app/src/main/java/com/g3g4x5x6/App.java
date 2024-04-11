@@ -4,6 +4,8 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.utils.CommonUtil;
+import com.g3g4x5x6.ui.tray.DefaultTrayIcon;
+import com.g3g4x5x6.ui.tray.DefaultTrayIconPopupMenu;
 import com.g3g4x5x6.utils.CheckUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.PropertyConfigurator;
@@ -211,40 +213,32 @@ public class App {
         /*
          * 添加系统托盘
          */
-        // 检查系统是否支持托盘功能
         if (SystemTray.isSupported()) {
-            // 创建系统托盘对象
+            // 获取当前平台的系统托盘
             SystemTray tray = SystemTray.getSystemTray();
-
-            // 创建托盘图标
+            // 加载一个图片用于托盘图标的显示
             Image image = null;
             try {
                 image = ImageIO.read(Objects.requireNonNull(App.class.getClassLoader().getResource("icon.png")));
             } catch (IOException e) {
-                log.error("托盘图标加载异常：" + e.getMessage());
+                e.printStackTrace();
             }
-            assert image != null;
-            TrayIcon trayIcon = new TrayIcon(image, "ultimate-cube");
-            trayIcon.setImageAutoSize(true);
-            // 设置鼠标提示
-            trayIcon.setToolTip("ultimate-cube");
-            trayIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    openApp();
-                }
-            });
 
+            // 创建右键图标时的弹出菜单：JPopupMenu
+            DefaultTrayIconPopupMenu popupMenu = new DefaultTrayIconPopupMenu();
+            // 创建一个托盘图标
+            assert image != null;
+            DefaultTrayIcon trayIcon = new DefaultTrayIcon(image, "点击打开", popupMenu);
+
+            // 添加托盘图标到系统托盘
             try {
-                // 将托盘图标添加到系统托盘
                 tray.add(trayIcon);
             } catch (AWTException e) {
-                System.err.println("Failed to add TrayIcon to SystemTray");
+                e.printStackTrace();
             }
-        } else {
-            System.err.println("SystemTray is not supported");
         }
     }
+
 
     private static void showBanner() {
         // Credits
