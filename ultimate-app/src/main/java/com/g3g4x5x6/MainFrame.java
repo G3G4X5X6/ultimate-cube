@@ -6,6 +6,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
 import com.g3g4x5x6.dashboard.QuickStartTabbedPane;
+import com.g3g4x5x6.remote.RecentSessionPane;
 import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
@@ -24,7 +25,6 @@ import com.g3g4x5x6.remote.utils.session.SessionUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.StatusBar;
-import com.g3g4x5x6.ui.icon.AccentColorIcon;
 import com.g3g4x5x6.user.UserDialog;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.glavsoft.exceptions.CommonException;
@@ -391,12 +391,12 @@ public class MainFrame extends JFrame implements MouseListener {
         mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         mainTabbedPane.setEnabled(true);
         mainTabbedPane.addMouseListener(this);
-        initClosableTabs(mainTabbedPane);
+//        initClosableTabs(mainTabbedPane);
         customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
         // 添加 ”快速启动“ 面板
-        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/homeFolder.svg"), quickStartTabbedPane);
+        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/homeFolder.svg"), new RecentSessionPane());
 
         this.getContentPane().add(mainTabbedPane);
     }
@@ -450,8 +450,8 @@ public class MainFrame extends JFrame implements MouseListener {
         sessionManagerBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.setSelectedIndex(0);
-                quickStartTabbedPane.setSelectedIndex(1);
+                mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(), "会话管理", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
 
@@ -461,8 +461,7 @@ public class MainFrame extends JFrame implements MouseListener {
         notePaneBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.setSelectedIndex(0);
-                quickStartTabbedPane.setSelectedIndex(2);
+                DialogUtil.info("敬请期待");
             }
         });
 

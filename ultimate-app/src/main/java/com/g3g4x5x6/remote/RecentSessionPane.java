@@ -72,7 +72,10 @@ public class RecentSessionPane extends JPanel {
     }
 
     private void initToolBar() {
-        // 1.
+        JButton recentBtn = new JButton("最近会话");
+        recentBtn.setSelected(true);
+        recentBtn.setEnabled(false);
+
         JButton refreshBtn = new JButton();
         refreshBtn.setIcon(new FlatSVGIcon("icons/refresh.svg"));
         refreshBtn.addActionListener(new AbstractAction() {
@@ -93,10 +96,9 @@ public class RecentSessionPane extends JPanel {
             }
         });
 
-        // 2.
+        toolBar.add(recentBtn);
         toolBar.add(refreshBtn);
 
-        // 3.
         this.add(toolBar, BorderLayout.NORTH);
     }
 
