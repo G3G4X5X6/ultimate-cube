@@ -49,3 +49,4 @@ fofax.yaml
 /build/jdk/jdk-11.0.12/
 /build/bin/jdk-11.0.12/
 /build/bin/ultimatecube.exe
+/build/*.jar
