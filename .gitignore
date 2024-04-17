@@ -38,3 +38,14 @@ target/*
 */buildNumber.properties
 fofax.yaml
 .fofax-last
+/build/exe4j.pdf
+/build/exe4j_windows-x64_8_0.exe
+/build/innosetup.iss.bak
+/build/innosetup-6.2.0.exe
+/build/LicenseKey.txt
+/build/ultimate-app-6.6.16.jar
+/build/ultimate-app-6.6.16-jar-with-dependencies.jar
+/build/out/ultimatecube_setup.exe
+/build/jdk/jdk-11.0.12/
+/build/bin/jdk-11.0.12/
+/build/bin/ultimatecube.exe
