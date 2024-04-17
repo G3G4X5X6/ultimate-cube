@@ -116,7 +116,7 @@ public class RecentSessionPane extends JPanel {
         sorter = new TableRowSorter<>(tableModel);
         // 降序排序，但没啥效果
         sorter.setSortsOnUpdates(true);
-        sorter.setSortKeys(java.util.Collections.singletonList(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
+        sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
         recentTable.setRowSorter(sorter);
 
         initData();
@@ -177,6 +177,8 @@ public class RecentSessionPane extends JPanel {
             }
         }
         recentTable.setModel(tableModel);
+
+        sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
     }
 
     @SneakyThrows
