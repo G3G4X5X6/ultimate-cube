@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <exe4j version="8.0" transformSequenceNumber="3">
-  <directoryPresets config="C:/Users/18312/Documents/UltimateCube" />
-  <application name="ultimate-cube" distributionSourceDir="C:/Users/18312/Documents/UltimateCube/bin" />
-  <executable name="ultimatecube" wrapperType="embed" iconSet="true" iconFile="C:/Users/18312/Documents/UltimateCube/bin/icon.ico" executableDir="." executableMode="gui" singleInstance="true">
+  <directoryPresets config="E:/0x02.GitHub/ultimate-cube/build/bin" />
+  <application name="ultimate-cube" distributionSourceDir="E:/0x02.GitHub/ultimate-cube/build/bin" />
+  <executable name="ultimatecube" wrapperType="embed" iconSet="true" iconFile="E:/0x02.GitHub/ultimate-cube/build/bin/icon.ico" executableDir="." executableMode="gui" singleInstance="true">
     <versionInfo include="true" companyName="G3G4X5X6" productVersion="0.5.5" />
   </executable>
-  <splashScreen show="true" bitmapFile="C:/Users/18312/Documents/UltimateCube/bin/splashscreen.png" />
+  <splashScreen show="true" bitmapFile="E:/0x02.GitHub/ultimate-cube/build/bin/splashscreen.png" />
   <java mainClass="com.g3g4x5x6.App" vmParameters="-Dfile.encoding=utf-8" preferredVM="client" minVersion="11">
     <searchSequence>
       <directory location="./jdk-11.0.12" />
     </searchSequence>
     <classPath>
-      <archive location="C:/Users/18312/Documents/UltimateCube/ultimate-app-6.6.16-jar-with-dependencies.jar" failOnError="false" />
+      <archive location="E:/0x02.GitHub/ultimate-cube/build/ultimate-app-6.12.35-jar-with-dependencies.jar" failOnError="false" />
     </classPath>
   </java>
 </exe4j>
