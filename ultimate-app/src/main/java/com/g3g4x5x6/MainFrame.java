@@ -433,17 +433,6 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        JButton recentPaneBtn = new JButton(new FlatSVGIcon("icons/history.svg"));
-        recentPaneBtn.setToolTipText("最近会话");
-        recentPaneBtn.setSelected(true);
-        recentPaneBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.setSelectedIndex(0);
-                quickStartTabbedPane.setSelectedIndex(0);
-            }
-        });
-
         JButton sessionManagerBtn = new JButton(new FlatSVGIcon("icons/addBookmarksList.svg"));
         sessionManagerBtn.setToolTipText("会话管理");
         sessionManagerBtn.setSelected(true);
@@ -484,7 +473,6 @@ public class MainFrame extends JFrame implements MouseListener {
         editorBtn.addActionListener(myEditorAction);
 
         JButton focusBtn = new JButton(new FlatSVGIcon("icons/cwmScreenOn.svg"));
-//        focusBtn.setSelected(true);
         focusBtn.setToolTipText("专注模式");
         focusBtn.addActionListener(new AbstractAction() {
             @Override
@@ -511,7 +499,6 @@ public class MainFrame extends JFrame implements MouseListener {
         });
 
         trailing.add(addBtn);
-        trailing.add(recentPaneBtn);
         trailing.add(sessionManagerBtn);
         trailing.add(notePaneBtn);
         trailing.add(Box.createHorizontalGlue());
@@ -519,7 +506,6 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(editorBtn);
         trailing.add(genPassBtn);
-//        trailing.add(focusBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
@@ -610,7 +596,7 @@ public class MainFrame extends JFrame implements MouseListener {
         String input = JOptionPane.showInputDialog(App.mainFrame, "重命名 Tab 标题", mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()));
         if (input != null && !input.strip().equalsIgnoreCase("")) {
             JLabel newTabTitle = new JLabel(input);
-            newTabTitle.setIcon(new FlatSVGIcon("icons/consoleRun.svg"));
+            newTabTitle.setIcon(mainTabbedPane.getIconAt(mainTabbedPane.getSelectedIndex()));
             mainTabbedPane.setTabComponentAt(mainTabbedPane.getSelectedIndex(), newTabTitle);
         }
     }
@@ -619,45 +605,48 @@ public class MainFrame extends JFrame implements MouseListener {
         AbstractAction renameCurrentTabAction = new AbstractAction("命名标签") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 判断是否为 SshTabbedPane 实例
-                if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane) {
-                    renameTabTitle();
-                }
+                if (mainTabbedPane.getSelectedIndex() == 0) return;
+                renameTabTitle();
             }
         };
         AbstractAction copyCurrentTabAction = new AbstractAction("复制会话") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Thread(() -> {
-                    // 等待进度条
-                    MainFrame.addWaitProgressBar();
+                if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane) {
+                    new Thread(() -> {
+                        // 等待进度条
+                        MainFrame.addWaitProgressBar();
 
-                    SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
-                    mainTabbedPane.addTab("复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()), new FlatSVGIcon("icons/consoleRun.svg"), new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy()));
-                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+                        SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
+                        mainTabbedPane.addTab("复制-" + mainTabbedPane.getTitleAt(mainTabbedPane.getSelectedIndex()), new FlatSVGIcon("icons/consoleRun.svg"), new SshTabbedPane(selectedTabbedPane.getSessionInfo().copy()));
+                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
 
-                    // 移除等待进度条
-                    MainFrame.removeWaitProgressBar();
-                }).start();
+                        // 移除等待进度条
+                        MainFrame.removeWaitProgressBar();
+                    }).start();
+                }
             }
         };
         AbstractAction reconnectAction = new AbstractAction("<html><font style='color:green'>重新连接</font></html>") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("重新连接");
-                try {
-                    SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
-                    selectedTabbedPane.resetSession();
-                } catch (ClassCastException classCastException) {
-                    if (classCastException.getMessage().contains("be cast to class")) {
-                        log.debug("不是远程会话面板无法刷新重连");
+                if (mainTabbedPane.getComponentAt(mainTabbedPane.getSelectedIndex()) instanceof SshTabbedPane) {
+                    try {
+                        SshTabbedPane selectedTabbedPane = (SshTabbedPane) mainTabbedPane.getSelectedComponent();
+                        selectedTabbedPane.resetSession();
+                    } catch (ClassCastException classCastException) {
+                        if (classCastException.getMessage().contains("be cast to class")) {
+                            log.debug("不是远程会话面板无法刷新重连");
+                        }
                     }
                 }
             }
         };
-        AbstractAction closeCurrentTabAction = new AbstractAction("关闭当前") {
+        AbstractAction closeCurrentTabAction = new AbstractAction("<html><font style='color:red'>关闭当前</font></html>") {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (mainTabbedPane.getSelectedIndex() == 0) return;
                 mainTabbedPane.removeTabAt(mainTabbedPane.getSelectedIndex());
             }
         };
@@ -697,14 +686,17 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         };
 
+        JMenu closeMenu = new JMenu("关闭SSH会话面板");
+        closeMenu.add(closeLeftAction);
+        closeMenu.add(closeRightAction);
+        closeMenu.add(closeAllTabAction);
+
         popupMenu.add(renameCurrentTabAction);
         popupMenu.add(copyCurrentTabAction);
         popupMenu.add(reconnectAction);
         popupMenu.addSeparator();
         popupMenu.add(closeCurrentTabAction);
-        popupMenu.add(closeLeftAction);
-        popupMenu.add(closeRightAction);
-        popupMenu.add(closeAllTabAction);
+        popupMenu.add(closeMenu);
     }
 
     /**
