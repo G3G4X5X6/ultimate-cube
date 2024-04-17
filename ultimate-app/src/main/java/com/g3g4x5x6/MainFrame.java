@@ -655,10 +655,7 @@ public class MainFrame extends JFrame implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 int currentIndex = mainTabbedPane.getSelectedIndex();
                 for (int i = currentIndex - 1; i > 0; i--) {
-                    SshTabbedPane tmp = (SshTabbedPane) mainTabbedPane.getComponentAt(i);
-                    if (tmp != null) {
-                        mainTabbedPane.removeTabAt(i);
-                    }
+                    mainTabbedPane.removeTabAt(i);
                 }
             }
         };
@@ -667,10 +664,7 @@ public class MainFrame extends JFrame implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 int currentIndex = mainTabbedPane.getSelectedIndex();
                 for (int i = currentIndex + 1; i < mainTabbedPane.getTabCount(); i++) {
-                    SshTabbedPane tmp = (SshTabbedPane) mainTabbedPane.getComponentAt(i);
-                    if (tmp != null) {
-                        mainTabbedPane.removeTabAt(i);
-                    }
+                    mainTabbedPane.removeTabAt(i);
                 }
             }
         };
@@ -678,15 +672,12 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (int i = mainTabbedPane.getTabCount() - 1; i > 0; i--) {
-                    SshTabbedPane tmp = (SshTabbedPane) mainTabbedPane.getComponentAt(i);
-                    if (tmp != null) {
-                        mainTabbedPane.removeTabAt(i);
-                    }
+                    mainTabbedPane.removeTabAt(i);
                 }
             }
         };
 
-        JMenu closeMenu = new JMenu("关闭SSH会话面板");
+        JMenu closeMenu = new JMenu("关闭选项");
         closeMenu.add(closeLeftAction);
         closeMenu.add(closeRightAction);
         closeMenu.add(closeAllTabAction);

@@ -114,7 +114,8 @@ public class RecentSessionPane extends JPanel {
         tableModel.setColumnIdentifiers(columnNames);
         // 搜索功能
         sorter = new TableRowSorter<>(tableModel);
-        // 降序排序，但没啥效果
+        // Tips: 先填充数据在排序
+        // 降序排序
         sorter.setSortsOnUpdates(true);
         sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
         recentTable.setRowSorter(sorter);
