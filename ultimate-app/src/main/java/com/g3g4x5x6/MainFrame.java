@@ -38,6 +38,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.sshd.common.util.OsUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -496,6 +497,24 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
+        JButton trailMenuBtn = new JButton(new FlatSVGIcon("icons/windows.svg"));
+        if (OsUtils.isWin32()) {
+            // windows.svg
+            trailMenuBtn.setIcon(new FlatSVGIcon("icons/windows.svg"));
+        } else if (OsUtils.isUNIX()) {
+            // linux.svg
+            trailMenuBtn.setIcon(new FlatSVGIcon("icons/linux.svg"));
+        } else if (OsUtils.isOSX()) {
+            // macOS.svg
+            trailMenuBtn.setIcon(new FlatSVGIcon("icons/macOS.svg"));
+        }
+        trailMenuBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                log.debug("trailMenuBtn");
+            }
+        });
+
         trailing.add(addBtn);
         trailing.add(sessionManagerBtn);
         trailing.add(notePaneBtn);
@@ -504,6 +523,7 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(editorBtn);
         trailing.add(genPassBtn);
+        trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
 
