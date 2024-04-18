@@ -397,8 +397,7 @@ public class NotePanel extends JPanel {
         if (!remotePath.equals("") && !remotePath.equals(titleField.getSelectedItem().toString().strip())) {
             if (titleField.getSelectedItem().toString().strip().startsWith("/")) {
                 for (String each : filePath.strip().split("/")) {
-                    if (each.equals(""))
-                        continue;
+                    if (each.equals("")) continue;
                     tmpDir += each + "_";
                 }
             }
@@ -511,8 +510,7 @@ public class NotePanel extends JPanel {
         // 使用自定义保存路径
         if (titleField.getSelectedItem().toString().strip().startsWith("/")) {
             for (String each : filePath.strip().split("/")) {
-                if (each.equals(""))
-                    continue;
+                if (each.equals("")) continue;
                 tmpDir += each + "_";
             }
             tmpDir += new Date().getTime() + ext;
@@ -533,8 +531,7 @@ public class NotePanel extends JPanel {
             }
 
             for (String each : defaultDir.split("/")) {
-                if (each.equals(""))
-                    continue;
+                if (each.equals("")) continue;
                 tmpDir += each + "_";
             }
             tmpDir += new Date().getTime() + ext;
@@ -551,8 +548,7 @@ public class NotePanel extends JPanel {
                 flag = true;
             }
         }
-        if (!flag)
-            titleField.addItem(item);
+        if (!flag) titleField.addItem(item);
         titleField.setSelectedItem(item);
     }
 
