@@ -114,10 +114,7 @@ public class RecentSessionPanel extends JPanel {
         tableModel.setColumnIdentifiers(columnNames);
         // 搜索功能
         sorter = new TableRowSorter<>(tableModel);
-        // Tips: 先填充数据在排序
-        // 降序排序
         sorter.setSortsOnUpdates(true);
-        sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
         recentTable.setRowSorter(sorter);
 
         initData();
@@ -167,8 +164,8 @@ public class RecentSessionPanel extends JPanel {
                 tableModel.addRow(new String[]{"空", "空", "空", "空", "空", "空", "空",});
             }
         }
-        recentTable.setModel(tableModel);
 
+        recentTable.setModel(tableModel);
         sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
     }
 
