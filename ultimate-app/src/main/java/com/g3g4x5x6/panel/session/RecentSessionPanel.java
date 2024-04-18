@@ -150,7 +150,6 @@ public class RecentSessionPanel extends JPanel {
                     LocalDateTime localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
-                    log.debug("time: " + localDateTime.format(DATE_FORMATTER));
                     try {
                         String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
                         JSONObject jsonObject = JSON.parseObject(json);
