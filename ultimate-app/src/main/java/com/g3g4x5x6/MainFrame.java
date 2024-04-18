@@ -5,13 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
-import com.g3g4x5x6.dashboard.QuickStartTabbedPane;
-import com.g3g4x5x6.remote.RecentSessionPane;
+import com.g3g4x5x6.panel.session.RecentSessionPanel;
 import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.panel.focus.FocusFrame;
-import com.g3g4x5x6.remote.SessionManagerPanel;
+import com.g3g4x5x6.panel.session.SessionManagerPanel;
 import com.g3g4x5x6.panel.other.ConnectionPane;
 import com.g3g4x5x6.tools.RandomPasswordPane;
 import com.g3g4x5x6.panel.other.SysinfoPane;
@@ -61,7 +60,6 @@ import static com.formdev.flatlaf.FlatClientProperties.*;
 public class MainFrame extends JFrame implements MouseListener {
 
     public static JTabbedPane mainTabbedPane;
-    public static QuickStartTabbedPane quickStartTabbedPane = new QuickStartTabbedPane();
     public static EditorFrame editorFrame = EditorFrame.getInstance();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
@@ -396,7 +394,7 @@ public class MainFrame extends JFrame implements MouseListener {
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
         // 添加 ”快速启动“ 面板
-        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/homeFolder.svg"), new RecentSessionPane());
+        mainTabbedPane.addTab("快速启动", new FlatSVGIcon("icons/homeFolder.svg"), new RecentSessionPanel());
 
         this.getContentPane().add(mainTabbedPane);
     }

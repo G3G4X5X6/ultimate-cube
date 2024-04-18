@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote;
+package com.g3g4x5x6.panel.session;
 
 
 import com.alibaba.fastjson.JSON;
@@ -37,7 +37,7 @@ import java.util.Objects;
  *
  */
 @Slf4j
-public class RecentSessionPane extends JPanel {
+public class RecentSessionPanel extends JPanel {
     private final ToolBar toolBar = new ToolBar();
 
     private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
@@ -46,7 +46,7 @@ public class RecentSessionPane extends JPanel {
     private TableRowSorter<DefaultTableModel> sorter;
     private WatchService watchService;
 
-    public RecentSessionPane() {
+    public RecentSessionPanel() {
         this.setLayout(new BorderLayout());
 
         // 初始化工具栏
@@ -157,24 +157,14 @@ public class RecentSessionPane extends JPanel {
                     try {
                         String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
                         JSONObject jsonObject = JSON.parseObject(json);
-                        tableModel.addRow(new String[]{
-                                localDateTime.format(DATE_FORMATTER),
-                                jsonObject.getString("sessionName"),
-                                jsonObject.getString("sessionProtocol"),
-                                jsonObject.getString("sessionAddress"),
-                                jsonObject.getString("sessionPort"),
-                                jsonObject.getString("sessionUser"),
-                                jsonObject.getString("sessionLoginType"),
-                        });
+                        tableModel.addRow(new String[]{localDateTime.format(DATE_FORMATTER), jsonObject.getString("sessionName"), jsonObject.getString("sessionProtocol"), jsonObject.getString("sessionAddress"), jsonObject.getString("sessionPort"), jsonObject.getString("sessionUser"), jsonObject.getString("sessionLoginType"),});
                     } catch (IOException e) {
                         log.debug(e.getMessage());
                     }
                 }
             }
             if (tableModel.getRowCount() == 0) {
-                tableModel.addRow(
-                        new String[]{"空", "空", "空", "空", "空", "空", "空",}
-                );
+                tableModel.addRow(new String[]{"空", "空", "空", "空", "空", "空", "空",});
             }
         }
         recentTable.setModel(tableModel);
@@ -189,10 +179,7 @@ public class RecentSessionPane extends JPanel {
 
         watchService = FileSystems.getDefault().newWatchService();
         Path p = Paths.get(path);
-        p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY,
-                StandardWatchEventKinds.ENTRY_DELETE,
-                StandardWatchEventKinds.ENTRY_CREATE
-        );
+        p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_CREATE);
 
         Thread thread = getThread(path);
         thread.start();
@@ -231,10 +218,10 @@ public class RecentSessionPane extends JPanel {
     }
 
     private void initPopupMenu() {
-        AbstractAction refreshAction = new AbstractAction("刷新") {
+        AbstractAction refreshAction = new AbstractAction("刷新面板") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                log.debug("刷新");
+                log.debug("刷新最近会话面板");
                 initData();
             }
         };
@@ -252,7 +239,7 @@ public class RecentSessionPane extends JPanel {
             }
         };
 
-        AbstractAction deleteMultiAction = new AbstractAction("清除全部") {
+        AbstractAction deleteMultiAction = new AbstractAction("删除全部") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = AppConfig.getWorkPath() + "/sessions";
@@ -267,7 +254,7 @@ public class RecentSessionPane extends JPanel {
             }
         };
 
-        AbstractAction deleteAllAction = new AbstractAction("清除选中") {
+        AbstractAction deleteAllAction = new AbstractAction("删除选中") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String path = AppConfig.getWorkPath() + "/sessions";
@@ -280,11 +267,7 @@ public class RecentSessionPane extends JPanel {
                             String address = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 3);
                             String port = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 4);
                             String user = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 5);
-                            if (f.getAbsolutePath().contains(protocol.toLowerCase())
-                                    && f.getAbsolutePath().contains(address.strip())
-                                    && f.getAbsolutePath().contains(port.strip())
-                                    && f.getAbsolutePath().contains(user.strip())
-                            ) {
+                            if (f.getAbsolutePath().contains(protocol.toLowerCase()) && f.getAbsolutePath().contains(address.strip()) && f.getAbsolutePath().contains(port.strip()) && f.getAbsolutePath().contains(user.strip())) {
                                 f.delete();
                             }
                         }
