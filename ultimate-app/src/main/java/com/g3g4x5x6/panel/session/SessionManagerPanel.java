@@ -465,7 +465,7 @@ public class SessionManagerPanel extends JPanel {
                         String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
                         JSONObject jsonObject = JSON.parseObject(json);
 
-                        String finalCurrentTag = array[1];
+                        String finalCurrentTag = array[2];
                         new Thread(() -> {
                             NewSshPane sshPane = new NewSshPane(mainTabbedPane);
                             sshPane.setHostField(jsonObject.getString("sessionAddress"));
@@ -476,7 +476,7 @@ public class SessionManagerPanel extends JPanel {
                             sshPane.setSessionName(jsonObject.getString("sessionName"));
                             sshPane.setCommentText(jsonObject.getString("sessionComment"));
                             sshPane.setAuthType(jsonObject.getString("sessionLoginType"));
-                            sshPane.setCategory(finalCurrentTag.substring(finalCurrentTag.indexOf("/") + 1));
+                            sshPane.setCategory(finalCurrentTag.replace("分类目录/SSH/", ""));
                             sshPane.setEditPath(file.getAbsolutePath());
                             mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
                             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
