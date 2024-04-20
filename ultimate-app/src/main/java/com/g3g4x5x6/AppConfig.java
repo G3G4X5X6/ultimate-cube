@@ -29,6 +29,17 @@ public class AppConfig {
         return bin;
     }
 
+    public static String getNotePath() {
+        String note = Path.of(getHomePath() + "/.ultimate-cube/note").toString();
+        File file = new File(note);
+        if (!file.exists()) {
+            if (!file.mkdir()) {
+                log.debug("文件夹创建失败：" + note);
+            }
+        }
+        return note;
+    }
+
     public static String getWorkPath() {
         String work = Path.of(getHomePath() + "/.ultimate-cube/").toString();
         File file = new File(work);
@@ -60,10 +71,7 @@ public class AppConfig {
     }
 
     public static String getProperty(String key) {
-        String[] vars = new String[]{
-                "{home}#" + getHomePath(),
-                "{workspace}#" + getWorkPath(),
-        };
+        String[] vars = new String[]{"{home}#" + getHomePath(), "{workspace}#" + getWorkPath(),};
         String value = App.properties.getProperty(key);
         for (String var : vars) {
             if (value.contains(var.split("#")[0])) {
@@ -75,8 +83,7 @@ public class AppConfig {
 
     public static String getProperty(String key, String fill) {
         String value = getProperty(key);
-        if (value.isEmpty() || value.isBlank())
-            return fill;
+        if (value.isEmpty() || value.isBlank()) return fill;
         return value;
     }
 

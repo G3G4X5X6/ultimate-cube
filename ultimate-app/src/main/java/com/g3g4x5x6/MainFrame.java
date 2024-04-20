@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatToggleButton;
+import com.g3g4x5x6.panel.notepad.NotepadDialog;
 import com.g3g4x5x6.panel.session.RecentSessionPanel;
 import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.editor.EditorFrame;
@@ -62,6 +63,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
     public static JTabbedPane mainTabbedPane;
     public static EditorFrame editorFrame = EditorFrame.getInstance();
+    public static NotepadDialog notepadDialog = NotepadDialog.getInstance();
     public static JProgressBar waitProgressBar;
     public static AtomicInteger waitCount = new AtomicInteger(0);
     public static int focusIndex = 0;
@@ -449,7 +451,8 @@ public class MainFrame extends JFrame implements MouseListener {
         notePaneBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DialogUtil.info("敬请期待");
+                notepadDialog.setVisible(true);
+                notepadDialog.setAlwaysOnTop(isAlwaysOnTop());
             }
         });
 
