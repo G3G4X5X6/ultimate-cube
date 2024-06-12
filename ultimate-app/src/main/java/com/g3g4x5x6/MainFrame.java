@@ -392,7 +392,7 @@ public class MainFrame extends JFrame implements MouseListener {
         mainTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         mainTabbedPane.setEnabled(true);
         mainTabbedPane.addMouseListener(this);
-//        initClosableTabs(mainTabbedPane);
+        initClosableTabs(mainTabbedPane);
         customComponents();     // 定制 ”选项卡面板“ 功能组件按钮
         initTabPopupMenu();     // 定制 ”选项卡面板“ 标签右键功能
 
