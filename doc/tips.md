@@ -21,3 +21,10 @@ mvn clean install -U  -DskipTests
     </snapshots>
 </repository>
 ```
+
+## Packages
+
+```shell
+https://github.com/knowm/XChart
+https://github.com/jfree/jfreechart
+```

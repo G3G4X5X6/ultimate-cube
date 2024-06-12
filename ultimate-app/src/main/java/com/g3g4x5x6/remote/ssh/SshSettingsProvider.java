@@ -44,7 +44,7 @@ public class SshSettingsProvider extends DefaultSettingsProvider {
 //        }
 //        fontName = "楷体";
 //        return new Font(fontName, Font.PLAIN, (int) this.getTerminalFontSize());
-        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/ttf/" + "JetBrainsMonoNL-Regular.ttf")));
+        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/" + "NotoSansSC-VariableFont_wght.ttf")));
         return myFont.deriveFont(Font.PLAIN, (int) this.getTerminalFontSize());
     }
 
