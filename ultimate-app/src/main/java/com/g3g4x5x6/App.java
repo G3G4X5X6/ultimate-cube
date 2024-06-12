@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
@@ -229,6 +230,14 @@ public class App {
             // 创建一个托盘图标
             assert image != null;
             DefaultTrayIcon trayIcon = new DefaultTrayIcon(image, "点击打开", popupMenu);
+            trayIcon.addActionListener(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    App.mainFrame.setVisible(true);
+                    App.mainFrame.toFront();
+                    App.mainFrame.requestFocus();
+                }
+            });
 
             // 添加托盘图标到系统托盘
             try {
