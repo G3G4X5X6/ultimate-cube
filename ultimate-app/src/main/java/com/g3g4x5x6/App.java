@@ -54,7 +54,7 @@ public class App {
         // 加载自定义日志配置
         initLog4j();
         // 修改默认字体
-        setDefaultFont();
+//        setDefaultFont();
         // 启动主程序
         SwingUtilities.invokeLater(App::createGUI);
     }
@@ -72,7 +72,7 @@ public class App {
 
     private static void setDefaultFont() {
         // 读取字体文件
-        try (InputStream fontStream = Objects.requireNonNull(App.class.getClassLoader().getResourceAsStream("fonts/Noto_Sans_SC/" + "NotoSansSC-Regular.otf"))) {
+        try (InputStream fontStream = Objects.requireNonNull(App.class.getClassLoader().getResourceAsStream("fonts/SarasaMono-TTF-1.0.13/" + "SarasaMonoSC-Regular.ttf"))) {
             // 加载字体
             Font font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
 

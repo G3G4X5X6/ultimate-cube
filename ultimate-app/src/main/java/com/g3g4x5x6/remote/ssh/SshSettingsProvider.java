@@ -34,23 +34,10 @@ public class SshSettingsProvider extends DefaultSettingsProvider {
 
     @SneakyThrows
     public Font getTerminalFont() {
-//        String fontName;
-//        if (UIUtil.isWindows) {
-//            fontName = AppConfig.getProperty("terminal.font");
-//        } else if (Platform.current() == Platform.Mac) {
-//            fontName = "Menlo";
-//        } else {
-//            fontName = "Monospaced";
-//        }
-//        fontName = "楷体";
-//        return new Font(fontName, Font.PLAIN, (int) this.getTerminalFontSize());
-        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/" + "NotoSansSC-VariableFont_wght.ttf")));
+        // Font SarasaMono-TTF-1.0.13
+        // https://github.com/be5invis/Sarasa-Gothic
+        Font myFont = Font.createFont(Font.PLAIN, Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream("fonts/SarasaMono-TTF-1.0.13/" + "SarasaMonoSC-Regular.ttf")));
         return myFont.deriveFont(Font.PLAIN, (int) this.getTerminalFontSize());
-    }
-
-    @SneakyThrows
-    public Font getTerminalChineseFont() {
-        return new Font("新宋体", Font.PLAIN, (int) this.getTerminalFontSize());
     }
 
     public float getTerminalFontSize() {
@@ -59,29 +46,11 @@ public class SshSettingsProvider extends DefaultSettingsProvider {
 
     @Override
     public TextStyle getDefaultStyle() {
-        return new TextStyle(
-                TerminalColor.rgb(
-                        colorScheme.getForegroundColor().getRed(),
-                        colorScheme.getForegroundColor().getGreen(),
-                        colorScheme.getForegroundColor().getBlue()),
-                TerminalColor.rgb(
-                        colorScheme.getBackgroundColor().getRed(),
-                        colorScheme.getBackgroundColor().getGreen(),
-                        colorScheme.getBackgroundColor().getBlue())
-        );
+        return new TextStyle(TerminalColor.rgb(colorScheme.getForegroundColor().getRed(), colorScheme.getForegroundColor().getGreen(), colorScheme.getForegroundColor().getBlue()), TerminalColor.rgb(colorScheme.getBackgroundColor().getRed(), colorScheme.getBackgroundColor().getGreen(), colorScheme.getBackgroundColor().getBlue()));
     }
 
     public @NotNull TextStyle getSelectionColor() {
-        return new TextStyle(
-                TerminalColor.rgb(
-                        colorScheme.getForegroundColor().getRed(),
-                        colorScheme.getForegroundColor().getGreen(),
-                        colorScheme.getForegroundColor().getBlue()),
-                TerminalColor.rgb(
-                        colorScheme.getSelectedColor().getRed(),
-                        colorScheme.getSelectedColor().getGreen(),
-                        colorScheme.getSelectedColor().getBlue())
-        );
+        return new TextStyle(TerminalColor.rgb(colorScheme.getForegroundColor().getRed(), colorScheme.getForegroundColor().getGreen(), colorScheme.getForegroundColor().getBlue()), TerminalColor.rgb(colorScheme.getSelectedColor().getRed(), colorScheme.getSelectedColor().getGreen(), colorScheme.getSelectedColor().getBlue()));
     }
 
     public @NotNull TextStyle getFoundPatternColor() {
