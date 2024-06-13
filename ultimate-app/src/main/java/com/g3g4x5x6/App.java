@@ -118,6 +118,7 @@ public class App {
         UIManager.put("TextArea.font", fontResource);
         UIManager.put("TextPane.font", fontResource);
         UIManager.put("EditorPane.font", fontResource);
+        UIManager.put("TabbedPane.font", fontResource);
         UIManager.put("TitledBorder.font", fontResource);
         UIManager.put("ToolBar.font", fontResource);
         UIManager.put("ToolTip.font", fontResource);
