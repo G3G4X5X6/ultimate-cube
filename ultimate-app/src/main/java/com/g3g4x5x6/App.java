@@ -55,7 +55,7 @@ public class App {
         // 加载自定义日志配置
         initLog4j();
         // 修改默认字体
-//        setDefaultFont();
+        setDefaultFont();
         // 启动主程序
         SwingUtilities.invokeLater(App::createGUI);
     }
@@ -82,7 +82,7 @@ public class App {
             ge.registerFont(font);
 
             // 设置所有组件的默认字体
-            setUIFont(new FontUIResource(font.deriveFont(Font.PLAIN, 14)));
+            setUIFont(new FontUIResource(font.deriveFont(Font.PLAIN, 13)));
 
         } catch (FontFormatException | IOException e) {
             log.debug(e.getMessage());
@@ -91,36 +91,36 @@ public class App {
 
     private static void setUIFont(FontUIResource fontResource) {
         // 设置所有组件的默认字体
-//        UIManager.put("MenuBar.font", fontResource);
-//        UIManager.put("Menu.font", fontResource);
-//        UIManager.put("MenuItem.font", fontResource);
-//        UIManager.put("PopupMenu.font", fontResource);
-//        UIManager.put("Tree.font", fontResource);
-//        UIManager.put("Label.font", fontResource);
-//        UIManager.put("TableHeader.font", fontResource);
-//        UIManager.put("Table.font", fontResource);
-//        UIManager.put("Button.font", fontResource);
-//        UIManager.put("ToggleButton.font", fontResource);
-//        UIManager.put("RadioButton.font", fontResource);
-//        UIManager.put("CheckBox.font", fontResource);
-//        UIManager.put("ColorChooser.font", fontResource);
-//        UIManager.put("ComboBox.font", fontResource);
-//        UIManager.put("List.font", fontResource);
-//        UIManager.put("RadioButtonMenuItem.font", fontResource);
-//        UIManager.put("CheckBoxMenuItem.font", fontResource);
-//        UIManager.put("OptionPane.font", fontResource);
-//        UIManager.put("Panel.font", fontResource);
-//        UIManager.put("ProgressBar.font", fontResource);
-//        UIManager.put("ScrollPane.font", fontResource);
-//        UIManager.put("Viewport.font", fontResource);
-//        UIManager.put("TextField.font", fontResource);
-//        UIManager.put("PasswordField.font", fontResource);
-//        UIManager.put("TextArea.font", fontResource);
-//        UIManager.put("TextPane.font", fontResource);
-//        UIManager.put("EditorPane.font", fontResource);
-//        UIManager.put("TitledBorder.font", fontResource);
-//        UIManager.put("ToolBar.font", fontResource);
-//        UIManager.put("ToolTip.font", fontResource);
+        UIManager.put("MenuBar.font", fontResource);
+        UIManager.put("Menu.font", fontResource);
+        UIManager.put("MenuItem.font", fontResource);
+        UIManager.put("PopupMenu.font", fontResource);
+        UIManager.put("Tree.font", fontResource);
+        UIManager.put("Label.font", fontResource);
+        UIManager.put("TableHeader.font", fontResource);
+        UIManager.put("Table.font", fontResource);
+        UIManager.put("Button.font", fontResource);
+        UIManager.put("ToggleButton.font", fontResource);
+        UIManager.put("RadioButton.font", fontResource);
+        UIManager.put("CheckBox.font", fontResource);
+        UIManager.put("ColorChooser.font", fontResource);
+        UIManager.put("ComboBox.font", fontResource);
+        UIManager.put("List.font", fontResource);
+        UIManager.put("RadioButtonMenuItem.font", fontResource);
+        UIManager.put("CheckBoxMenuItem.font", fontResource);
+        UIManager.put("OptionPane.font", fontResource);
+        UIManager.put("Panel.font", fontResource);
+        UIManager.put("ProgressBar.font", fontResource);
+        UIManager.put("ScrollPane.font", fontResource);
+        UIManager.put("Viewport.font", fontResource);
+        UIManager.put("TextField.font", fontResource);
+        UIManager.put("PasswordField.font", fontResource);
+        UIManager.put("TextArea.font", fontResource);
+        UIManager.put("TextPane.font", fontResource);
+        UIManager.put("EditorPane.font", fontResource);
+        UIManager.put("TitledBorder.font", fontResource);
+        UIManager.put("ToolBar.font", fontResource);
+        UIManager.put("ToolTip.font", fontResource);
     }
 
     private static void createGUI() {
