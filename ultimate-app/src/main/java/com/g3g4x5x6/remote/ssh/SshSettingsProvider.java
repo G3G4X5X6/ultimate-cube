@@ -133,11 +133,6 @@ public class SshSettingsProvider extends DefaultSettingsProvider {
     }
 
     @NotNull
-    public TerminalActionPresentation getNewSessionActionPresentation() {
-        return new TerminalActionPresentation("New Session", Platform.current() == Platform.Mac ? KeyStroke.getKeyStroke(84, InputEvent.META_DOWN_MASK) : KeyStroke.getKeyStroke(84, InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK));
-    }
-
-    @NotNull
     public TerminalActionPresentation getOpenUrlActionPresentation() {
         return new TerminalActionPresentation("Open as URL", Collections.emptyList());
     }
@@ -177,11 +172,6 @@ public class SshSettingsProvider extends DefaultSettingsProvider {
     @NotNull
     public TerminalActionPresentation getLineDownActionPresentation() {
         return new TerminalActionPresentation("Line Down", Platform.current() == Platform.Mac ? KeyStroke.getKeyStroke(40, InputEvent.META_DOWN_MASK) : KeyStroke.getKeyStroke(40, InputEvent.CTRL_DOWN_MASK));
-    }
-
-    @NotNull
-    public TerminalActionPresentation getCloseSessionActionPresentation() {
-        return new TerminalActionPresentation("Close Session", Platform.current() == Platform.Mac ? KeyStroke.getKeyStroke(87, InputEvent.META_DOWN_MASK) : KeyStroke.getKeyStroke(87, InputEvent.SHIFT_DOWN_MASK | InputEvent.CTRL_DOWN_MASK));
     }
 
     @NotNull
