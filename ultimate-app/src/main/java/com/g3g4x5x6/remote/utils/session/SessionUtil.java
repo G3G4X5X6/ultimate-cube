@@ -27,7 +27,7 @@ public class SessionUtil {
 
     }
 
-    public static RTextScrollPane getLogArea(String caused, StackTraceElement[] traceElements){
+    public static RTextScrollPane getLogArea(String caused, StackTraceElement[] traceElements) {
         RSyntaxTextArea logPanel = EditorUtil.createTextArea();
         logPanel.setEditable(false);
         logPanel.setSyntaxEditingStyle("text/unix");
@@ -38,7 +38,7 @@ public class SessionUtil {
         logPanel.append("Caused by: " + caused + "\n");
         logPanel.append("-----------------------------------------------------------------\n");
 
-        for(StackTraceElement element : traceElements){
+        for (StackTraceElement element : traceElements) {
             logPanel.append("\t at " + element.toString() + "\n");
         }
 
@@ -64,9 +64,10 @@ public class SessionUtil {
             String port = jsonObject.getString("sessionPort");
             String user = jsonObject.getString("sessionUser");
             String pass = jsonObject.getString("sessionPass");
-            String privateKey = jsonObject.getString("sessionKeyPath");
+            String privateKey = jsonObject.getString("sessionPukKey");
             String loginType = jsonObject.getString("sessionLoginType");
             String protocol = jsonObject.getString("sessionProtocol");
+            String category = jsonObject.getString("sessionCategory");
             String comment = jsonObject.getString("sessionComment");
 
             sessionInfo.setSessionName(session);
@@ -74,9 +75,10 @@ public class SessionUtil {
             sessionInfo.setSessionPort(port);
             sessionInfo.setSessionUser(user);
             sessionInfo.setSessionPass(VaultUtil.decryptPasswd(pass));
-            sessionInfo.setSessionKeyPath(privateKey);
+            sessionInfo.setSessionPukKey(privateKey);
             sessionInfo.setSessionLoginType(loginType);
             sessionInfo.setSessionProtocol(protocol);
+            sessionInfo.setSessionCategory(category);
             sessionInfo.setSessionComment(comment);
 
             // 更新最近会话

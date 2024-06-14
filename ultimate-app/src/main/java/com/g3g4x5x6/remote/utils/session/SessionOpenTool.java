@@ -49,7 +49,7 @@ public class SessionOpenTool {
         }
     }
 
-    private static void OpenSessionForSSH(String sessionPath) {
+    public static void OpenSessionForSSH(String sessionPath) {
         File file = new File(sessionPath);
         if (file.exists()) {
             new Thread(() -> {

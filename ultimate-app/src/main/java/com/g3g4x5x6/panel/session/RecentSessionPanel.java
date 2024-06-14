@@ -30,6 +30,8 @@ import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -297,26 +299,28 @@ public class RecentSessionPanel extends JPanel {
     }
 
     private void openSession(int index) {
+
+        SessionOpenTool.OpenSessionForSSH(Objects.requireNonNull(getSessionObject(index)).getString("sessionFilePath"));
+//        String address = (String) tableModel.getValueAt(index, 3);
+//        String port = (String) tableModel.getValueAt(index, 4);
+//        String user = (String) tableModel.getValueAt(index, 5);
+//        String auth = (String) tableModel.getValueAt(index, 6);
+//
+    }
+
+    private JSONObject getSessionObject(int index) {
+        String protocol = (String) tableModel.getValueAt(index, 2);
         String address = (String) tableModel.getValueAt(index, 3);
         String port = (String) tableModel.getValueAt(index, 4);
         String user = (String) tableModel.getValueAt(index, 5);
-        String auth = (String) tableModel.getValueAt(index, 6);
+        String authType = (String) tableModel.getValueAt(index, 6);
 
-        File dir = new File(AppConfig.getWorkPath() + "/sessions/");
-        if (dir.exists()) {
-            for (File file : Objects.requireNonNull(dir.listFiles())) {
-                if (file.getName().contains(address) && file.getName().contains(port) && file.getName().contains(user) && file.getName().contains(auth)) {
-                    log.debug("SessionPath: " + file.getAbsolutePath());
-                    try {
-                        String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-                        JSONObject jsonObject = JSON.parseObject(json);
-                        String protocol = jsonObject.getString("sessionProtocol");
-                        SessionOpenTool.OpenSessionByProtocol(file.getAbsolutePath(), protocol);
-                    } catch (IOException e) {
-                        log.debug(e.getMessage());
-                    }
-                }
+        HashMap<String, ArrayList<JSONObject>> protocolsMap = SessionFileUtil.getProtocolsMap();
+        for (JSONObject jsonObject : protocolsMap.get(protocol)) {
+            if (jsonObject.getString("sessionAddress").equals(address) && jsonObject.getString("sessionPort").equals(port) && jsonObject.getString("sessionUser").equals(user) && jsonObject.getString("sessionLoginType").equals(authType)) {
+                return jsonObject;
             }
         }
+        return null;
     }
 }

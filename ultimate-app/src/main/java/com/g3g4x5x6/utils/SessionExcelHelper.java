@@ -107,12 +107,10 @@ public class SessionExcelHelper {
                     JSONArray jsonArray = SessionExcelHelper.convertExcelToJson(sheet);
                     for (int i = 0; i < jsonArray.size(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        // 获取类别（扩展拼接存放路径）
-                        String sessionCategory = jsonObject.getString("sessionCategory");
                         // 密码加密
                         jsonObject.put("sessionPass", VaultUtil.encryptPasswd(jsonObject.getString("sessionPass")));
                         // 保存会话路径
-                        Path sessionPath = Paths.get(AppConfig.getSessionPath(), sheetName, sessionCategory);
+                        Path sessionPath = Paths.get(AppConfig.getSessionPath(), sheetName);
                         Path sessionFile = sessionPath.resolve(UUID.randomUUID() + ".json");
                         Files.write(sessionFile, jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
                         log.debug("导入会话：{}", sessionFile);

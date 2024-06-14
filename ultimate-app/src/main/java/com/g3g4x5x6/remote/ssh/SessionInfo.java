@@ -38,8 +38,9 @@ public class SessionInfo {
     private String sessionPort = "";
     private String sessionUser = "";
     private String sessionPass = "";
-    private String sessionKeyPath = "";
+    private String sessionPukKey = "";
     private String sessionLoginType = "";
+    private String sessionCategory = "";
     private String sessionComment = "";
     // SSH 会话组件
     private JediTermWidget sshPane = null;
@@ -58,8 +59,7 @@ public class SessionInfo {
     public void initComponent() throws GeneralSecurityException, IOException {
         init();
         this.sshPane = createTerminalWidget();
-        if (sftpFlag)
-            this.sftpBrowser = new FilesBrowser(this.sftpFileSystem);
+        if (sftpFlag) this.sftpBrowser = new FilesBrowser(this.sftpFileSystem);
 
         // 注册拖拽监听
         registerDropTarget();
@@ -90,12 +90,11 @@ public class SessionInfo {
 
     private ClientSession getSession(SshClient client) throws IOException, GeneralSecurityException {
         // TODO 可设置是否启用、时间周期
-        CoreModuleProperties.HEARTBEAT_INTERVAL.set(client,
-                Duration.ofSeconds(Long.parseLong(AppConfig.getProperty("ssh.session.heartbeat.interval"))));
+        CoreModuleProperties.HEARTBEAT_INTERVAL.set(client, Duration.ofSeconds(Long.parseLong(AppConfig.getProperty("ssh.session.heartbeat.interval"))));
 
         ClientSession session = client.connect(this.sessionUser, this.sessionAddress, Integer.parseInt(this.sessionPort)).verify(5000, TimeUnit.MILLISECONDS).getSession();
-        if (Files.exists(Path.of(sessionKeyPath)) && !sessionKeyPath.equalsIgnoreCase("")) {
-            KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, Path.of(sessionKeyPath), null).iterator().next();
+        if (Files.exists(Path.of(sessionPukKey)) && !sessionPukKey.equalsIgnoreCase("")) {
+            KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, Path.of(sessionPukKey), null).iterator().next();
             session.addPublicKeyIdentity(keyPair);
         } else {
             session.addPasswordIdentity(this.sessionPass);
@@ -116,12 +115,9 @@ public class SessionInfo {
 
     @SneakyThrows
     public void close() {
-        if (sftpFileSystem != null && sftpFileSystem.isOpen())
-            sftpFileSystem.close();
-        if (session != null && session.isOpen())
-            session.close();
-        if (client != null && client.isOpen())
-            client.close();
+        if (sftpFileSystem != null && sftpFileSystem.isOpen()) sftpFileSystem.close();
+        if (session != null && session.isOpen()) session.close();
+        if (client != null && client.isOpen()) client.close();
     }
 
     public SessionInfo copy() {
@@ -132,7 +128,7 @@ public class SessionInfo {
         sessionInfo.setSessionPort(sessionPort);
         sessionInfo.setSessionUser(sessionUser);
         sessionInfo.setSessionPass(sessionPass);
-        sessionInfo.setSessionKeyPath(sessionKeyPath);
+        sessionInfo.setSessionPukKey(sessionPukKey);
         sessionInfo.setSessionLoginType(sessionLoginType);
         sessionInfo.setSessionComment(sessionComment);
         return sessionInfo;
@@ -194,12 +190,12 @@ public class SessionInfo {
         this.sessionPass = sessionPass;
     }
 
-    public String getSessionKeyPath() {
-        return sessionKeyPath;
+    public String getsessionPukKey() {
+        return sessionPukKey;
     }
 
-    public void setSessionKeyPath(String sessionKeyPath) {
-        this.sessionKeyPath = sessionKeyPath;
+    public void setSessionPukKey(String sessionPukKey) {
+        this.sessionPukKey = sessionPukKey;
     }
 
     public String getSessionLoginType() {
@@ -212,6 +208,18 @@ public class SessionInfo {
 
     public String getSessionComment() {
         return sessionComment;
+    }
+
+    public String getSessionCategory() {
+        return sessionCategory;
+    }
+
+    public void setSessionCategory(String sessionCategory) {
+        this.sessionCategory = sessionCategory;
+    }
+
+    public String getSessionPukKey() {
+        return sessionPukKey;
     }
 
     public void setSessionComment(String sessionComment) {
@@ -260,23 +268,6 @@ public class SessionInfo {
 
     @Override
     public String toString() {
-        return "SessionInfo{" +
-                "sessionId='" + sessionId + '\'' +
-                ", sessionName='" + sessionName + '\'' +
-                ", sessionProtocol='" + sessionProtocol + '\'' +
-                ", sessionAddress='" + sessionAddress + '\'' +
-                ", sessionPort='" + sessionPort + '\'' +
-                ", sessionUser='" + sessionUser + '\'' +
-                ", sessionPass='" + sessionPass + '\'' +
-                ", sessionKeyPath='" + sessionKeyPath + '\'' +
-                ", sessionLoginType='" + sessionLoginType + '\'' +
-                ", sessionComment='" + sessionComment + '\'' +
-                ", sshPane=" + sshPane +
-                ", sftpBrowser=" + sftpBrowser +
-                ", client=" + client +
-                ", session=" + session +
-                ", sftpFileSystem=" + sftpFileSystem +
-                ", sftpFlag=" + sftpFlag +
-                '}';
+        return "SessionInfo{" + "sessionId='" + sessionId + '\'' + ", sessionName='" + sessionName + '\'' + ", sessionProtocol='" + sessionProtocol + '\'' + ", sessionAddress='" + sessionAddress + '\'' + ", sessionPort='" + sessionPort + '\'' + ", sessionUser='" + sessionUser + '\'' + ", sessionPass='" + sessionPass + '\'' + ", sessionPukKey='" + sessionPukKey + '\'' + ", sessionLoginType='" + sessionLoginType + '\'' + ", sessionComment='" + sessionComment + '\'' + ", sshPane=" + sshPane + ", sftpBrowser=" + sftpBrowser + ", client=" + client + ", session=" + session + ", sftpFileSystem=" + sftpFileSystem + ", sftpFlag=" + sftpFlag + '}';
     }
 }

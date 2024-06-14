@@ -2,10 +2,12 @@ package com.g3g4x5x6.remote.ssh.panel;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatTreeClosedIcon;
 import com.g3g4x5x6.AppConfig;
+import com.g3g4x5x6.panel.session.SessionFileUtil;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.utils.VaultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Objects;
+import java.util.*;
 
 
 @Slf4j
@@ -61,6 +61,7 @@ public class NewSshPane extends JPanel {
     private String username;
     private String password;
     private String authType = "password";
+    private String sessionCategory;
 
     public NewSshPane(JTabbedPane tabbedPane) {
         BorderLayout borderLayout = new BorderLayout();
@@ -187,6 +188,7 @@ public class NewSshPane extends JPanel {
     private void saveSession() {
         LinkedHashMap<String, String> session = new LinkedHashMap<>();
         session.put("sessionName", sessionName.getText());
+        session.put("sessionCategory", Objects.requireNonNull(categoryCombo.getSelectedItem()).toString());
         session.put("sessionProtocol", "SSH");
         session.put("sessionAddress", hostField.getText());
         session.put("sessionPort", portField.getText());
@@ -195,27 +197,24 @@ public class NewSshPane extends JPanel {
         session.put("sessionKeyPath", keyLabel.getText());
         session.put("sessionLoginType", authType);
         session.put("sessionComment", commentText.getText());
-        log.debug("Comment: " + commentText.getText());
 
-        String path = AppConfig.getWorkPath() + "/sessions/SSH/" + Objects.requireNonNull(categoryCombo.getSelectedItem());
-        String fileName = path + "/ssh_" + hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType + ".json";
-        if (editPath != null && !Path.of(fileName).toString().equalsIgnoreCase(editPath)) {
+        // 保存会话路径
+        Path sessionPath = Paths.get(AppConfig.getSessionPath(), "SSH");
+        Path sessionFile = sessionPath.resolve(UUID.randomUUID() + ".json");
+
+        if (editPath != null && !sessionFile.toString().equalsIgnoreCase(editPath)) {
             try {
                 Files.delete(Path.of(editPath));
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
             }
         }
-        log.info("会话保存路径：" + fileName);
+        log.info("会话保存路径：{}", sessionFile);
         try {
-            File dirFile = new File(path);
-            if (!dirFile.exists())
-                dirFile.mkdirs();
-
-            Files.write(Paths.get(fileName), JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
+            Files.write(sessionFile, JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
             JOptionPane.showMessageDialog(NewSshPane.this, "会话保存成功", "信息", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             JOptionPane.showMessageDialog(NewSshPane.this, "会话保存失败", "错误", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -230,14 +229,12 @@ public class NewSshPane extends JPanel {
         sessionInfo.setSessionPort(portField.getText());
         sessionInfo.setSessionUser(userField.getText());
         sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
-        sessionInfo.setSessionKeyPath(keyLabel.getText());
+        sessionInfo.setSessionPukKey(keyLabel.getText());
         sessionInfo.setSessionLoginType(authType);
         sessionInfo.setSessionComment(commentText.getText());
 
         // 鸠占鹊巢
-        mainTabbedPane.insertTab(defaultTitle,
-                new FlatSVGIcon("icons/consoleRun.svg"),
-                new SshTabbedPane(sessionInfo), "奥里给", preIndex);
+        mainTabbedPane.insertTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"), new SshTabbedPane(sessionInfo), "奥里给", preIndex);
         mainTabbedPane.removeTabAt(preIndex + 1);
         mainTabbedPane.setSelectedIndex(preIndex);
     }
@@ -323,15 +320,15 @@ public class NewSshPane extends JPanel {
         categoryCombo.setSize(new Dimension(200, 25));
         categoryCombo.setPreferredSize(new Dimension(200, 25));
         categoryCombo.addItem("");
-        ArrayList<String> list = new ArrayList<>();
-        String sshPath = Path.of(AppConfig.getWorkPath(), "sessions", "SSH").toString();
-        recursiveListDirectory(new File(sshPath), list);
-        for (String category : list) {
-            log.debug("sshPath: " + sshPath);
-            log.debug("category: " + category);
-            String item = category.substring(sshPath.length() + 1);
-            categoryCombo.addItem(item);
+
+        HashMap<String, ArrayList<JSONObject>> protocolsMap = SessionFileUtil.getProtocolsMap();
+        if (protocolsMap.get("SSH") != null) {
+            for (JSONObject jsonObject : protocolsMap.get("SSH")) {
+                if (jsonObject.getString("sessionCategory") != null && !jsonObject.getString("sessionCategory").isBlank())
+                    categoryCombo.addItem(jsonObject.getString("sessionCategory"));
+            }// C:\Users\G3G4X5X6\.ultimate-cube\sessions\SSH\c955892b-b69e-4a2c-9668-a86b70c436d6.json
         }
+
         categoryPane.add(new JLabel("会话分类:"));
         categoryPane.add(categoryCombo);
 
@@ -474,6 +471,7 @@ public class NewSshPane extends JPanel {
 
     public void setCategory(String category) {
         categoryCombo.setSelectedItem(category);
+        sessionCategory = category;
     }
 
     public void setKeyLabel(String key) {
