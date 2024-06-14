@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -231,6 +232,11 @@ public class SessionManagerPanel extends JPanel {
         tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+        // 设置列宽
+        TableColumn sessionNameColumn = sessionTable.getColumnModel().getColumn(0);
+        sessionNameColumn.setPreferredWidth(150); // 设置第一列的宽度
+        sessionNameColumn.setMinWidth(150);
+
         DefaultTableCellRenderer sessionNameRenderer = new DefaultTableCellRenderer();
         sessionNameRenderer.setIcon(new FlatTreeLeafIcon());
         sessionTable.getColumn("会话名称").setCellRenderer(sessionNameRenderer);
@@ -238,7 +244,7 @@ public class SessionManagerPanel extends JPanel {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JTextField.CENTER);
         sessionTable.getColumn("协议").setCellRenderer(centerRenderer);
-        sessionTable.getColumn("地址").setCellRenderer(centerRenderer);
+//        sessionTable.getColumn("地址").setCellRenderer(centerRenderer);
         sessionTable.getColumn("端口").setCellRenderer(centerRenderer);
         sessionTable.getColumn("登录用户").setCellRenderer(centerRenderer);
         sessionTable.getColumn("认证类型").setCellRenderer(centerRenderer);

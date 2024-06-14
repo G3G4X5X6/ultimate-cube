@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -123,12 +124,23 @@ public class RecentSessionPanel extends JPanel {
         tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+        // 设置列宽
+        TableColumn changedTimeColumn = recentTable.getColumnModel().getColumn(0);
+        changedTimeColumn.setPreferredWidth(120); // 设置第一列的宽度
+        changedTimeColumn.setMinWidth(120);
+        TableColumn sessionNameColumn = recentTable.getColumnModel().getColumn(1);
+        sessionNameColumn.setPreferredWidth(150); // 设置第一列的宽度
+        sessionNameColumn.setMinWidth(150);
+
+        DefaultTableCellRenderer leadingRenderer = new DefaultTableCellRenderer();
+        leadingRenderer.setHorizontalAlignment(JTextField.LEADING);
+        recentTable.getColumn("会话名称").setCellRenderer(leadingRenderer);
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JTextField.CENTER);
         recentTable.getColumn("访问时间").setCellRenderer(centerRenderer);
-        recentTable.getColumn("会话名称").setCellRenderer(centerRenderer);
         recentTable.getColumn("协议").setCellRenderer(centerRenderer);
-        recentTable.getColumn("地址").setCellRenderer(centerRenderer);
+//        recentTable.getColumn("地址").setCellRenderer(centerRenderer);
         recentTable.getColumn("端口").setCellRenderer(centerRenderer);
         recentTable.getColumn("登录用户").setCellRenderer(centerRenderer);
         recentTable.getColumn("认证类型").setCellRenderer(centerRenderer);
