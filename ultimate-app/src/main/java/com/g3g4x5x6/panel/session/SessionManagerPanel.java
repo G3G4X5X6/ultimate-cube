@@ -316,7 +316,7 @@ public class SessionManagerPanel extends JPanel {
             row[4] = jsonObject.getString("sessionUser");
             row[5] = jsonObject.getString("sessionLoginType");
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return row;
     }
