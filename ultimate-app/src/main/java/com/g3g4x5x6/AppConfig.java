@@ -29,6 +29,18 @@ public class AppConfig {
         return bin;
     }
 
+    public static String getSessionPath() {
+        String bin = Path.of(getHomePath() + "/.ultimate-cube/sessions").toString();
+        File file = new File(bin);
+        if (!file.exists()) {
+            if (!file.mkdir()) {
+                log.debug("文件夹创建失败：" + bin);
+            }
+        }
+//        log.debug(session);
+        return bin;
+    }
+
     public static String getNotePath() {
         String note = Path.of(getHomePath() + "/.ultimate-cube/note").toString();
         File file = new File(note);

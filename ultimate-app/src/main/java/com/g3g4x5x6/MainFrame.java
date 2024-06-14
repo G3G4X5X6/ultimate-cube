@@ -27,6 +27,8 @@ import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.StatusBar;
 import com.g3g4x5x6.user.UserDialog;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.SessionExcelUtil;
+import com.g3g4x5x6.utils.FileUtil;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
 import com.glavsoft.viewer.Viewer;
@@ -925,29 +927,57 @@ public class MainFrame extends JFrame implements MouseListener {
     };
 
     private final AbstractAction exportSessionAction = new AbstractAction("导出会话") {
+        @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
             // 导出文件
             String file = AppConfig.getWorkPath() + "/export/backup_" + String.valueOf(new Date().getTime()) + ".xls";
             // 1.创建workbook
             Workbook workbook = new HSSFWorkbook();
+
             // 2.根据workbook创建sheet
-            Sheet sessionSheet = workbook.createSheet("session");
-            Sheet tagSheet = workbook.createSheet("tag");
-            Sheet relationSheet = workbook.createSheet("relation");
-            // TODO 3.写入数据到sheet
-//            ExcelUtil.exportSession(sessionSheet);
-//            ExcelUtil.exportTag(tagSheet);
-//            ExcelUtil.exportRelation(relationSheet);
+            Sheet sshSheet = workbook.createSheet("SSH");
+            Sheet rdpSheet = workbook.createSheet("RDP");
+            Sheet vncSheet = workbook.createSheet("VNC");
+            Sheet telnetSheet = workbook.createSheet("Telnet");
+            // Set Header
+            String[] header = {"sessionName", "sessionProtocol", "sessionAddress", "sessionPort", "sessionUser", "sessionPass", "sessionKeyPath", "sessionLoginType", "sessionComment"};
+            SessionExcelUtil.createHeaderRow(sshSheet, header);
+            SessionExcelUtil.createHeaderRow(rdpSheet, header);
+            SessionExcelUtil.createHeaderRow(vncSheet, header);
+            SessionExcelUtil.createHeaderRow(telnetSheet, header);
+
+            // 3.写入数据
+            for (File sessionFile : FileUtil.listAllSessionFiles()) {
+                String json = FileUtils.readFileToString(sessionFile, StandardCharsets.UTF_8);
+                JSONObject jsonObject = JSON.parseObject(json);
+
+                String sessionProtocol = jsonObject.getString("sessionProtocol");
+                switch (sessionProtocol) {
+                    case "SSH":
+                        log.debug("SSH");
+                        SessionExcelUtil.appendJsonToSheet(jsonObject, sshSheet, SessionExcelUtil.getHeaderList(sshSheet));
+                        break;
+                    case "RDP":
+                        log.debug("RDP");
+                        SessionExcelUtil.appendJsonToSheet(jsonObject, rdpSheet, SessionExcelUtil.getHeaderList(sshSheet));
+                    case "VNC":
+                        log.debug("VNC");
+                        SessionExcelUtil.appendJsonToSheet(jsonObject, vncSheet, SessionExcelUtil.getHeaderList(sshSheet));
+                    case "Telnet":
+                        log.debug("Telnet");
+                        SessionExcelUtil.appendJsonToSheet(jsonObject, telnetSheet, SessionExcelUtil.getHeaderList(sshSheet));
+                    default:
+                        log.debug("default: nothing to do");
+                }
+            }
 
             // 4.通过输出流写到文件里去
-            FileOutputStream fos = null;
+            FileOutputStream fos;
             try {
                 fos = new FileOutputStream(file);
                 workbook.write(fos);
                 fos.close();
-            } catch (FileNotFoundException fileNotFoundException) {
-                fileNotFoundException.printStackTrace();
             } catch (IOException exception) {
                 exception.printStackTrace();
             }
