@@ -4,9 +4,6 @@ import com.jediterm.core.typeahead.TerminalTypeAheadManager;
 import com.jediterm.terminal.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileWriter;
-import java.io.IOException;
-
 public class TerminalOutputSaver extends TerminalStarter {
 
     public TerminalOutputSaver(@NotNull Terminal terminal, @NotNull TtyConnector ttyConnector, @NotNull TerminalDataStream dataStream, @NotNull TerminalTypeAheadManager typeAheadManager, @NotNull TerminalExecutorServiceManager executorServiceManager) {

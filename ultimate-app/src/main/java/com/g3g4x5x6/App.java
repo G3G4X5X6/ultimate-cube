@@ -1,9 +1,9 @@
 package com.g3g4x5x6;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.utils.CommonUtil;
+import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.ui.tray.DefaultTrayIcon;
 import com.g3g4x5x6.ui.tray.DefaultTrayIconPopupMenu;
 import com.g3g4x5x6.utils.CheckUtil;
@@ -15,8 +15,6 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;

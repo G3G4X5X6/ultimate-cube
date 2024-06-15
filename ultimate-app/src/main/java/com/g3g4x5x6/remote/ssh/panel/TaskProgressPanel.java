@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TaskProgressPanel extends JPanel {
     private final JProgressBar progressBar;
