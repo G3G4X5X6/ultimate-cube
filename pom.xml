@@ -54,7 +54,7 @@
         <junit-jupiter-version>RELEASE</junit-jupiter-version>
 
         <jcolor-version>5.5.1</jcolor-version>
-        <hutool-version>5.8.18</hutool-version>
+        <hutool-version>5.8.21</hutool-version>
 
         <zip4j-version>2.11.5</zip4j-version>
 
