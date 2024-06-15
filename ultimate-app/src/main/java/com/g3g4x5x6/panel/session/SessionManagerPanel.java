@@ -272,20 +272,16 @@ public class SessionManagerPanel extends JPanel {
     private void refreshContent(String path) {
         log.debug(path);
 
-        tableModel.setRowCount(0);
-
         File rootFile = new File(path);
         DefaultMutableTreeNode parent = (DefaultMutableTreeNode) sessionTree.getLastSelectedPathComponent();
 
         HashSet<DefaultMutableTreeNode> children = new HashSet<>();
         for (int i = 0; i < parent.getChildCount(); i++) {
             children.add((DefaultMutableTreeNode) parent.getChildAt(i));
+            parent.remove(i);
         }
 
-        for (DefaultMutableTreeNode node : children) {
-            treeModel.removeNodeFromParent(node);
-        }
-
+        tableModel.setRowCount(0);
         for (File file : Objects.requireNonNull(rootFile.listFiles())) {
             if (file.isDirectory()) {
                 log.debug(file.getAbsolutePath());
@@ -293,10 +289,8 @@ public class SessionManagerPanel extends JPanel {
                 treeModel.insertNodeInto(tempNode, parent, 0);
             }
             if (file.isFile()) {
-                if (file.getName().startsWith("ssh_") || file.getName().startsWith("FreeRDP_") || file.getName().startsWith("Telnet_")) {
-                    String[] row = getSessionFields(file);
-                    tableModel.addRow(row);
-                }
+                String[] row = getSessionFields(file);
+                tableModel.addRow(row);
             }
         }
         sessionTree.expandPath(new TreePath(parent.getPath()));
