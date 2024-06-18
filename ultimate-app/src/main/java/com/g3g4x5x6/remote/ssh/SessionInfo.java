@@ -93,7 +93,7 @@ public class SessionInfo {
         CoreModuleProperties.HEARTBEAT_INTERVAL.set(client, Duration.ofSeconds(Long.parseLong(AppConfig.getProperty("ssh.session.heartbeat.interval"))));
 
         ClientSession session = client.connect(this.sessionUser, this.sessionAddress, Integer.parseInt(this.sessionPort)).verify(5000, TimeUnit.MILLISECONDS).getSession();
-        if (Files.exists(Path.of(sessionPukKey)) && !sessionPukKey.equalsIgnoreCase("")) {
+        if (sessionPukKey != null) {
             KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, Path.of(sessionPukKey), null).iterator().next();
             session.addPublicKeyIdentity(keyPair);
         } else {

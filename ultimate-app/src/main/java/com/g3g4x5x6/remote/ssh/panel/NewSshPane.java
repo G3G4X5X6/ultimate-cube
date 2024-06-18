@@ -194,7 +194,7 @@ public class NewSshPane extends JPanel {
         session.put("sessionPort", portField.getText());
         session.put("sessionUser", userField.getText());
         session.put("sessionPass", VaultUtil.encryptPasswd(String.valueOf(passField.getPassword())));
-        session.put("sessionKeyPath", keyLabel.getText());
+        session.put("sessionPukKey", keyLabel.getText());
         session.put("sessionLoginType", authType);
         session.put("sessionComment", commentText.getText());
 
