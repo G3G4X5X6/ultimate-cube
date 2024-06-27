@@ -46,7 +46,7 @@ public class RdpPane extends JPanel {
     private JTextField height;
 
     private boolean openFlag = false;
-    private final String freeRdpSessionsDirPath = AppConfig.getWorkPath() + "/sessions/FreeRDP";
+    private final String freeRdpSessionsDirPath = AppConfig.getWorkPath() + "/sessions/RDP";
     private final String exePath = AppConfig.getWorkPath() + "/bin/wfreerdp.exe";
 
     public RdpPane(JTabbedPane mainTabbedPane) {

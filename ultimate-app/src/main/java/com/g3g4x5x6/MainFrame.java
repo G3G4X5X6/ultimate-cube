@@ -12,6 +12,7 @@ import com.g3g4x5x6.panel.focus.FocusFrame;
 import com.g3g4x5x6.panel.notepad.NotepadDialog;
 import com.g3g4x5x6.panel.other.ConnectionPane;
 import com.g3g4x5x6.panel.other.SysinfoPane;
+import com.g3g4x5x6.panel.session.NewSessionManagerPanel;
 import com.g3g4x5x6.panel.session.RecentSessionPanel;
 import com.g3g4x5x6.panel.session.SessionManagerPanel;
 import com.g3g4x5x6.remote.NewTabbedPane;
@@ -438,7 +439,7 @@ public class MainFrame extends JFrame implements MouseListener {
         sessionManagerBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(), "会话管理", mainTabbedPane.getTabCount());
+                mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new NewSessionManagerPanel(), "会话管理", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }
         });
@@ -781,7 +782,7 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private final AbstractAction mySessionAction = new AbstractAction("会话管理") {
         public void actionPerformed(final ActionEvent e) {
-            mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new SessionManagerPanel(), "会话管理", mainTabbedPane.getTabCount());
+            mainTabbedPane.insertTab("会话管理", new FlatSVGIcon("icons/addList.svg"), new NewSessionManagerPanel(), "会话管理", mainTabbedPane.getTabCount());
             mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
         }
     };

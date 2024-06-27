@@ -39,6 +39,7 @@ import java.util.*;
 
 import static com.g3g4x5x6.MainFrame.mainTabbedPane;
 
+@Deprecated
 @Slf4j
 public class SessionManagerPanel extends JPanel {
     private final ToolBar toolBar = new ToolBar();
