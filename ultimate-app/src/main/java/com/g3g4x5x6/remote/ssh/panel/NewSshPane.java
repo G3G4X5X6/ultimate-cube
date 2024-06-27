@@ -322,12 +322,19 @@ public class NewSshPane extends JPanel {
         categoryCombo.addItem("");
 
         HashMap<String, ArrayList<JSONObject>> protocolsMap = SessionFileUtil.getProtocolsMap();
+        Set<String> categorySet = new HashSet<>(); // 使用HashSet去重
         if (protocolsMap.get("SSH") != null) {
             for (JSONObject jsonObject : protocolsMap.get("SSH")) {
                 if (jsonObject.getString("sessionCategory") != null && !jsonObject.getString("sessionCategory").isBlank())
-                    categoryCombo.addItem(jsonObject.getString("sessionCategory"));
+                    categorySet.add(jsonObject.getString("sessionCategory"));
             }// C:\Users\G3G4X5X6\.ultimate-cube\sessions\SSH\c955892b-b69e-4a2c-9668-a86b70c436d6.json
         }
+
+        ArrayList<String> categoryList = new ArrayList<>(categorySet);
+        for (String category : categoryList) {
+            categoryCombo.addItem(category);
+        }
+        categoryCombo.setSelectedItem(Objects.requireNonNullElse(sessionCategory, ""));
 
         categoryPane.add(new JLabel("会话分类:"));
         categoryPane.add(categoryCombo);
