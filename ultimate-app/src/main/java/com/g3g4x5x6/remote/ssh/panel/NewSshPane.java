@@ -195,7 +195,11 @@ public class NewSshPane extends JPanel {
         session.put("sessionPort", portField.getText());
         session.put("sessionUser", userField.getText());
         session.put("sessionPass", VaultUtil.encryptPasswd(String.valueOf(passField.getPassword())));
-        session.put("sessionPukKey", getKeyContentFromPath(keyLabel.getText()));
+        if (sessionPukKey != null && !sessionPukKey.isBlank()) {
+            session.put("sessionPukKey", sessionPukKey);
+        } else {
+            session.put("sessionPukKey", getKeyContentFromPath(keyLabel.getText()));
+        }
         session.put("sessionLoginType", authType);
         session.put("sessionComment", commentText.getText());
 
@@ -381,7 +385,7 @@ public class NewSshPane extends JPanel {
 
                     try {
                         sessionPukKey = Files.readString(file.toPath());
-                        keyBtn.setToolTipText(sessionPukKey);
+                        keyLabel.setToolTipText(sessionPukKey);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -402,44 +406,6 @@ public class NewSshPane extends JPanel {
         advancedSettingPane.add(center, BorderLayout.CENTER);
     }
 
-    /**
-     * 输出指定目录下面的文件名称，包括子目录
-     */
-    public void recursiveListDirectory(File directory, ArrayList<String> categoryList) {
-        // 1、判断映射的目录文件是否存在？
-        if (!directory.exists()) {
-            // 不存在则直接返回
-            return;
-        }
-        // 2、判断是否是目录？
-        if (!directory.isDirectory()) {
-            // 不是目录，判断是否是文件？
-            if (directory.isFile()) {
-                System.out.println("文件绝对路径：" + directory.getAbsolutePath());
-            }
-        } else {
-            // 是目录，获取该目录下面的所有文件（包括目录）
-            File[] files = directory.listFiles();
-            // 判断 files 是否为空？
-            if (null != files) {
-                // 遍历文件数组
-                for (File f : files) {
-                    // 判断是否是目录？
-                    if (f.isDirectory()) {
-                        // 是目录
-                        log.debug("目录绝对路径：" + f.getAbsolutePath());
-                        categoryList.add(f.getPath());
-                        recursiveListDirectory(f, categoryList);
-                    } else {
-                        // 不是目录，判断是否是文件？
-                        if (f.isFile()) {
-                            log.debug("文件绝对路径：" + f.getAbsolutePath());
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private int testConnection() {
         host = hostField.getText();

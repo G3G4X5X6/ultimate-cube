@@ -103,9 +103,8 @@ public class SessionInfo {
             FilePasswordProvider passwordProvider = (session1, resourceKey, retryIndex) -> sessionPass;
             KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, keyPath, passwordProvider).iterator().next();
             session.addPublicKeyIdentity(keyPair);
-        } else {
-            session.addPasswordIdentity(this.sessionPass);
         }
+        session.addPasswordIdentity(this.sessionPass);
         session.auth().verify(15, TimeUnit.SECONDS);
         session.sendIgnoreMessage("".getBytes(StandardCharsets.UTF_8));
         return session;

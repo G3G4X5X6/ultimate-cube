@@ -23,6 +23,12 @@
             <version>6.15.44</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.c02e.jpgpj/jpgpj -->
+        <dependency>
+            <groupId>org.c02e.jpgpj</groupId>
+            <artifactId>jpgpj</artifactId>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
