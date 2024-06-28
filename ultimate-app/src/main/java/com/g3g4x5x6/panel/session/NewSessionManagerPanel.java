@@ -15,7 +15,6 @@ import com.g3g4x5x6.remote.utils.session.SessionOpenTool;
 import com.g3g4x5x6.ui.ToolBar;
 import com.g3g4x5x6.utils.DialogUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -25,8 +24,6 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.g3g4x5x6.MainFrame.mainTabbedPane;
@@ -51,6 +48,7 @@ public class NewSessionManagerPanel extends JPanel {
     private final JMenuItem editSessionItem = new JMenuItem("编辑会话");
     private final JMenuItem copySessionItem = new JMenuItem("复制会话");
     private final JMenuItem copyPassItem = new JMenuItem("复制密码");
+    private final JMenuItem copyPathItem = new JMenuItem("复制会话文件绝对路径");
 
     private final JButton refreshTableBtn = new JButton(new FlatSVGIcon("icons/refresh.svg"));
     private final JToggleButton selectSshBtn = new JToggleButton("SSH");
@@ -84,13 +82,10 @@ public class NewSessionManagerPanel extends JPanel {
         selectTelnetBtn.setSelected(true);
 
         categoryComboBox.addItem("ALL");
-        categoryComboBox.addItem("Option 1");
-        categoryComboBox.addItem("Option 2");
-        categoryComboBox.addItem("Option 3");
-        categoryComboBox.addItem("Option 4");
         categoryComboBox.setSelectedItem("ALL");
 
         // 事件监听
+        refreshTableBtn.addActionListener((event) -> filterAction());
         selectSshBtn.addActionListener((event) -> filterAction());
         selectRdpBtn.addActionListener((event) -> filterAction());
         selectVncBtn.addActionListener((event) -> filterAction());
@@ -175,23 +170,6 @@ public class NewSessionManagerPanel extends JPanel {
         sessionTable.getColumn("认证类型").setCellRenderer(centerRenderer);
 
         this.add(tableScrollPanel, BorderLayout.CENTER);
-    }
-
-    private String[] getSessionFields(File file) {
-        String[] row = new String[6];
-        try {
-            String json = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-            JSONObject jsonObject = JSON.parseObject(json);
-            row[0] = jsonObject.getString("sessionName");
-            row[1] = jsonObject.getString("sessionProtocol");
-            row[2] = jsonObject.getString("sessionAddress");
-            row[3] = jsonObject.getString("sessionPort");
-            row[4] = jsonObject.getString("sessionUser");
-            row[5] = jsonObject.getString("sessionLoginType");
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-        return row;
     }
 
     /**
@@ -297,6 +275,14 @@ public class NewSessionManagerPanel extends JPanel {
             }
         };
 
+        AbstractAction copyPathAction = new AbstractAction("复制会话文件绝对路径") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JSONObject jsonObject = getSelectedRowJSONObject();
+                CommonUtil.setClipboardText(Objects.requireNonNull(jsonObject).getString("sessionFilePath"));
+            }
+        };
+
         refreshTableItem.addActionListener(refreshAction);
         openSessionItem.addActionListener(openSession);
         testSessionItem.addActionListener(testSession);
@@ -304,6 +290,7 @@ public class NewSessionManagerPanel extends JPanel {
         addSessionItem.addActionListener(addSession);
         delSessionItem.addActionListener(delSession);
         copyPassItem.addActionListener(copyPassAction);
+        copyPathItem.addActionListener(copyPathAction);
 
         JPopupMenu popupMenu = createPopupMenu();
         sessionTable.setComponentPopupMenu(popupMenu);
@@ -323,6 +310,7 @@ public class NewSessionManagerPanel extends JPanel {
         popupMenu.add(delSessionItem);
         popupMenu.addSeparator();
         popupMenu.add(copyPassItem);
+        popupMenu.add(copyPathItem);
 
         return popupMenu;
     }
@@ -348,6 +336,11 @@ public class NewSessionManagerPanel extends JPanel {
             }
         }
         return null;
+    }
+
+    private JSONObject getSelectedRowJSONObject() {
+        int index = sessionTable.getSelectedRow();
+        return getSessionObject(index);
     }
 
     private ArrayList<String> getSelectedCategories() {

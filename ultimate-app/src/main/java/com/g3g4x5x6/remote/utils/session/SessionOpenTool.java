@@ -29,7 +29,7 @@ import static com.g3g4x5x6.MainFrame.mainTabbedPane;
 
 @Slf4j
 public class SessionOpenTool {
-    private static final String freeRdpPath = AppConfig.getWorkPath() + "/bin/wfreerdp.exe";
+    private static final String freeRdpPath = Path.of(AppConfig.getBinPath(), "wfreerdp.exe").toAbsolutePath().toString();
 
     public static void OpenSessionByProtocol(String sessionPath, String protocol) {
         switch (protocol) {

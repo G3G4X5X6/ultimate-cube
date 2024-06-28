@@ -1,10 +1,18 @@
 package com.g3g4x5x6.utils;
 
 import com.g3g4x5x6.AppConfig;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
+
+@Slf4j
 public class FileUtil {
 
     /**
@@ -63,10 +71,21 @@ public class FileUtil {
         }
     }
 
-    public static void main(String[] args) {
-        for (File file : listAllFiles("C:\\Users\\G3G4X5X6\\.ultimate-cube\\sessions")) {
-            System.out.println(file.getAbsolutePath());
 
+    public static Path getKeyPath(String privateKey) {
+        Path tempFile = null;
+        try {
+            // 创建临时文件，指定前缀和后缀
+            tempFile = Files.createTempFile(Path.of(AppConfig.getTempPath()), "private_", "_ppk.uc");
+            System.out.println("临时文件已创建：" + tempFile.toString());
+
+            // 将字符串写入临时文件
+            Files.write(tempFile, privateKey.getBytes(StandardCharsets.UTF_8));
+            System.out.println("内容已写入临时文件。");
+
+        } catch (IOException e) {
+            log.error(e.getMessage());
         }
+        return tempFile;
     }
 }

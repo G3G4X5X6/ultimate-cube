@@ -14,7 +14,6 @@ import com.g3g4x5x6.panel.other.ConnectionPane;
 import com.g3g4x5x6.panel.other.SysinfoPane;
 import com.g3g4x5x6.panel.session.NewSessionManagerPanel;
 import com.g3g4x5x6.panel.session.RecentSessionPanel;
-import com.g3g4x5x6.panel.session.SessionManagerPanel;
 import com.g3g4x5x6.remote.NewTabbedPane;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;

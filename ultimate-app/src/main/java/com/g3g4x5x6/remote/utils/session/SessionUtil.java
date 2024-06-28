@@ -92,7 +92,7 @@ public class SessionUtil {
             }
             Files.write(Path.of(recentPath), json.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return sessionInfo;
     }

@@ -3,11 +3,15 @@ package com.g3g4x5x6.remote.ssh;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.remote.ssh.panel.DropTargetListenerBrowserImpl;
 import com.g3g4x5x6.remote.ssh.panel.FilesBrowser;
+import com.g3g4x5x6.utils.FileUtil;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
+import org.apache.sshd.common.NamedResource;
+import org.apache.sshd.common.config.keys.FilePasswordProvider;
+import org.apache.sshd.common.session.SessionContext;
 import org.apache.sshd.core.CoreModuleProperties;
 import org.apache.sshd.putty.PuttyKeyUtils;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -94,8 +98,10 @@ public class SessionInfo {
 
         ClientSession session = client.connect(this.sessionUser, this.sessionAddress, Integer.parseInt(this.sessionPort)).verify(5000, TimeUnit.MILLISECONDS).getSession();
         if (sessionPukKey != null && !sessionPukKey.isBlank()) {
-            // TODO 公钥登录
-            KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, Path.of(sessionPukKey), null).iterator().next();
+            // 公钥登录
+            Path keyPath = FileUtil.getKeyPath(sessionPukKey);
+            FilePasswordProvider passwordProvider = (session1, resourceKey, retryIndex) -> sessionPass;
+            KeyPair keyPair = PuttyKeyUtils.DEFAULT_INSTANCE.loadKeyPairs(null, keyPath, passwordProvider).iterator().next();
             session.addPublicKeyIdentity(keyPair);
         } else {
             session.addPasswordIdentity(this.sessionPass);
