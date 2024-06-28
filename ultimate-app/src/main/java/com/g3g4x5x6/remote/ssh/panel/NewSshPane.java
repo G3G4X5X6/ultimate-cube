@@ -62,6 +62,7 @@ public class NewSshPane extends JPanel {
     private String password;
     private String authType = "password";
     private String sessionCategory;
+    private String sessionPukKey;
 
     public NewSshPane(JTabbedPane tabbedPane) {
         BorderLayout borderLayout = new BorderLayout();
@@ -194,7 +195,7 @@ public class NewSshPane extends JPanel {
         session.put("sessionPort", portField.getText());
         session.put("sessionUser", userField.getText());
         session.put("sessionPass", VaultUtil.encryptPasswd(String.valueOf(passField.getPassword())));
-        session.put("sessionPukKey", keyLabel.getText());
+        session.put("sessionPukKey", getKeyContentFromPath(keyLabel.getText()));
         session.put("sessionLoginType", authType);
         session.put("sessionComment", commentText.getText());
 
@@ -205,6 +206,7 @@ public class NewSshPane extends JPanel {
         if (editPath != null && !sessionFile.toString().equalsIgnoreCase(editPath)) {
             try {
                 Files.delete(Path.of(editPath));
+                editPath = sessionFile.toString();
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
@@ -219,6 +221,18 @@ public class NewSshPane extends JPanel {
         }
     }
 
+    private String getKeyContentFromPath(String path) {
+        log.debug(path);
+        if (path == null || path.isEmpty()) {
+            return "";
+        }
+        try {
+            return Files.readString(Path.of(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void openSession() {
         int preIndex = mainTabbedPane.getSelectedIndex();
 
@@ -229,7 +243,7 @@ public class NewSshPane extends JPanel {
         sessionInfo.setSessionPort(portField.getText());
         sessionInfo.setSessionUser(userField.getText());
         sessionInfo.setSessionPass(String.valueOf(passField.getPassword()));
-        sessionInfo.setSessionPukKey(keyLabel.getText());
+        sessionInfo.setSessionPukKey(sessionPukKey);
         sessionInfo.setSessionLoginType(authType);
         sessionInfo.setSessionComment(commentText.getText());
 
@@ -327,7 +341,7 @@ public class NewSshPane extends JPanel {
             for (JSONObject jsonObject : protocolsMap.get("SSH")) {
                 if (jsonObject.getString("sessionCategory") != null && !jsonObject.getString("sessionCategory").isBlank())
                     categorySet.add(jsonObject.getString("sessionCategory"));
-            }// C:\Users\G3G4X5X6\.ultimate-cube\sessions\SSH\c955892b-b69e-4a2c-9668-a86b70c436d6.json
+            }
         }
 
         ArrayList<String> categoryList = new ArrayList<>(categorySet);
@@ -339,10 +353,13 @@ public class NewSshPane extends JPanel {
         categoryPane.add(new JLabel("会话分类:"));
         categoryPane.add(categoryCombo);
 
-        // 公钥登录
+        // 密钥登陆
         JPanel north2 = new JPanel();
         JButton keyBtn = new JButton();
         keyBtn.setIcon(new FlatTreeClosedIcon());
+        if (sessionPukKey != null && !sessionPukKey.isBlank()) {
+            keyBtn.setToolTipText(sessionPukKey);
+        }
         keyBtn.setToolTipText("点击按钮选择私钥");
         keyLabel = new JLabel();
         keyBtn.addActionListener(new AbstractAction() {
@@ -350,7 +367,7 @@ public class NewSshPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
                 // 设置默认显示的文件夹为当前文件夹
-                fileChooser.setCurrentDirectory(new File("."));
+                fileChooser.setCurrentDirectory(new File(AppConfig.getWorkPath()));
                 // 设置文件选择的模式（只选文件、只选文件夹、文件和文件均可选）
                 fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 // 打开文件选择框（线程将被阻塞, 直到选择框被关闭）
@@ -361,10 +378,17 @@ public class NewSshPane extends JPanel {
                     File file = fileChooser.getSelectedFile();
                     keyLabel.setText(file.getAbsolutePath());
                     authType = "public";
+
+                    try {
+                        sessionPukKey = Files.readString(file.toPath());
+                        keyBtn.setToolTipText(sessionPukKey);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
-        north2.add(new JLabel("公钥登录:"));
+        north2.add(new JLabel("密钥登陆:"));
         north2.add(keyBtn);
         north2.add(keyLabel);
 
@@ -481,8 +505,10 @@ public class NewSshPane extends JPanel {
         sessionCategory = category;
     }
 
-    public void setKeyLabel(String key) {
-        keyLabel.setText(key);
+    public void setPukKey(String key) {
+        sessionPukKey = key;
+        keyLabel.setText("在此查看密钥信息");
+        keyLabel.setToolTipText(sessionPukKey);
     }
 
     public void setCommentText(String text) {

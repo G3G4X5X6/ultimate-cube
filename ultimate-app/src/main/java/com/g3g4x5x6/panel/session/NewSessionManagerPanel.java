@@ -254,7 +254,7 @@ public class NewSessionManagerPanel extends JPanel {
                         sshPane.setPortField(jsonObject.getString("sessionPort"));
                         sshPane.setUserField(jsonObject.getString("sessionUser"));
                         sshPane.setPassField(VaultUtil.decryptPasswd(jsonObject.getString("sessionPass")));
-                        sshPane.setKeyLabel(jsonObject.getString("sessionKeyPath"));
+                        sshPane.setPukKey(jsonObject.getString("sessionPukKey"));
                         sshPane.setSessionName(jsonObject.getString("sessionName"));
                         sshPane.setCommentText(jsonObject.getString("sessionComment"));
                         sshPane.setAuthType(jsonObject.getString("sessionLoginType"));
