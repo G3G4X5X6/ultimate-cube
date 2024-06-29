@@ -41,6 +41,16 @@ public class ExternalToolIntegration {
         }
     }
 
+    public void initExternalToolsPopupMenu(JPopupMenu popupMenu) {
+        for (String category : items.keySet()) {
+            JMenu cateMenu = new JMenu(category);
+            for (JMenuItem item : items.get(category)) {
+                cateMenu.add(item);
+            }
+            popupMenu.add(cateMenu);
+        }
+    }
+
     private JSONArray parseSettings() {
         JSONArray array;
         try {
@@ -67,8 +77,7 @@ public class ExternalToolIntegration {
             e.printStackTrace();
             return new JSONArray();
         }
-        if (array == null)
-            array = new JSONArray();
+        if (array == null) array = new JSONArray();
         return array;
     }
 
@@ -110,10 +119,7 @@ public class ExternalToolIntegration {
      * 内置变量替换：%BasePath%
      */
     private String replaceBasePath(String path) {
-        return path.replaceAll(
-                "%BasePath%",
-                Path.of(AppConfig.getWorkPath() + "/tools/external_tools").toString().replaceAll("\\\\", "/")
-        );
+        return path.replaceAll("%BasePath%", Path.of(AppConfig.getWorkPath() + "/tools/external_tools").toString().replaceAll("\\\\", "/"));
     }
 
     private void exec(String commandStr, String workDir) {

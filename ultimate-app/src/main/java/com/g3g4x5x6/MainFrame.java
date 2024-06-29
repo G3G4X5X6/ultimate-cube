@@ -202,13 +202,14 @@ public class MainFrame extends JFrame implements MouseListener {
         settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         settingsItem.addActionListener(settingsAction);
 
-        JMenuItem editAppSettingsItem = new JMenuItem("程序配置文件");
+        JMenuItem editAppSettingsItem = new JMenuItem("配置文件（主程序）");
         editAppSettingsItem.addActionListener(editAppSettingsAction);
 
-        JMenuItem editEditorSettingsItem = new JMenuItem("编辑器配置文件");
+        JMenuItem editEditorSettingsItem = new JMenuItem("配置文件（编辑器）");
         editEditorSettingsItem.addActionListener(editEditorSettingsAction);
 
         optionMenu.add(settingsItem);
+        optionMenu.addSeparator();
         optionMenu.add(editAppSettingsItem);
         optionMenu.add(editEditorSettingsItem);
         optionMenu.addSeparator();
@@ -482,6 +483,17 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
+        // externalTools.svg
+        JButton externalToolsBtn = new JButton(new FlatSVGIcon("icons/externalTools.svg"));
+        externalToolsBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JPopupMenu popupMenu = new JPopupMenu();
+                integration.initExternalToolsPopupMenu(popupMenu);
+                popupMenu.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
         JButton trailMenuBtn = new JButton(new FlatSVGIcon("icons/windows.svg"));
         if (OsUtils.isWin32()) {
             // windows.svg
@@ -511,6 +523,7 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
+        trailing.add(externalToolsBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
     }
