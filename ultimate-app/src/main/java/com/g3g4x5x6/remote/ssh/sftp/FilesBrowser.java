@@ -6,12 +6,14 @@ import com.formdev.flatlaf.icons.FlatSearchIcon;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.exception.UserStopException;
+import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
+import org.apache.sshd.sftp.client.fs.SftpFileSystemProvider;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -35,6 +37,7 @@ import static com.g3g4x5x6.remote.utils.TableUtil.convertFileLongNameToStringArr
 @Slf4j
 public class FilesBrowser extends JPanel implements MouseListener {
 
+    private SessionInfo sessionInfo;
     private SftpFileSystem fs;
 
     private JTable table;
@@ -60,9 +63,11 @@ public class FilesBrowser extends JPanel implements MouseListener {
 
     private EditorFrame editorFrame;
 
-    public FilesBrowser(SftpFileSystem fileSystem) {
+    public FilesBrowser(SessionInfo sessionInfo) {
         this.setLayout(new BorderLayout());
-        this.fs = fileSystem;
+
+        this.sessionInfo = sessionInfo;
+        this.fs = this.sessionInfo.getSftpFileSystem();
 
         initTable();
         // 表格滚动面板
@@ -73,13 +78,8 @@ public class FilesBrowser extends JPanel implements MouseListener {
         pathField.putClientProperty("JTextField.placeholderText", "/home/g3g4x5x6/Document");
         pathField.registerKeyboardAction(e -> {
             String quickPath = pathField.getText();
-            // 1. 检查路径是否存在
-            if (Files.exists(fs.getPath(quickPath))) {
-                if (Files.isDirectory(fs.getPath(quickPath))) gotoDir(quickPath);
-                else gotoDir(fs.getPath(quickPath).getParent().toString());
-            } else {
-                JOptionPane.showMessageDialog(FilesBrowser.this, "路径不存在", "警告", JOptionPane.WARNING_MESSAGE);
-            }
+            String path = fs.getPath(quickPath).toString();
+            gotoDir(path);
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false), JComponent.WHEN_FOCUSED);
 
         // 初始化工具栏菜单
@@ -161,41 +161,43 @@ public class FilesBrowser extends JPanel implements MouseListener {
         String currentDirPath = fs.getDefaultDir().toString();
         currentPath = currentDirPath;
         pathField.setText(currentDirPath);
-        for (SftpClient.DirEntry entry : fs.getClient().readDir(currentDirPath)) {
-            if (entry.getFilename().equals(".") || entry.getFilename().equals("..")) continue;
-            // 添加文件至表格
-            if (entry.getAttributes().isDirectory()) {
-                tableModel.insertRow(0, convertFileLongNameToStringArray(entry, true));
-                dirCount++;
-            } else {
-                tableModel.addRow(convertFileLongNameToStringArray(entry, true));
-            }
-        }
+
+        setTableData(currentDirPath);
+
         // 文件图标
         FilesBrowserTableCellRenderer fileRenderer = new FilesBrowserTableCellRenderer(dirCount);
         table.getColumn("文件名").setCellRenderer(fileRenderer);
     }
 
-    @SneakyThrows
     private void gotoDir(String path) {
-        log.debug("展开路径：" + path);
+        log.debug("展开路径：{}", path);
         currentPath = path;
         pathField.setText(currentPath);
-        tableModel.setRowCount(0);
-        dirCount = 0;
-        for (SftpClient.DirEntry entry : fs.getClient().readDir(path)) {
-            if (entry.getFilename().equals(".") || entry.getFilename().equals("..")) continue;
-            // 添加文件至表格
-            if (entry.getAttributes().isDirectory()) {
-                tableModel.insertRow(0, convertFileLongNameToStringArray(entry, true));
-                dirCount++;
-            } else {
-                tableModel.addRow(convertFileLongNameToStringArray(entry, true));
-            }
-        }
+
+        setTableData(path);
+
         // 文件图标
         FilesBrowserTableCellRenderer fileRenderer = new FilesBrowserTableCellRenderer(dirCount);
         table.getColumn("文件名").setCellRenderer(fileRenderer);
+    }
+
+    private void setTableData(String path) {
+        tableModel.setRowCount(0);
+        dirCount = 0;
+        try {
+            for (SftpClient.DirEntry entry : fs.getClient().readDir(path)) {
+                if (entry.getFilename().equals(".") || entry.getFilename().equals("..")) continue;
+                // 添加文件至表格
+                if (entry.getAttributes().isDirectory()) {
+                    tableModel.insertRow(0, convertFileLongNameToStringArray(entry, true));
+                    dirCount++;
+                } else {
+                    tableModel.addRow(convertFileLongNameToStringArray(entry, true));
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void initToolBar() {

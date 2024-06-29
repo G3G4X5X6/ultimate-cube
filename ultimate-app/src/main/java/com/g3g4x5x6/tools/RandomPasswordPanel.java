@@ -23,7 +23,7 @@ public class RandomPasswordPanel extends JPanel {
     private String notCopyIcon;
     private String copiedIcon;
 
-    public RandomPasswordPanel(){
+    public RandomPasswordPanel() {
         this.setLayout(new BorderLayout());
 
         this.toolBar = new JToolBar();
@@ -35,11 +35,9 @@ public class RandomPasswordPanel extends JPanel {
         this.passTextLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2)
-                    refreshPasswd();
+                if (e.getClickCount() == 2) refreshPasswd();
 
-                if (e.getButton() == 3)
-                    setClipboardText(passTextLabel.getText());
+                if (e.getButton() == 3) setClipboardText(passTextLabel.getText());
             }
         });
         refreshPasswd();
@@ -52,7 +50,7 @@ public class RandomPasswordPanel extends JPanel {
         this.add(panel, BorderLayout.CENTER);
     }
 
-    private void refreshPasswd(){
+    private void refreshPasswd() {
         this.passTextLabel.setFont(Font.getFont(Font.MONOSPACED, new Font("宋体", Font.BOLD, 32)));
         this.passTextLabel.setForeground(Color.decode("#228B22"));
         this.passTextLabel.setText(GenPass.generatePassword());
@@ -61,7 +59,7 @@ public class RandomPasswordPanel extends JPanel {
         statusBtn.setIcon(new FlatSVGIcon(notCopyIcon));
     }
 
-    private void initToolBar(){
+    private void initToolBar() {
         statusBtn = new JButton(new FlatSVGIcon("icons/intentionBulbGrey.svg"));
         statusBtn.setToolTipText("复制状态");
         notCopyIcon = "icons/intentionBulbGrey.svg";
@@ -145,6 +143,7 @@ public class RandomPasswordPanel extends JPanel {
 
         /**
          * 默认生成规则：大写字母、小写字母、数字、特殊字符、长度=16位
+         *
          * @return password： 返回16位随机密码
          */
         public static String generatePassword() {

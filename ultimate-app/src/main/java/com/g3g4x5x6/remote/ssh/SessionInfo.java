@@ -60,7 +60,7 @@ public class SessionInfo {
     public void initComponent() throws GeneralSecurityException, IOException {
         init();
         this.sshPane = createTerminalWidget();
-        if (sftpFlag) this.sftpBrowser = new FilesBrowser(this.sftpFileSystem);
+        if (sftpFlag) this.sftpBrowser = new FilesBrowser(this);
 
         // 注册拖拽监听
         registerDropTarget();
@@ -82,11 +82,15 @@ public class SessionInfo {
         return widget;
     }
 
-    private void init() throws GeneralSecurityException, IOException {
-        this.client = SshClient.setUpDefaultClient();
-        this.client.start();
-        this.session = getSession(client);
-        this.sftpFileSystem = getSftpFileSystem(session);
+    public void init() {
+        try {
+            this.client = SshClient.setUpDefaultClient();
+            this.client.start();
+            this.session = getSession(client);
+            this.sftpFileSystem = getSftpFileSystem(session);
+        } catch (IOException | GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ClientSession getSession(SshClient client) throws IOException, GeneralSecurityException {
@@ -108,12 +112,8 @@ public class SessionInfo {
     }
 
     private SftpFileSystem getSftpFileSystem(ClientSession session) throws IOException {
-        if (sftpFileSystem == null || !sftpFileSystem.isOpen()) {
-            SftpFileSystemProvider provider = new SftpFileSystemProvider();
-            return provider.newFileSystem(session);
-        } else {
-            return sftpFileSystem;
-        }
+        SftpFileSystemProvider provider = new SftpFileSystemProvider();
+        return provider.newFileSystem(session);
     }
 
     @SneakyThrows
