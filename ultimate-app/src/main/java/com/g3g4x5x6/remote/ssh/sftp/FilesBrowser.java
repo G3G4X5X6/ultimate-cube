@@ -75,10 +75,8 @@ public class FilesBrowser extends JPanel implements MouseListener {
             String quickPath = pathField.getText();
             // 1. 检查路径是否存在
             if (Files.exists(fs.getPath(quickPath))) {
-                if (Files.isDirectory(fs.getPath(quickPath)))
-                    gotoDir(quickPath);
-                else
-                    gotoDir(fs.getPath(quickPath).getParent().toString());
+                if (Files.isDirectory(fs.getPath(quickPath))) gotoDir(quickPath);
+                else gotoDir(fs.getPath(quickPath).getParent().toString());
             } else {
                 JOptionPane.showMessageDialog(FilesBrowser.this, "路径不存在", "警告", JOptionPane.WARNING_MESSAGE);
             }
@@ -94,11 +92,9 @@ public class FilesBrowser extends JPanel implements MouseListener {
         searchField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Search, Enter");
         searchField.putClientProperty(FlatClientProperties.TEXT_FIELD_TRAILING_ICON, new FlatSearchIcon());
         searchField.registerKeyboardAction(e -> {
-                    String searchKeyWord = searchField.getText().strip();
-                    sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
-                },
-                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),
-                JComponent.WHEN_FOCUSED);
+            String searchKeyWord = searchField.getText().strip();
+            sorter.setRowFilter(RowFilter.regexFilter(searchKeyWord));
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false), JComponent.WHEN_FOCUSED);
 
         this.add(toolBar, BorderLayout.WEST);
         this.add(pathField, BorderLayout.NORTH);
@@ -166,8 +162,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
         currentPath = currentDirPath;
         pathField.setText(currentDirPath);
         for (SftpClient.DirEntry entry : fs.getClient().readDir(currentDirPath)) {
-            if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
-                continue;
+            if (entry.getFilename().equals(".") || entry.getFilename().equals("..")) continue;
             // 添加文件至表格
             if (entry.getAttributes().isDirectory()) {
                 tableModel.insertRow(0, convertFileLongNameToStringArray(entry, true));
@@ -189,8 +184,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
         tableModel.setRowCount(0);
         dirCount = 0;
         for (SftpClient.DirEntry entry : fs.getClient().readDir(path)) {
-            if (entry.getFilename().equals(".") || entry.getFilename().equals(".."))
-                continue;
+            if (entry.getFilename().equals(".") || entry.getFilename().equals("..")) continue;
             // 添加文件至表格
             if (entry.getAttributes().isDirectory()) {
                 tableModel.insertRow(0, convertFileLongNameToStringArray(entry, true));
@@ -348,18 +342,14 @@ public class FilesBrowser extends JPanel implements MouseListener {
         if (e.getClickCount() == 2) {
             String fileName = ((String) table.getValueAt(table.getSelectedRow(), 0)).replaceFirst("DIR:", "");
             String quickPath;
-            if (currentPath.endsWith("/"))
-                quickPath = currentPath + fileName;
-            else
-                quickPath = currentPath + "/" + fileName;
+            if (currentPath.endsWith("/")) quickPath = currentPath + fileName;
+            else quickPath = currentPath + "/" + fileName;
 
             back.push(currentPath);
             // 1. 检查路径是否存在
             if (Files.exists(fs.getPath(quickPath))) {
-                if (Files.isDirectory(fs.getPath(quickPath)))
-                    gotoDir(quickPath);
-                else
-                    gotoDir(fs.getPath(quickPath).getParent().toString());
+                if (Files.isDirectory(fs.getPath(quickPath))) gotoDir(quickPath);
+                else gotoDir(fs.getPath(quickPath).getParent().toString());
             } else {
                 JOptionPane.showMessageDialog(FilesBrowser.this, "路径不存在或者连接已断开", "警告", JOptionPane.WARNING_MESSAGE);
             }
@@ -602,12 +592,11 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                                 outputStream.write(buf, 0, bytesRead);
                                                 sendLen += bytesRead;
                                                 taskPanel.setProgressBarValue(sendLen);
-                                                if (taskPanel.isTerminate())
-                                                    try {
-                                                        throw new UserStopException("用户终止任务");
-                                                    } catch (UserStopException ex) {
-                                                        throw new RuntimeException(ex);
-                                                    }
+                                                if (taskPanel.isTerminate()) try {
+                                                    throw new UserStopException("用户终止任务");
+                                                } catch (UserStopException ex) {
+                                                    throw new RuntimeException(ex);
+                                                }
                                             }
                                             if (Files.size(file) == 0) {
                                                 taskPanel.setProgressBarValue(1);
@@ -644,8 +633,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
                                         sendLen += bytesRead;
                                         taskPanel.setProgressBarValue(sendLen);
 
-                                        if (taskPanel.isTerminate())
-                                            throw new UserStopException("用户终止任务");
+                                        if (taskPanel.isTerminate()) throw new UserStopException("用户终止任务");
                                     }
                                     outputStream.flush();   //
                                     outputStream.close();
@@ -680,8 +668,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
             String file = JOptionPane.showInputDialog(FilesBrowser.this, "请输入文件名：", "新建文件", JOptionPane.QUESTION_MESSAGE);
             try {
                 log.debug("New file: " + currentPath + "/" + file);
-                if (file != null && !file.equals(""))
-                    Files.createFile(fs.getPath(currentPath + "/" + file));
+                if (file != null && !file.equals("")) Files.createFile(fs.getPath(currentPath + "/" + file));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -694,8 +681,7 @@ public class FilesBrowser extends JPanel implements MouseListener {
         public void actionPerformed(ActionEvent e) {
             String dir = JOptionPane.showInputDialog(FilesBrowser.this, "请输入目录名：", "新建目录", JOptionPane.QUESTION_MESSAGE);
             try {
-                if (dir != null && !dir.equals(""))
-                    Files.createDirectory(fs.getPath(currentPath + "/" + dir));
+                if (dir != null && !dir.equals("")) Files.createDirectory(fs.getPath(currentPath + "/" + dir));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
