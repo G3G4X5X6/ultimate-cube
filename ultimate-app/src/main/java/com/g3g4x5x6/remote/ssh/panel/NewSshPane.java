@@ -338,20 +338,14 @@ public class NewSshPane extends JPanel {
         categoryCombo.setMinimumSize(new Dimension(250, 25));
         categoryCombo.setSize(new Dimension(250, 25));
         categoryCombo.setPreferredSize(new Dimension(250, 25));
-        categoryCombo.addItem("");
 
-        HashMap<String, ArrayList<JSONObject>> protocolsMap = SessionFileUtil.getProtocolsMap();
-        Set<String> categorySet = new HashSet<>(); // 使用HashSet去重
-        if (protocolsMap.get("SSH") != null) {
-            for (JSONObject jsonObject : protocolsMap.get("SSH")) {
-                if (jsonObject.getString("sessionCategory") != null && !jsonObject.getString("sessionCategory").isBlank())
-                    categorySet.add(jsonObject.getString("sessionCategory"));
-            }
-        }
-
-        ArrayList<String> categoryList = new ArrayList<>(categorySet);
+        HashMap<String, ArrayList<JSONObject>> categoriesMap = SessionFileUtil.getCategoriesMap();
+        ArrayList<String> categoryList = new ArrayList<>(categoriesMap.keySet());
         for (String category : categoryList) {
             categoryCombo.addItem(category);
+        }
+        if (categoryCombo.getItemCount() <= 0) {
+            categoryCombo.addItem("");
         }
         categoryCombo.setSelectedItem(Objects.requireNonNullElse(sessionCategory, ""));
 

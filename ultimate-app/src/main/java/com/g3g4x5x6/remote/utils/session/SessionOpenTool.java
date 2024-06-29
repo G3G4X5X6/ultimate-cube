@@ -109,7 +109,7 @@ public class SessionOpenTool {
 
                 // 设置执行命令及其参数列表
                 processBuilder.command(cmdArgs);
-                log.debug(cmdArgs.toString());
+                log.debug("freeRDP: {}", String.join(" ", cmdArgs));
 
                 //将标准输入流和错误输入流合并
                 // 通过标准输入流读取信息就可以拿到第三方程序输出的错误信息、正常信息

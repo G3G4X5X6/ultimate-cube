@@ -2,8 +2,11 @@ package com.g3g4x5x6.remote.rdp;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.AppConfig;
+import com.g3g4x5x6.panel.session.SessionFileUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.os.OsInfoUtil;
@@ -12,10 +15,13 @@ import lombok.extern.slf4j.Slf4j;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 
 @Slf4j
@@ -31,6 +37,8 @@ public class RdpPane extends JPanel {
     private final String advancedSettingPaneTitle;
     private final JPanel advancedSettingPane;
 
+    private String editPath;
+
     private ArrayList<String> cmdList;
     // 参数区域: basicSettingPane
     private JFormattedTextField hostField;
@@ -44,10 +52,13 @@ public class RdpPane extends JPanel {
     private JTextField title;
     private JTextField width;
     private JTextField height;
+    private JComboBox<String> categoryCombo;
+    private String sessionCategory = "";
+    private String authType = "local";
 
     private boolean openFlag = false;
-    private final String freeRdpSessionsDirPath = AppConfig.getWorkPath() + "/sessions/RDP";
-    private final String exePath = AppConfig.getWorkPath() + "/bin/wfreerdp.exe";
+    private final String freeRdpSessionsDirPath = AppConfig.getSessionPath() + "/RDP";
+    private final String exePath = AppConfig.getBinPath() + "/wfreerdp.exe";
 
     public RdpPane(JTabbedPane mainTabbedPane) {
         this.mainTabbedPane = mainTabbedPane;
@@ -82,7 +93,7 @@ public class RdpPane extends JPanel {
         JPanel hostPane = new JPanel();
         JLabel hostLabel = new JLabel("Remote Host*");
         hostField = new JFormattedTextField();
-        hostField.setColumns(10);
+        hostField.setColumns(17);
         hostPane.add(hostLabel);
         hostPane.add(hostField);
 
@@ -99,7 +110,7 @@ public class RdpPane extends JPanel {
         JPanel userPane = new JPanel();
         JLabel userLabel = new JLabel("Username");
         userField = new JTextField();
-        userField.setColumns(8);
+        userField.setColumns(16);
         userPane.add(userLabel);
         userPane.add(userField);
 
@@ -107,7 +118,8 @@ public class RdpPane extends JPanel {
         JPanel passPane = new JPanel();
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
-        passField.setColumns(8);
+        passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
+        passField.setColumns(16);
         passPane.add(passLabel);
         passPane.add(passField);
 
@@ -125,20 +137,43 @@ public class RdpPane extends JPanel {
         // Title
         JPanel titlePane = new JPanel();
         title = new JTextField();
-        title.setColumns(15);
+        title.putClientProperty("JTextField.placeholderText", "Default: Host_Port_User_LoginType"); // 本地或域名
+        title.setColumns(35);
         titlePane.add(new JLabel("窗口标题"));
         titlePane.add(title);
 
+        // 会话分类
+        JPanel categoryPane = new JPanel();
+        categoryCombo = new JComboBox<>();
+        categoryCombo.setEditable(true);
+        categoryCombo.setMinimumSize(new Dimension(250, 25));
+        categoryCombo.setSize(new Dimension(250, 25));
+        categoryCombo.setPreferredSize(new Dimension(250, 25));
+        categoryCombo.addItemListener(e -> sessionCategory = Objects.requireNonNull(categoryCombo.getSelectedItem()).toString());
+
+        HashMap<String, ArrayList<JSONObject>> categoriesMap = SessionFileUtil.getCategoriesMap();
+        ArrayList<String> categoryList = new ArrayList<>(categoriesMap.keySet());
+        for (String category : categoryList) {
+            categoryCombo.addItem(category);
+        }
+        if (categoryCombo.getItemCount() <= 0) {
+            categoryCombo.addItem("");
+        }
+        categoryCombo.setSelectedItem(Objects.requireNonNullElse(sessionCategory, ""));
+
+        categoryPane.add(new JLabel("会话分类:"));
+        categoryPane.add(categoryCombo);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         // Size
         JPanel sizePane = new JPanel();
         width = new JTextField();
         width.setColumns(4);
-        width.setEditable(false);
+        width.setText(String.valueOf(screenSize.width - 100));
         height = new JTextField();
         height.setColumns(4);
-        height.setEditable(false);
+        height.setText(String.valueOf(screenSize.height - 100));
         fullscreen = new JCheckBox("Fullscreen");
-        fullscreen.setSelected(true);
         fullscreen.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -174,6 +209,8 @@ public class RdpPane extends JPanel {
         checkBoxPane.add(microphone);
 
         advancedSettingPane.add(titlePane);
+        advancedSettingPane.add(Box.createHorizontalGlue());
+        advancedSettingPane.add(categoryPane);
         advancedSettingPane.add(Box.createHorizontalGlue());
         advancedSettingPane.add(sizePane);
         advancedSettingPane.add(Box.createHorizontalGlue());
@@ -278,7 +315,7 @@ public class RdpPane extends JPanel {
 
                 // 设置执行命令及其参数列表
                 processBuilder.command(cmdList);
-                log.debug(cmdList.toString());
+                log.debug("freeRDP: {}", String.join(" ", cmdList));
 
                 //将标准输入流和错误输入流合并
                 // 通过标准输入流读取信息就可以拿到第三方程序输出的错误信息、正常信息
@@ -314,8 +351,14 @@ public class RdpPane extends JPanel {
         packCmdList();
 
         LinkedHashMap<String, Object> session = new LinkedHashMap<>();
-        session.put("sessionName", title.getText());
+        if (title.getText().isBlank()) {
+            // 默认会话名称：Host_Port_User_LoginType
+            session.put("sessionName", hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType);
+        } else {
+            session.put("sessionName", title.getText());
+        }
         session.put("sessionProtocol", "RDP");
+        session.put("sessionCategory", sessionCategory);
         session.put("sessionAddress", hostField.getText());
         session.put("sessionPort", portField.getText());
         session.put("sessionUser", userField.getText());
@@ -324,13 +367,17 @@ public class RdpPane extends JPanel {
         session.put("sessionLoginType", "password");
         session.put("sessionComment", "暂不支持");
 
-        String sessionFile;
         if (!hostField.getText().isBlank()) {
-            sessionFile = freeRdpSessionsDirPath + "/FreeRDP_" + hostField.getText() + "_" + (portField.getText().isBlank() ? "3389" : portField.getText().strip()) + "_" + (userField.getText().isBlank() ? "-" : userField.getText().strip()) + "_" + "password" + ".json";
-            log.debug("SessionFile: " + sessionFile);
+            if (editPath == null) {
+                // 保存会话路径
+                Path sessionPath = Paths.get(AppConfig.getSessionPath(), "RDP");
+                Path sessionFile = sessionPath.resolve(UUID.randomUUID() + ".json");
+                editPath = sessionFile.toString();
+                log.debug("SessionFile: {}", sessionFile);
+            }
 
             try {
-                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(sessionFile));
+                BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(editPath));
                 out.write(JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
                 out.flush();
                 out.close();
