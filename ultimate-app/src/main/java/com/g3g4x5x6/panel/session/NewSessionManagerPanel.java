@@ -246,7 +246,9 @@ public class NewSessionManagerPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 int[] indexes = sessionTable.getSelectedRows();
                 for (int index : indexes) {
-                    JSONObject jsonObject = getSessionObject(index);
+                    int modelRowIndex = sessionTable.convertRowIndexToModel(index);
+
+                    JSONObject jsonObject = getSessionObject(modelRowIndex);
 
                     new Thread(() -> {
                         NewSshPane sshPane = new NewSshPane(mainTabbedPane);
