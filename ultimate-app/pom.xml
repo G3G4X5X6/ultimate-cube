@@ -23,10 +23,10 @@
             <version>6.15.44</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.c02e.jpgpj/jpgpj -->
         <dependency>
-            <groupId>org.c02e.jpgpj</groupId>
-            <artifactId>jpgpj</artifactId>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.70</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->

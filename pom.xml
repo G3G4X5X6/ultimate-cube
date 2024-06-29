@@ -182,11 +182,10 @@
                 <version>${sshd-putty-version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.c02e.jpgpj/jpgpj -->
             <dependency>
-                <groupId>org.c02e.jpgpj</groupId>
-                <artifactId>jpgpj</artifactId>
-                <version>1.3</version>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>1.70</version>
             </dependency>
 
             <dependency>
