@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 import java.util.Random;
 
 @Slf4j
-public class RandomPasswordPane extends JPanel {
+public class RandomPasswordPanel extends JPanel {
 
     private final JToolBar toolBar;
     private final JLabel passTextLabel;
@@ -23,7 +23,7 @@ public class RandomPasswordPane extends JPanel {
     private String notCopyIcon;
     private String copiedIcon;
 
-    public RandomPasswordPane(){
+    public RandomPasswordPanel(){
         this.setLayout(new BorderLayout());
 
         this.toolBar = new JToolBar();

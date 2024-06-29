@@ -93,6 +93,19 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
+        JButton copyToShareBtn = new JButton("SHARE");
+        copyToShareBtn.setIcon(new FlatSVGIcon("icons/copy.svg"));
+        copyToShareBtn.setSelected(true);
+        copyToShareBtn.setToolTipText("复制SSH连接命令行");
+        copyToShareBtn.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sshCmd = "ssh " + sessionInfo.getSessionUser() + "@" + sessionInfo.getSessionAddress() + " -p " + sessionInfo.getSessionPort();
+                sshCmd += "\nPassword: " + sessionInfo.getSessionPass();
+                CommonUtil.setClipboardText(sshCmd);
+            }
+        });
+
         JButton transferTaskBtn = new JButton(new FlatSVGIcon("icons/fileTransfer.svg"));
         transferTaskBtn.setToolTipText("任务列表");
         transferTaskBtn.addMouseListener(new MouseAdapter() {
@@ -123,6 +136,7 @@ public class SshTabbedPane extends JTabbedPane {
         // 上左下右
         trailing.add(copyIpBtn);
         trailing.add(copyPassBtn);
+        trailing.add(copyToShareBtn);
         trailing.addSeparator();
         trailing.add(transferTaskBtn);
         trailing.addSeparator();
@@ -132,9 +146,9 @@ public class SshTabbedPane extends JTabbedPane {
     }
 
     private void initOtherPopupMenu() {
-        JMenuItem refreshItem = new JMenuItem("重新连接会话");
+        JMenuItem refreshItem = new JMenuItem("会话重连");
         refreshItem.setIcon(new FlatSVGIcon("icons/refresh.svg"));
-        refreshItem.setToolTipText("重新连接");
+        refreshItem.setToolTipText("重新连接会话");
         refreshItem.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

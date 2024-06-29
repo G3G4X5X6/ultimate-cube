@@ -21,7 +21,7 @@ import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.session.SessionUtil;
 import com.g3g4x5x6.settings.SettingsDialog;
-import com.g3g4x5x6.tools.RandomPasswordPane;
+import com.g3g4x5x6.tools.RandomPasswordPanel;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.StatusBar;
 import com.g3g4x5x6.ui.dialog.LockDialog;
@@ -454,33 +454,8 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        JButton genPassBtn = new JButton(new FlatSVGIcon("icons/cwmPermissions.svg"));
-//        genPassBtn.setSelected(true);
-        genPassBtn.setToolTipText("生成随机密码");
-        genPassBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showRandomPasswordDialog();
-            }
-        });
-
         // TODO 选项卡面板前置工具栏，暂不使用
         leading.add(dashboardBtn);
-
-        JButton editorBtn = new JButton(new FlatSVGIcon("icons/editScheme.svg"));
-//        editorBtn.setSelected(true);
-        editorBtn.setToolTipText("简易编辑器");
-        editorBtn.addActionListener(myEditorAction);
-
-        JButton focusBtn = new JButton(new FlatSVGIcon("icons/cwmScreenOn.svg"));
-        focusBtn.setToolTipText("专注模式");
-        focusBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                log.debug("专注模式");
-                focusAction();
-            }
-        });
 
         waitProgressBar = new JProgressBar();
         waitProgressBar.setIndeterminate(true);
@@ -509,10 +484,15 @@ public class MainFrame extends JFrame implements MouseListener {
             // macOS.svg
             trailMenuBtn.setIcon(new FlatSVGIcon("icons/macOS.svg"));
         }
+        JPopupMenu trailPopupMenu = createTrailPopupMenu();
+        // 右键
+        trailMenuBtn.setComponentPopupMenu(trailPopupMenu);
+        // 单击
         trailMenuBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 log.debug("trailMenuBtn");
+                trailPopupMenu.show(e.getComponent(), e.getX(), e.getY());
             }
         });
 
@@ -522,10 +502,32 @@ public class MainFrame extends JFrame implements MouseListener {
         trailing.add(Box.createHorizontalGlue());
         trailing.add(waitProgressBar);
         trailing.add(Box.createHorizontalGlue());
-        trailing.add(editorBtn);
-        trailing.add(genPassBtn);
         trailing.add(trailMenuBtn);
         mainTabbedPane.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    private JPopupMenu createTrailPopupMenu() {
+        JPopupMenu trailPopupMenu = new JPopupMenu();
+
+        JMenuItem genPassItem = new JMenuItem("密码生成器");
+        genPassItem.setIcon(new FlatSVGIcon("icons/cwmPermissions.svg"));
+        genPassItem.setToolTipText("密码生成器");
+        genPassItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showRandomPasswordDialog();
+            }
+        });
+
+        JMenuItem editorItem = new JMenuItem("简易编辑器");
+        editorItem.setIcon(new FlatSVGIcon("icons/editScheme.svg"));
+        editorItem.setToolTipText("内置简易编辑器");
+        editorItem.addActionListener(myEditorAction);
+
+        trailPopupMenu.add(editorItem);
+        trailPopupMenu.add(genPassItem);
+
+        return trailPopupMenu;
     }
 
     private void focusAction() {
@@ -767,7 +769,7 @@ public class MainFrame extends JFrame implements MouseListener {
         dialog.setSize(new Dimension(450, 145));
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(MainFrame.this);
-        dialog.setContentPane(new RandomPasswordPane());
+        dialog.setContentPane(new RandomPasswordPanel());
         dialog.setVisible(true);
     }
 
