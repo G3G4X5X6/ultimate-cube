@@ -188,7 +188,12 @@ public class NewSshPane extends JPanel {
 
     private void saveSession() {
         LinkedHashMap<String, String> session = new LinkedHashMap<>();
-        session.put("sessionName", sessionName.getText());
+        if (sessionName.getText().isBlank()) {
+            // 默认会话名称：Host_Port_User_LoginType
+            session.put("sessionName", hostField.getText() + "_" + portField.getText() + "_" + userField.getText() + "_" + authType);
+        } else {
+            session.put("sessionName", sessionName.getText());
+        }
         session.put("sessionCategory", Objects.requireNonNull(categoryCombo.getSelectedItem()).toString());
         session.put("sessionProtocol", "SSH");
         session.put("sessionAddress", hostField.getText());
@@ -203,21 +208,16 @@ public class NewSshPane extends JPanel {
         session.put("sessionLoginType", authType);
         session.put("sessionComment", commentText.getText());
 
-        // 保存会话路径
-        Path sessionPath = Paths.get(AppConfig.getSessionPath(), "SSH");
-        Path sessionFile = sessionPath.resolve(UUID.randomUUID() + ".json");
 
-        if (editPath != null && !sessionFile.toString().equalsIgnoreCase(editPath)) {
-            try {
-                Files.delete(Path.of(editPath));
-                editPath = sessionFile.toString();
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
+        if (editPath == null) {
+            // 保存会话路径
+            Path sessionPath = Paths.get(AppConfig.getSessionPath(), "SSH");
+            Path sessionFile = sessionPath.resolve(UUID.randomUUID() + ".json");
+            editPath = sessionFile.toString();
         }
-        log.info("会话保存路径：{}", sessionFile);
+        log.info("会话保存路径：{}", editPath);
         try {
-            Files.write(sessionFile, JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
+            Files.write(Path.of(editPath), JSON.toJSONString(session).getBytes(StandardCharsets.UTF_8));
             JOptionPane.showMessageDialog(NewSshPane.this, "会话保存成功", "信息", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -291,7 +291,7 @@ public class NewSshPane extends JPanel {
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
         passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
-        passField.setColumns(12);
+        passField.setColumns(16);
         passPane.add(passLabel);
         passPane.add(passField);
 
@@ -326,8 +326,8 @@ public class NewSshPane extends JPanel {
         // 会话名称
         JPanel north1 = new JPanel();
         sessionName = new JTextField();
-        sessionName.setColumns(12);
-        sessionName.putClientProperty("JTextField.placeholderText", "这么懒的吗？");
+        sessionName.setColumns(35);
+        sessionName.putClientProperty("JTextField.placeholderText", "Default: Host_Port_User_LoginType");
         north1.add(new JLabel("会话名称:"));
         north1.add(sessionName);
 
@@ -335,8 +335,9 @@ public class NewSshPane extends JPanel {
         JPanel categoryPane = new JPanel();
         categoryCombo = new JComboBox<>();
         categoryCombo.setEditable(true);
-        categoryCombo.setSize(new Dimension(200, 25));
-        categoryCombo.setPreferredSize(new Dimension(200, 25));
+        categoryCombo.setMinimumSize(new Dimension(250, 25));
+        categoryCombo.setSize(new Dimension(250, 25));
+        categoryCombo.setPreferredSize(new Dimension(250, 25));
         categoryCombo.addItem("");
 
         HashMap<String, ArrayList<JSONObject>> protocolsMap = SessionFileUtil.getProtocolsMap();
@@ -402,6 +403,7 @@ public class NewSshPane extends JPanel {
         center.setLayout(leftFlow);
         center.add(north1);
         center.add(categoryPane);
+        center.add(Box.createGlue());
         center.add(north2);
         advancedSettingPane.add(center, BorderLayout.CENTER);
     }
