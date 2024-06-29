@@ -18,6 +18,7 @@ import com.g3g4x5x6.remote.NewTabbedPane;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.CommonUtil;
+import com.g3g4x5x6.remote.utils.EditorUtils;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.session.SessionUtil;
 import com.g3g4x5x6.settings.SettingsDialog;
@@ -46,6 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -200,8 +202,15 @@ public class MainFrame extends JFrame implements MouseListener {
         settingsItem.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         settingsItem.addActionListener(settingsAction);
 
-        JMenuItem editSettingsItem = new JMenuItem("编辑配置文件");
+        JMenuItem editAppSettingsItem = new JMenuItem("程序配置文件");
+        editAppSettingsItem.addActionListener(editAppSettingsAction);
+
+        JMenuItem editEditorSettingsItem = new JMenuItem("编辑器配置文件");
+        editEditorSettingsItem.addActionListener(editEditorSettingsAction);
+
         optionMenu.add(settingsItem);
+        optionMenu.add(editAppSettingsItem);
+        optionMenu.add(editEditorSettingsItem);
         optionMenu.addSeparator();
         optionMenu.add(importSessionAction);
         optionMenu.add(exportSessionAction);
@@ -845,6 +854,20 @@ public class MainFrame extends JFrame implements MouseListener {
             // TODO 全局设置
             SettingsDialog settingsDialog = new SettingsDialog();
             settingsDialog.setVisible(true);
+        }
+    };
+
+    private final AbstractAction editAppSettingsAction = new AbstractAction("编辑程序配置文件") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorUtils.openFileInEditor("application.properties", Path.of(AppConfig.getWorkPath(), "application.properties").toString());
+        }
+    };
+
+    private final AbstractAction editEditorSettingsAction = new AbstractAction("编辑器配置文件") {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EditorUtils.openFileInEditor("editor.properties", Path.of(AppConfig.getWorkPath(), "config", "editor.properties").toString());
         }
     };
 
