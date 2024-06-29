@@ -68,16 +68,6 @@ public class NotepadDialog extends JDialog {
         public void setComponent(Component component) {
             statusBar.add(component);
         }
-
-        public void setSeparator() {
-            statusBar.addSeparator();
-        }
-
-
-        public void setGlue() {
-            statusBar.add(Box.createGlue());
-        }
-
     }
 
 }
