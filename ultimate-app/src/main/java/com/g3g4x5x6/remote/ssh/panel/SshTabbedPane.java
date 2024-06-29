@@ -70,14 +70,9 @@ public class SshTabbedPane extends JTabbedPane {
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
 
-        // 上左下右
-        trailing.add(Box.createHorizontalGlue());
-
-        trailing.add(Box.createHorizontalGlue());
-        trailing.add(progressBar);
-        trailing.add(Box.createHorizontalGlue());
-
-        JButton copyIpBtn = new JButton(new FlatSVGIcon("icons/copy.svg"));
+        JButton copyIpBtn = new JButton("IP");
+        copyIpBtn.setIcon(new FlatSVGIcon("icons/copy.svg"));
+        copyIpBtn.setSelected(true);
         copyIpBtn.setToolTipText("复制当前会话的远程服务器IP地址");
         copyIpBtn.addActionListener(new AbstractAction() {
             @Override
@@ -87,62 +82,16 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
-        JMenuItem copyPassBtn = new JMenuItem("复制密码");
+        JButton copyPassBtn = new JButton("PASS");
         copyPassBtn.setIcon(new FlatSVGIcon("icons/copy.svg"));
         copyPassBtn.setToolTipText("复制当前会话密码");
+        copyPassBtn.setSelected(true);
         copyPassBtn.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 CommonUtil.setClipboardText(sessionInfo.getSessionPass());
             }
         });
-
-        trailing.add(copyIpBtn);
-        trailing.addSeparator();
-
-        // 关机
-        JMenuItem shutdownBtn = new JMenuItem("点击3次关机");
-        shutdownBtn.setIcon(new FlatSVGIcon("icons/suspend.svg"));
-        shutdownBtn.setToolTipText("点击3次关机(shutdown -h now)");
-        shutdownBtn.addMouseListener(new MouseAdapter() {
-            @SneakyThrows
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 3) {
-                    SshUtil.exec(sessionInfo.getSession(), "shutdown -h now");
-                }
-            }
-        });
-
-        // 重启
-        JMenuItem rebootBtn = new JMenuItem("点击3次重启");
-        rebootBtn.setIcon(new FlatSVGIcon("icons/stopRefresh.svg"));
-        rebootBtn.setToolTipText("点击3次重启(shutdown -r now)");
-        rebootBtn.addMouseListener(new MouseAdapter() {
-            @SneakyThrows
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 3) {
-                    SshUtil.exec(sessionInfo.getSession(), "shutdown -h now");
-                }
-            }
-        });
-
-//        trailing.add(shutdownBtn);
-//        trailing.add(rebootBtn);
-//        trailing.addSeparator();
-
-//        trailing.add(pinSftpBtn);
-        JButton refreshBtn = new JButton(new FlatSVGIcon("icons/refresh.svg"));
-        refreshBtn.setToolTipText("重新连接");
-        refreshBtn.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                resetSession();
-                progressBar.setVisible(false);
-            }
-        });
-
 
         JButton transferTaskBtn = new JButton(new FlatSVGIcon("icons/fileTransfer.svg"));
         transferTaskBtn.setToolTipText("任务列表");
@@ -153,11 +102,10 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
+        // 功能右键 菜单列表
         otherPopupMenu = new JPopupMenu();
-        otherPopupMenu.add(copyPassBtn);
-        otherPopupMenu.addSeparator();
-        otherPopupMenu.add(shutdownBtn);
-        otherPopupMenu.add(rebootBtn);
+        initOtherPopupMenu();
+        //
         JButton funcBtn = new JButton(new FlatSVGIcon("icons/groups.svg"));
         funcBtn.setToolTipText("功能右键");
         funcBtn.addMouseListener(new MouseAdapter() {
@@ -167,11 +115,35 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
-        trailing.add(refreshBtn);
+
+        // 上左下右
+        trailing.add(Box.createHorizontalGlue());
+        trailing.add(progressBar);
+        trailing.add(Box.createHorizontalGlue());
+        // 上左下右
+        trailing.add(copyIpBtn);
+        trailing.add(copyPassBtn);
+        trailing.addSeparator();
         trailing.add(transferTaskBtn);
+        trailing.addSeparator();
         trailing.add(funcBtn);
 
         this.putClientProperty(TABBED_PANE_TRAILING_COMPONENT, trailing);
+    }
+
+    private void initOtherPopupMenu() {
+        JMenuItem refreshItem = new JMenuItem("重新连接会话");
+        refreshItem.setIcon(new FlatSVGIcon("icons/refresh.svg"));
+        refreshItem.setToolTipText("重新连接");
+        refreshItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetSession();
+                progressBar.setVisible(false);
+            }
+        });
+
+        otherPopupMenu.add(refreshItem);
     }
 
     public void resetSession() {
