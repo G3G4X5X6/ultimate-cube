@@ -3,7 +3,9 @@ package com.g3g4x5x6.editor;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.editor.provider.BashCompletionProvider;
 import com.g3g4x5x6.editor.provider.JavaCompletionProvider;
+import com.g3g4x5x6.editor.util.EditorConfig;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -14,6 +16,7 @@ import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
@@ -36,9 +39,14 @@ import static com.g3g4x5x6.editor.util.EditorUtil.createTextArea;
 @Slf4j
 public class EditorPanel extends JPanel implements SearchListener {
 
+    @Getter
     private String title = "新建文件.txt";
+    @Setter
+    @Getter
     private String tips = "默认提示文本";
     private String uuid = UUID.randomUUID().toString();
+    @Setter
+    @Getter
     private FlatSVGIcon icon = new FlatSVGIcon("icons/file-text.svg");
     private final RSyntaxTextArea textArea;
     @Getter
@@ -48,14 +56,24 @@ public class EditorPanel extends JPanel implements SearchListener {
     private AutoCompletion ac = null;
     private String syntax = "text/plain";
     private final LinkedList<String> allSyntax = new LinkedList<>();
-
+    @Setter
+    @Getter
     private SftpFileSystem fs;
+    @Setter
+    @Getter
     private String savePath;
 
     public EditorPanel() {
         this.setLayout(new BorderLayout());
         this.initSyntaxStyle();
         this.textArea = createTextArea();
+        try {
+            // default, dark, default-alt, druid, eclipse, idea, monokai, vs
+            Theme theme = Theme.load(textArea.getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/" + EditorConfig.getProperty("editor.theme") + ".xml"));
+            theme.apply(textArea);
+        } catch (IOException ioe) { // Never happens
+            log.error(ioe.getMessage());
+        }
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setBorder(null);
         this.add(sp, BorderLayout.CENTER);
@@ -122,30 +140,10 @@ public class EditorPanel extends JPanel implements SearchListener {
         return str.toString();
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     public void setTitle(String title) {
         this.title = title;
         // 自动设置编程语言风格
         autoSetSyntaxStyle(title);
-    }
-
-    public FlatSVGIcon getIcon() {
-        return icon;
-    }
-
-    public void setIcon(FlatSVGIcon icon) {
-        this.icon = icon;
-    }
-
-    public String getTips() {
-        return tips;
-    }
-
-    public void setTips(String tips) {
-        this.tips = tips;
     }
 
     public String getUuid() {
@@ -154,22 +152,6 @@ public class EditorPanel extends JPanel implements SearchListener {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public SftpFileSystem getFs() {
-        return fs;
-    }
-
-    public void setFs(SftpFileSystem fs) {
-        this.fs = fs;
-    }
-
-    public String getSavePath() {
-        return savePath;
-    }
-
-    public void setSavePath(String savePath) {
-        this.savePath = savePath;
     }
 
     public void setTextArea(String textArea) {
@@ -499,8 +481,7 @@ public class EditorPanel extends JPanel implements SearchListener {
                 break;
             case REPLACE_ALL:
                 result = SearchEngine.replaceAll(textArea, context);
-                JOptionPane.showMessageDialog(null, result.getCount() +
-                        " occurrences replaced.");
+                JOptionPane.showMessageDialog(null, result.getCount() + " occurrences replaced.");
                 break;
         }
 

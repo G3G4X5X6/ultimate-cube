@@ -1,5 +1,6 @@
 package com.g3g4x5x6.editor.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.fife.ui.rsyntaxtextarea.MatchedBracketPopup;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit;
@@ -10,6 +11,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
+@Slf4j
 public class EditorUtil {
     public static RSyntaxTextArea createTextArea() {
         RSyntaxTextArea textArea = new RSyntaxTextArea();

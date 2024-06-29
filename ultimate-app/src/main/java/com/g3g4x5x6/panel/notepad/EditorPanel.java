@@ -75,7 +75,14 @@ public class EditorPanel extends JPanel implements SearchListener {
         toolBar.add(replaceBtn);
         initToolBarAction();
 
-        this.textArea = createTextArea();
+        textArea = createTextArea();
+        try {
+            // default, dark, default-alt, druid, eclipse, idea, monokai, vs
+            Theme theme = Theme.load(textArea.getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/" + AppConfig.getProperty("notepad.theme") + ".xml"));
+            theme.apply(textArea);
+        } catch (IOException ioe) { // Never happens
+            log.error(ioe.getMessage());
+        }
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setBorder(null);
         this.add(sp, BorderLayout.CENTER);
