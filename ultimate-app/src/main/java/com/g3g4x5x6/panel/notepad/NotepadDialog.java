@@ -16,8 +16,9 @@ public class NotepadDialog extends JDialog {
         setIconImage(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("app.png"))).getImage());
 
         setModal(false);
-        setSize(new Dimension(700, 450));
-        setPreferredSize(new Dimension(700, 450));
+        this.setSize(new Dimension(1000, 600));
+        this.setPreferredSize(new Dimension(1000, 600));
+        this.setMinimumSize(new Dimension(900, 550));
         setLocationRelativeTo(null);
 
 
