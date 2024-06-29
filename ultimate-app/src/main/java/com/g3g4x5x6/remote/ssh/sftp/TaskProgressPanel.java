@@ -2,8 +2,7 @@ package com.g3g4x5x6.remote.ssh.sftp;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.extras.components.FlatButton;
-import com.g3g4x5x6.exception.UserStopException;
-import lombok.SneakyThrows;
+import lombok.Getter;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -14,6 +13,8 @@ public class TaskProgressPanel extends JPanel {
     private final JProgressBar progressBar;
     private final JLabel taskLabel;
     private final JButton fileCount;
+    @Getter
+    private boolean terminate = false;
 
     public TaskProgressPanel(String title, int min, int max, String path) {
         this.setLayout(new BorderLayout());
@@ -49,13 +50,11 @@ public class TaskProgressPanel extends JPanel {
         cancelBtn.setIcon(new FlatSVGIcon("icons/cancel.svg"));
         cancelBtn.setToolTipText("取消任务");
         cancelBtn.addActionListener(new AbstractAction() {
-            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                cancelBtn.setText("已取消");
+                cancelBtn.setText("用户已取消任务");
                 cancelBtn.setEnabled(false);
-
-                throw new UserStopException("用户取消任务");
+                setTerminate(true);
 
             }
         });
@@ -72,6 +71,10 @@ public class TaskProgressPanel extends JPanel {
 
     public void setMax(int max) {
         progressBar.setMaximum(max);
+    }
+
+    public void setTerminate(boolean terminate) {
+        this.terminate = terminate;
     }
 
     public void setMin(int min) {

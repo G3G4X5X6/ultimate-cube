@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote.ssh.panel;
+package com.g3g4x5x6.remote.ssh.sftp;
 
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.formdev.flatlaf.icons.FlatTreeOpenIcon;

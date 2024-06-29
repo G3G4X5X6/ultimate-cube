@@ -2,6 +2,7 @@ package com.g3g4x5x6.remote.ssh.panel;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
+import com.g3g4x5x6.remote.ssh.sftp.FilesBrowser;
 import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import lombok.Getter;

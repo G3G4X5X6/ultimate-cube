@@ -1,17 +1,15 @@
 package com.g3g4x5x6.remote.ssh;
 
 import com.g3g4x5x6.AppConfig;
-import com.g3g4x5x6.remote.ssh.panel.DropTargetListenerBrowserImpl;
-import com.g3g4x5x6.remote.ssh.panel.FilesBrowser;
+import com.g3g4x5x6.remote.ssh.sftp.DropTargetListenerBrowserImpl;
+import com.g3g4x5x6.remote.ssh.sftp.FilesBrowser;
 import com.g3g4x5x6.utils.FileUtil;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
-import org.apache.sshd.common.NamedResource;
 import org.apache.sshd.common.config.keys.FilePasswordProvider;
-import org.apache.sshd.common.session.SessionContext;
 import org.apache.sshd.core.CoreModuleProperties;
 import org.apache.sshd.putty.PuttyKeyUtils;
 import org.apache.sshd.sftp.client.fs.SftpFileSystem;
@@ -22,7 +20,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;

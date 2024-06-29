@@ -1,4 +1,4 @@
-package com.g3g4x5x6.remote.ssh.panel;
+package com.g3g4x5x6.remote.ssh.sftp;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -6,6 +6,7 @@ import com.formdev.flatlaf.icons.FlatSearchIcon;
 import com.g3g4x5x6.editor.EditorFrame;
 import com.g3g4x5x6.editor.EditorPanel;
 import com.g3g4x5x6.exception.UserStopException;
+import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.FileUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -555,7 +556,8 @@ public class FilesBrowser extends JPanel implements MouseListener {
                     LinkedList<String> downPath = new LinkedList<>();
                     int[] indexes = table.getSelectedRows();
                     for (int index : indexes) {
-                        downPath.add(currentPath + "/" + tableModel.getValueAt(index, 0).toString().replaceFirst("DIR:", ""));
+                        int modelRowIndex = table.convertRowIndexToModel(index);
+                        downPath.add(currentPath + "/" + tableModel.getValueAt(modelRowIndex, 0).toString().replaceFirst("DIR:", ""));
                     }
                     // 创建任务面板
                     TaskProgressPanel taskPanel = new TaskProgressPanel("下载", 0, 100, "");
