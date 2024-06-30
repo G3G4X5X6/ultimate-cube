@@ -1,5 +1,12 @@
 # Tips
 
+## TODO
+
+```shell
+# x-server
+https://github.com/marchaesen/vcxsrv
+```
+
 ## 强制更新依赖
 
 ```bash

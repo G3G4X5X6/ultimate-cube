@@ -39,8 +39,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.sshd.common.util.OsUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -81,7 +84,7 @@ public class MainFrame extends JFrame implements MouseListener {
     private final JMenu externalSubMenu = new JMenu("外部集成工具");
     private final JPopupMenu popupMenu = new JPopupMenu();
 
-    private final StatusBar statusBar = new StatusBar();
+    private final static StatusBar statusBar = new StatusBar();
 
     private String latestVersion;
 
@@ -247,7 +250,11 @@ public class MainFrame extends JFrame implements MouseListener {
         editorItem.setIcon(new FlatSVGIcon("icons/editScheme.svg"));
         editorItem.addActionListener(myEditorAction);
 
+        // X11-Server 菜单
+        JMenu x11Menu = getX11Menu();
+
         toolMenu.add(editorItem);
+        toolMenu.add(x11Menu);
         toolMenu.addSeparator();
         toolMenu.add(tightVNCAction);
         toolMenu.addSeparator();
@@ -296,6 +303,28 @@ public class MainFrame extends JFrame implements MouseListener {
         menuBar.add(pluginMenu);
         menuBar.add(helpMenu);
         this.setJMenuBar(menuBar);
+    }
+
+    private static @NotNull JMenu getX11Menu() {
+        JMenu x11Menu = new JMenu("X11-Server");
+        x11Menu.setIcon(new FlatSVGIcon("icons/deploy.svg"));
+        // 菜单项
+        JCheckBox startX11Item = new JCheckBox("启用 X11-Server");
+        startX11Item.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (startX11Item.isSelected()) {
+                    MainFrame.setStatusText("启用 X11-Server （成功）");
+                } else {
+                    MainFrame.setStatusText("关闭 X11-Server （成功）");
+                }
+            }
+        });
+        JMenuItem configItem = new JMenuItem("配置");
+        x11Menu.add(startX11Item);
+        x11Menu.addSeparator();
+        x11Menu.add(configItem);
+        return x11Menu;
     }
 
     private void initFuncIconButton() {
@@ -793,6 +822,10 @@ public class MainFrame extends JFrame implements MouseListener {
         dialog.setLocationRelativeTo(MainFrame.this);
         dialog.setContentPane(new RandomPasswordPanel());
         dialog.setVisible(true);
+    }
+
+    public static void setStatusText(String text) {
+        statusBar.setStatusInfoText(text);
     }
 
     // TODO 菜单动作
