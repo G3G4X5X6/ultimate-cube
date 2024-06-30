@@ -95,7 +95,7 @@ public class ConsolePane extends JPanel {
                 envs.put("TERM", "xterm-256color");
             }
 
-            PtyProcess process = new PtyProcessBuilder().setCommand(command).setEnvironment(envs).start();
+            PtyProcess process = new PtyProcessBuilder().setDirectory(AppConfig.getHomePath()).setCommand(command).setEnvironment(envs).start();
             return new PtyProcessTtyConnector(process, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new IllegalStateException(e);
