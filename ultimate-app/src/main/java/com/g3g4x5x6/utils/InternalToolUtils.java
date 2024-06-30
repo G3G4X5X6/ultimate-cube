@@ -1,5 +1,6 @@
 package com.g3g4x5x6.utils;
 
+import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.MainFrame;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,8 +14,14 @@ import java.util.ArrayList;
 @Slf4j
 public class InternalToolUtils {
     private static final String executablePath = MainFrame.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-    //    private static final String x11ExecuteFileWinPath = Path.of(executablePath, "VcXsrv", "vcxsrv.exe").toString();
-    private static final String x11ExecuteFileWinPath = Path.of("D:\\ultimate-cube", "VcXsrv", "vcxsrv.exe").toString();
+    private static String x11ExecuteFileWinPath = executablePath + "/VcXsrv/" + "vcxsrv.exe";
+
+    static {
+        File file = new File(x11ExecuteFileWinPath);
+        if (!file.exists()) {
+            x11ExecuteFileWinPath = Path.of(AppConfig.getProperty("vcxsrv.path"), "vcxsrv", "vcxsrv.exe").toString();
+        }
+    }
 
     public static Process startX11Process() {
         ArrayList<String> cmd = new ArrayList<>();
