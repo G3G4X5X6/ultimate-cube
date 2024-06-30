@@ -227,11 +227,12 @@ public class NewSshPane extends JPanel {
 
     private String getKeyContentFromPath(String path) {
         log.debug(path);
-        if (path == null || path.isEmpty()) {
+        Path keyPath = Path.of(path);
+        if (path.isEmpty() || !Files.exists(keyPath)) {
             return "";
         }
         try {
-            return Files.readString(Path.of(path));
+            return Files.readString(keyPath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

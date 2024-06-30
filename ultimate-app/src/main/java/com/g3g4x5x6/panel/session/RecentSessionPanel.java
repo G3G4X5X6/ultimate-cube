@@ -1,6 +1,7 @@
 package com.g3g4x5x6.panel.session;
 
 
+import cn.hutool.core.swing.clipboard.ClipboardUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -43,7 +45,7 @@ import java.util.Objects;
 public class RecentSessionPanel extends JPanel {
     private final ToolBar toolBar = new ToolBar();
 
-    private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型"};
+    private final String[] columnNames = {"访问时间", "会话名称", "协议", "地址", "端口", "登录用户", "认证类型", "会话保存路径"};
     private JTable recentTable;
     private DefaultTableModel tableModel;
     private TableRowSorter<DefaultTableModel> sorter;
@@ -58,9 +60,6 @@ public class RecentSessionPanel extends JPanel {
         // 初始化表格
         initTable();
 
-        // 启动会话访问变动监听
-        monitorSessions();
-
         // 初始化右键菜单
         initPopupMenu();
 
@@ -69,6 +68,7 @@ public class RecentSessionPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     openSession(sorter.convertRowIndexToModel(recentTable.getSelectedRow()));
+                    initData();
                 }
             }
         });
@@ -86,16 +86,6 @@ public class RecentSessionPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 log.debug("ToolBar: 刷新");
                 initData();
-
-                try {
-                    watchService.close();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-
-                } finally {
-                    log.info("刷新文件监控服务");
-                    monitorSessions();
-                }
             }
         });
 
@@ -121,6 +111,10 @@ public class RecentSessionPanel extends JPanel {
         recentTable.setRowSorter(sorter);
 
         initData();
+
+        // 移除并隐藏
+        TableColumn idColumn = recentTable.getColumnModel().getColumn(7);
+        recentTable.removeColumn(idColumn);
 
         JScrollPane tableScroll = new JScrollPane(recentTable);
         tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -154,78 +148,32 @@ public class RecentSessionPanel extends JPanel {
     private void initData() {
         tableModel.setRowCount(0);
 
-        File file = new File(AppConfig.getWorkPath() + "/sessions");
-        if (file.exists()) {
-            for (File f : Objects.requireNonNull(file.listFiles())) {
-                if (f.isFile() && f.getName().startsWith("recent_")) {
-                    BasicFileAttributes attrs = Files.readAttributes(Paths.get(f.getPath()), BasicFileAttributes.class);
-                    FileTime time = attrs.lastModifiedTime();
+        File sessionDir = new File(AppConfig.getSessionPath());
+        for (File f : Objects.requireNonNull(sessionDir.listFiles())) {
+            if (f.isFile() && f.getName().startsWith("recent_")) {
+                BasicFileAttributes attrs = Files.readAttributes(Paths.get(f.getPath()), BasicFileAttributes.class);
+                FileTime time = attrs.lastModifiedTime();
 
-                    LocalDateTime localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime localDateTime = time.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
-                    try {
-                        String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
-                        JSONObject jsonObject = JSON.parseObject(json);
-                        tableModel.addRow(new String[]{localDateTime.format(DATE_FORMATTER), jsonObject.getString("sessionName"), jsonObject.getString("sessionProtocol"), jsonObject.getString("sessionAddress"), jsonObject.getString("sessionPort"), jsonObject.getString("sessionUser"), jsonObject.getString("sessionLoginType"),});
-                    } catch (IOException e) {
-                        log.debug(e.getMessage());
-                    }
+                try {
+                    String json = FileUtils.readFileToString(f, StandardCharsets.UTF_8);
+                    JSONObject jsonObject = JSON.parseObject(json);
+                    tableModel.addRow(new String[]{localDateTime.format(DATE_FORMATTER), jsonObject.getString("sessionName"), jsonObject.getString("sessionProtocol"), jsonObject.getString("sessionAddress"), jsonObject.getString("sessionPort"), jsonObject.getString("sessionUser"), jsonObject.getString("sessionLoginType"), f.getAbsolutePath()});
+                } catch (IOException e) {
+                    log.debug(e.getMessage());
                 }
             }
-            if (tableModel.getRowCount() == 0) {
-                tableModel.addRow(new String[]{"空", "空", "空", "空", "空", "空", "空",});
-            }
+        }
+        if (tableModel.getRowCount() == 0) {
+            tableModel.addRow(new String[]{"空", "空", "空", "空", "空", "空", "空", "空"});
         }
 
         recentTable.setModel(tableModel);
         sorter.setSortKeys(List.of(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
     }
 
-    @SneakyThrows
-    private void monitorSessions() {
-        // 需要监听的文件目录（只能监听目录）
-        String path = Path.of(AppConfig.getWorkPath(), "/sessions").toString();
-
-        watchService = FileSystems.getDefault().newWatchService();
-        Path p = Paths.get(path);
-        p.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_CREATE);
-
-        Thread thread = getThread(path);
-        thread.start();
-
-        // 增加jvm关闭的钩子来关闭监听
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                watchService.close();
-            } catch (Exception e) {
-                // pass
-            }
-        }));
-    }
-
-    @NotNull
-    private Thread getThread(String path) {
-        Thread thread = new Thread(() -> {
-            try {
-                while (true) {
-                    WatchKey watchKey = watchService.take();
-                    List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
-                    for (WatchEvent<?> event : watchEvents) {
-                        log.debug("[" + path + "/" + event.context() + "]文件发生了[" + event.kind() + "]事件");
-                        // 刷新最近会话
-                        initData();
-                    }
-                    watchKey.reset();
-                }
-            } catch (Exception e) {
-//                e.printStackTrace();
-                log.debug("关闭文件监控服务异常");
-            }
-        });
-        thread.setDaemon(false);
-        return thread;
-    }
 
     private void initPopupMenu() {
         AbstractAction refreshAction = new AbstractAction("刷新面板") {
@@ -246,43 +194,48 @@ public class RecentSessionPanel extends JPanel {
                 for (int index : indexs) {
                     openSession(sorter.convertRowIndexToModel(index));
                 }
+                initData();
+            }
+        };
+
+        AbstractAction copyAction = new AbstractAction("复制会话路径") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                log.debug("复制会话路径");
+                String sessionFilePath = (String) tableModel.getValueAt(recentTable.convertRowIndexToModel(recentTable.getSelectedRow()), 7);
+                ClipboardUtil.setStr(sessionFilePath);
             }
         };
 
         AbstractAction deleteMultiAction = new AbstractAction("删除全部") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String path = AppConfig.getWorkPath() + "/sessions";
-                File file = new File(path);
-                for (File f : Objects.requireNonNull(file.listFiles())) {
+                File sessionDir = new File(AppConfig.getSessionPath());
+                for (File f : Objects.requireNonNull(sessionDir.listFiles())) {
                     if (f.isFile()) {
-                        if (f.getName().startsWith("recent_ssh")) {
+                        if (f.getName().startsWith("recent_")) {
                             f.delete();
                         }
                     }
                 }
+                initData();
             }
         };
 
         AbstractAction deleteAllAction = new AbstractAction("删除选中") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String path = AppConfig.getWorkPath() + "/sessions";
-                File file = new File(path);
-                for (File f : Objects.requireNonNull(file.listFiles())) {
-                    if (f.isFile()) {
-                        int[] indexs = recentTable.getSelectedRows();
-                        for (int ignored : indexs) {
-                            String protocol = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 2);
-                            String address = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 3);
-                            String port = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 4);
-                            String user = (String) tableModel.getValueAt(recentTable.getSelectedRow(), 5);
-                            if (f.getAbsolutePath().contains(protocol.toLowerCase()) && f.getAbsolutePath().contains(address.strip()) && f.getAbsolutePath().contains(port.strip()) && f.getAbsolutePath().contains(user.strip())) {
-                                f.delete();
-                            }
-                        }
+                int[] indexes = recentTable.getSelectedRows();
+                for (int index : indexes) {
+                    int modelRowIndex = recentTable.convertRowIndexToModel(index);
+                    String sessionPath = (String) tableModel.getValueAt(modelRowIndex, 7);
+
+                    File sessionFile = new File(sessionPath);
+                    if (sessionFile.getName().startsWith("recent_")) {
+                        sessionFile.delete();
                     }
                 }
+                initData();
             }
         };
 
@@ -291,6 +244,7 @@ public class RecentSessionPanel extends JPanel {
         recentPopupMenu.add(refreshAction);
         recentPopupMenu.addSeparator();
         recentPopupMenu.add(reopenAction);
+        recentPopupMenu.add(copyAction);
         recentPopupMenu.addSeparator();
         recentPopupMenu.add(deleteAllAction);
         recentPopupMenu.add(deleteMultiAction);
@@ -299,28 +253,18 @@ public class RecentSessionPanel extends JPanel {
     }
 
     private void openSession(int index) {
-
-        SessionOpenTool.OpenSessionForSSH(Objects.requireNonNull(getSessionObject(index)).getString("sessionFilePath"));
-//        String address = (String) tableModel.getValueAt(index, 3);
-//        String port = (String) tableModel.getValueAt(index, 4);
-//        String user = (String) tableModel.getValueAt(index, 5);
-//        String auth = (String) tableModel.getValueAt(index, 6);
-//
+        SessionOpenTool.OpenSessionByProtocol(Objects.requireNonNull(getSessionObject(index)).getString("sessionFilePath"), Objects.requireNonNull(getSessionObject(index)).getString("sessionProtocol"));
     }
 
     private JSONObject getSessionObject(int index) {
-        String protocol = (String) tableModel.getValueAt(index, 2);
-        String address = (String) tableModel.getValueAt(index, 3);
-        String port = (String) tableModel.getValueAt(index, 4);
-        String user = (String) tableModel.getValueAt(index, 5);
-        String authType = (String) tableModel.getValueAt(index, 6);
-
-        HashMap<String, ArrayList<JSONObject>> protocolsMap = SessionFileUtil.getProtocolsMap();
-        for (JSONObject jsonObject : protocolsMap.get(protocol)) {
-            if (jsonObject.getString("sessionAddress").equals(address) && jsonObject.getString("sessionPort").equals(port) && jsonObject.getString("sessionUser").equals(user) && jsonObject.getString("sessionLoginType").equals(authType)) {
-                return jsonObject;
-            }
+        String sessionPath = (String) tableModel.getValueAt(index, 7);
+        JSONObject jsonObject;
+        try {
+            jsonObject = JSONObject.parseObject(Files.readString(Path.of(sessionPath)));
+            jsonObject.put("sessionFilePath", sessionPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
+        return jsonObject;
     }
 }

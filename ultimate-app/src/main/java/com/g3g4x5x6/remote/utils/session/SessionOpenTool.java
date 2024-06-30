@@ -32,6 +32,11 @@ public class SessionOpenTool {
     private static final String freeRdpPath = Path.of(AppConfig.getBinPath(), "wfreerdp.exe").toAbsolutePath().toString();
 
     public static void OpenSessionByProtocol(String sessionPath, String protocol) {
+        try {
+            Files.copy(Path.of(sessionPath), Path.of(""));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
         switch (protocol) {
             case "SSH":
                 log.debug("SSH");
@@ -132,9 +137,12 @@ public class SessionOpenTool {
                 reader.close();
 
                 // 保存最近会话
-                Path path = Path.of(sessionPath);
-                if (!path.getFileName().toString().startsWith("recent_"))
-                    Files.write(Path.of(AppConfig.getWorkPath() + "/sessions/recent_" + path.getFileName()), jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
+                Path recentPath = Path.of(sessionPath);
+                if (sessionPath.startsWith("recent_")) Files.delete(recentPath);
+                else recentPath = Path.of(AppConfig.getSessionPath() + "/recent_" + recentPath.getFileName());
+
+                Files.write(recentPath, jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
+
 
             } catch (IOException ioException) {
                 log.error(ioException.getMessage());

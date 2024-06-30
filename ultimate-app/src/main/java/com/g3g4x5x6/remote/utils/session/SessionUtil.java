@@ -83,12 +83,12 @@ public class SessionUtil {
 
             // 更新最近会话
             String recentPath;
-            if (sessionFile.contains("recent_ssh_")) {
+            if (sessionFile.contains("recent_")) {
                 recentPath = file.getAbsolutePath();
                 //noinspection ResultOfMethodCallIgnored
                 file.delete();
             } else {
-                recentPath = AppConfig.getWorkPath() + "/sessions/recent_" + file.getName();
+                recentPath = AppConfig.getSessionPath() + "/recent_" + file.getName();
             }
             Files.write(Path.of(recentPath), json.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
