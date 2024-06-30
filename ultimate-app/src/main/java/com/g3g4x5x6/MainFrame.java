@@ -940,7 +940,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction loadPluginAction = new AbstractAction("加载插件") {
+    private final AbstractAction loadPluginAction = new AbstractAction("加载插件") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("加载插件");
@@ -948,7 +948,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction managePluginAction = new AbstractAction("插件管理") {
+    private final AbstractAction managePluginAction = new AbstractAction("插件管理") {
         @Override
         public void actionPerformed(ActionEvent e) {
             log.debug("插件管理");
@@ -956,7 +956,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction apiPluginAction = new AbstractAction("插件规范") {
+    private final AbstractAction apiPluginAction = new AbstractAction("插件规范") {
         @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -965,7 +965,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction githubAction = new AbstractAction("GitHub") {
+    private final AbstractAction githubAction = new AbstractAction("GitHub") {
         @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -973,7 +973,7 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction gitPageAction = new AbstractAction("GitPage") {
+    private final AbstractAction gitPageAction = new AbstractAction("GitPage") {
         @SneakyThrows
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -981,14 +981,14 @@ public class MainFrame extends JFrame implements MouseListener {
         }
     };
 
-    private AbstractAction openWorkspace = new AbstractAction("打开工作空间") {
+    private final AbstractAction openWorkspace = new AbstractAction("打开工作空间") {
         @Override
         public void actionPerformed(ActionEvent e) {
             new Thread(() -> {
                 try {
                     Desktop.getDesktop().open(new File(AppConfig.getWorkPath()));
                 } catch (IOException ioException) {
-                    ioException.printStackTrace();
+                    log.error(ioException.getMessage());
                 }
             }).start();
         }
