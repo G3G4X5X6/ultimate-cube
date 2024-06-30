@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 内置工具调用工具类
@@ -46,6 +47,23 @@ public class InternalToolUtils {
             // 启动进程
             process = processBuilder.start();
 
+            // 添加关闭钩子
+            Process finalProcess = process;
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                if (finalProcess.isAlive()) {
+                    finalProcess.destroy();
+                    try {
+                        finalProcess.waitFor(5, TimeUnit.SECONDS); // 等待进程结束
+                        if (finalProcess.isAlive()) {
+                            finalProcess.destroyForcibly(); // 强制杀死进程
+                        }
+                    } catch (InterruptedException e) {
+                        log.error(e.getMessage());
+                    }
+                    System.out.println("External process terminated.");
+                }
+            }));
+
             log.debug("process started.");
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -56,6 +74,8 @@ public class InternalToolUtils {
     public static void destroyProcess(Process process) {
         if (process != null) {
             process.destroy();
+        } else {
+            log.debug("process is null.");
         }
     }
 

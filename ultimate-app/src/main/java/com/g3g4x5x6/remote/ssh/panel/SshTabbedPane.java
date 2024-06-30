@@ -157,6 +157,29 @@ public class SshTabbedPane extends JTabbedPane {
             }
         });
 
+        JMenuItem x11ServerItem = new JMenuItem(("配置 X11-Forwarding"));
+        x11ServerItem.setIcon(new FlatSVGIcon("icons/locate.svg"));
+        x11ServerItem.setToolTipText("配置SSH服务X11-Forwarding");
+        x11ServerItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        JMenuItem x11ClientItem = new JMenuItem(("配置 X11-DISPLAY"));
+        x11ClientItem.setIcon(new FlatSVGIcon("icons/locate.svg"));
+        x11ClientItem.setToolTipText("配置DISPLAY='host:display_number'");
+        x11ClientItem.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        otherPopupMenu.add(x11ServerItem);
+        otherPopupMenu.add(x11ClientItem);
+        otherPopupMenu.addSeparator();
         otherPopupMenu.add(refreshItem);
     }
 

@@ -319,8 +319,12 @@ public class MainFrame extends JFrame implements MouseListener {
                     MainFrame.setStatusText("启用 X11-Server （成功）");
                     x11Process = InternalToolUtils.startX11Process();
                 } else {
-                    InternalToolUtils.destroyProcess(x11Process);
-                    MainFrame.setStatusText("关闭 X11-Server （成功）");
+                    if (x11Process != null && x11Process.isAlive()) {
+                        InternalToolUtils.destroyProcess(x11Process);
+                        MainFrame.setStatusText("关闭 X11-Server （成功）");
+                    } else {
+                        MainFrame.setStatusText("关闭 X11-Server （失败）");
+                    }
                 }
             }
         });
