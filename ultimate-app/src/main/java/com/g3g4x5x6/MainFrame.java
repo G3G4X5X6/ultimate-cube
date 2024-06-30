@@ -28,6 +28,7 @@ import com.g3g4x5x6.ui.StatusBar;
 import com.g3g4x5x6.ui.dialog.LockDialog;
 import com.g3g4x5x6.user.UserDialog;
 import com.g3g4x5x6.utils.DialogUtil;
+import com.g3g4x5x6.utils.InternalToolUtils;
 import com.g3g4x5x6.utils.SessionExcelHelper;
 import com.glavsoft.exceptions.CommonException;
 import com.glavsoft.viewer.ParametersHandler;
@@ -72,6 +73,7 @@ public class MainFrame extends JFrame implements MouseListener {
     public static int focusIndex = 0;
 
     private final ExternalToolIntegration integration = new ExternalToolIntegration();
+    private static Process x11Process = null;
 
     // TODO JFrame 组件定义
     private final JMenuBar menuBar = new JMenuBar();
@@ -315,7 +317,9 @@ public class MainFrame extends JFrame implements MouseListener {
             public void actionPerformed(ActionEvent e) {
                 if (startX11Item.isSelected()) {
                     MainFrame.setStatusText("启用 X11-Server （成功）");
+                    x11Process = InternalToolUtils.startX11Process();
                 } else {
+                    InternalToolUtils.destroyProcess(x11Process);
                     MainFrame.setStatusText("关闭 X11-Server （成功）");
                 }
             }
