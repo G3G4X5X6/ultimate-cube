@@ -282,7 +282,7 @@ public class NewSshPane extends JPanel {
         JPanel userPane = new JPanel();
         JLabel userLabel = new JLabel("Username");
         userField = new JFormattedTextField();
-        userField.setColumns(12);
+        userField.setColumns(10);
         userPane.add(userLabel);
         userPane.add(userField);
 
@@ -291,7 +291,7 @@ public class NewSshPane extends JPanel {
         JLabel passLabel = new JLabel("Password");
         passField = new JPasswordField();
         passField.putClientProperty(FlatClientProperties.STYLE, "showRevealButton: true");
-        passField.setColumns(16);
+        passField.setColumns(20);
         passPane.add(passLabel);
         passPane.add(passField);
 

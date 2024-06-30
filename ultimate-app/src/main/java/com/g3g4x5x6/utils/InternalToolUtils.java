@@ -18,9 +18,9 @@ public class InternalToolUtils {
     private static String x11ExecuteFileWinPath = executablePath + "/VcXsrv/" + "vcxsrv.exe";
 
     static {
-        File file = new File(x11ExecuteFileWinPath);
-        if (!file.exists()) {
-            x11ExecuteFileWinPath = Path.of(AppConfig.getProperty("vcxsrv.path"), "vcxsrv", "vcxsrv.exe").toString();
+        File x11File = new File(x11ExecuteFileWinPath);
+        if (!x11File.exists()) {
+            x11ExecuteFileWinPath = Path.of(AppConfig.getProperty("vcxsrv.path"), "VcXsrv", "vcxsrv.exe").toString();
         }
     }
 
@@ -42,7 +42,7 @@ public class InternalToolUtils {
             processBuilder.command(cmd);
 
             // 设置工作目录（可选）
-            processBuilder.directory(new File(executablePath));
+            processBuilder.directory(new File(executablePath).getParentFile());
 
             // 启动进程
             process = processBuilder.start();

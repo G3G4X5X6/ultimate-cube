@@ -22,7 +22,7 @@ import com.g3g4x5x6.remote.utils.EditorUtils;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.session.SessionUtil;
 import com.g3g4x5x6.settings.SettingsDialog;
-import com.g3g4x5x6.tools.RandomPasswordPanel;
+import com.g3g4x5x6.tools.PasswordGeneratorPanel;
 import com.g3g4x5x6.tools.external.ExternalToolIntegration;
 import com.g3g4x5x6.ui.StatusBar;
 import com.g3g4x5x6.ui.dialog.LockDialog;
@@ -43,8 +43,6 @@ import org.apache.sshd.common.util.OsUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -824,11 +822,11 @@ public class MainFrame extends JFrame implements MouseListener {
 
     private void showRandomPasswordDialog() {
         JDialog dialog = new JDialog(MainFrame.this);
-        dialog.setTitle("随机密码生成器");
+        dialog.setTitle("密码生成器");
         dialog.setSize(new Dimension(450, 145));
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(MainFrame.this);
-        dialog.setContentPane(new RandomPasswordPanel());
+        dialog.setContentPane(new PasswordGeneratorPanel());
         dialog.setVisible(true);
     }
 
