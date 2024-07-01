@@ -8,6 +8,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 内置工具调用工具类
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class InternalToolUtils {
     private static final String executablePath = MainFrame.class.getProtectionDomain().getCodeSource().getLocation().getPath();
     private static String x11ExecuteFileWinPath = executablePath + "/VcXsrv/" + "vcxsrv.exe";
+    public static int DISPLAY = 0;
 
     static {
         File x11File = new File(x11ExecuteFileWinPath);
@@ -25,13 +27,28 @@ public class InternalToolUtils {
     }
 
     public static Process startX11Process() {
-        ArrayList<String> cmd = new ArrayList<>();
-        cmd.add(x11ExecuteFileWinPath);
-        cmd.add("-multiwindow");    // Run the server in multiwindow mode.  Not to be used together with -rootless or -fullscreen.
-        cmd.add("-clipboard");      // -[no]clipboard        Enable [disable] the clipboard integration. Default is enabled.
-        cmd.add("-ac");             // disable access control restrictions
+        Process process = null;
+        while (true) {
+            ArrayList<String> cmd = new ArrayList<>();
+            cmd.add(x11ExecuteFileWinPath);
+            cmd.add(":" + DISPLAY);
+            cmd.add("-multiwindow");    // Run the server in multiwindow mode.  Not to be used together with -rootless or -fullscreen.
+            cmd.add("-clipboard");      // -[no]clipboard        Enable [disable] the clipboard integration. Default is enabled.
+            cmd.add("-ac");             // disable access control restrictions
+            log.debug(String.join(" ", cmd));
 
-        return execCmd(cmd);
+            process = execCmd(cmd);
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if (process != null && process.isAlive()) {
+                break;
+            }
+            DISPLAY += 1;
+        }
+        return process;
     }
 
     private static Process execCmd(ArrayList<String> cmd) {
@@ -66,7 +83,7 @@ public class InternalToolUtils {
 
             log.debug("process started.");
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.debug(e.getMessage());
         }
         return process;
     }

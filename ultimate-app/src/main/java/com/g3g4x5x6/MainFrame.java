@@ -314,8 +314,24 @@ public class MainFrame extends JFrame implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (startX11Item.isSelected()) {
-                    MainFrame.setStatusText("启用 X11-Server （成功）");
-                    x11Process = InternalToolUtils.startX11Process();
+                    MainFrame.setStatusText("启用 X11-Server （Running）");
+                    SwingWorker<Void, Integer> worker = new SwingWorker<>() {
+                        @Override
+                        protected Void doInBackground() {
+                            x11Process = InternalToolUtils.startX11Process();
+                            return null;
+                        }
+
+                        @Override
+                        protected void done() {
+                            if (x11Process != null && x11Process.isAlive()) {
+                                MainFrame.setStatusText("启用 X11-Server （成功，DISPLAY=127.0.0.1:" + InternalToolUtils.DISPLAY + ".0）");
+                            } else {
+                                MainFrame.setStatusText("启用 X11-Server （失败）");
+                            }
+                        }
+                    };
+                    worker.execute();
                 } else {
                     if (x11Process != null && x11Process.isAlive()) {
                         InternalToolUtils.destroyProcess(x11Process);
