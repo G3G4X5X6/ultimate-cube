@@ -325,7 +325,7 @@ public class MainFrame extends JFrame implements MouseListener {
                         @Override
                         protected void done() {
                             if (x11Process != null && x11Process.isAlive()) {
-                                MainFrame.setStatusText("启用 X11-Server （成功，DISPLAY=127.0.0.1:" + InternalToolUtils.DISPLAY + ".0）");
+                                MainFrame.setStatusText("启用 X11-Server （成功，DISPLAY=0.0.0.0:" + InternalToolUtils.DISPLAY + ".0）");
                             } else {
                                 MainFrame.setStatusText("启用 X11-Server （失败）");
                             }
