@@ -7,7 +7,9 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.g3g4x5x6.App;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.MainFrame;
+import com.g3g4x5x6.remote.rdp.RdpPane;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
+import com.g3g4x5x6.remote.ssh.panel.NewSshPane;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
@@ -32,112 +34,73 @@ public class SessionEditTool {
     private static final String freeRdpPath = AppConfig.getWorkPath() + "/bin/wfreerdp.exe";
 
     public static void EditSessionByProtocol(String sessionPath, String protocol) {
-        switch (protocol) {
-            case "SSH":
-                log.debug("SSH");
-                SessionEditTool.EditSessionForSSH(sessionPath);
-                break;
-            case "RDP":
-                log.debug("RDP");
-                SessionEditTool.EditSessionForRDP(sessionPath);
-            case "VNC":
-                log.debug("VNC");
-            case "Telnet":
-                log.debug("Telnet");
-            default:
-                log.debug("default: nothing to do");
+        try {
+            switch (protocol) {
+                case "SSH":
+                    log.debug("SSH");
+                    SessionEditTool.EditSessionForSSH(sessionPath);
+                    break;
+                case "RDP":
+                    log.debug("RDP");
+                    SessionEditTool.EditSessionForRDP(sessionPath);
+                case "VNC":
+                    log.debug("VNC");
+                case "Telnet":
+                    log.debug("Telnet");
+                default:
+                    log.debug("default: nothing to do");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private static void EditSessionForSSH(String sessionPath) {
+    private static void EditSessionForSSH(String sessionPath) throws IOException {
         File file = new File(sessionPath);
         if (file.exists()) {
+            JSONObject jsonObject = JSONObject.parseObject(Files.readString(file.toPath()));
+
             new Thread(() -> {
-                // 等待进度条
-                MainFrame.addWaitProgressBar();
-
-                SessionInfo sessionInfo = SessionUtil.openSshSession(file.getAbsolutePath());
-                if (SshUtil.testConnection(sessionInfo.getSessionAddress(), sessionInfo.getSessionPort()) == 1) {
-                    String defaultTitle = sessionInfo.getSessionName().isEmpty() ? "未命名" : sessionInfo.getSessionName();
-                    mainTabbedPane.addTab(defaultTitle, new FlatSVGIcon("icons/consoleRun.svg"), new SshTabbedPane(sessionInfo));
-                    mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
-                }
-                App.sessionInfos.put(sessionInfo.getSessionId(), sessionInfo);
-
-                // 移除等待进度条
-                MainFrame.removeWaitProgressBar();
+                NewSshPane sshPane = new NewSshPane(mainTabbedPane);
+                sshPane.setHostField(jsonObject.getString("sessionAddress"));
+                sshPane.setPortField(jsonObject.getString("sessionPort"));
+                sshPane.setUserField(jsonObject.getString("sessionUser"));
+                sshPane.setPassField(VaultUtil.decryptPasswd(jsonObject.getString("sessionPass")));
+                sshPane.setPukKey(jsonObject.getString("sessionPukKey"));
+                sshPane.setSessionName(jsonObject.getString("sessionName"));
+                sshPane.setCommentText(jsonObject.getString("sessionComment"));
+                sshPane.setAuthType(jsonObject.getString("sessionLoginType"));
+                sshPane.setCategory(jsonObject.getString("sessionCategory"));
+                sshPane.setEditPath(jsonObject.getString("sessionFilePath"));
+                mainTabbedPane.insertTab("编辑-SSH", new FlatSVGIcon("icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }).start();
         }
     }
 
-    private static void EditSessionForRDP(String sessionPath) {
+    private static void EditSessionForRDP(String sessionPath) throws IOException {
+        File file = new File(sessionPath);
+        if (file.exists()) {
+            JSONObject jsonObject = JSONObject.parseObject(Files.readString(file.toPath()));
 
-        new Thread(() -> {
-            try {
-                String json = FileUtils.readFileToString(new File(sessionPath), StandardCharsets.UTF_8);
-                JSONObject jsonObject = JSON.parseObject(json);
-                String address = jsonObject.getString("sessionAddress");
-                String port = jsonObject.getString("sessionPort");
-                String username = jsonObject.getString("sessionUser");
-                String password = VaultUtil.decryptPasswd(jsonObject.getString("sessionPass"));
-                String loginType = jsonObject.getString("sessionLoginType");
-                String sessionName = jsonObject.getString("sessionName");
-                String sessionComment = jsonObject.getString("sessionComment");
-                ArrayList<String> cmdArgs = (ArrayList<String>) jsonObject.getJSONArray("sessionArgs").toJavaList(String.class);
-
-                // 列表头部插入 freerdp 命令
-                if (OsInfoUtil.isWindows()) {
-                    cmdArgs.add(0, freeRdpPath);
-                } else if (OsInfoUtil.isLinux()) {
-                    log.debug("isLinux");
-                } else if (OsInfoUtil.isMacOS()) {
-                    log.debug("isMacOS");
-                } else if (OsInfoUtil.isMacOSX()) {
-                    log.debug("isMacOSX");
-                }
-
-                ArrayList<String> tmpList = (ArrayList<String>) cmdArgs.clone();
-                for (String arg : tmpList) {
-                    if (arg.contains("/p:")) {
-                        cmdArgs.remove(arg);
-                        cmdArgs.add("/p:" + password);
-                    }
-                }
-
-                //创建ProcessBuilder对象
-                ProcessBuilder processBuilder = new ProcessBuilder();
-
-                // 设置执行命令及其参数列表
-                processBuilder.command(cmdArgs);
-                log.debug(cmdArgs.toString());
-
-                //将标准输入流和错误输入流合并
-                // 通过标准输入流读取信息就可以拿到第三方程序输出的错误信息、正常信息
-                processBuilder.redirectErrorStream(true);
-
-                //启动一个进程
-                Process process = processBuilder.start();
-                //读取输入流
-                InputStream inputStream = process.getInputStream();
-                //将字节流转成字符流
-                InputStreamReader reader = new InputStreamReader(inputStream, "gbk");
-                //字符缓冲区
-                char[] chars = new char[1024];
-                int len = -1;
-                while ((len = reader.read(chars)) != -1) {
-                    String string = new String(chars, 0, len);
-                    log.debug(string);
-                }
-                inputStream.close();
-                reader.close();
-
-                // 保存最近会话
-                Files.write(Path.of(AppConfig.getWorkPath() + "/sessions/recent_" + Path.of(sessionPath).getFileName()), jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
-
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }).start();
+            new Thread(() -> {
+                RdpPane rdpPane = new RdpPane(mainTabbedPane);
+                rdpPane.setHostField(jsonObject.getString("sessionAddress"));
+                rdpPane.setPortField(jsonObject.getString("sessionPort"));
+                rdpPane.setUserField(jsonObject.getString("sessionUser"));
+                rdpPane.setPassField(VaultUtil.decryptPasswd(jsonObject.getString("sessionPass")));
+                rdpPane.setSessionName(jsonObject.getString("sessionName"));
+                // TODO 待实现
+                rdpPane.setCommentText(jsonObject.getString("sessionComment"));
+                rdpPane.setAuthType(jsonObject.getString("sessionLoginType"));
+                rdpPane.setCategory(jsonObject.getString("sessionCategory"));
+                rdpPane.setEditPath(sessionPath);
+                mainTabbedPane.insertTab("编辑-RDP", new FlatSVGIcon("icons/addToDictionary.svg"), rdpPane, "编辑会话", mainTabbedPane.getTabCount());
+                mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
+            }).start();
+        } else {
+            log.debug("文件不存在：{}", file.getAbsolutePath());
+        }
     }
 
 }

@@ -10,6 +10,7 @@ import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.panel.session.SessionFileUtil;
 import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.utils.VaultUtil;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.config.hosts.HostConfigEntry;
@@ -55,11 +56,9 @@ public class NewSshPane extends JPanel {
     private JLabel keyLabel;
     private JComboBox<String> categoryCombo;
 
+    @Setter
     private String editPath;
-    private String host;
-    private int port;
-    private String username;
-    private String password;
+    @Setter
     private String authType = "password";
     private String sessionCategory;
     private String sessionPukKey;
@@ -405,8 +404,8 @@ public class NewSshPane extends JPanel {
 
 
     private int testConnection() {
-        host = hostField.getText();
-        port = Integer.parseInt(portField.getText());
+        String host = hostField.getText();
+        int port = Integer.parseInt(portField.getText());
         log.debug(host);
         log.debug(String.valueOf(port));
 
@@ -476,13 +475,5 @@ public class NewSshPane extends JPanel {
 
     public void setCommentText(String text) {
         commentText.setText(text);
-    }
-
-    public void setAuthType(String authType) {
-        this.authType = authType;
-    }
-
-    public void setEditPath(String editPath) {
-        this.editPath = editPath;
     }
 }

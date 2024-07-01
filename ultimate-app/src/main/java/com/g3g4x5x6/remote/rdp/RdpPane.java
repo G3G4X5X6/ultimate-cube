@@ -10,13 +10,12 @@ import com.g3g4x5x6.panel.session.SessionFileUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
 import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.os.OsInfoUtil;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -54,10 +53,10 @@ public class RdpPane extends JPanel {
     private JTextField height;
     private JComboBox<String> categoryCombo;
     private String sessionCategory = "";
+    @Setter
     private String authType = "local";
 
     private boolean openFlag = false;
-    private final String freeRdpSessionsDirPath = AppConfig.getSessionPath() + "/RDP";
     private final String exePath = AppConfig.getBinPath() + "/wfreerdp.exe";
 
     public RdpPane(JTabbedPane mainTabbedPane) {
@@ -435,4 +434,36 @@ public class RdpPane extends JPanel {
         cmdList.add("+window-drag");
     }
 
+    public void setPassField(String password) {
+        passField.setText(password);
+    }
+
+    public void setHostField(String sessionAddress) {
+        hostField.setText(sessionAddress);
+    }
+
+    public void setPortField(String sessionPort) {
+        portField.setText(sessionPort);
+    }
+
+    public void setUserField(String sessionUser) {
+        userField.setText(sessionUser);
+    }
+
+    public void setSessionName(String sessionName) {
+        title.setText(sessionName);
+    }
+
+    public void setCommentText(String sessionComment) {
+
+    }
+
+    public void setCategory(String category) {
+        categoryCombo.setSelectedItem(category);
+        sessionCategory = category;
+    }
+
+    public void setEditPath(String sessionFilePath) {
+        editPath = sessionFilePath;
+    }
 }

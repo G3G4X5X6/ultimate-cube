@@ -6,10 +6,10 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 import com.formdev.flatlaf.icons.FlatSearchIcon;
 import com.formdev.flatlaf.icons.FlatTreeLeafIcon;
 import com.g3g4x5x6.remote.NewTabbedPane;
-import com.g3g4x5x6.remote.ssh.panel.NewSshPane;
 import com.g3g4x5x6.remote.utils.CommonUtil;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
+import com.g3g4x5x6.remote.utils.session.SessionEditTool;
 import com.g3g4x5x6.remote.utils.session.SessionOpenTool;
 import com.g3g4x5x6.ui.ToolBar;
 import com.g3g4x5x6.utils.DialogUtil;
@@ -210,6 +210,7 @@ public class NewSessionManagerPanel extends JPanel {
                         }
                     }
                 }
+                resetTableModelData();
             }
         };
 
@@ -246,24 +247,10 @@ public class NewSessionManagerPanel extends JPanel {
                 int[] indexes = sessionTable.getSelectedRows();
                 for (int index : indexes) {
                     int modelRowIndex = sessionTable.convertRowIndexToModel(index);
+                    String sessionProtocol = (String) tableModel.getValueAt(modelRowIndex, 1);
+                    String sessionFilePath = (String) tableModel.getValueAt(modelRowIndex, 6);
 
-                    JSONObject jsonObject = getSessionObject(modelRowIndex);
-
-                    new Thread(() -> {
-                        NewSshPane sshPane = new NewSshPane(mainTabbedPane);
-                        sshPane.setHostField(jsonObject.getString("sessionAddress"));
-                        sshPane.setPortField(jsonObject.getString("sessionPort"));
-                        sshPane.setUserField(jsonObject.getString("sessionUser"));
-                        sshPane.setPassField(VaultUtil.decryptPasswd(jsonObject.getString("sessionPass")));
-                        sshPane.setPukKey(jsonObject.getString("sessionPukKey"));
-                        sshPane.setSessionName(jsonObject.getString("sessionName"));
-                        sshPane.setCommentText(jsonObject.getString("sessionComment"));
-                        sshPane.setAuthType(jsonObject.getString("sessionLoginType"));
-                        sshPane.setCategory(jsonObject.getString("sessionCategory"));
-                        sshPane.setEditPath(jsonObject.getString("sessionFilePath"));
-                        mainTabbedPane.insertTab("编辑选项卡", new FlatSVGIcon("icons/addToDictionary.svg"), sshPane, "编辑会话", mainTabbedPane.getTabCount());
-                        mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
-                    }).start();
+                    SessionEditTool.EditSessionByProtocol(sessionFilePath, sessionProtocol);
                 }
             }
         };
@@ -279,8 +266,9 @@ public class NewSessionManagerPanel extends JPanel {
         AbstractAction copyPathAction = new AbstractAction("复制会话文件绝对路径") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSONObject jsonObject = getSelectedRowJSONObject();
-                CommonUtil.setClipboardText(Objects.requireNonNull(jsonObject).getString("sessionFilePath"));
+                int modelRowIndex = sessionTable.convertRowIndexToModel(sessionTable.getSelectedRow());
+                String sessionFilePath = (String) tableModel.getValueAt(modelRowIndex, 6);
+                CommonUtil.setClipboardText(sessionFilePath);
             }
         };
 
@@ -382,7 +370,14 @@ public class NewSessionManagerPanel extends JPanel {
 
         ArrayList<JSONObject> sessionInfoList = getSessionInfoLists();
         for (JSONObject jsonObject : sessionInfoList) {
-            tableModel.addRow(new String[]{jsonObject.getString("sessionName"), jsonObject.getString("sessionProtocol"), jsonObject.getString("sessionAddress"), jsonObject.getString("sessionPort"), jsonObject.getString("sessionUser"), jsonObject.getString("sessionLoginType"), jsonObject.getString("sessionFilePath")});
+            tableModel.addRow(new String[]{
+                    jsonObject.getString("sessionName"),
+                    jsonObject.getString("sessionProtocol"),
+                    jsonObject.getString("sessionAddress"),
+                    jsonObject.getString("sessionPort"),
+                    jsonObject.getString("sessionUser"),
+                    jsonObject.getString("sessionLoginType"),
+                    jsonObject.getString("sessionFilePath")});
         }
     }
 

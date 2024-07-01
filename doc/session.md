@@ -18,3 +18,10 @@
   "sessionCategory": ""
 }
 ```
+
+## SessionLoginType
+
+- password（密码登陆）
+- public（私钥登陆-SSH）
+- local（本地账户登陆-RDP）
+- domain（域账户登陆-RDP）
