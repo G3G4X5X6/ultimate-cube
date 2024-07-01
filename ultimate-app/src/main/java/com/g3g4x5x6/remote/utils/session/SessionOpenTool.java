@@ -11,6 +11,7 @@ import com.g3g4x5x6.remote.ssh.SessionInfo;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
+import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.os.OsInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -33,24 +34,24 @@ public class SessionOpenTool {
 
     public static void OpenSessionByProtocol(String sessionPath, String protocol) {
         try {
-            Files.copy(Path.of(sessionPath), Path.of(""));
-        } catch (IOException e) {
+            switch (protocol) {
+                case "SSH":
+                    log.debug("SSH");
+                    SessionOpenTool.OpenSessionForSSH(sessionPath);
+                    break;
+                case "RDP":
+                    log.debug("RDP");
+                    SessionOpenTool.OpenSessionForRDP(sessionPath);
+                case "VNC":
+                    log.debug("VNC");
+                case "Telnet":
+                    log.debug("Telnet");
+                default:
+                    log.debug("default: nothing to do");
+            }
+        } catch (Exception e) {
             log.error(e.getMessage());
-        }
-        switch (protocol) {
-            case "SSH":
-                log.debug("SSH");
-                SessionOpenTool.OpenSessionForSSH(sessionPath);
-                break;
-            case "RDP":
-                log.debug("RDP");
-                SessionOpenTool.OpenSessionForRDP(sessionPath);
-            case "VNC":
-                log.debug("VNC");
-            case "Telnet":
-                log.debug("Telnet");
-            default:
-                log.debug("default: nothing to do");
+            DialogUtil.error(e.getMessage());
         }
     }
 
@@ -146,6 +147,7 @@ public class SessionOpenTool {
 
             } catch (IOException ioException) {
                 log.error(ioException.getMessage());
+                throw new RuntimeException(ioException.getMessage());
             }
         }).start();
     }

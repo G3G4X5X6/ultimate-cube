@@ -370,14 +370,7 @@ public class NewSessionManagerPanel extends JPanel {
 
         ArrayList<JSONObject> sessionInfoList = getSessionInfoLists();
         for (JSONObject jsonObject : sessionInfoList) {
-            tableModel.addRow(new String[]{
-                    jsonObject.getString("sessionName"),
-                    jsonObject.getString("sessionProtocol"),
-                    jsonObject.getString("sessionAddress"),
-                    jsonObject.getString("sessionPort"),
-                    jsonObject.getString("sessionUser"),
-                    jsonObject.getString("sessionLoginType"),
-                    jsonObject.getString("sessionFilePath")});
+            tableModel.addRow(new String[]{jsonObject.getString("sessionName"), jsonObject.getString("sessionProtocol"), jsonObject.getString("sessionAddress"), jsonObject.getString("sessionPort"), jsonObject.getString("sessionUser"), jsonObject.getString("sessionLoginType"), jsonObject.getString("sessionFilePath")});
         }
     }
 

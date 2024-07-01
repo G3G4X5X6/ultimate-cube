@@ -3,6 +3,7 @@ package com.g3g4x5x6.remote.ssh;
 import com.g3g4x5x6.AppConfig;
 import com.g3g4x5x6.remote.ssh.sftp.DropTargetListenerBrowserImpl;
 import com.g3g4x5x6.remote.ssh.sftp.FilesBrowser;
+import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.FileUtil;
 import com.jediterm.terminal.ui.JediTermWidget;
 import lombok.SneakyThrows;
@@ -89,6 +90,7 @@ public class SessionInfo {
             this.session = getSession(client);
             this.sftpFileSystem = getSftpFileSystem(session);
         } catch (IOException | GeneralSecurityException e) {
+            DialogUtil.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }

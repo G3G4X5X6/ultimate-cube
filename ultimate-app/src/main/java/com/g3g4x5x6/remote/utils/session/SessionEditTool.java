@@ -13,6 +13,7 @@ import com.g3g4x5x6.remote.ssh.panel.NewSshPane;
 import com.g3g4x5x6.remote.ssh.panel.SshTabbedPane;
 import com.g3g4x5x6.remote.utils.SshUtil;
 import com.g3g4x5x6.remote.utils.VaultUtil;
+import com.g3g4x5x6.utils.DialogUtil;
 import com.g3g4x5x6.utils.os.OsInfoUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -51,6 +52,7 @@ public class SessionEditTool {
                     log.debug("default: nothing to do");
             }
         } catch (IOException e) {
+            DialogUtil.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -95,6 +97,8 @@ public class SessionEditTool {
                 rdpPane.setAuthType(jsonObject.getString("sessionLoginType"));
                 rdpPane.setCategory(jsonObject.getString("sessionCategory"));
                 rdpPane.setEditPath(sessionPath);
+                // TODO 待实现，ArrayList<String> cmdList; 参数设置
+                //
                 mainTabbedPane.insertTab("编辑-RDP", new FlatSVGIcon("icons/addToDictionary.svg"), rdpPane, "编辑会话", mainTabbedPane.getTabCount());
                 mainTabbedPane.setSelectedIndex(mainTabbedPane.getTabCount() - 1);
             }).start();
