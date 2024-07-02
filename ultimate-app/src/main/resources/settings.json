@@ -1,0 +1,16 @@
+[
+  {
+    "name": "puttygen",
+    "category": "putty",
+    "platform": "Windows",
+    "workdir": "%InstallPath%\\PuTTY",
+    "start": "%InstallPath%\\PuTTY\\puttygen.exe"
+  },
+  {
+    "name": "putty",
+    "category": "putty",
+    "platform": "Windows",
+    "workdir": "%InstallPath%\\PuTTY",
+    "start": "%InstallPath%\\PuTTY\\putty.exe"
+  }
+]
