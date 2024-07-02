@@ -30,7 +30,14 @@ import static com.g3g4x5x6.MainFrame.mainTabbedPane;
 
 @Slf4j
 public class SessionOpenTool {
-    private static final String freeRdpPath = Path.of(AppConfig.getBinPath(), "wfreerdp.exe").toAbsolutePath().toString();
+    private static String freeRdpPath = Path.of(AppConfig.getInstallPath(), "wfreerdp.exe").toString();
+
+    static {
+        log.debug(freeRdpPath);
+        if (!Files.exists(Path.of(freeRdpPath))) {
+            freeRdpPath = AppConfig.getBinPath() + "/wfreerdp.exe";
+        }
+    }
 
     public static void OpenSessionByProtocol(String sessionPath, String protocol) {
         try {
@@ -80,7 +87,8 @@ public class SessionOpenTool {
 
         new Thread(() -> {
             try {
-                String json = FileUtils.readFileToString(new File(sessionPath), StandardCharsets.UTF_8);
+                File sessionFile = new File(sessionPath);
+                String json = FileUtils.readFileToString(sessionFile, StandardCharsets.UTF_8);
                 JSONObject jsonObject = JSON.parseObject(json);
                 String address = jsonObject.getString("sessionAddress");
                 String port = jsonObject.getString("sessionPort");
@@ -137,14 +145,16 @@ public class SessionOpenTool {
                 inputStream.close();
                 reader.close();
 
-                // 保存最近会话
-                Path recentPath = Path.of(sessionPath);
-                if (sessionPath.startsWith("recent_")) Files.delete(recentPath);
-                else recentPath = Path.of(AppConfig.getSessionPath() + "/recent_" + recentPath.getFileName());
-
-                Files.write(recentPath, jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
-
-
+                // 更新最近会话
+                String recentPath;
+                if (sessionPath.contains("recent_")) {
+                    recentPath = sessionFile.getAbsolutePath();
+                    //noinspection ResultOfMethodCallIgnored
+                    sessionFile.delete();
+                } else {
+                    recentPath = AppConfig.getSessionPath() + "/recent_" + sessionFile.getName();
+                }
+                Files.write(Path.of(recentPath), json.getBytes(StandardCharsets.UTF_8));
             } catch (IOException ioException) {
                 log.error(ioException.getMessage());
                 throw new RuntimeException(ioException.getMessage());

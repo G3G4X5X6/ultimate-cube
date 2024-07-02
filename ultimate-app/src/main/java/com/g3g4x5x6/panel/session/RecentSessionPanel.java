@@ -67,7 +67,10 @@ public class RecentSessionPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    openSession(sorter.convertRowIndexToModel(recentTable.getSelectedRow()));
+                    int modelIndex = sorter.convertRowIndexToModel(recentTable.getSelectedRow());
+                    String sessionPath = tableModel.getValueAt(modelIndex, 7).toString();
+                    String sessionProtocol = tableModel.getValueAt(modelIndex, 2).toString();
+                    SessionOpenTool.OpenSessionByProtocol(sessionPath, sessionProtocol);
                     initData();
                 }
             }
@@ -192,7 +195,10 @@ public class RecentSessionPanel extends JPanel {
                 int[] indexs = recentTable.getSelectedRows();
 
                 for (int index : indexs) {
-                    openSession(sorter.convertRowIndexToModel(index));
+                    int modelIndex = sorter.convertRowIndexToModel(index);
+                    String sessionPath = recentTable.getValueAt(modelIndex, 7).toString();
+                    String sessionProtocol = recentTable.getValueAt(modelIndex, 2).toString();
+                    SessionOpenTool.OpenSessionByProtocol(sessionPath, sessionProtocol);
                 }
                 initData();
             }

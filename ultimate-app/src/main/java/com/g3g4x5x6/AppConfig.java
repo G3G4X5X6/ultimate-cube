@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 @Slf4j
@@ -25,8 +27,24 @@ public class AppConfig {
                 log.debug("文件夹创建失败：" + bin);
             }
         }
-//        log.debug(bin);
         return bin;
+    }
+
+    /**
+     * 获取程序安装路径（获取当前类所在的JAR文件路径）
+     */
+    public static String getInstallPath() {
+        String path;
+        try {
+            path = AppConfig.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            Path correctPath = Paths.get(new File(path).toURI());
+
+            path = correctPath.getParent().toString();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        log.debug("Install path: {}", path);
+        return path;
     }
 
     public static String getSessionPath() {
@@ -109,7 +127,7 @@ public class AppConfig {
             BufferedReader reader = new BufferedReader(new FileReader(getPropertiesPath()));
             String line = "";
             while ((line = reader.readLine()) != null) {
-                if (!line.startsWith("#") && !line.strip().equals("")) {
+                if (!line.startsWith("#") && !line.isBlank()) {
                     String key = line.strip().split("=")[0];
                     line = key + "=" + (App.properties.getProperty(key) != null ? App.properties.getProperty(key) : line.strip().split("=")[1]);
                 }

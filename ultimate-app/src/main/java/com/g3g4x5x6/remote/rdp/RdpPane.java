@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -57,7 +58,14 @@ public class RdpPane extends JPanel {
     private String authType = "local";
 
     private boolean openFlag = false;
-    private final String exePath = AppConfig.getBinPath() + "/wfreerdp.exe";
+    private String exePath = Path.of(AppConfig.getInstallPath(), "wfreerdp.exe").toString();
+
+    {
+        log.debug(exePath);
+        if (!Files.exists(Path.of(exePath))) {
+            exePath = AppConfig.getBinPath() + "/wfreerdp.exe";
+        }
+    }
 
     public RdpPane(JTabbedPane mainTabbedPane) {
         this.mainTabbedPane = mainTabbedPane;
