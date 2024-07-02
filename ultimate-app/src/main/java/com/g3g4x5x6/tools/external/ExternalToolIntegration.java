@@ -116,7 +116,9 @@ public class ExternalToolIntegration {
     }
 
     /**
-     * 内置变量替换：%BasePath%
+     * 内置变量替换：
+     * %BasePath%          = AppConfig.getWorkPath() + "/tools/external_tools"
+     * %InstallPath%       = AppConfig.getInstallPath()
      */
     private String replaceBasePath(String path) {
         String tmpPath = path.replaceAll("%BasePath%", Path.of(AppConfig.getWorkPath() + "/tools/external_tools").toString().replaceAll("\\\\", "/"));

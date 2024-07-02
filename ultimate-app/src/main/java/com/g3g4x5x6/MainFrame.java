@@ -272,16 +272,7 @@ public class MainFrame extends JFrame implements MouseListener {
         otherToolMenu.add(randomPassItem);
         toolMenu.add(otherToolMenu);
         toolMenu.addSeparator();
-        toolMenu.add(externalSubMenu);
-
-        // 插件菜单
-        pluginMenu.add(loadPluginAction);
-        pluginMenu.add(managePluginAction);
-        pluginMenu.addSeparator();
-        pluginMenu.add(apiPluginAction);
-
-        // 外部集成工具
-        externalSubMenu.add(new AbstractAction("工具管理") {
+        toolMenu.add(new AbstractAction("外部集成工具配置") {
             @Override
             public void actionPerformed(ActionEvent e) {
                 log.debug("工具管理");
@@ -293,8 +284,12 @@ public class MainFrame extends JFrame implements MouseListener {
                 editorFrame.setVisible(true);
             }
         });
-        externalSubMenu.addSeparator();
-        integration.initExternalToolsMenu(externalSubMenu);
+
+        // 插件菜单
+        pluginMenu.add(loadPluginAction);
+        pluginMenu.add(managePluginAction);
+        pluginMenu.addSeparator();
+        pluginMenu.add(apiPluginAction);
 
         menuBar.add(terminalMenu);
         menuBar.add(viewMenu);
