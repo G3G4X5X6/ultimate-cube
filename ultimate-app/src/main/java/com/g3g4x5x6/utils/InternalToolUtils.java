@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,11 +32,10 @@ public class InternalToolUtils {
             ArrayList<String> cmd = new ArrayList<>();
             cmd.add(x11ExecuteFileWinPath);
             cmd.add(":" + DISPLAY);
-            cmd.add("-multiwindow");    // Run the server in multiwindow mode.  Not to be used together with -rootless or -fullscreen.
-            cmd.add("-clipboard");      // -[no]clipboard        Enable [disable] the clipboard integration. Default is enabled.
-            cmd.add("-ac");             // disable access contr         ol restrictions
-            cmd.add("-nowgl");          // -[no]wgl     Enable the GLX extension to use the native Windows WGL interface for hardware-accelerated OpenGL
+
+            cmd.addAll(Arrays.asList(AppConfig.getProperty("vcxsrv.args").split("\\s+")));
             log.debug(String.join(" ", cmd));
+
 
             process = execCmd(cmd);
             try {
