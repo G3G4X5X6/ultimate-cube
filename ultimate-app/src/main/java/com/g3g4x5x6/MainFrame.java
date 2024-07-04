@@ -167,12 +167,12 @@ public class MainFrame extends JFrame implements MouseListener {
         // 查看菜单
         JMenuItem focusItem = new JMenuItem("专注模式");
         focusItem.setIcon(new FlatSVGIcon("icons/cwmScreenOn.svg"));
-        focusItem.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                focusAction();
-            }
-        });
+//        focusItem.addActionListener(new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                focusAction();
+//            }
+//        });
 
         JMenu paneMenu = new JMenu("面板");
         JMenuItem infoItem = new JMenuItem("系统信息");

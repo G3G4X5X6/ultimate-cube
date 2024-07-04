@@ -27,14 +27,15 @@ public class InternalToolUtils {
     }
 
     public static Process startX11Process() {
-        Process process = null;
+        Process process;
         while (true) {
             ArrayList<String> cmd = new ArrayList<>();
             cmd.add(x11ExecuteFileWinPath);
             cmd.add(":" + DISPLAY);
             cmd.add("-multiwindow");    // Run the server in multiwindow mode.  Not to be used together with -rootless or -fullscreen.
             cmd.add("-clipboard");      // -[no]clipboard        Enable [disable] the clipboard integration. Default is enabled.
-            cmd.add("-ac");             // disable access control restrictions
+            cmd.add("-ac");             // disable access contr         ol restrictions
+            cmd.add("-nowgl");
             log.debug(String.join(" ", cmd));
 
             process = execCmd(cmd);
