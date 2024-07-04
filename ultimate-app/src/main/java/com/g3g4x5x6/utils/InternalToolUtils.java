@@ -36,7 +36,6 @@ public class InternalToolUtils {
             cmd.addAll(Arrays.asList(AppConfig.getProperty("vcxsrv.args").split("\\s+")));
             log.debug(String.join(" ", cmd));
 
-
             process = execCmd(cmd);
             try {
                 Thread.sleep(1500);
