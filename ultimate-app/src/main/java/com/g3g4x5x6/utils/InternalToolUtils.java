@@ -34,7 +34,7 @@ public class InternalToolUtils {
             cmd.add("-multiwindow");    // Run the server in multiwindow mode.  Not to be used together with -rootless or -fullscreen.
             cmd.add("-clipboard");      // -[no]clipboard        Enable [disable] the clipboard integration. Default is enabled.
             cmd.add("-ac");             // disable access contr         ol restrictions
-            cmd.add("-nowgl");
+            cmd.add("-nowgl");          // -[no]wgl     Enable the GLX extension to use the native Windows WGL interface for hardware-accelerated OpenGL
             log.debug(String.join(" ", cmd));
 
             process = execCmd(cmd);
