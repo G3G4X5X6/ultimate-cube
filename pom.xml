@@ -7,7 +7,7 @@
     <groupId>com.g3g4x5x6</groupId>
     <artifactId>ultimate-cube</artifactId>
     <packaging>pom</packaging>
-    <version>6.15.44</version>
+    <version>7.0.0</version>
     <modules>
         <module>ultimate-app</module>
         <module>ultimate-editor</module>
