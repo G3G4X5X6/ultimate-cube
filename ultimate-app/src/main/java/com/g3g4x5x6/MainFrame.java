@@ -268,9 +268,7 @@ public class MainFrame extends JFrame implements MouseListener {
             }
         });
 
-        JMenu otherToolMenu = new JMenu("杂七杂八");
-        otherToolMenu.add(randomPassItem);
-        toolMenu.add(otherToolMenu);
+        toolMenu.add(randomPassItem);
         toolMenu.addSeparator();
         toolMenu.add(new AbstractAction("外部集成工具配置") {
             @Override
