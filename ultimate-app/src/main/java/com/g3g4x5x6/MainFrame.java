@@ -259,7 +259,7 @@ public class MainFrame extends JFrame implements MouseListener {
         toolMenu.add(tightVNCAction);
         toolMenu.addSeparator();
 
-        JMenuItem randomPassItem = new JMenuItem("随机密码生成器");
+        JMenuItem randomPassItem = new JMenuItem("密码生成器");
         randomPassItem.setIcon(new FlatSVGIcon("icons/cwmPermissions.svg"));
         randomPassItem.addActionListener(new AbstractAction() {
             @Override
