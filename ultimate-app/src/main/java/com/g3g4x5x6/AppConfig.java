@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 
 @Slf4j
@@ -125,11 +126,11 @@ public class AppConfig {
         try {
             StringBuilder settingsText = new StringBuilder();
             BufferedReader reader = new BufferedReader(new FileReader(getPropertiesPath()));
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.startsWith("#") && !line.isBlank()) {
                     String key = line.strip().split("=")[0];
-                    line = key + "=" + (App.properties.getProperty(key) != null ? App.properties.getProperty(key) : line.strip().split("=")[1]);
+                    line = key + "=" + App.properties.getProperty(key, "");
                 }
                 settingsText.append(line).append("\n");
             }

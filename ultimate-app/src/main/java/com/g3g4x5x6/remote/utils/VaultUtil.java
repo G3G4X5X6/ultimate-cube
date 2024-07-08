@@ -17,13 +17,13 @@ public class VaultUtil {
     private static String secretKey = AppConfig.getProperty("ssh.session.secret.key");
 
     static {
-        if (secretKey.equals("")) {
+        if (secretKey.isEmpty()) {
             //随机生成密钥
             byte[] key = SecureUtil.generateKey(SymmetricAlgorithm.AES.getValue()).getEncoded();
             secretKey = bytesToHex(key);
             AppConfig.setProperty("ssh.session.secret.key", secretKey);
             AppConfig.saveSettingsProperties();
-            log.debug("secretKey: " + secretKey);
+            log.debug("secretKey: {}", secretKey);
         }
     }
 
