@@ -179,7 +179,7 @@ public class App {
                 assert appIn != null;
                 Files.copy(appIn, Path.of(AppConfig.getPropertiesPath()));
             } catch (IOException e) {
-                log.error("配置初始化异常：" + e.getMessage());
+                log.error("配置初始化异常：{}", e.getMessage());
             }
         }
 
