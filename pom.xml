@@ -42,8 +42,11 @@
         <qqwry-java-version>0.8.0</qqwry-java-version>
 
         <pty4j-version>0.12.13</pty4j-version>
-        <jediterm-core-version>3.20-SNAPSHOT</jediterm-core-version>
-        <jediterm-ui-version>3.20-SNAPSHOT</jediterm-ui-version>
+        <jediterm-core-version>3.44-SNAPSHOT</jediterm-core-version>
+        <jediterm-ui-version>3.44-SNAPSHOT</jediterm-ui-version>
+
+        <kotlin-stdlib-version>1.9.22</kotlin-stdlib-version>
+
         <annotations-version>RELEASE</annotations-version>
 
         <tightvnc-jviewer-version>2.8.3</tightvnc-jviewer-version>
@@ -87,6 +90,19 @@
                 <groupId>com.jediterm</groupId>
                 <artifactId>jediterm-ui</artifactId>
                 <version>${jediterm-ui-version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>${kotlin-stdlib-version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib-common -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-common</artifactId>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j -->
