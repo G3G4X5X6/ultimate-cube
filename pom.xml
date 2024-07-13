@@ -45,7 +45,7 @@
         <jediterm-core-version>3.44-SNAPSHOT</jediterm-core-version>
         <jediterm-ui-version>3.44-SNAPSHOT</jediterm-ui-version>
 
-        <kotlin-stdlib-version>1.9.22</kotlin-stdlib-version>
+        <kotlin-stdlib-version>2.0.0</kotlin-stdlib-version>
 
         <annotations-version>RELEASE</annotations-version>
 
@@ -103,6 +103,7 @@
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib-common</artifactId>
+                <version>${kotlin-stdlib-version}</version>
             </dependency>
 
             <!-- https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j -->
