@@ -102,8 +102,11 @@ plugins:
       separator: '[\s\u200b\-]'
 
   - git-revision-date-localized:
+      type: datetime
+      timezone: Asia/Shanghai
       enable_creation_date: true
-      type: date
+      exclude:
+        - comments.md
 
 
   - git-committers:
