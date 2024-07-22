@@ -23,11 +23,10 @@ See [the security file](https://github.com/G3G4X5X6/ultimate-cube/security/polic
 - [x] 支持 `SSH`、 `Sftp`，及` 内置代码编辑器`，支持代码高亮、折叠等功能
 - [x] 支持  `COM`  口调试（自动检测存在的 `COM` 接口）
 - [x] 支持 `Telnet`
-- [x] 支持 `RDP` 远程桌面（基于`FreeRDP` 实现） 
+- [x] 支持 `RDP` 远程桌面（基于`FreeRDP` 实现）
 - [x] 支持 `VNC`，基于`TightVNC Viewer` 实现
 - [x] 支持 `集成外部工具`，实现快速启动
 - [x] 内置 `简易编辑器` ，可编辑本地、远程文本文件
-- [x] <del>内置 `Nuclei` GUI，POC概念验证框架（已独立项目）</del>
 - [x] 支持60多种主题皮肤切换
 - [ ] 支持插件系统
 
